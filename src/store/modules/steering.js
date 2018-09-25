@@ -1,3 +1,5 @@
+import { orderBy } from 'lodash';
+
 export default {
   namespaced: true,
 
@@ -11,7 +13,7 @@ export default {
 
   mutations: {
     updateDCs (state, dcList) {
-      state.dcs.list = dcList
+      state.dcs.list = orderBy(dcList, 'time', 'asc')
     },
 
     setFetching (state, newState) {
