@@ -42,7 +42,7 @@ export default {
 
           /* Start race API fetching */
           this.dispatch('boat/fetch', null, {root: true});
-          this.dispatch('boat/fetchDCs', null, {root: true});
+          this.dispatch('boat/steering/fetchDCs', null, {root: true});
           // this.dispatch('weather/fetch', null, {root: true});
           // this.dispatch('race/fetchRace', null, {root: true});
           // this.dispatch('race/fetchTraces', null, {root: true});

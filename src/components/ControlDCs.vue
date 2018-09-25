@@ -15,7 +15,7 @@
         </thead>
         <tbody id="dc-list">
           <tr
-            v-for = "command in this.$store.state.boat.dcs"
+            v-for = "command in this.$store.state.boat.steering.dcs.list"
             v-bind:key = "command.id"
             :class = "{'active': command.id === selected }"
             @click = "selectDC(command.id)"
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     doRefresh () {
-      this.$store.dispatch('boat/fetchDCs');
+      this.$store.dispatch('boat/steering/fetchDCs');
     },
     doDelete () {
       // ADDME

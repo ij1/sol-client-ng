@@ -1,5 +1,11 @@
+import steeringModule from './steering'
+
 export default {
   namespaced: true,
+
+  modules: {
+    steering: steeringModule,
+  },
 
   state: {
     instruments: {},
