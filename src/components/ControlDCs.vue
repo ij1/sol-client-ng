@@ -4,7 +4,7 @@
       <button @click="doDelete">Delete</button>
       <button @click="doRefresh">Refresh</button>
     </div>
-    <div id="dc-list">
+    <div id="dc-table">
       <table>
         <thead>
           <tr>
@@ -13,10 +13,12 @@
             <td>&deg;</td>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="dc-list">
           <tr
             v-for = "command in this.$store.state.boat.dcs"
             v-bind:key = "command.id"
+            :class = "{'active': command.id === selected }"
+            @click = "selectDC(command.id)"
           >
             <td>{{ command.time }}</td>
             <td>{{ command.type | cctocog }}</td>
@@ -35,6 +37,7 @@ export default {
     return {
       loading: true,
       commands: null,
+      selected: null,
     }
   },
   filters: {
@@ -53,6 +56,10 @@ export default {
     doDelete () {
       // ADDME
     },
+    selectDC (id) {
+      this.selected = id;
+      console.log("Selected: " + this.selected);
+    }
   }
 }
 </script>
@@ -65,11 +72,17 @@ export default {
 #dc-header button {
   margin: 2px;
 }
-#dc-list {
+#dc-table {
   float: bottom;
   width: 100%;
   height: 100%;
   overflow-y: scroll;
   font-size: 10px;
+}
+#dc-list tr {
+  background: #ffffff;
+}
+#dc-list .active {
+  background: #d0d0ff;
 }
 </style>
