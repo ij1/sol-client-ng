@@ -12,7 +12,7 @@ export default {
       state.status = 'Authenticated';
       state.token = params['token'];
       state.race_id = params['race_id'];
-      this.dispatch('race/fetchAuthRaceinfo');
+      this.dispatch('race/fetchAuthRaceinfo', null, {root: true});
     },
     loginFailed (state) {
       state.status = 'Login failed';

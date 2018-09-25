@@ -19,7 +19,7 @@ export default {
   },
 
   actions: {
-    fetchAuthRaceinfo ({rootState}) {
+    fetchAuthRaceinfo ({rootState, commit, dispatch}) {
       const getDef = {
         url: "/webclient/auth_raceinfo_" + rootState.auth.race_id + ".xml",
         params: {
@@ -32,27 +32,27 @@ export default {
           const polarRawData = raceInfo['boat'];
           const chatroomsData = raceInfo.chatrooms['chatroom'];
 
-          this.commit('chatrooms/init', chatroomsData, {root: true});
+          commit('chatrooms/init', chatroomsData, {root: true});
 
           raceInfo['boat'] = null;
           raceInfo['chatrooms'] = null;
-          this.commit('race/init', raceInfo, {root: true});
+          commit('init', raceInfo);
 
-          this.commit('boat/setPolar', polarRawData, {root: true});
+          commit('boat/setPolar', polarRawData, {root: true});
 
           /* Start race API fetching */
-          this.dispatch('boat/fetch', null, {root: true});
-          this.dispatch('boat/steering/fetchDCs', null, {root: true});
-          // this.dispatch('weather/fetch', null, {root: true});
-          // this.dispatch('race/fetchRace', null, {root: true});
-          // this.dispatch('race/fetchTraces', null, {root: true});
+          dispatch('boat/fetch', null, {root: true});
+          dispatch('boat/steering/fetchDCs', null, {root: true});
+          // dispatch('weather/fetch', null, {root: true});
+          // dispatch('fetchRace');
+          // dispatch('fetchTraces');
         },
       }
 
-      this.dispatch('solapi/get', getDef);
+      dispatch('solapi/get', getDef, {root: true});
     },
 
-    fetchRace({rootState}) {
+    fetchRace({rootState, dispatch}) {
       const getDef = {
         url: "/webclient/race_" + rootState.auth.race_id + ".xml",
         params: {
@@ -66,11 +66,11 @@ export default {
         },
       }
 
-      this.dispatch('solapi/get', getDef);
+      dispatch('solapi/get', getDef, {root: true});
     
     },
 
-    fetchTraces({rootState}) {
+    fetchTraces({rootState, dispatch}) {
       const getDef = {
         url: "/webclient/traces_" + rootState.auth.race_id + ".xml",
         params: {
@@ -84,7 +84,7 @@ export default {
         },
       }
 
-      this.dispatch('solapi/get', getDef);
+      dispatch('solapi/get', getDef, {root: true});
     
     },
 

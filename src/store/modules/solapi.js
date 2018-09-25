@@ -19,7 +19,7 @@ export default {
   },
 
   actions: {
-    get ({rootState}, getDef) {
+    get ({rootState, commit, dispatch}, getDef) {
       let retry = true;
 
       axios.get(rootState.config.server + getDef.url, {params: getDef.params})
@@ -36,7 +36,7 @@ export default {
           if (!(result.hasOwnProperty(getDef.dataField))) {
             return Promise.reject(new Error("No data from API"));
           }
-          this.commit('solapi/setState', "Up")
+          commit('setState', "Up")
           if (!getDef.hasOwnProperty('interval')) {
             retry = false;
           }
@@ -48,7 +48,7 @@ export default {
 
       .catch((err) => {
         console.log(err)
-        this.commit('solapi/logError', {
+        commit('logError', {
           url: getDef.url,
           error: err,
         })
@@ -70,7 +70,7 @@ export default {
             action = getDef.refetchAction;
           }
           setTimeout(() => {
-            this.dispatch(action, getDef, {root: true});
+            dispatch(action, getDef, {root: true});
           }, interval);
         }
       })
