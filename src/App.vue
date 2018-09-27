@@ -6,6 +6,7 @@
         <status-bar/>
       </div>
       <div id="left_main_div">
+        <map-view/>
         <log-messages/>
         <boat-instruments/>
       </div>
@@ -19,6 +20,7 @@
 <script>
 import StatusBar from './components/StatusBar.vue'
 import LoginPopup from './components/LoginPopup.vue'
+import Map from './components/Map.vue'
 import BoatInstruments from './components/BoatInstruments.vue'
 import LogMessages from './components/LogMessages.vue'
 import ControlPanel from './components/ControlPanel.vue'
@@ -28,6 +30,7 @@ export default {
   components: {
     'status-bar': StatusBar,
     'login-popup': LoginPopup,
+    'map-view': Map,
     'boat-instruments': BoatInstruments,
     'log-messages': LogMessages,
     'control-panel': ControlPanel,

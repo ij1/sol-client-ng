@@ -1,15 +1,28 @@
+import Vue from 'vue';
+import L from 'leaflet'
+
 export default {
   namespaced: true,
 
   state: {
     loaded: false,
     info: {},
-    route: null,
+    route: [],
+    finish: [],
     traces: null,
   },
 
   mutations: {
     init (state, raceInfo) {
+      for (let i = 0; i < raceInfo.course.waypoint.length; i++) {
+        let waypoint = raceInfo.course.waypoint[i];
+        const idx = parseInt(waypoint.order) - 1;
+        waypoint.latLng = L.latLng(waypoint.lat, waypoint.lon);
+        // ADDME: need to calculate the side to pass
+        Vue.set(state.route, idx, waypoint);
+      }
+      // ADDME: calculate finish line end points
+      delete raceInfo.course.waypoint;
       state.info = raceInfo
       state.loaded = true
     },
