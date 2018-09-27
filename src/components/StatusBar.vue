@@ -28,6 +28,7 @@ export default {
 #status-bar {
   position: absolute;
   width: 100%;
+  z-index: 1;
 }
 
 #status-bar-left {
