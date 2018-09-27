@@ -25,16 +25,16 @@
         v-bind:key = "index"
       >
         <div class="chat-block-header">
-          <div class="chat-flag">
-          </div>
-          <div class="chat-bundee">
-          </div>
-          <div class="chat-name">
+          <span class="chat-flag">
+          </span>
+          <span class="chat-bundee">
+          </span>
+          <span class="chat-name">
             <span v-html="msg.name"/>
-          </div>
-          <div class="chat-time">
+          </span>
+          <span class="chat-time">
             {{ msg.t | timeOnly }}
-          </div>
+          </span>
         </div>
         <div class="chat-msg">
           <span v-html="msg.msg"/>
