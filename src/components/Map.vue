@@ -9,6 +9,13 @@
       @update:zoom="updateZoom"
       :worldCopyJump="true"
     >
+      <l-rectangle
+        v-if="this.$store.state.race.boundary.length == 2"
+        :bounds="this.$store.state.race.boundary"
+        :fill="false"
+        :weight="2"
+        color="magenta"
+      />
       <l-circle-marker
         v-for="(waypoint, index) in this.$store.state.race.route"
         :key="index"
@@ -30,13 +37,14 @@
 
 <script>
 import L from 'leaflet'
-import { LMap, LCircleMarker, LTooltip } from 'vue2-leaflet'
+import { LMap, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 
 export default {
   name: 'Map',
   components: {
     'l-map': LMap,
     'l-circle-marker': LCircleMarker,
+    'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
   },
 

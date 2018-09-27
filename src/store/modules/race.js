@@ -7,6 +7,7 @@ export default {
   state: {
     loaded: false,
     info: {},
+    boundary: [],
     route: [],
     finish: [],
     traces: null,
@@ -14,6 +15,9 @@ export default {
 
   mutations: {
     init (state, raceInfo) {
+      state.boundary = [L.latLng(raceInfo.minlat, raceInfo.minlon),
+                        L.latLng(raceInfo.maxlat, raceInfo.maxlon)];
+
       for (let i = 0; i < raceInfo.course.waypoint.length; i++) {
         let waypoint = raceInfo.course.waypoint[i];
         const idx = parseInt(waypoint.order) - 1;
