@@ -2,7 +2,7 @@
   <div id="status-bar">
     <div id="status-bar-left">
       <div v-if="this.$store.state.race.loaded">
-        {{ this.$store.state.race.info['message'] }}
+        <span v-html="this.$store.state.race.info['message']"/>
       </div>
     </div>
     <div id="status-bar-right">

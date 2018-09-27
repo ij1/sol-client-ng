@@ -30,14 +30,14 @@
           <div class="chat-bundee">
           </div>
           <div class="chat-name">
-            {{ msg.name }}
+            <span v-html="msg.name"/>
           </div>
           <div class="chat-time">
             {{ msg.t | timeOnly }}
           </div>
         </div>
         <div class="chat-msg">
-          <span v-html="msg.msg"></span>
+          <span v-html="msg.msg"/>
         </div>
       </div>
     </div>
