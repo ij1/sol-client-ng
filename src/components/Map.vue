@@ -31,19 +31,25 @@
           <span v-html="waypoint.name"/>
         </l-tooltip>
       </l-circle-marker>
+      <l-marker
+        v-if = "this.$store.state.boat.position !== null"
+        :latLng="this.$store.state.boat.position"
+        :icon="myBoatIcon"
+      />
     </l-map>
   </div>
 </template>
 
 <script>
 import L from 'leaflet'
-import { LMap, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
+import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 
 export default {
   name: 'Map',
   components: {
     'l-map': LMap,
     'l-circle-marker': LCircleMarker,
+    'l-marker': LMarker,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
   },
@@ -62,6 +68,8 @@ export default {
         direction: 'right',
         className: 'wp-tooltip',
       },
+
+      L: L,
     }
   },
 
@@ -69,6 +77,19 @@ export default {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject;
     });
+  },
+
+  computed: {
+    myBoatIcon() {
+      const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='22px' height='22px'><g transform='rotate(" +
+        (this.$store.state.boat.instruments.cog * 180 / Math.PI) +
+        " 11 11)'><path d='M 8,22 C 5 10, 9 12, 11 0 C 13 12, 17 10,14 22 Z' fill-opacity='0' stroke-opacity='1' stroke='#ff00ff'/></g></svg>";
+      const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
+      return this.L.icon({
+        iconUrl: iconUrl,
+        iconAnchor: [11, 11],
+      });
+    }
   },
 
   methods: {

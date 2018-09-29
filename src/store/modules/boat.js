@@ -1,3 +1,4 @@
+import L from 'leaflet'
 import steeringModule from './steering'
 
 export default {
@@ -8,6 +9,7 @@ export default {
   },
 
   state: {
+    position: null,
     instruments: {},
     dcs: [],
     fetching: {
@@ -19,6 +21,7 @@ export default {
   mutations: {
     updateBoat (state, data) {
       state.instruments = data
+      state.position = L.latLng(data.lat, data.lon);
     },
     setPolar (state, polar) {
       state.polar = polar
