@@ -18,6 +18,9 @@
       <div v-if="activeTab === 3" class="control-panel-content">
         <control-chats/>
       </div>
+      <div v-if="activeTab === 4" class="control-panel-content">
+        <control-race-messages/>
+      </div>
     </div>
   </div>
 </template>
@@ -26,6 +29,7 @@
 import ControlSteering from './ControlSteering.vue';
 import ControlDCs from './ControlDCs.vue';
 import ControlChats from './ControlChats.vue';
+import ControlRaceMessages from './ControlRaceMessages.vue';
 
 export default {
   name: 'ControlPanel',
@@ -33,6 +37,7 @@ export default {
     'control-steering': ControlSteering,
     'control-dcs': ControlDCs,
     'control-chats': ControlChats,
+    'control-race-messages': ControlRaceMessages,
   },
   data () {
     return {

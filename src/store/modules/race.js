@@ -1,12 +1,21 @@
 import Vue from 'vue';
 import L from 'leaflet'
+import raceMessageModule from './racemessages.js'
 
 export default {
   namespaced: true,
+  modules: {
+    messages: raceMessageModule,
+  },
 
   state: {
     loaded: false,
     info: {},
+    messages: {
+      racemsgs: [],
+      lastId: 0,
+      expectedId: 0,
+    },
     boundary: [],
     route: [],
     finish: [],

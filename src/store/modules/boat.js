@@ -50,12 +50,20 @@ export default {
         dataHandler: (boatData) => {
           let chatData = boatData['chats'];
           chatData.id = nextChatroom;
+          let lmi = boatData.lmi;
       
           commit('updateBoat', boatData['boat']);
 
           if (!chatData.hasOwnProperty('chat') ||
               !chatData.hasOwnProperty('timestamp')) {
             return;
+          }
+
+          if (lmi !== undefined) {
+            lmi = parseInt(lmi);
+            if (Number.isFinite(lmi)) {
+              commit('race/messages/updateExpected', lmi, {root: true});
+            }
           }
           
           if (!Array.isArray(chatData.chat)) {
