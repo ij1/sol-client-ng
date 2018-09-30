@@ -11,10 +11,6 @@ export default {
   state: {
     position: null,
     instruments: {},
-    dcs: [],
-    fetching: {
-      dcs: false,
-    },
     polar: null,
   },
 
@@ -25,9 +21,6 @@ export default {
     },
     setPolar (state, polar) {
       state.polar = polar
-    },
-    updateDCs (state, dcList) {
-      state.dcs = dcList
     },
 
     setFetching (state, param) {
@@ -74,37 +67,6 @@ export default {
         },
       };
 
-      dispatch('solapi/get', getDef, {root: true});
-    },
-
-    fetchDCs({state, rootState, commit, dispatch}) {
-      /* FIXME: should queue until the previous req is over */
-      if (state.fetching.dcs) {
-        return;
-      }
-
-      const getDef = {
-        url: '/webclient/command/delayed/',
-        params: {
-          token: rootState.auth.token,
-        },
-        useArrays: false,
-        dataField: 'commands',
-
-        dataHandler: (dcData) => {
-          if (typeof dcData.cmd !== 'undefined') {
-            let dcList = dcData.cmd
-          
-            if (!Array.isArray(dcList)) {
-              dcList = [dcList];
-            }
-            commit('updateDCs', dcList);
-          }
-          commit('setFetching', {id: 'dcs', state: false });
-        },
-      };
-
-      commit('setFetching', {id: 'dcs', state: true });
       dispatch('solapi/get', getDef, {root: true});
     },
   },

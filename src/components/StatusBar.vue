@@ -6,7 +6,7 @@
       </div>
     </div>
     <div id="status-bar-right">
-      <div v-if="this.$store.state.boat.dcs.length > 0">
+      <div v-if="this.$store.state.boat.steering.dcs.list.length > 0">
         Next DC:
         FIXME in FIXME
       </div>
