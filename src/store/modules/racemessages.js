@@ -11,13 +11,14 @@ export default {
 
   mutations: {
     add (state, messages) {
-      state.racemsgs = orderBy(messages.concat(state.racemsgs), 'last_updated', 'desc');
-      for (let i = 0; i < state.racemsgs.length; i++) {
-        const newId = parseInt(state.racemsgs[i].id);
+      for (let message of messages) {
+        const newId = parseInt(message.id);
         if (Number.isFinite(newId) && newId > state.lastId) {
           state.lastId = newId;
         }
+        message.message = ('<p>' + message.message.replace(/\n/g, '</p><p>') + '</p>').replace(/<p><\/p>/g, '')
       }
+      state.racemsgs = orderBy(messages.concat(state.racemsgs), 'last_updated', 'desc');
     },
     updateExpected(state, expectedId) {
       if (expectedId > state.expectedId) {
