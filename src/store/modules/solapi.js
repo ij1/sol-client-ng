@@ -19,10 +19,10 @@ export default {
   },
 
   actions: {
-    get ({rootState, commit, dispatch}, getDef) {
+    get ({rootState, commit, dispatch}, reqDef) {
       let retry = true;
 
-      axios.get(rootState.config.server + getDef.url, {params: getDef.params})
+      axios.get(rootState.config.server + reqDef.url, {params: reqDef.params})
 
       .then((response) => {
         if (response.status !== 200) {
@@ -30,47 +30,47 @@ export default {
         }
 
         parseString(response.data,
-                    {explicitArray: getDef.useArrays},
+                    {explicitArray: reqDef.useArrays},
                     (err, result) => {
 
-          if (!(result.hasOwnProperty(getDef.dataField))) {
+          if (!(result.hasOwnProperty(reqDef.dataField))) {
             return Promise.reject(new Error("No data from API"));
           }
           commit('setState', "Up")
-          if (!getDef.hasOwnProperty('interval')) {
+          if (!reqDef.hasOwnProperty('interval')) {
             retry = false;
           }
 
-          const data = result[getDef.dataField];
-          getDef.dataHandler(data);
+          const data = result[reqDef.dataField];
+          reqDef.dataHandler(data);
         })
       })
 
       .catch((err) => {
         console.log(err)
         commit('logError', {
-          url: getDef.url,
+          url: reqDef.url,
           error: err,
         })
-        if (getDef.hasOwnProperty('failHandler')) {
+        if (reqDef.hasOwnProperty('failHandler')) {
           retry = false;
-          getDef.failHandler()
+          reqDef.failHandler()
         }
       })
 
-      /* Retry if there is error or interval is given in getDef */
+      /* Retry if there is error or interval is given in reqDef */
       .finally(() => {
         if (retry) {
           let interval = 10000;
           let action = 'solapi/get';
-          if (getDef.hasOwnProperty('interval')) {
-            interval = getDef.interval;
+          if (reqDef.hasOwnProperty('interval')) {
+            interval = reqDef.interval;
           }
-          if (getDef.hasOwnProperty('refetchAction')) {
-            action = getDef.refetchAction;
+          if (reqDef.hasOwnProperty('refetchAction')) {
+            action = reqDef.refetchAction;
           }
           setTimeout(() => {
-            dispatch(action, getDef, {root: true});
+            dispatch(action, reqDef, {root: true});
           }, interval);
         }
       })
