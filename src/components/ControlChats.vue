@@ -11,8 +11,8 @@
         :room_id = "channel"
       />
     </div>
-    <div>
-      <button>+</button>
+    <div v-if="this.$store.state.chatrooms.activeRooms.length < 3">
+      <button @click="addChannel">+</button>
     </div>
   </div>
 </template>
@@ -33,6 +33,13 @@ export default {
   computed: {
     roomCount () {
       return this.$store.state.chatrooms.activeRooms.length
+    }
+  },
+
+  methods: {
+    addChannel() {
+      const newRoom = this.$store.state.chatrooms.activeRooms[0];
+      this.$store.commit('chatrooms/addRoom', newRoom);
     }
   }
 }

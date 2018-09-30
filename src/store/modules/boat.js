@@ -57,22 +57,20 @@ export default {
       
           commit('updateBoat', boatData['boat']);
 
-          if (!chatData.hasOwnProperty('chat') ||
-              !chatData.hasOwnProperty('timestamp')) {
-            return;
-          }
-
           if (lmi !== undefined) {
             lmi = parseInt(lmi);
             if (Number.isFinite(lmi)) {
               commit('race/messages/updateExpected', lmi, {root: true});
             }
           }
-          
-          if (!Array.isArray(chatData.chat)) {
-            chatData.chat = [chatData.chat];
+
+          if ((chatData.chat !== undefined) && (chatData.timestamp !== undefined)) {
+            if (!Array.isArray(chatData.chat)) {
+              chatData.chat = [chatData.chat];
+            }
+            commit('chatrooms/updateRoom', chatData, {root: true});
           }
-          commit('chatrooms/updateRoom', chatData, {root: true});
+          commit('chatrooms/nextRoom', null, {root: true});
         },
       };
 

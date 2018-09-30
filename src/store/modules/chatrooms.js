@@ -28,18 +28,17 @@ export default {
 
     updateRoom (state, data) {
       let newMsgs = data.chat;
-
       // ADDME: Truncate tail?
       newMsgs = orderBy(newMsgs.concat(state.rooms[data.id].msgs), 't', 'desc');
       state.rooms[data.id].msgs = newMsgs;
       state.rooms[data.id].timestamp = data.timestamp;
+    },
 
+    nextRoom(state) {
       /* Update round-robin room fetch index */
-      if (state.activeRooms[state.nextRoomIndex] === data.id) {
-        state.nextRoomIndex++;
-        if (state.nextRoomIndex === state.activeRooms.length) {
-          state.nextRoomIndex = 0;
-        }
+      state.nextRoomIndex++;
+      if (state.nextRoomIndex === state.activeRooms.length) {
+        state.nextRoomIndex = 0;
       }
     },
 
