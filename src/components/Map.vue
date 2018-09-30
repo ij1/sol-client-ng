@@ -3,6 +3,7 @@
     <l-map
       id="map"
       ref="map"
+      :crs="L.CRS.EPSG3395"
       :zoom="zoom"
       :center="center"
       @update:center="updateCenter"
