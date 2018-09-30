@@ -42,7 +42,7 @@ export default {
         dataField: 'racemessages',
 
         dataHandler: (raceMessages) => {
-          if (!raceMessages.hasOwnProperty('racemessage')) {
+          if (typeof raceMessages.racemessage === 'undefined') {
             return;
           }
           if (!Array.isArray(raceMessages.racemessage)) {

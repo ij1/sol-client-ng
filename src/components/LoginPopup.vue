@@ -66,7 +66,7 @@ export default {
       useArrays: false,
       dataField: 'races',
       dataHandler: (races) => {
-        if (!races.hasOwnProperty('race')) {
+        if (typeof races.race === 'undefined') {
           this.raceSelectorInfo = 'No active races at the moment';
           return;
         }

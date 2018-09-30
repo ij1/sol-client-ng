@@ -27,7 +27,7 @@ export default {
         useArrays: false,
         dataField: 'response',
         dataHandler: (response) => {
-          if (!response.hasOwnProperty('token')) {
+          if (typeof response.token === 'undefined') {
             commit('loginFailed');
             return;
           }

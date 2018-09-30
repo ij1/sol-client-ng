@@ -42,7 +42,7 @@ export default {
         dataField: 'commands',
 
         dataHandler: (dcData) => {
-          if (dcData.hasOwnProperty('cmd')) {
+          if (typeof dcData.cmd !== 'undefined') {
             let dcList = dcData.cmd
           
             if (!Array.isArray(dcList)) {

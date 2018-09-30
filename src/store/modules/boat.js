@@ -53,18 +53,18 @@ export default {
         dataHandler: (boatData) => {
           let chatData = boatData['chats'];
           chatData.id = nextChatroom;
-          let lmi = boatData.lmi;
       
           commit('updateBoat', boatData['boat']);
 
-          if (lmi !== undefined) {
-            lmi = parseInt(lmi);
+          if (typeof boatData.lmi !== 'undefined') {
+            let lmi = parseInt(boatData.lmi);
             if (Number.isFinite(lmi)) {
               commit('race/messages/updateExpected', lmi, {root: true});
             }
           }
 
-          if ((chatData.chat !== undefined) && (chatData.timestamp !== undefined)) {
+          if ((typeof chatData.chat !== 'undefined') &&
+              (typeof chatData.timestamp !== 'undefined')) {
             if (!Array.isArray(chatData.chat)) {
               chatData.chat = [chatData.chat];
             }
@@ -92,7 +92,7 @@ export default {
         dataField: 'commands',
 
         dataHandler: (dcData) => {
-          if (dcData.hasOwnProperty('cmd')) {
+          if (typeof dcData.cmd !== 'undefined') {
             let dcList = dcData.cmd
           
             if (!Array.isArray(dcList)) {

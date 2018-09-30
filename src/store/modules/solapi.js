@@ -37,7 +37,7 @@ export default {
             return Promise.reject(new Error("No data from API"));
           }
           commit('setState', "Up")
-          if (!reqDef.hasOwnProperty('interval')) {
+          if (typeof reqDef.interval === 'undefined') {
             retry = false;
           }
 
@@ -52,7 +52,7 @@ export default {
           url: reqDef.url,
           error: err,
         })
-        if (reqDef.hasOwnProperty('failHandler')) {
+        if (typeof reqDef.failHandler !== 'undefined') {
           retry = false;
           reqDef.failHandler()
         }
@@ -63,10 +63,10 @@ export default {
         if (retry) {
           let interval = 10000;
           let action = 'solapi/get';
-          if (reqDef.hasOwnProperty('interval')) {
+          if (typeof reqDef.interval !== 'undefined') {
             interval = reqDef.interval;
           }
-          if (reqDef.hasOwnProperty('refetchAction')) {
+          if (typeof reqDef.refetchAction !== 'undefined') {
             action = reqDef.refetchAction;
           }
           setTimeout(() => {
