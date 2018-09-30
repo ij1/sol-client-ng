@@ -48,8 +48,13 @@
           class="chat-channel-input-box"
         ></textarea>
       </div>
-      <div class="chat-channel-input-btn">        
-        <button>Send</button>
+      <div class="chat-channel-input-btn">
+        <button
+          @click="sendChatMessage"
+          :disabled = "!canSend"
+        >
+          Send
+        </button>
       </div>
     </div>
   </div>
@@ -82,12 +87,29 @@ export default {
     }
   },
 
+  computed: {
+    canSend () {
+      return (this.myMessage.trim().length > 0) &&
+             !this.$store.state.chatrooms.rooms[this.room_id].sending;
+    },
+    /* Trim, force all consecutive newline chars into singular '\n' */
+    myStringClean () {
+      return this.myMessage.trim().replace(/[\n\r][\n\r]*/g, '\n');
+    },
+  },
+
   methods: {
     selectRoom(e) {
       this.$store.commit('chatrooms/selectRoom', {
         index: this.index,
         newRoom: e.target.value
       }, {root: true});
+    },
+    sendChatMessage() {
+      this.$store.dispatch('chatrooms/sendMessage', {
+        room_id: this.room_id,
+        text: this.myStringClean,
+      });
     }
   }
 }

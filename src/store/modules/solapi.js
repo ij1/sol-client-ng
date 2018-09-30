@@ -1,5 +1,6 @@
 import axios from 'axios'
 const parseString = require('xml2js').parseString;
+const queryString = require('querystring');
 
 export default {
   namespaced: true,
@@ -72,6 +73,48 @@ export default {
           setTimeout(() => {
             dispatch(action, reqDef, {root: true});
           }, interval);
+        }
+      })
+    },
+
+    post ({rootState, commit}, reqDef) {
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+      axios.post(rootState.config.server + reqDef.url,
+                 queryString.stringify(reqDef.params), config)
+
+      .then((response) => {
+        if (response.status !== 200) {
+          return Promise.reject(new Error("Invalid API call"));
+        } else if (response.data === 'OK') {
+          commit('setState', "Up")
+          reqDef.dataHandler(null);
+        } else {
+          parseString(response.data,
+                      {explicitArray: reqDef.useArrays},
+                      (err, result) => {
+
+            if (!(result.hasOwnProperty(reqDef.dataField))) {
+              return Promise.reject(new Error("No data from API"));
+            }
+
+            const data = result[reqDef.dataField];
+            reqDef.dataHandler(data);
+          })
+        }
+      })
+
+      .catch((err) => {
+        console.log(err)
+        commit('logError', {
+          url: reqDef.url,
+          error: err,
+        })
+        if (typeof reqDef.failHandler !== 'undefined') {
+          reqDef.failHandler()
         }
       })
     },

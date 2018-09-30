@@ -20,6 +20,7 @@ export default {
           name: chatroom.name,
           msgs: [],
           timestamp: 0,
+          sending: false,
         });
       }
       state.activeRooms = ['1'];
@@ -47,7 +48,15 @@ export default {
     },
     selectRoom(state, roomInfo) {
       Vue.set(state.activeRooms, roomInfo.index, roomInfo.newRoom);
-    }
+    },
+
+    setSending(state, roomId) {
+      state.rooms[roomId].sending = true;
+    },
+    clearSending(state, roomId) {
+      state.rooms[roomId].sending = false;
+    },
+
   },
 
   getters: {
@@ -57,5 +66,26 @@ export default {
     nextRoomToFetch(state) {
       return state.activeRooms[state.nextRoomIndex];
     },
+  },
+
+  actions: {
+    sendMessage({rootState, commit, dispatch}, sendParams) {
+      commit('setSending', sendParams.room_id);
+
+      const postDef = {
+        url: '/webclient/chat/post/?token=' + rootState.auth.token,
+        params: sendParams,
+        useArrays: false,
+        dataField: 'blah',
+        dataHandler: () => {
+          commit('clearSending', sendParams.room_id);
+        },
+        failHandler: () => {
+          /* FIXME: Should retry a number of times before giving up */
+          commit('clearSending', sendParams.room_id);
+        },
+      }
+      dispatch('solapi/post', postDef, {root: true});
+    }
   }
 }
