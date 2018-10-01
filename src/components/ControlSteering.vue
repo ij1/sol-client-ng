@@ -3,17 +3,17 @@
     <div class="steering-input">
       <input type="radio" id="type" value="cc" v-model="type">
       COG
-      <input v-model="cc">
+      <input v-model.trim="cc">
     </div>
     <div class="steering-input">
       <input type="radio" id="type" value="twa" v-model="type">
       TWA
-      <input v-model="twa">
+      <input v-model.trim="twa">
     </div>
     <div class="steering-input">
       <input type="checkbox" id="delayOn" v-model="delayOn">
       Delay for
-      <input v-model="delay">
+      <input v-model.trim="delay">
     </div>
     <control-steering-polar/>
   </div>
