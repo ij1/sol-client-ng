@@ -15,6 +15,9 @@
       <label for="delay" @click="delayOn = true">Delay for</label>
       <input id="delay" v-model.trim="delay">
     </div>
+    <div>
+      <button @click="sendSteeringCommand">{{applySteeringTxt}}</button>
+    </div>
     <control-steering-polar/>
   </div>
 </template>
@@ -36,6 +39,39 @@ export default {
       delay: '',
     }
   },
+
+  computed: {
+    isDelayValid () {
+      // ADDME: parse 1h10m format too
+      const delay = parseFloat(this.delay);
+      return (Number.isFinite(delay) && delay >= 0);
+    },
+    delayTime () {
+      if (!this.delayOn && !this.isDelayValid) {
+        return null;
+      }
+
+      const delay = parseFloat(this.delay);
+      if (delay > 0) {
+        return delay;
+      } else {
+        return null;
+      }
+    },
+
+    applySteeringTxt () {
+      if (this.delayOn && this.delayTime !== null) {
+        return 'Send command';
+      }
+      return 'Change course';
+    }
+  },
+
+  methods: {
+    sendSteeringCommand () {
+
+    }
+  }
 }
 </script>
 
