@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       type: 'cc',
-      cc: '',
+      cc: '0.0',
       twa: '',
       delayOn: false,
       delay: '',
