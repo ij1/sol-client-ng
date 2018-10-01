@@ -29,7 +29,7 @@ export default {
   },
   data () {
     return {
-      type: 'cog',
+      type: 'cc',
       cc: '',
       twa: '',
       delayOn: false,
