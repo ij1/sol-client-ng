@@ -49,14 +49,17 @@ export default {
         dataField: 'commands',
 
         dataHandler: (dcData) => {
+          let dcList;
           if (typeof dcData.cmd !== 'undefined') {
-            let dcList = dcData.cmd
+            dcList = dcData.cmd
           
             if (!Array.isArray(dcList)) {
               dcList = [dcList];
             }
-            commit('updateDCs', dcList);
+          } else {
+            dcList = [];
           }
+          commit('updateDCs', dcList);
           commit('setFetching', false);
 
           if (state.dcs.needReload) {
