@@ -54,11 +54,13 @@ export default {
       this.$store.dispatch('boat/steering/fetchDCs');
     },
     doDelete () {
-      // ADDME
+      if (this.selected === null) {
+        return;
+      }
+      this.$store.dispatch('boat/steering/sendDeleteDC', {id: this.selected});
     },
     selectDC (id) {
-      this.selected = id;
-      console.log("Selected: " + this.selected);
+      this.selected = (this.selected === id) ? null : id;
     }
   }
 }

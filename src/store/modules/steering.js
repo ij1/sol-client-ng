@@ -88,8 +88,27 @@ export default {
         },
       }
       dispatch('solapi/post', postDef, {root: true});
-    }
+    },
 
+    sendDeleteDC({rootState, commit, dispatch}, sendParams) {
+      commit('setSending');
+
+      const postDef = {
+        url: '/webclient/command/delete/?token=' + rootState.auth.token,
+        params: sendParams,
+        useArrays: false,
+        dataField: 'response',
+        dataHandler: () => {
+          commit('clearSending');
+          dispatch('fetchDCs');
+        },
+        failHandler: () => {
+          /* FIXME: Should retry a number of times before giving up */
+          commit('clearSending');
+        },
+      }
+      dispatch('solapi/post', postDef, {root: true});
+    },
 
   },
 }
