@@ -90,6 +90,24 @@ export default {
     }
   },
 
+
+  /* The computed properties are tricky in this component! As COG/TWA fields
+   * have cross depency based on the radio button, the reactivity might cause
+   * infinite loops if not dealt correctly. There are toTwa & toCc computed
+   * properties and associated watches for them to deal with the cross copy.
+   * The copy is only performed if the radio button is in the correct position.
+   * After copy, the other toXX chain will trigger but since the radio button
+   * prevents copying to value back, the infinite loop is avoided.
+   *
+   * Touching any unnecessary variables before ensuring the input is valid
+   * must be avoided because of the infinite loop threat.
+   *
+   * The varying number of decimals used by the copy is yet another complexity
+   * adding feature. Change in the number of decimals can trigger recalculation
+   * of the toXX value for the second time but again the unchanged YY from
+   * which the copy is to be made, no further copyDecimals updated will be
+   * done until new input.
+   */
   computed: {
     canSend () {
       return (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
