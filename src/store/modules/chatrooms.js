@@ -76,7 +76,6 @@ export default {
         url: '/webclient/chat/post/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,
-        dataField: 'blah',
         dataHandler: () => {
           commit('clearSending', sendParams.room_id);
         },

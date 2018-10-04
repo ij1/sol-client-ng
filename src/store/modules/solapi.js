@@ -92,7 +92,7 @@ export default {
         } else if (response.data === 'OK') {
           commit('setState', "Up")
           reqDef.dataHandler(null);
-        } else {
+        } else if (typeof reqDef.dataField !== 'undefined') {
           parseString(response.data,
                       {explicitArray: reqDef.useArrays},
                       (err, result) => {
