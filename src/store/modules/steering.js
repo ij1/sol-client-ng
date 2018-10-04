@@ -8,7 +8,8 @@ export default {
       list: [],
       fetching: false,
       needReload: true,
-    }
+    },
+    sending: false,
   },
 
   mutations: {
@@ -24,7 +25,13 @@ export default {
     },
     dcsUpdated (state) {
       state.dcs.needReload = true;
-    }
+    },
+    setSending (state) {
+      state.sending = true;
+    },
+    clearSending (state) {
+      state.sending = false;
+    },
   },
 
   actions: {
@@ -61,5 +68,28 @@ export default {
       commit('setFetching', true);
       dispatch('solapi/get', getDef, {root: true});
     },
+
+    sendSteeringCommand({rootState, commit, dispatch}, sendParams) {
+      commit('setSending');
+
+      const postDef = {
+        url: '/webclient/command/post/?token=' + rootState.auth.token,
+        params: sendParams,
+        useArrays: false,
+        dataHandler: () => {
+          commit('clearSending');
+          if (sendParams.delay > 0) {
+            dispatch('fetchDCs');
+          }
+        },
+        failHandler: () => {
+          /* FIXME: Should retry a number of times before giving up */
+          commit('clearSending');
+        },
+      }
+      dispatch('solapi/post', postDef, {root: true});
+    }
+
+
   },
 }
