@@ -1,7 +1,12 @@
 <template>
   <div id="dc-control">
     <div id="dc-header">
-      <button @click="doDelete">Delete</button>
+      <button
+        @click="doDelete"
+        :disabled = "this.$store.state.boat.steering.sending"
+      >
+        Delete
+      </button>
       <button @click="doRefresh">Refresh</button>
     </div>
     <div id="dc-table">
