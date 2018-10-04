@@ -9,7 +9,7 @@
         @click="$refs.cc.focus()"
       >
       <label for="cc" @click="type = 'cc'">COG</label>
-      <input ref="cc" id="cc" @click="type = 'cc'" v-model.trim="cc">
+      <input ref="cc" id="cc" @click="type = 'cc'" v-model.trim="cc">&deg;
     </div>
     <div class="steering-input">
       <input
@@ -20,7 +20,7 @@
         @click="$refs.twa.focus()"
       >
       <label for="twa" @click="type = 'twa'">TWA</label>
-      <input ref="twa" id="twa" @click="type = 'twa'" v-model.trim="twa">
+      <input ref="twa" id="twa" @click="type = 'twa'" v-model.trim="twa">&deg;
     </div>
     <div class="steering-input">
       <input
