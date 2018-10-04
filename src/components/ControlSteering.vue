@@ -9,7 +9,15 @@
         @click="$refs.cc.focus()"
       >
       <label for="cc" @click="type = 'cc'">COG</label>
-      <input ref="cc" id="cc" @click="type = 'cc'" v-model.trim="cc">&deg;
+      <input
+        class = "steering-input-box"
+        ref="cc"
+        id="cc"
+        @click="type = 'cc'"
+        v-model.trim="cc"
+        maxlength = 7
+        size = 7
+      >&deg;
     </div>
     <div class="steering-input">
       <input
@@ -20,7 +28,15 @@
         @click="$refs.twa.focus()"
       >
       <label for="twa" @click="type = 'twa'">TWA</label>
-      <input ref="twa" id="twa" @click="type = 'twa'" v-model.trim="twa">&deg;
+      <input
+        class = "steering-input-box"
+        ref="twa"
+        id="twa"
+        @click="type = 'twa'"
+        v-model.trim="twa"
+        maxlength = 8
+        size = 8
+      >&deg;
     </div>
     <div class="steering-input">
       <input
@@ -30,7 +46,14 @@
         @click="$refs.delay.focus()"
       >
       <label for="delay" @click="delayOn = true">Delay for</label>
-      <input ref="delay" id="delay" v-model.trim="delay">
+      <input
+        class = "steering-input-box"
+        ref="delay"
+        id="delay"
+        v-model.trim="delay"
+        maxlength = 8
+        size = 8
+      >
     </div>
     <div>
       <button
@@ -278,5 +301,9 @@ export default {
 }
 .steering-input {
   text-align: left;
+}
+.steering-input-box {
+  font-size: 10px;
+  font-weight: bold;
 }
 </style>
