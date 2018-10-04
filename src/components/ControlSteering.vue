@@ -215,7 +215,7 @@ export default {
     /* If user inputs 3 decimals, we copy with precision of 3 decimal but
      * use only 2 decimals otherwise.
      *
-     * WARNING: This has a side-effect, it calls storePrevCopyDecimals to
+     * WARNING: This has a side-effect, it calls setPrevCopyDecimals to
      * update this.prevCopyDecimals, which is only used internally by this
      * function in case the current value is not valid (e.g., user typing
      * one number too many or something along those lines). The store call
@@ -244,7 +244,7 @@ export default {
          decimals = 3;
        }
        /* HACK to silence side-effects */
-       decimals = this.storePrevCopyDecimals(decimals);
+       this.setPrevCopyDecimals(decimals);
        return decimals;
     },
 
@@ -305,9 +305,8 @@ export default {
     },
 
     /* HACK to avoid side-effect detector for computed properties */
-    storePrevCopyDecimals(value) {
+    setPrevCopyDecimals(value) {
       this.prevCopyDecimals = value;
-      return value;
     }
   }
 }
