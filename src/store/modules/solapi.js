@@ -22,8 +22,10 @@ export default {
   actions: {
     get ({rootState, commit, dispatch}, reqDef) {
       let retry = true;
+      /* Due to dev CORS reasons, we need to mangle some API provided URLs */
+      const url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
 
-      axios.get(rootState.config.server + reqDef.url, {params: reqDef.params})
+      axios.get(rootState.config.server + url, {params: reqDef.params})
 
       .then((response) => {
         if (response.status !== 200) {
@@ -50,7 +52,7 @@ export default {
       .catch((err) => {
         console.log(err)
         commit('logError', {
-          url: reqDef.url,
+          url: url,
           error: err,
         })
         if (typeof reqDef.failHandler !== 'undefined') {
