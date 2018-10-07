@@ -66,10 +66,10 @@ export default {
             let u = [];
             let v = [];
             for (let entry of frame.U.trim().split(/;\s*/)) {
-              u.push(entry.trim().split(/\s+/));
+              u.push(entry.trim().split(/\s+/).map(val => parseFloat(val)));
             }
             for (let entry of frame.V.trim().split(/;\s*/)) {
-              v.push(entry.trim().split(/\s+/));
+              v.push(entry.trim().split(/\s+/).map(val => parseFloat(val)));
             }
             windU.push(u);
             windV.push(v);
