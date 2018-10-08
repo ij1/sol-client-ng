@@ -10,8 +10,7 @@ export default {
       boundary: [],
       timeIdx: [],
       increment: [],
-      windU: [],
-      windV: [],
+      windMap: [],
     },
   },
 
@@ -57,22 +56,45 @@ export default {
                             L.latLng(weatherData.$.lat_max, weatherData.$.lon_max)];
 
           let timeIdx = [];
-          let windU = [];
-          let windV = [];
+          let windMap = [];
+          /* FIXME: It takes quite long time to parse&mangle the arrays here,
+           * perhaps use promises for this but then also xml2js parsing will
+           * consume lots of time.
+           */
           for (let frame of weatherData.frames.frame) {
             // ADDME: parse to UTC seconds, needs a generic helper
             timeIdx.push(frame.$.target_time)
 
-            let u = [];
-            let v = [];
-            for (let entry of frame.U.trim().split(/;\s*/)) {
-              u.push(entry.trim().split(/\s+/).map(val => parseFloat(val)));
+            let u = frame.U.trim().split(/;\s*/);
+            let v = frame.V.trim().split(/;\s*/);
+            if (u.length !== v.length) {
+              console.log("Inconsistent weather data!");
+              return;
             }
-            for (let entry of frame.V.trim().split(/;\s*/)) {
-              v.push(entry.trim().split(/\s+/).map(val => parseFloat(val)));
+
+            let windFrame = [];
+            for (let i = 0; i < u.length-1; i++) {
+              if (u[i] === '') {
+                break;
+              }
+
+              let uu = u[i].trim().split(/\s+/);
+              let vv = v[i].trim().split(/\s+/);
+
+              if (uu.length !== vv.length) {
+                console.log("Inconsistent weather data!");
+                return;
+              }
+
+              /* Construct last-level [u, v] arrays */
+              let windRow = [];
+              for (let j = 0; j < uu.length; j++) {
+                windRow.push([parseFloat(uu[j]), parseFloat(vv[j])]);
+              }
+
+              windFrame.push(windRow);
             }
-            windU.push(u);
-            windV.push(v);
+            windMap.push(windFrame);
           }
 
           let weatherInfo = {
@@ -80,8 +102,7 @@ export default {
             boundary: boundary,
             timeIdx: timeIdx,
             increment: [weatherData.$.lat_increment, weatherData.$.lon_increment],
-            windU: windU,
-            windV: windV,
+            windMap: windMap,
           };
           commit('update', weatherInfo);
         },
