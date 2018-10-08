@@ -55,13 +55,13 @@ export default {
         dataField: 'race',
 
         dataHandler: (raceInfo) => {
-          const polarRawData = raceInfo['boat'];
-          const chatroomsData = raceInfo.chatrooms['chatroom'];
+          const polarRawData = raceInfo.boat;
+          const chatroomsData = raceInfo.chatrooms.chatroom;
 
           commit('chatrooms/init', chatroomsData, {root: true});
 
-          raceInfo['boat'] = null;
-          raceInfo['chatrooms'] = null;
+          delete raceInfo.boat;
+          delete raceInfo.chatrooms;
           commit('init', raceInfo);
 
           commit('boat/setPolar', polarRawData, {root: true});
