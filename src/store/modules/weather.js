@@ -58,8 +58,10 @@ export default {
           let timeIdx = [];
           let windMap = [];
           /* FIXME: It takes quite long time to parse&mangle the arrays here,
-           * perhaps use promises for this but then also xml2js parsing will
-           * consume lots of time.
+           * perhaps use vue-worker for this but then also xml2js parsing will
+           * consume lots of time. My initial attempt failed on lacking
+           * this.$worker for solapi side so the JS syntax needs to solved
+           * for this conversion to take place.
            */
           for (let frame of weatherData.frames.frame) {
             // ADDME: parse to UTC seconds, needs a generic helper
