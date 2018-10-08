@@ -20,5 +20,4 @@ export default new Vuex.Store({
     weather: weatherModule,
     chatrooms: chatroomsModule,
   },
-  strict: true,
 })
