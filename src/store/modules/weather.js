@@ -65,16 +65,16 @@ export default {
   },
 
   getters: {
-    timeIndex: (state) => (time) => {
+    timeIndex: (state) => {
       /* Short-circuit for the common case near the beginning of the wx series */
-      if (time <= state.timeSeries[1]) {
+      if (state.time <= state.timeSeries[1]) {
         return 0;
       }
       let mid = state.lastTimeIndex;
       let min = 0;
       let max = state.timeSeries.length - 2;
       while (max - min > 1) {
-        if (time < state.timeSeries[mid]) {
+        if (state.time < state.timeSeries[mid]) {
           max = mid;
         } else {
           min = mid;
