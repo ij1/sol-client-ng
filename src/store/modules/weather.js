@@ -6,10 +6,10 @@ import { UTCtoMsec } from '../../lib/utils.js'
  */
 function boundTime(state, time) {
   if (state.loaded) {
-    if (time < state.data.timeIdx[0]) {
-      return state.data.timeIdx[0];
-    } else if (time > state.data.timeIdx[state.data.timeIdx.length - 1]) {
-      return state.data.timeIdx[state.data.timeIdx.length - 1];
+    if (time < state.data.timeSeries[0]) {
+      return state.data.timeSeries[0];
+    } else if (time > state.data.timeSeries[state.data.timeSeries.length - 1]) {
+      return state.data.timeSeries[state.data.timeSeries.length - 1];
     }
   }
   return null;
@@ -24,7 +24,7 @@ export default {
     data: {
       updated: null,
       boundary: [],
-      timeIdx: [],
+      timeSeries: [],
       increment: [],
       windMap: [],
     },
@@ -37,9 +37,9 @@ export default {
       /* wx begins only after our current timestamp, fix the wx time index
        * to avoid issues
        */
-      if (state.time < state.data.timeIdx[0]) {
-        console.log("time before wx, fixing: " + state.time + " < " + state.data.timeIdx[0]);
-        state.time = state.data.timeIdx[0];
+      if (state.time < state.data.timeSeries[0]) {
+        console.log("time before wx, fixing: " + state.time + " < " + state.data.timeSeries[0]);
+        state.time = state.data.timeSeries[0];
       }
     },
     minTime(state, minTime) {
@@ -67,14 +67,14 @@ export default {
   getters: {
     timeIndex: (state) => (time) => {
       /* Short-circuit for the common case near the beginning of the wx series */
-      if (time <= state.timeIdx[1]) {
+      if (time <= state.timeSeries[1]) {
         return 0;
       }
       let mid = state.lastTimeIndex;
       let min = 0;
-      let max = state.timeIdx.length - 2;
+      let max = state.timeSeries.length - 2;
       while (max - min > 1) {
-        if (time < state.timeIdx[mid]) {
+        if (time < state.timeSeries[mid]) {
           max = mid;
         } else {
           min = mid;
@@ -119,7 +119,7 @@ export default {
           const boundary = [L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
                             L.latLng(weatherData.$.lat_max, weatherData.$.lon_max)];
 
-          let timeIdx = [];
+          let timeSeries = [];
           let windMap = [];
           /* FIXME: It takes quite long time to parse&mangle the arrays here,
            * perhaps use vue-worker for this but then also xml2js parsing will
@@ -133,7 +133,7 @@ export default {
               console.log("Invalid date in weather data!");
               return;
             }
-            timeIdx.push(utc);
+            timeSeries.push(utc);
 
             let u = frame.U.trim().split(/;\s*/);
             let v = frame.V.trim().split(/;\s*/);
@@ -170,7 +170,7 @@ export default {
           let weatherInfo = {
             updated: weatherData.last_updated,
             boundary: boundary,
-            timeIdx: timeIdx,
+            timeSeries: timeSeries,
             increment: [weatherData.$.lat_increment, weatherData.$.lon_increment],
             windMap: windMap,
           };
