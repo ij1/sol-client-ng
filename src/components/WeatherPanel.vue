@@ -1,6 +1,8 @@
 <template>
   <div id="weather-panel" v-if="this.$store.state.weather.loaded">
     <div>
+      <button>&#124;&#9664;</button>
+      <button>&#9664;&#9664;</button>
       <select
         :value = "selectedTimescale"
         @input = "onSelectTimescale"
@@ -24,6 +26,9 @@
           {{ step | formatStep }}
         </option>
       </select>
+      <button>&#9654;</button>
+      <button>&#9654;&#9654;</button>
+      <button>&#9654;&#124;</button>
     </div>
   </div>
 </template>
