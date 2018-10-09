@@ -70,18 +70,24 @@ export default {
       if (state.time <= state.timeSeries[1]) {
         return 0;
       }
-      let mid = state.lastTimeIndex;
-      let min = 0;
+
+      let min = 1;
       let max = state.timeSeries.length - 2;
-      while (max - min > 1) {
-        if (state.time < state.timeSeries[mid]) {
-          max = mid;
+      while (min < max) {
+        const mid = Math.floor((max + min) / 2);
+        /* No point in optimizing for the very rare to occur equal case */
+        if (state.time >= state.timeSeries[mid]) {
+          min = mid + 1;
         } else {
-          min = mid;
+          max = mid - 1;
         }
-        mid = (max + min) / 2;
       }
-      return min;
+      /* For now, check that the result is valid, */
+      if ((state.timeSeries[max] > state.time) ||
+          (state.timeSeries[max+1] < state.time)) {
+        console.log("Bug in binary-search: " + state.timeSeries[max] + "<=" + state.time + "<=" + state.timeSeries[max+1] + "?!?");
+      }
+      return max;
     },
   },
 
