@@ -1,11 +1,26 @@
 import L from 'leaflet'
 import { UTCtoMsec } from '../../lib/utils.js'
 
+/* Bounds the given time between wx data range, return null if no bound
+ * applies
+ */
+function boundTime(state, time) {
+  if (state.loaded) {
+    if (time < state.data.timeIdx[0]) {
+      return state.data.timeIdx[0];
+    } else if (time > state.data.timeIdx[state.data.timeIdx.length - 1]) {
+      return state.data.timeIdx[state.data.timeIdx.length - 1];
+    }
+  }
+  return null;
+}
+
 export default {
   namespaced: true,
 
   state: {
     loaded: false,
+    time: Date.now(),
     data: {
       updated: null,
       boundary: [],
@@ -19,7 +34,34 @@ export default {
     update(state, weatherData) {
       state.data = weatherData;
       state.loaded = true;
-    }
+      /* wx begins only after our current timestamp, fix the wx time index
+       * to avoid issues
+       */
+      if (state.time < state.data.timeIdx[0]) {
+        console.log("time before wx, fixing: " + state.time + " < " + state.data.timeIdx[0]);
+        state.time = state.data.timeIdx[0];
+      }
+    },
+    minTime(state, minTime) {
+      if (state.loaded) {
+        const boundedMinTime = boundTime(state, minTime);
+        if (boundedMinTime !== null) {
+          minTime = boundedMinTime;
+        }
+        if (state.time < minTime) {
+          state.time = minTime;
+        }
+      }
+    },
+    setTime(state, time) {
+      if (state.loaded) {
+        const boundedTime = boundTime(state, time);
+        if (boundedTime !== null) {
+          time = boundedTime;
+        }
+        state.time = time;
+      }
+    },
   },
 
   actions: {

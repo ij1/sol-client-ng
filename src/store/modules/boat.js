@@ -33,7 +33,7 @@ export default {
   },
 
   actions: {
-    fetch ({rootState, rootGetters, commit, dispatch}) {
+    fetch ({state, rootState, rootGetters, commit, dispatch}) {
       const nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
       const getDef = {
         url: rootState.race.info.boaturl,
@@ -52,6 +52,7 @@ export default {
           chatData.id = nextChatroom;
       
           commit('updateBoat', boatData['boat']);
+          commit('weather/minTime', state.instruments.time, {root: true});
 
           if (typeof boatData.lmi !== 'undefined') {
             let lmi = parseInt(boatData.lmi);
