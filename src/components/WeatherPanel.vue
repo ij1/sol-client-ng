@@ -1,8 +1,8 @@
 <template>
   <div id="weather-panel" v-if="this.$store.state.weather.loaded">
     <div>
-      <button>&#124;&#9664;</button>
-      <button>&#9664;&#9664;</button>
+      <button @click="setTime(0)">&#124;&#9664;</button>
+      <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
       <select
         :value = "selectedTimescale"
         @input = "onSelectTimescale"
@@ -27,8 +27,8 @@
         </option>
       </select>
       <button>&#9654;</button>
-      <button>&#9654;&#9654;</button>
-      <button>&#9654;&#124;</button>
+      <button @click="changeTime(selectedStep)">&#9654;&#9654;</button>
+      <button @click="setTime(timescaleMax)">&#9654;&#124;</button>
     </div>
   </div>
 </template>
@@ -71,7 +71,17 @@ export default {
     fullTimescale () {
       let f = this.$store.getters['weather/dataTimescale'];
       return (f / 1000).toFixed(0);
-    }, 
+    },
+    timescaleMax () {
+      const range = this.weatherTimescales[this.selectedTimescale].range;
+      if (range === -1) {
+        return this.fullTimescale;
+      }
+      return range;
+    },
+    weatherTimeOffset () {
+      return (this.$store.state.weather.time - this.$store.state.boat.instruments.time) / 1000;
+    }
   },
 
   filters: {
@@ -96,6 +106,22 @@ export default {
     onSelectTimescale (e) {
       this.selectedStep = this.weatherTimescales[e.target.value].defaultStep;
       this.selectedTimescale = e.target.value;
+      if (this.weatherTimeOffset > this.timescaleMax) {
+        this.setTime(this.timescaleMax);
+      }
+    },
+    setTime (value) {
+      console.log("setTime: " + value);
+      this.$store.commit('weather/setTime', this.$store.state.boat.instruments.time + value * 1000);
+    },
+    changeTime (delta) {
+      let value = this.weatherTimeOffset + delta;
+      if (value < 0) {
+        value = 0;
+      } else if (value > this.timescaleMax) {
+        value = this.timescaleMax;
+      }
+      this.setTime(value);
     },
   },
 }
