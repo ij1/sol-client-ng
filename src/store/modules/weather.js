@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import { UTCtoMsec } from '../../lib/utils.js'
+import { UTCToMsec } from '../../lib/utils.js'
 
 /* Bounds the given time between wx data range, return null if no bound
  * applies
@@ -128,7 +128,7 @@ export default {
            * for this conversion to take place.
            */
           for (let frame of weatherData.frames.frame) {
-            const utc = UTCtoMsec(frame.$.target_time);
+            const utc = UTCToMsec(frame.$.target_time);
             if (utc === null) {
               console.log("Invalid date in weather data!");
               return;

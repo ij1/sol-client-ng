@@ -1,4 +1,4 @@
-export function UTCtoMsec(dateString) {
+export function UTCToMsec(dateString) {
   const regex = new RegExp(/^(\d{4})\/([01]\d)\/([0-3]\d) ([012]\d):([0-5]\d):([0-5]\d)/);
 
   const s = regex.exec(dateString);
