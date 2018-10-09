@@ -64,6 +64,27 @@ export default {
     },
   },
 
+  getters: {
+    timeIndex: (state) => (time) => {
+      /* Short-circuit for the common case near the beginning of the wx series */
+      if (time <= state.timeIdx[1]) {
+        return 0;
+      }
+      let mid = state.lastTimeIndex;
+      let min = 0;
+      let max = state.timeIdx.length - 2;
+      while (max - min > 1) {
+        if (time < state.timeIdx[mid]) {
+          max = mid;
+        } else {
+          min = mid;
+        }
+        mid = (max + min) / 2;
+      }
+      return min;
+    },
+  },
+
   actions: {
     // ADDME: when to fetch the next wx, add the support in a concurrency
     // safe way to avoid multiple overlapping weather fetches.
