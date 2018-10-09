@@ -1,4 +1,5 @@
 import L from 'leaflet'
+import { UTCtoMsec } from '../../lib/utils.js'
 
 export default {
   namespaced: true,
@@ -64,8 +65,12 @@ export default {
            * for this conversion to take place.
            */
           for (let frame of weatherData.frames.frame) {
-            // ADDME: parse to UTC seconds, needs a generic helper
-            timeIdx.push(frame.$.target_time)
+            const utc = UTCtoMsec(frame.$.target_time);
+            if (utc === null) {
+              console.log("Invalid date in weather data!");
+              return;
+            }
+            timeIdx.push(utc);
 
             let u = frame.U.trim().split(/;\s*/);
             let v = frame.V.trim().split(/;\s*/);
