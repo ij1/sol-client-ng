@@ -65,6 +65,12 @@ export default {
   },
 
   getters: {
+    lastTimestamp: (state) => {
+      return state.data.timeSeries[state.data.timeSeries.length - 1];
+    },
+    dataTimescale: (state, getters, rootState) => {
+      return getters.lastTimestamp - rootState.boat.instruments.time;
+    },
     timeIndex: (state) => {
       /* Short-circuit for the common case near the beginning of the wx series */
       if (state.time <= state.timeSeries[1]) {
