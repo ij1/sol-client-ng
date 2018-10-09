@@ -10,13 +10,17 @@ export default {
 
   state: {
     position: null,
-    instruments: {},
+    instruments: {
+      time: Date.now(),
+    },
     polar: null,
   },
 
   mutations: {
     updateBoat (state, data) {
       state.instruments = data
+      // FIXME: this should consider clock offsets
+      state.instruments.time = Date.now();
       state.position = L.latLng(data.lat, data.lon);
     },
     setPolar (state, polar) {
