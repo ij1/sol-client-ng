@@ -11,7 +11,7 @@ export default {
      * be a function.
      */
     now: state => (() => {
-      return Date.now + state.clockOffset;
+      return Date.now() + state.clockOffset;
     })(),
   },
 }
