@@ -104,7 +104,9 @@ export default {
 
   methods: {
     onSelectTimescale (e) {
-      this.selectedStep = this.weatherTimescales[e.target.value].defaultStep;
+      if (this.selectedTimescale !== parseInt(e.target.value)) {
+        this.selectedStep = this.weatherTimescales[e.target.value].defaultStep;
+      }
       this.selectedTimescale = e.target.value;
       if (this.timeOffset > this.offsetMax) {
         this.setTime(this.offsetMax);
