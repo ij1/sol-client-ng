@@ -19,8 +19,6 @@ export default {
   mutations: {
     updateBoat (state, data) {
       state.instruments = data
-      // FIXME: this should consider clock offsets
-      state.instruments.time = Date.now();
       state.position = L.latLng(data.lat, data.lon);
     },
     setPolar (state, polar) {
@@ -48,6 +46,7 @@ export default {
         refetchAction: 'boat/fetch',
 
         dataHandler: (boatData) => {
+          boatData.boat.time = rootGetters['time/now'];
           let chatData = boatData['chats'];
           chatData.id = nextChatroom;
       
