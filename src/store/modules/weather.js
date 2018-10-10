@@ -131,6 +131,12 @@ export default {
           const boundary = [L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
                             L.latLng(weatherData.$.lat_max, weatherData.$.lon_max)];
 
+          const updated = UTCToMsec(weatherData.$.last_updated);
+          if (updated === null) {
+            console.log("Invalid date in weather data!");
+            return;
+          }
+
           let timeSeries = [];
           let windMap = [];
           /* FIXME: It takes quite long time to parse&mangle the arrays here,
@@ -180,7 +186,7 @@ export default {
           }
 
           let weatherInfo = {
-            updated: weatherData.last_updated,
+            updated: updated,
             boundary: boundary,
             timeSeries: timeSeries,
             increment: [weatherData.$.lat_increment, weatherData.$.lon_increment],
