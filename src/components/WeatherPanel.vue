@@ -34,53 +34,74 @@
 </template>
 
 <script>
+function h (value) {
+  return value * 3600 * 1000;
+}
+function min (value) {
+  return value * 60 * 1000;
+}
+function toH (value) {
+  return value / (3600 * 1000);
+}
+function toMin (value) {
+  return value / (60 * 1000);
+}
+
 export default {
   name: 'WeatherPanel',
   data () {
     return {
       selectedTimescale: 3,  /* this.weatherTimescales.length - 1 */
-      selectedStep: 3 * 3600,
+      selectedStep: h(3),
 
       weatherTimescales: [
         {
-          range: 12 * 3600,
-          defaultStep: 30 * 60,
-          playStep: 2 * 60,
+          range: h(12),
+          defaultStep: min(30),
+          playStep: min(2),
         },
         {
-          range: 24 * 3600,
-          defaultStep: 3600,
-          playStep: 5 * 60,
+          range: h(24),
+          defaultStep: h(1),
+          playStep: min(5),
         },
         {
-          range: 48 * 3600,
-          defaultStep: 2 * 3600,
-          playStep: 10 * 60,
+          range: h(48),
+          defaultStep: h(2),
+          playStep: min(10),
         },
         {
           range: -1,
-          defaultStep: 3 * 3600,
-          playStep: 30 * 60,
+          defaultStep: h(3),
+          playStep: min(30),
         },
       ],
-      weatherSteps: [2 * 60, 5 * 60, 10 * 60, 30 * 60, 3600, 2 * 3600, 3 * 3600],
+      weatherSteps: [
+        min(2),
+        min(5),
+        min(10),
+        min(30),
+        h(1),
+        h(2),
+        h(3),
+      ],
     }
   },
 
   computed: {
     fullTimescale () {
       let f = this.$store.getters['weather/dataTimescale'];
-      return (f / 1000).toFixed(0);
+      return f.toFixed(0);
     },
     offsetMax () {
       const range = this.weatherTimescales[this.selectedTimescale].range;
       if (range === -1) {
         return this.fullTimescale;
       }
-      return range;
+      return range.toFixed(0);
     },
     timeOffset () {
-      return (this.$store.state.weather.time - this.$store.state.boat.instruments.time) / 1000;
+      return this.$store.state.weather.time - this.$store.state.boat.instruments.time;
     }
   },
 
@@ -89,16 +110,20 @@ export default {
       if (value === -1) {
         value = fullTimescale;
       }
-      let divider = value < 100 * 3600 ? 3600 : 86400;
-      let unit = value < 100 * 3600 ? 'h' : 'd';
+
+      let divider = h(24);
+      let unit = 'd';
+      if (value < h(100)) {
+        divider = h(1);
+        unit = 'h';
+      }
       return (value / divider).toFixed(1).replace(/\.0$/, '') + ' ' + unit;
     },
     formatStep (value) {
-      value /= 60;
-      if (value >= 60) {
-        return (value/60).toFixed(0) + ' h';
+      if (value < min(60)) {
+        return (toMin(value)).toFixed(0) + ' min';
       }
-      return value.toFixed(0) + ' min';
+      return (toH(value)).toFixed(0) + ' h';
     }
   },
 
@@ -114,7 +139,7 @@ export default {
     },
     setTime (value) {
       console.log("setTime: " + value);
-      this.$store.commit('weather/setTime', this.$store.state.boat.instruments.time + value * 1000);
+      this.$store.commit('weather/setTime', this.$store.state.boat.instruments.time + value);
     },
     changeTime (delta) {
       let value = this.timeOffset + delta;
