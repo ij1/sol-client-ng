@@ -5,7 +5,7 @@
       <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
       <select
         :value = "selectedTimescale"
-        @input = "onSelectTimescale"
+        @change = "onSelectTimescale($event.target.value)"
       >
         <option
           v-for = "(timescale, index) in weatherTimescales"
@@ -16,7 +16,7 @@
         </option>
       </select>
       <select
-        :value="selectedStep"
+        v-model="selectedStep"
       >
         <option
           v-for = "step in weatherSteps"
@@ -128,11 +128,11 @@ export default {
   },
 
   methods: {
-    onSelectTimescale (e) {
-      if (this.selectedTimescale !== parseInt(e.target.value)) {
-        this.selectedStep = this.weatherTimescales[e.target.value].defaultStep;
+    onSelectTimescale (value) {
+      if (this.selectedTimescale !== parseInt(value)) {
+        this.selectedStep = this.weatherTimescales[value].defaultStep;
       }
-      this.selectedTimescale = e.target.value;
+      this.selectedTimescale = value;
       if (this.timeOffset > this.offsetMax) {
         this.setTime(this.offsetMax);
       }
