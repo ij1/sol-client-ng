@@ -138,7 +138,6 @@ export default {
       }
     },
     setTime (value) {
-      console.log("setTime: " + value);
       this.$store.commit('weather/setTime', this.$store.state.boat.instruments.time + value);
     },
     changeTime (delta) {
