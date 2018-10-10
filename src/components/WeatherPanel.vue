@@ -1,8 +1,9 @@
 <template>
   <div id="weather-panel" v-if="this.$store.state.weather.loaded">
-    <div>
+    <div id="weather-panel-control">
       <button @click="setTime(0)">&#124;&#9664;</button>
       <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
+      <span>Weather forecasted for</span>
       <select
         :value = "selectedTimescale"
         @change = "onSelectTimescale($event.target.value)"
@@ -15,6 +16,13 @@
           {{ timescale.range | formatTimescale(fullTimescale) }}
         </option>
       </select>
+      <span>(Issued
+        {{ this.$store.state.weather.data.updated | formatTime }}):
+        {{ this.$store.state.weather.time | formatTime }}
+        (+{{ this.timeOffset | formatOffset }})
+      </span>
+      <button>&#9654;</button>
+      <span>Use</span>
       <select
         v-model="selectedStep"
       >
@@ -26,7 +34,7 @@
           {{ step | formatStep }}
         </option>
       </select>
-      <button>&#9654;</button>
+      <span>steps.</span>
       <button @click="changeTime(selectedStep)">&#9654;&#9654;</button>
       <button @click="setTime(offsetMax)">&#9654;&#124;</button>
     </div>
@@ -39,6 +47,9 @@ function h (value) {
 }
 function min (value) {
   return value * 60 * 1000;
+}
+function toDays (value) {
+  return value / (24 * 3600 * 1000);
 }
 function toH (value) {
   return value / (3600 * 1000);
@@ -124,6 +135,19 @@ export default {
         return (toMin(value)).toFixed(0) + ' min';
       }
       return (toH(value)).toFixed(0) + ' h';
+    },
+    formatTime (value) {
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const d = new Date(value);
+      return days[d.getUTCDay()] + " " +
+             ("0" + d.getUTCHours()).slice(-2) + ":" +
+             ("0" + d.getUTCMinutes()).slice(-2);
+    },
+    formatOffset (value) {
+      const h = toH(value);
+      const d = toDays(value);
+      return (d < 1 ? '' : (Math.floor(d) + 'd')) +
+             (h - Math.floor(d) * 24).toFixed(1) + 'h';
     }
   },
 
@@ -156,7 +180,7 @@ export default {
 <style scoped>
 #weather-panel {
   position: absolute;
-  width: 550px;
+  width: 600px;
   height: 40px;
   left: 50%;
   bottom: 35px;
@@ -164,5 +188,24 @@ export default {
   transform: translate(-50%, 0);
   border: 1px solid #f0f0f0;
   background: #ffffff;
+}
+#weather-panel-control span {
+  font-size: 10px;
+  padding: 1px;
+}
+#weather-panel-control button,select {
+  border: none;
+  padding: 1px;
+  margin: 0px;
+  font-size: 10px;
+}
+#weather-panel-control button {
+  background: #ffffff;
+}
+#weather-panel-control select option {
+  border: none;
+  padding: 0px;
+  margin: 0px;
+  font-size: 10px;
 }
 </style>
