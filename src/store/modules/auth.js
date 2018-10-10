@@ -10,8 +10,8 @@ export default {
   mutations: {
     loggedIn (state, params) {
       state.status = 'Authenticated';
-      state.token = params['token'];
-      state.race_id = params['race_id'];
+      state.token = params.token;
+      state.race_id = params.race_id;
       this.dispatch('race/fetchAuthRaceinfo', null, {root: true});
     },
     loginFailed (state) {
@@ -31,7 +31,7 @@ export default {
             commit('loginFailed');
             return;
           }
-          authParams['token'] = response.token
+          authParams.token = response.token
           commit('loggedIn', authParams)
         },
         failHandler: () => {

@@ -110,7 +110,7 @@ export default {
         dataField: 'weatherinfo',
 
         dataHandler: (weatherInfo) => {
-          let dataUrl = weatherInfo['url'];
+          let dataUrl = weatherInfo.url;
           dispatch('fetchData', dataUrl);
         },
       }

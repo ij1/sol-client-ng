@@ -47,10 +47,10 @@ export default {
 
         dataHandler: (boatData) => {
           boatData.boat.time = rootGetters['time/now'];
-          let chatData = boatData['chats'];
+          let chatData = boatData.chats;
           chatData.id = nextChatroom;
       
-          commit('updateBoat', boatData['boat']);
+          commit('updateBoat', boatData.boat);
           commit('weather/minTime', state.instruments.time, {root: true});
 
           if (typeof boatData.lmi !== 'undefined') {
