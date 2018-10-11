@@ -76,25 +76,25 @@ export default {
     },
     timeIndex: (state) => {
       /* Short-circuit for the common case near the beginning of the wx series */
-      if (state.time <= state.timeSeries[1]) {
+      if (state.time <= state.data.timeSeries[1]) {
         return 0;
       }
 
       let min = 1;
-      let max = state.timeSeries.length - 2;
+      let max = state.data.timeSeries.length - 2;
       while (min < max) {
         const mid = Math.floor((max + min) / 2);
         /* No point in optimizing for the very rare to occur equal case */
-        if (state.time >= state.timeSeries[mid]) {
+        if (state.time >= state.data.timeSeries[mid]) {
           min = mid + 1;
         } else {
           max = mid - 1;
         }
       }
       /* For now, check that the result is valid, */
-      if ((state.timeSeries[max] > state.time) ||
-          (state.timeSeries[max+1] < state.time)) {
-        console.log("Bug in binary-search: " + state.timeSeries[max] + "<=" + state.time + "<=" + state.timeSeries[max+1] + "?!?");
+      if ((state.data.timeSeries[max] > state.time) ||
+          (state.data.timeSeries[max+1] < state.time)) {
+        console.log("Bug in binary-search: " + state.data.timeSeries[max] + "<=" + state.time + "<=" + state.data.timeSeries[max+1] + "?!?");
       }
       return max;
     },
