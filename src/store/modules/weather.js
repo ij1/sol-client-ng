@@ -20,7 +20,7 @@ export default {
 
   state: {
     loaded: false,
-    time: Date.now(),
+    time: 0,
     data: {
       updated: null,
       boundary: [],

@@ -11,7 +11,7 @@ export default {
   state: {
     position: null,
     instruments: {
-      time: Date.now(),
+      time: 0,
     },
     polar: null,
   },
