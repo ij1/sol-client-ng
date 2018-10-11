@@ -177,8 +177,6 @@ export default {
       if (!this.isCcValid) {
         return undefined;
       }
-      // ADDME: update this.copyDecimals (but will it update ccTwaDelta
-      // immediately?)
       const cc = parseFloat(this.cc);
       let diff = this.ccTwaDelta - cc;
       if (diff > 180) {
@@ -200,8 +198,6 @@ export default {
       if (!this.isTwaValid) {
         return undefined;
       }
-      // ADDME: update this.copyDecimals (but will it update ccTwaDelta
-      // immediately?)
       const twa = parseFloat(this.twa);
       let diff = this.ccTwaDelta - twa;
       if (diff < 0) {
