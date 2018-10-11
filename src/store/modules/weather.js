@@ -31,6 +31,9 @@ export default {
   },
 
   mutations: {
+    initTime(state, time) {
+      state.time = time;
+    },
     update(state, weatherData) {
       state.data = weatherData;
       state.loaded = true;

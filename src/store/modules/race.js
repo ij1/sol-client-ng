@@ -45,7 +45,12 @@ export default {
   },
 
   actions: {
-    fetchAuthRaceinfo ({rootState, commit, dispatch}) {
+    fetchAuthRaceinfo ({rootState, rootGetters, commit, dispatch}) {
+      /* Initialize time before boat/wx is fetched to avoid issues */
+      const now = rootGetters['time/now'];
+      commit('boat/initTime', now, {root: true});
+      commit('weather/initTime', now, {root: true});
+
       const getDef = {
         url: "/webclient/auth_raceinfo_" + rootState.auth.race_id + ".xml",
         params: {

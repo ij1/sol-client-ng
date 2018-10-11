@@ -17,6 +17,9 @@ export default {
   },
 
   mutations: {
+    initTime (state, time) {
+      state.instruments.time = time;
+    },
     updateBoat (state, data) {
       state.instruments = data
       state.position = L.latLng(data.lat, data.lon);
