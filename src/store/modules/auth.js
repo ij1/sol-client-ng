@@ -12,7 +12,6 @@ export default {
       state.status = 'Authenticated';
       state.token = params.token;
       state.race_id = params.race_id;
-      this.dispatch('race/fetchAuthRaceinfo', null, {root: true});
     },
     loginFailed (state) {
       state.status = 'Login failed';
@@ -32,7 +31,8 @@ export default {
             return;
           }
           authParams.token = response.token
-          commit('loggedIn', authParams)
+          commit('loggedIn', authParams);
+          dispatch('race/fetchAuthRaceinfo', null, {root: true});
         },
         failHandler: () => {
           commit('loginFailed');
