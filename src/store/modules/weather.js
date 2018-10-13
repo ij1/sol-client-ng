@@ -23,7 +23,7 @@ export default {
     time: 0,
     data: {
       updated: null,
-      boundary: [],
+      boundary: null,
       timeSeries: [],
       origo: [],
       increment: [],
