@@ -131,8 +131,9 @@ export default {
         dataField: 'weathersystem',
 
         dataHandler: (weatherData) => {
-          const boundary = [L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
-                            L.latLng(weatherData.$.lat_max, weatherData.$.lon_max)];
+          const boundary = L.latLngBounds(
+            L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
+            L.latLng(weatherData.$.lat_max, weatherData.$.lon_max));
 
           const updated = UTCToMsec(weatherData.$.last_updated);
           if (updated === null) {
