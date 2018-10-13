@@ -25,6 +25,7 @@ export default {
       updated: null,
       boundary: [],
       timeSeries: [],
+      origo: [],
       increment: [],
       windMap: [],
     },
@@ -189,11 +190,25 @@ export default {
             windMap.push(windFrame);
           }
 
+          let origo = [parseFloat(weatherData.$.lat_min),
+                          parseFloat(weatherData.$.lon_min)];
+          let increment = [parseFloat(weatherData.$.lat_increment),
+                             parseFloat(weatherData.$.lon_increment)];
+
+          /* Improve performance by freezing all interpolation related
+           * array objects. This avoid adding unnecessary reactivity detectors.
+           */
+          windMap = Object.freeze(windMap);
+          timeSeries = Object.freeze(timeSeries);
+          origo = Object.freeze(origo);
+          increment = Object.freeze(increment);
+
           let weatherInfo = {
             updated: updated,
             boundary: boundary,
             timeSeries: timeSeries,
-            increment: [weatherData.$.lat_increment, weatherData.$.lon_increment],
+            origo: origo,
+            increment: increment,
             windMap: windMap,
           };
           commit('update', weatherInfo);
