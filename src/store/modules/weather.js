@@ -82,7 +82,7 @@ export default {
 
       let min = 1;
       let max = state.data.timeSeries.length - 2;
-      while (min < max) {
+      while (min <= max) {
         const mid = Math.floor((max + min) / 2);
         /* No point in optimizing for the very rare to occur equal case */
         if (state.time >= state.data.timeSeries[mid]) {
