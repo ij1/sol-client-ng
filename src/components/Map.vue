@@ -37,6 +37,7 @@
         :latLng="this.$store.state.boat.position"
         :icon="myBoatIcon"
       />
+      <wind-info :map = "this.map"/>
     </l-map>
   </div>
 </template>
@@ -44,6 +45,7 @@
 <script>
 import L from 'leaflet'
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
+import WindInfo from './WindInfo'
 
 export default {
   name: 'Map',
@@ -53,6 +55,7 @@ export default {
     'l-marker': LMarker,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
+    'wind-info': WindInfo,
   },
 
   data () {
