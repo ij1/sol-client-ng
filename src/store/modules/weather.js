@@ -14,6 +14,22 @@ function linearInterpolate(startPoint, intermediatePoint, endPoint, startData, e
   ];
 }
 
+function wxTimeInterpolate(startPoint, intermediatePoint, endPoint, startData, endData) {
+  const factor = (intermediatePoint - startPoint) / (endPoint - startPoint);
+
+  if (factor < 0 || factor > 1.0) {
+    console.log("Invalid factor: " + factor);
+  }
+
+  const fEnd = -2 * Math.pow(factor, 3) + 3 * Math.pow(factor, 2)
+  const fStart = 1 - fEnd;
+
+  return [
+    fStart * startData[0] + fEnd * endData[0],
+    fStart * startData[1] + fEnd * endData[1],
+  ];
+}
+
 /* Bounds the given time between wx data range, return null if no bound
  * applies
  */
@@ -149,7 +165,7 @@ export default {
       }
 
       /* time (z) solution */
-      return linearInterpolate(
+      return wxTimeInterpolate(
         state.data.timeSeries[getters.timeIndex],
         state.time,
         state.data.timeSeries[getters.timeIndex+1],
