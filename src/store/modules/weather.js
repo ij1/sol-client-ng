@@ -1,7 +1,7 @@
 import L from 'leaflet'
 import { UTCToMsec } from '../../lib/utils.js'
 
-function interpolate(startPoint, intermediatePoint, endPoint, startData, endData) {
+function linearInterpolate(startPoint, intermediatePoint, endPoint, startData, endData) {
   const factor = (intermediatePoint - startPoint) / (endPoint - startPoint);
 
   if (factor < 0 || factor > 1.0) {
@@ -122,31 +122,40 @@ export default {
       const lonIdx = Math.floor((latLng.lng - state.data.origo[1]) / state.data.increment[1]);
       const latIdx = Math.floor((latLng.lat - state.data.origo[0]) / state.data.increment[0]);
 
+      /* latitude (y) solution */
       let firstRes = [[], []];
-      for (let x = 0; x <= 1; x++) {
-        for (let y = 0; y <= 1; y++) {
-          firstRes[x][y] = interpolate(state.data.timeSeries[getters.timeIndex],
-                                       state.time,
-                                       state.data.timeSeries[getters.timeIndex+1],
-                                       state.data.windMap[getters.timeIndex][lonIdx+x][latIdx+y],
-                                       state.data.windMap[getters.timeIndex+1][lonIdx+x][latIdx+y]);
+      for (let t = 0; t <= 1; t++) {
+        for (let x = 0; x <= 1; x++) {
+          firstRes[t][x] = linearInterpolate(
+            latIdx * state.data.increment[0] + state.data.origo[0],
+            latLng.lat,
+            (latIdx + 1) * state.data.increment[0] + state.data.origo[0],
+            state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx],
+            state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx+1]
+          );
         }
       }
 
+      /* longitude (x) solution */
       let secondRes = [];
-      for (let y = 0; y <= 1; y++) {
-          secondRes[y] = interpolate(lonIdx * state.data.increment[1] + state.data.origo[1],
-                                     latLng.lng,
-                                     (lonIdx + 1) * state.data.increment[1] + state.data.origo[1],
-                                     firstRes[0][y],
-                                     firstRes[1][y]);
+      for (let t = 0; t <= 1; t++) {
+          secondRes[t] = linearInterpolate(
+            lonIdx * state.data.increment[1] + state.data.origo[1],
+            latLng.lng,
+            (lonIdx + 1) * state.data.increment[1] + state.data.origo[1],
+            firstRes[t][0],
+            firstRes[t][1]
+          );
       }
 
-      return interpolate(latIdx * state.data.increment[0] + state.data.origo[0],
-                         latLng.lat,
-                         (latIdx + 1) * state.data.increment[0] + state.data.origo[0],
-                         secondRes[0],
-                         secondRes[1]);
+      /* time (z) solution */
+      return linearInterpolate(
+        state.data.timeSeries[getters.timeIndex],
+        state.time,
+        state.data.timeSeries[getters.timeIndex+1],
+        secondRes[0],
+        secondRes[1]
+      );
     },
   },
 
