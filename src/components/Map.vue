@@ -38,6 +38,11 @@
         :icon="myBoatIcon"
       />
       <wind-info :map = "this.map"/>
+      <wind-map
+        :map = "this.map"
+        :center = "this.currentCenter"
+        :zoom = "this.currentZoom"
+      />
     </l-map>
   </div>
 </template>
@@ -46,6 +51,7 @@
 import L from 'leaflet'
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 import WindInfo from './WindInfo'
+import WindMap from './WindMap'
 
 export default {
   name: 'Map',
@@ -56,6 +62,7 @@ export default {
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
     'wind-info': WindInfo,
+    'wind-map': WindMap,
   },
 
   data () {
