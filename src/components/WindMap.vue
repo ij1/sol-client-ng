@@ -65,7 +65,7 @@ export default {
 
               const kn = tw[1] * KNT_MS;
               const lw = kn < 50 ? kn / 10 : 5;
-              const len = (kn < 20 ? Math.floor(kn) : 20) + 5;
+              const len = (kn < 20 ? Math.floor(kn) : 20) + 6;
 
               ctx.beginPath();
               ctx.lineWidth = 1;
@@ -78,7 +78,7 @@ export default {
               ctx.beginPath();
               ctx.lineWidth = lw+1;
               ctx.lineJoin = 'round';
-              ctx.moveTo(0, -lw+1);
+              ctx.moveTo(0, -lw-2);
               ctx.lineTo(0, -len);
               ctx.stroke();
 
