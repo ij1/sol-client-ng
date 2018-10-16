@@ -31,22 +31,36 @@ export default {
         if (response.status !== 200) {
           return Promise.reject(new Error("Invalid API call"));
         }
+        return Promise.resolve(response.data);
+      })
 
-        parseString(response.data,
+      .then((data) => {
+        let err;
+        let result;
+        parseString(data,
                     {explicitArray: reqDef.useArrays},
-                    (err, result) => {
-
-          if (!(result.hasOwnProperty(reqDef.dataField))) {
-            return Promise.reject(new Error("No data from API"));
-          }
-          commit('setState', "Up")
-          if (typeof reqDef.interval === 'undefined') {
-            retry = false;
-          }
-
-          const data = result[reqDef.dataField];
-          reqDef.dataHandler(data);
+                    (_err, _result) => {
+          err = _err;
+          result = _result;
         })
+        if (err) {
+          return Promise.reject(new Error("Parsing failed"));
+        }
+        return Promise.resolve(result);
+      })
+
+      .then((res) => {
+        let result = res;
+        if (!(result.hasOwnProperty(reqDef.dataField))) {
+          return Promise.reject(new Error("No data from API"));
+        }
+        commit('setState', "Up")
+        if (typeof reqDef.interval === 'undefined') {
+          retry = false;
+        }
+
+        const data = result[reqDef.dataField];
+        reqDef.dataHandler(data);
       })
 
       .catch((err) => {
