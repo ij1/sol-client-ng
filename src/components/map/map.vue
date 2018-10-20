@@ -37,8 +37,12 @@
         :latLng="this.$store.state.boat.position"
         :icon="myBoatIcon"
       />
-      <wind-info :map = "this.map"/>
+      <wind-info
+        v-if = "this.map !== null"
+        :map = "this.map"
+      />
       <wind-map
+        v-if = "this.map !== null"
         :map = "this.map"
         :center = "this.currentCenter"
         :zoom = "this.currentZoom"

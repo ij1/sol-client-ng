@@ -40,7 +40,6 @@ export default {
       return value === null ? '' : value.lat.toFixed(6) + ',' + value.lng.toFixed(6);
     },
   },
-  // Add beforeDestroy
   computed: {
     wind () {
       if (this.latLng === null) {
@@ -63,12 +62,14 @@ export default {
       this.latLng = null;
     },
   },
-  watch: {
-    map () {
-      this.map.on('mousemove', this.setPosition, this);
-      this.map.on('mouseout', this.clearPosition, this);
-    }
-  }
+  mounted () {
+    this.map.on('mousemove', this.setPosition, this);
+    this.map.on('mouseout', this.clearPosition, this);
+  },
+  beforeDestroy () {
+    this.map.off('mousemove', this.setPosition);
+    this.map.off('mousemout', this.clearPosition);
+  },
 }
 </script>
 

@@ -32,7 +32,6 @@ export default {
       return this.$store.state.weather.time;
     }
   },
-  // Add beforeDestroy
   methods: {
     redraw () {
       if (this.canvas === null) {
@@ -94,20 +93,6 @@ export default {
     }
   },
   watch: {
-    map () {
-      if (this.map === null) {
-        return;
-      }
-      this.canvas = L.DomUtil.create('canvas', 'wind-map');
-      // FIXME: this might not be optimal way to place the canvas!
-      this.canvas.style.position = 'absolute';
-      this.canvas.style.top = 0;
-      this.canvas.style.left = 0;
-      const size = this.map.getSize();
-      this.canvas.width = size.x;
-      this.canvas.height = size.y;
-      this.map.getContainer().appendChild(this.canvas);
-    },
     wxTime () {
       this.redraw();
     },
@@ -117,6 +102,21 @@ export default {
     zoom () {
       this.redraw();
     }
-  }
+  },
+  mounted () {
+    this.canvas = L.DomUtil.create('canvas', 'wind-map');
+    // FIXME: this might not be optimal way to place the canvas!
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.top = 0;
+    this.canvas.style.left = 0;
+    const size = this.map.getSize();
+    this.canvas.width = size.x;
+    this.canvas.height = size.y;
+    this.map.getContainer().appendChild(this.canvas);
+  },
+  beforeDestroy () {
+    this.map.getContainer().removeChild(this.canvas);
+    this.canvas = null;
+  },
 }
 </script>
