@@ -1,11 +1,11 @@
+import queryString from 'querystring';
 import axios from 'axios';
 import promisify from 'util.promisify';
-import xml2js from 'xml2js' ;
-import queryString from 'querystring';
 import zlib from 'zlib';
+import xml2js from 'xml2js' ;
 
-const parseString = promisify(xml2js.parseString);
 const zlibInflate = promisify(zlib.inflate);
+const parseString = promisify(xml2js.parseString);
 
 export default {
   namespaced: true,
