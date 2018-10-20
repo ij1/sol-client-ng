@@ -1,9 +1,9 @@
-import axios from 'axios'
-const util = require('util');
+import axios from 'axios';
+import util from 'util';
 require('util.promisify').shim();
 
-const xml2js = require('xml2js');
-const queryString = require('querystring');
+import xml2js from 'xml2js' ;
+import queryString from 'querystring';
 import zlib from 'zlib';
 
 const parseString = util.promisify(xml2js.parseString);
