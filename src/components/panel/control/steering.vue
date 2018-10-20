@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import ControlSteeringPolar from './ControlSteeringPolar.vue';
+import Polar from './polar.vue';
 
 // FIXME: The values should probably use some arbitary precision library
 // to avoid unexpected rounding with floating-points.
@@ -77,7 +77,7 @@ import ControlSteeringPolar from './ControlSteeringPolar.vue';
 export default {
   name: 'ControlSteering',
   components: {
-    'control-steering-polar': ControlSteeringPolar,
+    'control-steering-polar': Polar,
   },
   data () {
     return {

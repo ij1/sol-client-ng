@@ -5,7 +5,7 @@
 
 <script>
 import L from 'leaflet'
-import { UVtoTwdTws, KNT_MS } from '../lib/sol.js'
+import { UVtoTwdTws, KNT_MS } from '../../lib/sol.js'
 
 export default {
   name: 'WindMap',

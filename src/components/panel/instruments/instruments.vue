@@ -13,12 +13,12 @@
 </template>
 
 <script>
-import BoatInstrument from './BoatInstrument.vue';
+import Instrument from './instrument.vue';
 
 export default {
   name: 'BoatInstruments',
   components: {
-    'boat-instrument': BoatInstrument,
+    'boat-instrument': Instrument,
   },
   data () {
     return {

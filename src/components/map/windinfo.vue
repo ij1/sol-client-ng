@@ -15,7 +15,7 @@
 
 <script>
 import { LControl } from 'vue2-leaflet'
-import { UVtoTwdTws, radToDeg, KNT_MS } from '../lib/sol.js'
+import { UVtoTwdTws, radToDeg, KNT_MS } from '../../lib/sol.js'
 
 export default {
   name: 'WindInfo',

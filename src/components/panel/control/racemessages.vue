@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import RaceMessage from './RaceMessage.vue'
+import RaceMessage from './racemessage.vue'
 
 export default {
   name: 'ControlRaceMessages',

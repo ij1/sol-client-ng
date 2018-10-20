@@ -26,10 +26,10 @@
 </template>
 
 <script>
-import ControlSteering from './ControlSteering.vue';
-import ControlDCs from './ControlDCs.vue';
-import ControlChats from './ControlChats.vue';
-import ControlRaceMessages from './ControlRaceMessages.vue';
+import ControlSteering from './steering.vue';
+import ControlDCs from './dcs.vue';
+import ControlChats from './chats.vue';
+import ControlRaceMessages from './racemessages.vue';
 
 export default {
   name: 'ControlPanel',

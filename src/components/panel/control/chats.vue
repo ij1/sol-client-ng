@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import ControlChat from './ControlChat.vue';
+import ControlChat from './chat.vue';
 
 export default {
   name: 'ControlChat',

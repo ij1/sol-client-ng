@@ -13,19 +13,19 @@
       </div>
     </div>
     <div id="right_div">
-      <control-panel/>
+      <control-panel-switcher/>
     </div>
   </div>
 </template>
 
 <script>
-import StatusBar from './components/StatusBar.vue'
-import LoginPopup from './components/LoginPopup.vue'
-import Map from './components/Map.vue'
-import BoatInstruments from './components/BoatInstruments.vue'
-import WeatherPanel from './components/WeatherPanel.vue'
-import LogMessages from './components/LogMessages.vue'
-import ControlPanel from './components/ControlPanel.vue'
+import StatusBar from './components/statusbar.vue'
+import LoginPopup from './components/loginpopup.vue'
+import Map from './components/map/map.vue'
+import BoatInstruments from './components/panel/instruments/instruments.vue'
+import WeatherPanel from './components/panel/weather.vue'
+import LogMessages from './components/logmessages.vue'
+import ControlPanelSwitcher from './components/panel/control/switcher.vue'
 
 export default {
   name: 'app',
@@ -36,7 +36,7 @@ export default {
     'boat-instruments': BoatInstruments,
     'weather-panel': WeatherPanel,
     'log-messages': LogMessages,
-    'control-panel': ControlPanel,
+    'control-panel-switcher': ControlPanelSwitcher,
   }
 }
 </script>

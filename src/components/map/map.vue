@@ -50,8 +50,8 @@
 <script>
 import L from 'leaflet'
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
-import WindInfo from './WindInfo'
-import WindMap from './WindMap'
+import WindInfo from './windinfo'
+import WindMap from './wind'
 
 export default {
   name: 'Map',
@@ -131,7 +131,7 @@ export default {
 </style>
 
 <style>
-@import '../../node_modules/leaflet/dist/leaflet.css'
+@import '../../../node_modules/leaflet/dist/leaflet.css'
 </style>
 
 <style>
