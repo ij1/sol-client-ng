@@ -11,11 +11,6 @@ export default {
   state: {
     loaded: false,
     info: {},
-    messages: {
-      racemsgs: [],
-      lastId: 0,
-      expectedId: 0,
-    },
     boundary: [],
     route: [],
     finish: [],
