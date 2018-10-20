@@ -4,8 +4,10 @@ require('util.promisify').shim();
 
 const xml2js = require('xml2js');
 const queryString = require('querystring');
+import zlib from 'zlib';
 
 const parseString = util.promisify(xml2js.parseString);
+const zlibInflate = util.promisify(zlib.inflate);
 
 export default {
   namespaced: true,
@@ -27,16 +29,33 @@ export default {
   actions: {
     get ({rootState, commit, dispatch}, reqDef) {
       let retry = true;
+      let respType = 'text';
+      if (typeof reqDef.compressedPayload !== 'undefined') {
+        respType = 'arraybuffer';
+      }
+
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       const url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
 
-      axios.get(rootState.config.server + url, {params: reqDef.params})
+      axios.get(rootState.config.server + url, {
+        responseType: respType,
+        params: reqDef.params,
+      })
 
       .then((response) => {
         if (response.status !== 200) {
           return Promise.reject(new Error("Invalid API call"));
         }
         return response.data;
+      })
+
+      .then((data) => {
+        if (typeof reqDef.compressedPayload !== 'undefined') {
+          var input = new Uint8Array(data);
+          return zlibInflate(input, null);
+        } else {
+          return data;
+        }
       })
 
       .then((data) => {
