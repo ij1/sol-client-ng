@@ -113,7 +113,7 @@ export default {
         params: {
           token: rootState.auth.token,
         },
-        useArrays: true,
+        useArrays: false,
         dataField: 'boatinfo',
         compressedPayload: true,
 
