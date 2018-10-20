@@ -49,8 +49,7 @@ export default {
         return Promise.resolve(result);
       })
 
-      .then((res) => {
-        let result = res;
+      .then((result) => {
         if (!(result.hasOwnProperty(reqDef.dataField))) {
           return Promise.reject(new Error("No data from API"));
         }
