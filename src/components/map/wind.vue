@@ -34,9 +34,6 @@ export default {
   },
   methods: {
     redraw () {
-      if (this.canvas === null) {
-        return;
-      }
       const centerPoint = this.map.latLngToContainerPoint(this.center);
 
       const yDelta = 64;
