@@ -44,8 +44,6 @@
       <wind-map
         v-if = "this.map !== null"
         :map = "this.map"
-        :center = "this.currentCenter"
-        :zoom = "this.currentZoom"
       />
     </l-map>
   </div>

@@ -13,26 +13,37 @@ export default {
     map: {
       type: Object,
     },
-    center: {
-      type: Object,
-      required: true,
-    },
-    zoom: {
-      type: Number,
-      required: true,
-    },
   },
   data () {
     return {
       canvas: null,
+      animFrame: null,
+      center: null,
+      zoom: null,
+      redrawCnt: 0,
     }
   },
   computed: {
     wxTime () {
       return this.$store.state.weather.time;
-    }
+    },
+    needsRedraw () {
+      /* Dummy access for the dependencies */
+      this.canvas;
+      this.wxTime;
+      this.center;
+      this.zoom;
+      /* Monotonically increasing value to trigger watch reliably every time */
+      return Date.now();
+    },
   },
   methods: {
+    onMove () {
+      this.center = this.map.getCenter();
+    },
+    onZoom () {
+      this.zoom = this.map.getZoom();
+    },
     redraw () {
       const centerPoint = this.map.latLngToContainerPoint(this.center);
 
@@ -87,20 +98,20 @@ export default {
         ctx.translate(xUndo, yDelta);
       }
       ctx.restore();
+      this.animFrame = null;
     }
   },
   watch: {
-    wxTime () {
-      this.redraw();
-    },
-    center () {
-      this.redraw();
-    },
-    zoom () {
-      this.redraw();
+    needsRedraw () {
+      if (this.animFrame === null) {
+        this.animFrame = L.Util.requestAnimFrame(this.redraw, this);
+      }
     }
   },
   mounted () {
+    this.center = this.map.getCenter();
+    this.zoom = this.map.getZoom();
+
     this.canvas = L.DomUtil.create('canvas', 'wind-map');
     // FIXME: this might not be optimal way to place the canvas!
     this.canvas.style.position = 'absolute';
@@ -110,8 +121,18 @@ export default {
     this.canvas.width = size.x;
     this.canvas.height = size.y;
     this.map.getContainer().appendChild(this.canvas);
+
+    this.map.on('move', this.onMove);
+    this.map.on('zoom', this.onZoom);
   },
   beforeDestroy () {
+    if (this.animFrame !== null) {
+      L.Util.cancelAnimFrame(this.animFrame);
+    }
+
+    this.map.off('zoom', this.onZoom);
+    this.map.off('move', this.onMove);
+
     this.map.getContainer().removeChild(this.canvas);
     this.canvas = null;
   },
