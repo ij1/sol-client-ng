@@ -37,7 +37,7 @@ export default {
       if (value === undefined) {
         return '';
       }
-      return value === null ? '' : value.lat + ',' + value.lng;
+      return value === null ? '' : value.lat.toFixed(6) + ',' + value.lng.toFixed(6);
     },
   },
   // Add beforeDestroy
