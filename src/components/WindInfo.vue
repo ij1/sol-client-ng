@@ -75,5 +75,6 @@ export default {
 <style scoped>
 #wind-info {
   pointer-events: none;
+  text-align: right;
 }
 </style>
