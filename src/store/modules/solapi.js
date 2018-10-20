@@ -1,13 +1,11 @@
 import axios from 'axios';
-import util from 'util';
-require('util.promisify').shim();
-
+import promisify from 'util.promisify';
 import xml2js from 'xml2js' ;
 import queryString from 'querystring';
 import zlib from 'zlib';
 
-const parseString = util.promisify(xml2js.parseString);
-const zlibInflate = util.promisify(zlib.inflate);
+const parseString = promisify(xml2js.parseString);
+const zlibInflate = promisify(zlib.inflate);
 
 export default {
   namespaced: true,
