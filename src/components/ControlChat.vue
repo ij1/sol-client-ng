@@ -83,7 +83,7 @@ export default {
 
   filters: {
     timeOnly (value) {
-      return value.split(" ", 2)[1].split(":",2).join(":");
+      return value.split(" ", 2)[1];
     }
   },
 
