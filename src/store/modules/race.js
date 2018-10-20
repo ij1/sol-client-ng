@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import L from 'leaflet'
-import raceMessageModule from './racemessages.js'
-import fleetModule from './fleet.js'
+import L from 'leaflet';
+import raceMessageModule from './racemessages.js';
+import fleetModule from './fleet.js';
 
 export default {
   namespaced: true,
@@ -16,7 +16,6 @@ export default {
     boundary: [],
     route: [],
     finish: [],
-
   },
 
   mutations: {
@@ -33,8 +32,8 @@ export default {
       }
       // ADDME: calculate finish line end points
       delete raceInfo.course.waypoint;
-      state.info = raceInfo
-      state.loaded = true
+      state.info = raceInfo;
+      state.loaded = true;
     },
   },
 
@@ -71,7 +70,7 @@ export default {
           dispatch('weather/fetchInfo', null, {root: true});
           dispatch('fleet/fetchRace');
         },
-      }
+      };
 
       dispatch('solapi/get', getDef, {root: true});
     },
