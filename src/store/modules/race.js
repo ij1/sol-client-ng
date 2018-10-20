@@ -75,7 +75,7 @@ export default {
           dispatch('boat/fetch', null, {root: true});
           dispatch('boat/steering/fetchDCs', null, {root: true});
           dispatch('weather/fetchInfo', null, {root: true});
-          // dispatch('fetchRace');
+          dispatch('fetchRace');
           // dispatch('fetchTraces');
         },
       }
@@ -89,8 +89,10 @@ export default {
         params: {
           token: rootState.auth.token,
         },
-        useArrays: true,
+        useArrays: false,
         dataField: 'race',
+        interval: 30000,
+        compressedPayload: true,
 
         dataHandler: (raceInfo) => {
           console.log(raceInfo);
