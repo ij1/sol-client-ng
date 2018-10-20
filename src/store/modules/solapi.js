@@ -1,6 +1,11 @@
 import axios from 'axios'
-const parseString = require('xml2js').parseString;
+const util = require('util');
+require('util.promisify').shim();
+
+const xml2js = require('xml2js');
 const queryString = require('querystring');
+
+const parseString = util.promisify(xml2js.parseString);
 
 export default {
   namespaced: true,
@@ -31,22 +36,11 @@ export default {
         if (response.status !== 200) {
           return Promise.reject(new Error("Invalid API call"));
         }
-        return Promise.resolve(response.data);
+        return response.data;
       })
 
       .then((data) => {
-        let err;
-        let result;
-        parseString(data,
-                    {explicitArray: reqDef.useArrays},
-                    (_err, _result) => {
-          err = _err;
-          result = _result;
-        })
-        if (err) {
-          return Promise.reject(new Error("Parsing failed"));
-        }
-        return Promise.resolve(result);
+        return parseString(data, {explicitArray: reqDef.useArrays});
       })
 
       .then((result) => {
