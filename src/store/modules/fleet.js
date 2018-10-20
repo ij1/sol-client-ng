@@ -10,13 +10,9 @@ export default {
      */
     newBoatId: null,
     boat: {},
-    traces: null,
   },
 
   mutations: {
-    updateTraces (state, traces) {
-      state.traces = traces
-    },
     updateFleet (state, fleet) {
       for (let boat of fleet) {
         const id = boat.id;
@@ -50,6 +46,8 @@ export default {
           delete boat.color_G;
           delete boat.color_B;
 
+          boat.trace = [];
+
           Vue.set(state.boat, id, boat);
 
           state.newBoatId = id;
@@ -71,6 +69,9 @@ export default {
           state.boat[id].country = boat.$.c;
         }
       }
+    },
+    updateBoatTrace (state, traceData) {
+      state.boat[traceData.id].trace = traceData.trace;
     },
   },
 
@@ -99,7 +100,7 @@ export default {
             if (state.newBoats !== null) {
               dispatch('fetchMetainfo');
             }
-            // dispatch('fetchTraces');
+            dispatch('fetchTraces');
           }
         },
       }
@@ -131,18 +132,43 @@ export default {
       dispatch('solapi/get', getDef, {root: true});
     },
 
-    fetchTraces({rootState, dispatch}) {
+    fetchTraces({rootState, state, commit, dispatch}) {
       const getDef = {
         url: "/webclient/traces_" + rootState.auth.race_id + ".xml",
         params: {
           token: rootState.auth.token,
         },
-        useArrays: true,
-        dataField: 'traces',
+        useArrays: false,
+        dataField: 'content',
         compressedPayload: true,
 
-        dataHandler: (raceInfo) => {
-          console.log(raceInfo);
+        dataHandler: (traces) => {
+          let boatList = traces.boat;
+          if (typeof boatList === 'undefined') {
+            return;
+          }
+          if (!Array.isArray(boatList)) {
+            boatList = [boatList];
+          }
+          for (let boat of boatList) {
+            const id = boat.id;
+
+            /* Update only for the existing boats */
+            if (typeof state.boat[id] === 'undefined') {
+              continue;
+            }
+
+            var trace = [];
+            for (let lngLatTxt of boat.data.split(/ /)) {
+              const lngLatArr = lngLatTxt.split(/,/);
+              trace.push(L.latLng(lngLatArr[1], lngLatArr[0]));
+            }
+
+            commit('updateBoatTrace', {
+              id: id,
+              trace: trace,
+            });
+          }
         },
       }
 
