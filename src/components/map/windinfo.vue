@@ -25,6 +25,7 @@ export default {
   props: {
     map: {
       type: Object,
+      required: true,
     }
   },
   data () {
