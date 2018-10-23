@@ -10,6 +10,10 @@
       @update:zoom="updateZoom"
       :worldCopyJump="true"
     >
+      <map-tiles
+        v-if = "this.map !== null"
+        :map = "this.map"
+      />
       <l-rectangle
         v-if="this.$store.state.race.boundary.length == 2"
         :bounds="this.$store.state.race.boundary"
@@ -54,6 +58,7 @@ import L from 'leaflet'
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 import WindInfo from './windinfo'
 import WindMap from './wind'
+import MapTiles from './tiles'
 
 export default {
   name: 'Map',
@@ -65,6 +70,7 @@ export default {
     'l-tooltip': LTooltip,
     'wind-info': WindInfo,
     'wind-map': WindMap,
+    'map-tiles': MapTiles,
   },
 
   data () {
