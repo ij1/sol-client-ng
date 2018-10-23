@@ -147,7 +147,7 @@ export default {
       while (typeof tile.data['l' + l] !== 'undefined') {
         ctx.fillStyle = '#ffddbb';
         for (let poly of tile.data['l' + l]) {
-          var first = true;
+          let first = true;
           ctx.beginPath();
           for (let pt of poly) {
             // CHECKME: round the pixel coordinate or not?
@@ -161,6 +161,43 @@ export default {
           }
           ctx.fill();
         }
+
+        /* Draw outline */
+        ctx.strokeStyle = '#000';
+        for (let poly of tile.data['l' + l]) {
+          let first = true;
+          let prevAtBorder = false;
+          let firstAtBorder;
+          ctx.beginPath();
+          for (let pt of poly) {
+            // CHECKME: round the pixel coordinate or not?
+            const atBorder = (pt.lat === tile.bounds.getNorth()) ||
+                             (pt.lat === tile.bounds.getSouth()) ||
+                             (pt.lng === tile.bounds.getWest()) ||
+                             (pt.lng === tile.bounds.getEast());
+            // CHECKME: round the pixel coordinate or not?
+            const drawCoords = this.latLngToTilePoint(pt, tile).round();
+            /* If the outline goes along the border, don't draw but move */
+            if (first || (atBorder && prevAtBorder)) {
+              ctx.moveTo(drawCoords.x, drawCoords.y);
+              if (first) {
+                firstAtBorder = atBorder;
+              }
+              first = false;
+            } else {
+              ctx.lineTo(drawCoords.x, drawCoords.y);
+            }
+            prevAtBorder = atBorder;
+          }
+          /* Complete the poly but only conditionally */
+          if (!firstAtBorder || !prevAtBorder) {
+            // CHECKME: round the pixel coordinate or not?
+            const drawCoords = this.latLngToTilePoint(poly[0], tile).round();
+            ctx.lineTo(drawCoords.x, drawCoords.y);
+          }
+          ctx.stroke();
+        }
+
         l++;
         // FIXME: other levels are not correctly handled just yet, thus break
         break;
