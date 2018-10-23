@@ -115,6 +115,7 @@ export default {
 
     this.canvas = L.DomUtil.create('canvas', 'wind-map');
     // FIXME: this might not be optimal way to place the canvas!
+    this.canvas.style.zIndex = 550;
     this.canvas.style.position = 'absolute';
     this.canvas.style.top = 0;
     this.canvas.style.left = 0;
