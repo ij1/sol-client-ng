@@ -91,7 +91,7 @@ export default {
         tilesize: null,
         canvas: null,
         drawnZoom: null,
-        data: {},
+        geoms: {},
       };
 
       tile.canvas = L.DomUtil.create('canvas', 'leaflet-tile leaflet-tile-loaded map-tile'),
@@ -130,7 +130,7 @@ export default {
             }
           }
 
-          this.tiles[tileKey].data = geoms;
+          this.tiles[tileKey].geoms = geoms;
           // FIXME: move drawing into animFrame
           this.drawTile(this.tiles[tileKey]);
         }
@@ -144,9 +144,9 @@ export default {
 
       ctx.save();
       let l = 1;
-      while (typeof tile.data['l' + l] !== 'undefined') {
+      while (typeof tile.geoms['l' + l] !== 'undefined') {
         ctx.fillStyle = '#ffddbb';
-        for (let poly of tile.data['l' + l]) {
+        for (let poly of tile.geoms['l' + l]) {
           let first = true;
           ctx.beginPath();
           for (let pt of poly) {
@@ -164,7 +164,7 @@ export default {
 
         /* Draw outline */
         ctx.strokeStyle = '#000';
-        for (let poly of tile.data['l' + l]) {
+        for (let poly of tile.geoms['l' + l]) {
           let first = true;
           let prevAtBorder = false;
           let firstAtBorder;
