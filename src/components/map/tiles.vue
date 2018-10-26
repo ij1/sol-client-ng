@@ -126,7 +126,9 @@ export default {
       if (this.zoom != this.map.getZoom()) {
         this.zoom = this.map.getZoom();
       }
-      this.latLngBounds = this.map.getBounds();
+      if (this.animFrame === null) {
+        this.animFrame = L.Util.requestAnimFrame(this.setBounds, this);
+      }
     },
     onMove () {
       if (this.animFrame === null) {
