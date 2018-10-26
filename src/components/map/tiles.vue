@@ -157,6 +157,7 @@ export default {
 
     this.zoom = this.map.getZoom();
     this.map.on('zoomend', this.updateZoom, this);
+    this.map.on('moveend', this.onMove, this);
     this.map.on('move', this.onMove, this);
     this.map.addLayer(this.layer);
   },
@@ -165,6 +166,7 @@ export default {
       L.Util.cancelAnimFrame(this.animFrame);
     }
     this.map.off('move', this.onMove);
+    this.map.off('moveend', this.onMove);
     this.map.off('zoomend', this.updateZoom);
     this.removeContainer();
   },
