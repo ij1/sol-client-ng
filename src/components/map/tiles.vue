@@ -30,6 +30,7 @@ export default {
       layer: null,
       container: null,
       latLngBounds: this.map.getBounds(),
+      animFrame: null,
     }
   },
 
@@ -116,6 +117,10 @@ export default {
       }
       return true;
     },
+    setBounds() {
+      this.latLngBounds = this.map.getBounds();
+      this.animFrame = null;
+    },
 
     updateZoom() {
       if (this.zoom != this.map.getZoom()) {
@@ -124,7 +129,9 @@ export default {
       this.latLngBounds = this.map.getBounds();
     },
     onMove () {
-      this.latLngBounds = this.map.getBounds();
+      if (this.animFrame === null) {
+        this.animFrame = L.Util.requestAnimFrame(this.setBounds, this);
+      }
     },
 
     addContainer () {
@@ -152,6 +159,9 @@ export default {
     this.map.addLayer(this.layer);
   },
   beforeDestroy () {
+    if (this.animFrame !== null) {
+      L.Util.cancelAnimFrame(this.animFrame);
+    }
     this.map.off('move', this.onMove);
     this.map.off('zoomend', this.updateZoom);
     this.removeContainer();
