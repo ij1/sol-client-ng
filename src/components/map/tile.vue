@@ -51,13 +51,34 @@ export default {
     tileGridSize () {
       return this.$store.getters['tiles/tileGridSize'](this.id.l);
     },
+    maxBounds () {
+      const min = this.$parent.pixelBounds.min.subtract(this.$parent.pixelSize);
+      const max = this.$parent.pixelBounds.max.add(this.$parent.pixelSize);
+      const bounds = L.latLngBounds(this.$parent.map.unproject(min),
+                                    this.$parent.map.unproject(max));
+      return bounds;
+    },
     bounds() {
-      return L.latLngBounds(
-        L.latLng(this.id.y * this.tileGridSize - 90,
-                 this.id.x * this.tileGridSize - 180),
-        L.latLng((this.id.y + 1) * this.tileGridSize - 90,
-                 (this.id.x + 1) * this.tileGridSize - 180)
-      );
+      let y1 = this.id.y * this.tileGridSize - 90;
+      let x1 = this.id.x * this.tileGridSize - 180;
+      let y2 = (this.id.y + 1) * this.tileGridSize - 90;
+      let x2 = (this.id.x + 1) * this.tileGridSize - 180;
+
+      /* Restrict canvas boundaries if necessary */
+      if (y1 < this.maxBounds.getSouthWest().lat) {
+        y1 = this.maxBounds.getSouthWest().lat;
+      }
+      if (x1 < this.maxBounds.getSouthWest().lng) {
+        x1 = this.maxBounds.getSouthWest().lng;
+      }
+      if (y2 > this.maxBounds.getNorthEast().lat) {
+        y2 = this.maxBounds.getNorthEast().lat;
+      }
+      if (x2 > this.maxBounds.getNorthEast().lng) {
+        x2 = this.maxBounds.getNorthEast().lng;
+      }
+
+      return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
     },
 
     needsUpdate() {
