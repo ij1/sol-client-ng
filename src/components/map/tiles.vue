@@ -30,6 +30,8 @@ export default {
       layer: null,
       container: null,
       latLngBounds: this.map.getBounds(),
+      pixelBounds: this.map.getPixelBounds(),
+      pixelSize: this.map.getSize(),
       animFrame: null,
     }
   },
@@ -119,6 +121,8 @@ export default {
     },
     setBounds() {
       this.latLngBounds = this.map.getBounds();
+      this.pixelBounds = this.map.getPixelBounds();
+      this.pixelSize = this.map.getSize();
       this.animFrame = null;
     },
 
