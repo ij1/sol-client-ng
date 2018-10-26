@@ -37,9 +37,9 @@ export default {
   computed: {
     selectTileset() {
       // FIXME: check these zoom levels and tweak if necessary
-      if (this.zoom > 12) {
+      if (this.zoom > 8) {
         return 'h';
-      } else if (this.zoom > 5) {
+      } else if (this.zoom > 4) {
         return 'l';
       }
       return 'c';
