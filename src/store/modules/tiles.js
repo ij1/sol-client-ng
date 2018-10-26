@@ -36,6 +36,7 @@ export default {
       Vue.set(state.tiles, key, {
         id: id,
         loading: false,
+        loaded: false,
         refcount: 0,
         geoms: {},
       });
@@ -43,6 +44,7 @@ export default {
 
     storeTileGeoms (state, tileInfo) {
       state.tiles[tileInfo.key].geoms = tileInfo.geoms;
+      state.tiles[tileInfo.key].loaded = true;
       state.tiles[tileInfo.key].loading = false;
     },
 
@@ -54,7 +56,7 @@ export default {
   actions: {
     loadTile ({state, getters, commit, dispatch}, id) {
       const key = getters.tileIdToKey(id);
-      if (state.tiles[key].loading) {
+      if (state.tiles[key].loading || state.tiles[key].loaded) {
         return;
       }
 
