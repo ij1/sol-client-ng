@@ -103,7 +103,6 @@ export default {
       this.resetCanvasPlacement();
 
       let ctx = this.$el.getContext('2d');
-      ctx.clearRect(0, 0, this.$el.width, this.$el.height);
 
       ctx.save();
       let l = 1;
