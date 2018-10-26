@@ -47,17 +47,16 @@ export default {
       return this.latLngToTilePoint(this.bounds.getSouthEast()).floor();
     },
 
-    // FIXME: move to sol.js
-    gridSize () {
-      const degrees = {c: 45, l: 10, h: 1};
-      return degrees[this.id.l];
+    // FIXME: mapgetters
+    tileGridSize () {
+      return this.$store.getters['tiles/tileGridSize'](this.id.l);
     },
     bounds() {
       return L.latLngBounds(
-        L.latLng(this.id.y * this.gridSize - 90,
-                 this.id.x * this.gridSize - 180),
-        L.latLng((this.id.y + 1) * this.gridSize - 90,
-                 (this.id.x + 1) * this.gridSize - 180)
+        L.latLng(this.id.y * this.tileGridSize - 90,
+                 this.id.x * this.tileGridSize - 180),
+        L.latLng((this.id.y + 1) * this.tileGridSize - 90,
+                 (this.id.x + 1) * this.tileGridSize - 180)
       );
     },
 
