@@ -84,7 +84,7 @@ export default {
     needsUpdate() {
       /* Dummy access to dependencies */
       /* this.geoms is frozen, so check loading state flag instead */
-      this.loading;
+      this.loaded;
       // CHECKME: Is this reactive?
       this.$parent.zoom;
       // Return dummy value
