@@ -151,19 +151,16 @@ export default {
         ctx.strokeStyle = '#000';
         for (let poly of this.geoms['l' + l]) {
           let first = true;
-          let prevAtBorder = false;
+          let prevAtBorder = 0;
           let firstAtBorder;
           ctx.beginPath();
           for (let pt of poly) {
             // CHECKME: round the pixel coordinate or not?
-            const atBorder = (pt.lat === this.bounds.getNorth()) ||
-                             (pt.lat === this.bounds.getSouth()) ||
-                             (pt.lng === this.bounds.getWest()) ||
-                             (pt.lng === this.bounds.getEast());
+            const atBorder = this.pointAtBorder(pt);
             // CHECKME: round the pixel coordinate or not?
             const drawCoords = this.latLngToTilePoint(pt).round();
-            /* If the outline goes along the border, don't draw but move */
-            if (first || (atBorder && prevAtBorder)) {
+            /* If the outline goes along a border line, don't draw but move */
+            if (first || (atBorder & prevAtBorder) !== 0) {
               ctx.moveTo(drawCoords.x, drawCoords.y);
               if (first) {
                 firstAtBorder = atBorder;
@@ -175,7 +172,7 @@ export default {
             prevAtBorder = atBorder;
           }
           /* Complete the poly but only conditionally */
-          if (!firstAtBorder || !prevAtBorder) {
+          if ((firstAtBorder & prevAtBorder) === 0) {
             // CHECKME: round the pixel coordinate or not?
             const drawCoords = this.latLngToTilePoint(poly[0]).round();
             ctx.lineTo(drawCoords.x, drawCoords.y);
@@ -202,6 +199,20 @@ export default {
    
       this.drawnZoom = this.$parent.zoom;
       this.animFrame = null;
+    },
+    pointAtBorder(pt) {
+      let atBorder = 0;
+      if (pt.lat === this.bounds.getNorth()) {
+        atBorder += 1;
+      } else if (pt.lat === this.bounds.getSouth()) {
+        atBorder += 4;
+      }
+      if (pt.lng === this.bounds.getEast()) {
+        atBorder += 2;
+      } else if (pt.lng === this.bounds.getWest()) {
+        atBorder += 8;
+      }
+      return atBorder;
     },
   },
 
