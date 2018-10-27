@@ -34,11 +34,11 @@ export default {
       }
       return this.$store.state.tiles.tiles[this.tileKey].geoms;
     },
-    loading () {
+    loaded () {
       if (this.tileKey === null) {
         return false;
       }
-      return this.$store.state.tiles.tiles[this.tileKey].loading;
+      return this.$store.state.tiles.tiles[this.tileKey].loaded;
     },
     tilesize() {
       /* Dummy access to dependency */
@@ -84,7 +84,7 @@ export default {
     needsUpdate() {
       /* Dummy access to dependencies */
       this.bounds;
-      /* this.geoms is frozen, so check loading state flag instead */
+      /* this.geoms is frozen, so check loaded state flag instead */
       this.loaded;
       // CHECKME: Is this reactive?
       this.$parent.zoom;
