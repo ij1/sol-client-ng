@@ -83,6 +83,7 @@ export default {
 
     needsUpdate() {
       /* Dummy access to dependencies */
+      this.bounds;
       /* this.geoms is frozen, so check loading state flag instead */
       this.loaded;
       // CHECKME: Is this reactive?
