@@ -122,9 +122,11 @@ export default {
     },
     _drawTile () {
       this.resetCanvasPlacement();
-
       let ctx = this.$el.getContext('2d');
-
+      this.drawPolys(ctx);
+      this.drawGraticules(ctx);
+    },
+    drawPolys (ctx) {
       ctx.save();
       let l = 1;
       while (typeof this.geoms['l' + l] !== 'undefined') {
@@ -186,7 +188,8 @@ export default {
         break;
       }
       ctx.restore();
-
+    },
+    drawGraticules (ctx) {
       /* Draw a graticule lines */
       ctx.beginPath();
       ctx.strokeStyle = '#aaa';
