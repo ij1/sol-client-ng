@@ -144,7 +144,7 @@ export default {
       const d = new Date(value);
       return days[d.getUTCDay()] + " " +
              ("0" + d.getUTCHours()).slice(-2) + ":" +
-             ("0" + d.getUTCMinutes()).slice(-2);
+             ("0" + d.getUTCMinutes()).slice(-2) + "utc";
     },
     formatOffset (value) {
       const h = toH(value);
