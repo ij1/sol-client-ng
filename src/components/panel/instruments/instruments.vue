@@ -22,10 +22,6 @@ export default {
   },
   data () {
     return {
-      loading: false,
-      name: null,
-      unit: null,
-      status: null,
       instrumentList: [
         {name: "LAT", unit: "\xb0", datafield: "lat", mult: 1, decimals: 3},
         {name: "LON", unit: "\xb0", datafield: "lon", mult: 1, decimals: 3},
