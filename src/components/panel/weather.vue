@@ -1,6 +1,9 @@
 <template>
-  <div id="weather-panel" v-if="this.$store.state.weather.loaded">
-    <div id="weather-panel-control">
+  <div id="weather-panel">
+    <div id="weather-panel-placeholder" v-if="!this.$store.state.weather.loaded">
+      Waiting for the weather information to load...
+    </div>
+    <div id="weather-panel-control" v-if="this.$store.state.weather.loaded">
       <button @click="setTime(0)">&#124;&#9664;</button>
       <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
       <span>Weather forecasted for</span>
