@@ -1,10 +1,10 @@
 <template>
   <div class="boat-instrument">
     <div class="boat-instrument-label">
-      {{ name }} [{{ unit }}]
+      {{ instrument.name }} [{{ instrument.unit }}]
     </div>
     <div class="boat-instrument-value">
-      {{ this.$store.state.boat.instruments[datafield] | format(mult, decimals) }}
+      {{ instrument | format() }}
     </div>
   </div>
 </template>
@@ -13,35 +13,25 @@
 export default {
   name: 'BoatInstrument',
   props: {
-    name: {
+    id: {
       type: String,
       required: true
     },
-    unit: {
-      type: String,
-      required: true
-    },
-    datafield: {
-      type: String,
-      required: true,
-    },
-    mult: {
-      type: Number,
-      required: false
-    },
-    decimals: {
-      type: Number,
-      required: false
+  },
+  computed: {
+    instrument () {
+      return this.$store.state.boat.instruments[this.id];
     }
   },
   filters: {
-    format (value, multiplier, decimals) {
-      if (value === undefined) {
+    format (instrument) {
+      if (instrument.value === null) {
         return '--.--';
       }
-      let num = parseFloat(value);
-      return Number.isFinite(num) ?
-        (num * multiplier).toFixed(decimals) : value;
+      if (typeof instrument.format !== 'undefined') {
+        return instrument.format(instrument);
+      }
+      return instrument.value;
     }
   }
 }

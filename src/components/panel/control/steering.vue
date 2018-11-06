@@ -114,26 +114,16 @@ export default {
         !this.$store.state.boat.steering.sending;
     },
 
-    // FIXME: convert state.boat.instruments to floats instead of strings
-    // ...it would make things easier here!
     ccTwaDelta () {
-      let twd = this.$store.state.boat.instruments.twd;
-      if (typeof twd === 'undefined') {
-        return 0;
-      }
-      twd = parseFloat(twd);
-      if (isNaN(twd)) {
+      let twd = this.$store.state.boat.instruments.twd.value;
+      if (twd === null) {
         return 0;
       }
       return Number((twd * 180.0 / Math.PI).toFixed(this.copyDecimals));
     },
     oldTwa () {
-      let twa = this.$store.state.boat.instruments.twd;
-      if (typeof twa === 'undefined') {
-        return 0;
-      }
-      twa = parseFloat(twa);
-      if (isNaN(twa)) {
+      let twa = this.$store.state.boat.instruments.twa.value;
+      if (twa === null) {
         return 0;
       }
       return twa;
@@ -187,7 +177,7 @@ export default {
 
       /* Try to avoid gybe with TWA=+/-180.0 */
       if (Math.abs(diff) > 179.999) {
-        if (Math.sign(diff) != Math.sign(this.$store.state.boat.instruments.twa)) {
+        if (Math.sign(diff) != Math.sign(this.$store.state.boat.instruments.twa.value)) {
           diff = -diff;
         }
       }

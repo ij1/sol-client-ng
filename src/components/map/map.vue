@@ -101,7 +101,7 @@ export default {
   computed: {
     myBoatIcon() {
       const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='22px' height='22px'><g transform='rotate(" +
-        (this.$store.state.boat.instruments.cog * 180 / Math.PI) +
+        (this.$store.state.boat.instruments.course.value * 180 / Math.PI) +
         " 11 11)'><path d='M 8,22 C 5 10, 9 12, 11 0 C 13 12, 17 10,14 22 Z' fill-opacity='0' stroke-opacity='1' stroke='#ff00ff'/></g></svg>";
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
       return this.L.icon({

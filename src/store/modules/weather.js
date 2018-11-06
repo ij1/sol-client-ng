@@ -103,7 +103,7 @@ export default {
       return state.data.timeSeries[state.data.timeSeries.length - 1];
     },
     dataTimescale: (state, getters, rootState) => {
-      return getters.lastTimestamp - rootState.boat.instruments.time;
+      return getters.lastTimestamp - rootState.boat.instruments.time.value;
     },
     timeIndex: (state) => {
       /* Short-circuit for the common case near the beginning of the wx series */

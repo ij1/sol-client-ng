@@ -1,27 +1,36 @@
+import Vue from 'vue';
 import L from 'leaflet'
 import steeringModule from './steering'
+import instrumentModule from './instruments';
 
 export default {
   namespaced: true,
 
   modules: {
     steering: steeringModule,
+    instruments: instrumentModule,
   },
 
   state: {
     position: null,
-    instruments: {
-      time: 0,
-    },
     polar: null,
   },
 
   mutations: {
     initTime (state, time) {
-      state.instruments.time = time;
+      state.instruments.time.value = time;
     },
     updateBoat (state, data) {
-      state.instruments = data
+      for (let i of state.instruments.list) {
+        let val = data[state.instruments[i].datafield];
+        if (typeof state.instruments[i].notNum !== 'undefined') {
+          val = parseFloat(val);
+          if (!Number.isFinite(val)) {
+            val = undefined;
+          }
+        }
+        Vue.set(state.instruments[i], 'value', val);
+      }
       state.position = L.latLng(data.lat, data.lon);
     },
     setPolar (state, polar) {

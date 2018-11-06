@@ -115,7 +115,7 @@ export default {
       return range.toFixed(0);
     },
     timeOffset () {
-      return this.$store.state.weather.time - this.$store.state.boat.instruments.time;
+      return this.$store.state.weather.time - this.$store.state.boat.instruments.time.value;
     }
   },
 
@@ -165,7 +165,7 @@ export default {
       }
     },
     setTime (value) {
-      this.$store.commit('weather/setTime', this.$store.state.boat.instruments.time + value);
+      this.$store.commit('weather/setTime', this.$store.state.boat.instruments.time.value + value);
     },
     changeTime (delta) {
       let value = this.timeOffset + delta;
