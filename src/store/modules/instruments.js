@@ -89,14 +89,38 @@ export default {
       unit: "UTC",
       datafield: 'time',
       format: (instrument) => {
+        if (instrument.value === 0) {
+          return '--:--';
+        }
         const d = new Date(instrument.value);
         return ("0" + d.getUTCHours()).slice(-2) + ':' +
                ("0" + d.getUTCMinutes()).slice(-2);
       },
     },
+    date: {
+      value: 0,
+      name: "DATE",
+      unit: "UTC",
+      datafield: 'time',
+      format: (instrument) => {
+        if (instrument.value === 0) {
+          return '--/--';
+        }
+        const d = new Date(instrument.value);
+        return ("0" + (d.getUTCMonth() + 1)).slice(-2) + '/' +
+               ("0" + d.getUTCDate()).slice(-2);
+      },
+    },
 
     list: [
-      'lat', 'lon', 'speed', 'course', 'twa', 'twd', 'tws', 'perf', 'time',
+      'lat', 'lon', 'speed', 'course', 'twa', 'twd', 'tws', 'perf',
+      'time', 'date',
     ],
   },
+  mutations: {
+    initTime (state, time) {
+      state.time.value = time;
+      state.date.value = time;
+    },
+  }
 }

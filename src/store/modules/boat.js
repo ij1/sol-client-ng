@@ -17,9 +17,6 @@ export default {
   },
 
   mutations: {
-    initTime (state, time) {
-      state.instruments.time.value = time;
-    },
     updateBoat (state, data) {
       for (let i of state.instruments.list) {
         let val = data[state.instruments[i].datafield];
