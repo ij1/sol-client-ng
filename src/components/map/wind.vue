@@ -21,11 +21,18 @@ export default {
       center: null,
       zoom: null,
       redrawCnt: 0,
+      gridInterval: 64,
     }
   },
   computed: {
     wxTime () {
       return this.$store.state.weather.time;
+    },
+    gridOrigo () {
+      const centerPoint = this.map.latLngToContainerPoint(this.center);
+
+      return L.point(centerPoint.x % this.gridInterval,
+                     centerPoint.y % this.gridInterval);
     },
     needsRedraw () {
       /* Dummy access for the dependencies */
@@ -45,21 +52,14 @@ export default {
       this.zoom = this.map.getZoom();
     },
     redraw () {
-      const centerPoint = this.map.latLngToContainerPoint(this.center);
-
-      const yDelta = 64;
-      const xDelta = 64;
-      const xInit = centerPoint.x % xDelta;
-      const yInit = centerPoint.y % yDelta;
-
       let ctx = this.canvas.getContext('2d');
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       ctx.save();
-      ctx.translate(xInit, yInit);
-      for (let y = yInit; y <= this.canvas.height; y += yDelta) {
+      ctx.translate(this.gridOrigo.x, this.gridOrigo.y);
+      for (let y = this.gridOrigo.y; y <= this.canvas.height; y += this.gridInterval) {
         let xUndo = 0;
-        for (let x = xInit; x <= this.canvas.width; x += xDelta) {
+        for (let x = this.gridOrigo.x; x <= this.canvas.width; x += this.gridInterval) {
           let windPoint = null;
           windPoint = this.map.containerPointToLatLng(L.point(x, y));
           if (windPoint !== null) {
@@ -89,10 +89,10 @@ export default {
               ctx.rotate(-wind.twd);
             }
           }
-          ctx.translate(xDelta, 0);
-          xUndo -= xDelta;
+          ctx.translate(this.gridInterval, 0);
+          xUndo -= this.gridInterval;
         }
-        ctx.translate(xUndo, yDelta);
+        ctx.translate(xUndo, this.gridInterval);
       }
       ctx.restore();
       this.animFrame = null;
