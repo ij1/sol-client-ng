@@ -1,4 +1,4 @@
-export const KNT_MS = 1.94384449;
+export const MS_TO_KNT = 3600 / 1852;
 
 export function UVToWind(uv) {
   let twd = -Math.atan2(uv[1], uv[0]) - Math.PI / 2;
@@ -9,7 +9,7 @@ export function UVToWind(uv) {
   
   return {
     twd: twd,
-    knots: tws * KNT_MS,
+    knots: tws * MS_TO_KNT,
     ms: tws,
   };
 }
