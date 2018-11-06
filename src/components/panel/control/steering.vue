@@ -69,6 +69,7 @@
 
 <script>
 import Polar from './polar.vue';
+import { radToDeg, degToRad } from '../../../lib/utils.js';
 
 // FIXME: The values should probably use some arbitary precision library
 // to avoid unexpected rounding with floating-points.
@@ -119,7 +120,7 @@ export default {
       if (twd === null) {
         return 0;
       }
-      return Number((twd * 180.0 / Math.PI).toFixed(this.copyDecimals));
+      return Number(radToDeg(twd).toFixed(this.copyDecimals));
     },
     oldTwa () {
       let twa = this.$store.state.boat.instruments.twa.value;
@@ -243,10 +244,10 @@ export default {
     },
 
     ccRad () {
-      return this.cc * Math.PI / 180;
+      return degToRad(this.cc);
     },
     twaRad () {
-      return this.twa * Math.PI / 180;
+      return degToRad(this.twa);
     },
 
     applySteeringTxt () {

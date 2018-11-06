@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import { radToDeg } from '../../../lib/utils.js';
+
 export default {
   name: 'ControlDCs',
   data () {
@@ -47,8 +49,7 @@ export default {
   },
   filters: {
     degrees (radians) {
-      return (radians * 180 / Math.PI)
-               .toFixed(2)
+      return radToDeg(radians).toFixed(2);
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;
