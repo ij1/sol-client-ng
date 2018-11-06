@@ -114,7 +114,7 @@ export default {
 
     list: [
       'lat', 'lon', 'speed', 'course', 'twa', 'twd', 'tws', 'perf',
-      'time', 'date',
+      'date', 'time',
     ],
   },
   mutations: {
