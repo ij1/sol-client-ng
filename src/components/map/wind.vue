@@ -5,7 +5,6 @@
 
 <script>
 import L from 'leaflet'
-import { UVtoTwdTws, KNT_MS } from '../../lib/sol.js'
 
 export default {
   name: 'WindMap',
@@ -64,16 +63,13 @@ export default {
           let windPoint = null;
           windPoint = this.map.containerPointToLatLng(L.point(x, y));
           if (windPoint !== null) {
-            const uv = this.$store.getters['weather/interpolateLatLng'](windPoint);
-            if (uv !== undefined) {
-              const tw = UVtoTwdTws(uv);
-
-              ctx.rotate(tw[0]);
+            const wind = this.$store.getters['weather/latLngWind'](windPoint);
+            if (wind !== undefined) {
+              ctx.rotate(wind.twd);
               ctx.strokeStyle = '#000000';
 
-              const kn = tw[1] * KNT_MS;
-              const lw = kn < 50 ? kn / 10 : 5;
-              const len = (kn < 20 ? Math.floor(kn) : 20) + 6;
+              const lw = wind.knots < 50 ? wind.knots / 10 : 5;
+              const len = (wind.knots < 20 ? Math.floor(wind.knots) : 20) + 6;
 
               ctx.beginPath();
               ctx.lineWidth = 1;
@@ -90,7 +86,7 @@ export default {
               ctx.lineTo(0, -len);
               ctx.stroke();
 
-              ctx.rotate(-tw[0]);
+              ctx.rotate(-wind.twd);
             }
           }
           ctx.translate(xDelta, 0);

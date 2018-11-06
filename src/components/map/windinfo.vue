@@ -15,7 +15,7 @@
 
 <script>
 import { LControl } from 'vue2-leaflet'
-import { UVtoTwdTws, radToDeg, KNT_MS } from '../../lib/sol.js'
+import { radToDeg } from '../../lib/sol.js'
 
 export default {
   name: 'WindInfo',
@@ -46,12 +46,11 @@ export default {
       if (this.latLng === null) {
         return '';
       }
-      const uv = this.$store.getters['weather/interpolateLatLng'](this.latLng);
-      if (uv === undefined) {
+      const wind = this.$store.getters['weather/latLngWind'](this.latLng);
+      if (wind === undefined) {
         return '';
       }
-      const tw = UVtoTwdTws(uv);
-      return (tw[1] * KNT_MS).toFixed(2) + 'kn @' + (radToDeg(tw[0])).toFixed(2) + '\xb0';
+      return wind.knots.toFixed(2) + 'kn @' + radToDeg(wind.twd).toFixed(2) + '\xb0';
     },
   },
   methods: {

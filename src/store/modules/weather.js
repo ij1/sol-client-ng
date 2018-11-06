@@ -1,5 +1,6 @@
 import L from 'leaflet'
 import { UTCToMsec } from '../../lib/utils.js'
+import { UVToWind } from '../../lib/sol.js'
 
 function linearInterpolate(startPoint, intermediatePoint, endPoint, startData, endData) {
   const factor = (intermediatePoint - startPoint) / (endPoint - startPoint);
@@ -129,7 +130,7 @@ export default {
       return max;
     },
 
-    interpolateLatLng: (state, getters) => (latLng) => {
+    latLngWind: (state, getters) => (latLng) => {
       if ((state.data.boundary === null) ||
           !state.data.boundary.contains(latLng)) {
         return undefined;
@@ -165,13 +166,13 @@ export default {
       }
 
       /* time (z) solution */
-      return wxTimeInterpolate(
+      return UVToWind(wxTimeInterpolate(
         state.data.timeSeries[getters.timeIndex],
         state.time,
         state.data.timeSeries[getters.timeIndex+1],
         secondRes[0],
         secondRes[1]
-      );
+      ));
     },
   },
 
