@@ -49,6 +49,11 @@
         v-if = "this.map !== null"
         :map = "this.map"
       />
+
+      <to-boat
+        v-if = "this.map !== null"
+        :map = "this.map"
+      />
     </l-map>
   </div>
 </template>
@@ -59,6 +64,7 @@ import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet
 import WindInfo from './windinfo'
 import WindMap from './wind'
 import MapTiles from './tiles'
+import ToBoatButton from './toboat';
 import { radToDeg } from '../../lib/utils.js';
 
 export default {
@@ -72,6 +78,7 @@ export default {
     'wind-info': WindInfo,
     'wind-map': WindMap,
     'map-tiles': MapTiles,
+    'to-boat': ToBoatButton,
   },
 
   data () {
