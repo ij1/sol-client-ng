@@ -15,7 +15,7 @@
     "util": "^0.11.0",
     "util.promisify": "^1.0.0",
     "vue": "^2.5.17",
-    "vue2-leaflet": "git+https://github.com/KoRiGaN/Vue2Leaflet.git#next",
+    "vue2-leaflet": "^1.1.1",
     "vuex": "^3.0.1",
     "xml2js": "^0.4.19"
   },
