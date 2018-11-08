@@ -14,28 +14,10 @@
         v-if = "this.map !== null"
         :map = "this.map"
       />
-      <l-rectangle
-        v-if="this.$store.state.race.boundary.length == 2"
-        :bounds="this.$store.state.race.boundary"
-        :fill="false"
-        :weight="2"
-        color="magenta"
+      <race-info
+        v-if = "this.map !== null"
+        :map = "this.map"
       />
-      <l-circle-marker
-        v-for="(waypoint, index) in this.$store.state.race.route"
-        :key="index"
-        :latLng="waypoint.latLng"
-        :fillColor="wpColor"
-        :radius="2"
-        :color="wpColor"
-        :fillOpacity="1"
-      >
-        <l-tooltip
-          :options="wpTooltipOptions"
-        >
-          <span v-html="waypoint.name"/>
-        </l-tooltip>
-      </l-circle-marker>
       <l-marker
         v-if = "this.$store.state.boat.position !== null"
         :latLng="this.$store.state.boat.position"
@@ -61,9 +43,11 @@
 <script>
 import L from 'leaflet'
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
+
+import MapTiles from './tiles';
+import RaceInfo from './race';
 import WindInfo from './windinfo'
 import WindMap from './wind'
-import MapTiles from './tiles'
 import ToBoatButton from './toboat';
 import { radToDeg } from '../../lib/utils.js';
 
@@ -75,9 +59,10 @@ export default {
     'l-marker': LMarker,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
+    'map-tiles': MapTiles,
+    'race-info': RaceInfo,
     'wind-info': WindInfo,
     'wind-map': WindMap,
-    'map-tiles': MapTiles,
     'to-boat': ToBoatButton,
   },
 
@@ -150,6 +135,11 @@ export default {
 @import '../../../node_modules/leaflet/dist/leaflet.css'
 </style>
 
+/* For now, put Leaflet global CSS defs here to avoid breaking CSS
+ * Putting it to childs causes them to have no effect. Perhaps the
+ * loading order w.r.t. leaflet.css is not correct if put to elsewhere
+ * than here?
+ */
 <style>
 .wp-tooltip {
   background: transparent;
