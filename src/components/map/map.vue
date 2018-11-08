@@ -10,27 +10,12 @@
       @update:zoom="updateZoom"
       :worldCopyJump="true"
     >
-      <map-tiles
-        v-if = "this.map !== null"
-        :map = "this.map"
-      />
-      <race-info
-        v-if = "this.map !== null"
-        :map = "this.map"
-      />
-      <wind-info
-        v-if = "this.map !== null"
-        :map = "this.map"
-      />
-      <wind-map
-        v-if = "this.map !== null"
-        :map = "this.map"
-      />
+      <map-tiles v-if = "this.map !== null" :map = "this.map"/>
+      <race-info v-if = "this.map !== null" :map = "this.map"/>
+      <wind-info v-if = "this.map !== null" :map = "this.map"/>
+      <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null"/>
-      <to-boat
-        v-if = "this.map !== null"
-        :map = "this.map"
-      />
+      <to-boat v-if = "this.map !== null" :map = "this.map"/>
     </l-map>
   </div>
 </template>
