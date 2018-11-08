@@ -14,6 +14,38 @@ export default {
   },
 
   mutations: {
+    initMyBoat (state, boatData) {
+      if (typeof state.id2idx[boatData.id] !== 'undefined') {
+        return;
+      }
+      Vue.set(state.id2idx, boatData.id, state.boat.length);
+      state.boat.push({
+        id: boatData.id,
+        name: boatData.name,
+        color: {
+          r: 255,
+          g: 0,
+          b: 255,
+        },
+        type: '',
+
+        dtg: boatData.dtg,
+        dbl: boatData.dbl,
+
+        lat: boatData.lat,
+        lon: boatData.lon,
+        cog: boatData.cog,
+
+        ranking: boatData.ranking,
+        current_leg: boatData.current_leg,
+        log: 0,
+
+        latLng: L.latLng(boatData.lat, boatData.lon),
+        syc: false,
+        country: null,
+        trace: [],
+      });
+    },
     updateFleet (state, fleet) {
       for (let boat of fleet) {
         const id = boat.id;
@@ -22,6 +54,7 @@ export default {
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
           state.boat[idx].name = boat.name;
+          state.boat[idx].type = boat.type;
           state.boat[idx].latLng = latLng;
           state.boat[idx].cog = boat.cog;
 

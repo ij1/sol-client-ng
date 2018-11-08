@@ -51,7 +51,8 @@ export default {
           boatData.boat.time = rootGetters['time/now']();
           let chatData = boatData.chats;
           chatData.id = nextChatroom;
-      
+
+          commit('race/fleet/initMyBoat', boatData.boat, {root: true});
           commit('instruments/updateInstruments', boatData.boat);
           commit('updateBoat', boatData.boat);
           commit('weather/minTime', state.instruments.time, {root: true});
