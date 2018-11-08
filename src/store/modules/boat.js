@@ -11,12 +11,16 @@ export default {
   },
 
   state: {
+    id: null,
+    name: null,
     position: null,
     polar: null,
   },
 
   mutations: {
     updateBoat (state, data) {
+      state.id = data.id;
+      state.name = data.name;
       state.position = L.latLng(data.lat, data.lon);
     },
     setPolar (state, polar) {
