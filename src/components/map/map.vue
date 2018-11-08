@@ -46,8 +46,8 @@ import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet
 
 import MapTiles from './tiles';
 import RaceInfo from './race';
-import WindInfo from './windinfo'
-import WindMap from './wind'
+import WindMap from './wind';
+import WindInfo from './windinfo';
 import ToBoatButton from './toboat';
 import { radToDeg } from '../../lib/utils.js';
 
@@ -61,8 +61,8 @@ export default {
     'l-tooltip': LTooltip,
     'map-tiles': MapTiles,
     'race-info': RaceInfo,
-    'wind-info': WindInfo,
     'wind-map': WindMap,
+    'wind-info': WindInfo,
     'to-boat': ToBoatButton,
   },
 
