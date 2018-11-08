@@ -11,7 +11,7 @@
       :worldCopyJump="true"
     >
       <map-tiles v-if = "this.map !== null" :map = "this.map"/>
-      <race-info v-if = "this.map !== null" :map = "this.map"/>
+      <race-info v-if = "this.map !== null"/>
       <wind-info v-if = "this.map !== null" :map = "this.map"/>
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null"/>

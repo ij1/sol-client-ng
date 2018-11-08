@@ -38,8 +38,6 @@ export default {
 
   data () {
     return {
-      map: null,
-
       wpColor: "red",
       wpTooltipOptions: {
         permanent: true,
