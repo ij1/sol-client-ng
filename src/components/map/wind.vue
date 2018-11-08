@@ -37,7 +37,6 @@ export default {
     needsRedraw () {
       /* Dummy access for the dependencies */
       this.$store.state.weather.loaded;
-      this.canvas;
       this.wxTime;
       this.center;
       this.zoom;
