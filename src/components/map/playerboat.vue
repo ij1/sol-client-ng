@@ -1,15 +1,27 @@
 <template>
-  <l-layer-group v-if = "this.$store.state.boat.position !== null">
+  <l-layer-group v-if = "this.$store.state.boat.id !== null">
     <l-marker
       :latLng="this.$store.state.boat.position"
       :icon="myBoatIcon"
+    />
+    <l-polyline
+      :latLngs = "this.boatTrace"
+      color = "#ff00ff"
+      :weight = "1"
+      :fill = "false"
+    />
+    <l-polyline
+      :latLngs = "this.lastMileTrace"
+      color = "#ff00ff"
+      :weight = "1"
+      :fill = "false"
     />
   </l-layer-group>
 </template>
 
 <script>
 import L from 'leaflet'
-import { LLayerGroup, LMarker } from 'vue2-leaflet'
+import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet'
 import { radToDeg } from '../../lib/utils.js';
 
 export default {
@@ -17,6 +29,7 @@ export default {
   components: {
     'l-layer-group': LLayerGroup,
     'l-marker': LMarker,
+    'l-polyline': LPolyline,
   },
 
   computed: {
@@ -29,7 +42,24 @@ export default {
         iconUrl: iconUrl,
         iconAnchor: [11, 11],
       });
-    }
+    },
+    boat () {
+      const id = this.$store.state.boat.id;
+      const idx = this.$store.state.race.fleet.id2idx[id];
+
+      return this.$store.state.race.fleet.boat[idx];
+    },
+    boatTrace () {
+      return this.boat.trace;
+    },
+    lastMileTrace () {
+      if (this.boat.trace.length === 0) {
+        return [];
+      }
+      return [this.boat.trace[0],
+              this.boat.latLng,
+              this.$store.state.boat.position];
+    },
   },
 }
 </script>
