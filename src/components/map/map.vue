@@ -18,11 +18,6 @@
         v-if = "this.map !== null"
         :map = "this.map"
       />
-      <l-marker
-        v-if = "this.$store.state.boat.position !== null"
-        :latLng="this.$store.state.boat.position"
-        :icon="myBoatIcon"
-      />
       <wind-info
         v-if = "this.map !== null"
         :map = "this.map"
@@ -31,7 +26,10 @@
         v-if = "this.map !== null"
         :map = "this.map"
       />
-
+      <player-boat
+        v-if = "this.map !== null"
+        :map = "this.map"
+      />
       <to-boat
         v-if = "this.map !== null"
         :map = "this.map"
@@ -48,8 +46,8 @@ import MapTiles from './tiles';
 import RaceInfo from './race';
 import WindMap from './wind';
 import WindInfo from './windinfo';
+import PlayerBoat from './playerboat';
 import ToBoatButton from './toboat';
-import { radToDeg } from '../../lib/utils.js';
 
 export default {
   name: 'Map',
@@ -63,6 +61,7 @@ export default {
     'race-info': RaceInfo,
     'wind-map': WindMap,
     'wind-info': WindInfo,
+    'player-boat': PlayerBoat,
     'to-boat': ToBoatButton,
   },
 
@@ -89,19 +88,6 @@ export default {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject;
     });
-  },
-
-  computed: {
-    myBoatIcon() {
-      const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='22px' height='22px'><g transform='rotate(" +
-        radToDeg(this.$store.state.boat.instruments.course.value) +
-        " 11 11)'><path d='M 8,22 C 5 10, 9 12, 11 0 C 13 12, 17 10,14 22 Z' fill-opacity='0' stroke-opacity='1' stroke='#ff00ff'/></g></svg>";
-      const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
-      return this.L.icon({
-        iconUrl: iconUrl,
-        iconAnchor: [11, 11],
-      });
-    }
   },
 
   methods: {
