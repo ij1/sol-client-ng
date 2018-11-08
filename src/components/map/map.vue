@@ -55,13 +55,6 @@ export default {
       currentCenter: L.latLng(0, 0),
       currentZoom: 3,
 
-      wpColor: "red",
-      wpTooltipOptions: {
-        permanent: true,
-        direction: 'right',
-        className: 'wp-tooltip',
-      },
-
       L: L,
     }
   },
