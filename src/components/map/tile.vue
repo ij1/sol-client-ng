@@ -59,9 +59,10 @@ export default {
 
       return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
     },
+    /* Reserve 100px extra beyond the viewport for panning */
     drawBounds () {
-      const min = this.$parent.pixelBounds.min.subtract(this.$parent.pixelSize);
-      const max = this.$parent.pixelBounds.max.add(this.$parent.pixelSize);
+      const min = this.$parent.pixelBounds.min.subtract(L.point(100, 100));
+      const max = this.$parent.pixelBounds.max.add(L.point(100, 100));
       const bounds = L.latLngBounds(this.$parent.map.unproject(min),
                                     this.$parent.map.unproject(max));
       return bounds;
