@@ -9,7 +9,8 @@ export default {
      * should have it for all boats if the SOL API is sane.
      */
     newBoatId: null,
-    boat: {},
+    boat: [],
+    id2idx: {},
   },
 
   mutations: {
@@ -18,16 +19,17 @@ export default {
         const id = boat.id;
         const latLng = L.latLng(boat.lat, boat.lon);
 
-        if (typeof state.boat[id] !== 'undefined') {
-          state.boat[id].name = boat.name;
-          state.boat[id].latLng = latLng;
-          state.boat[id].cog = boat.cog;
+        if (typeof state.id2idx[id] !== 'undefined') {
+          const idx = state.id2idx[id];
+          state.boat[idx].name = boat.name;
+          state.boat[idx].latLng = latLng;
+          state.boat[idx].cog = boat.cog;
 
-          state.boat[id].ranking = boat.ranking;
-          state.boat[id].dtg = boat.dtg;
-          state.boat[id].dbl = boat.dbl;
-          state.boat[id].log = boat.log;
-          state.boat[id].current_leg = boat.current_leg;
+          state.boat[idx].ranking = boat.ranking;
+          state.boat[idx].dtg = boat.dtg;
+          state.boat[idx].dbl = boat.dbl;
+          state.boat[idx].log = boat.log;
+          state.boat[idx].current_leg = boat.current_leg;
 
         } else {
           delete boat.lat;
@@ -48,7 +50,8 @@ export default {
 
           boat.trace = [];
 
-          Vue.set(state.boat, id, boat);
+          Vue.set(state.id2idx, id, state.boat.length);
+          state.boat.push(boat);
 
           state.newBoatId = id;
         }
@@ -61,17 +64,23 @@ export default {
         /* If not in the fleet yet, postpone all work to the next metainfo
          * for this boat in order to have simpler state invariants.
          */
-        if (typeof state.boat[id] !== 'undefined') {
+        if (typeof state.id2idx[id] !== 'undefined') {
+          const idx = state.id2idx[id];
+
           if (state.newBoatId === id) {
             state.newBoatId = null;
           }
-          state.boat[id].syc = (boat.$.syc === 'True');
-          state.boat[id].country = boat.$.c;
+          state.boat[idx].syc = (boat.$.syc === 'True');
+          state.boat[idx].country = boat.$.c;
         }
       }
     },
     updateBoatTrace (state, traceData) {
-      state.boat[traceData.id].trace = traceData.trace;
+      const id = traceData.id;
+      if (typeof state.id2idx[id] !== 'undefined') {
+        const idx = state.id2idx[traceData.id];
+        state.boat[idx].trace = traceData.trace;
+      }
     },
   },
 
