@@ -26,10 +26,7 @@
         v-if = "this.map !== null"
         :map = "this.map"
       />
-      <player-boat
-        v-if = "this.map !== null"
-        :map = "this.map"
-      />
+      <player-boat v-if = "this.map !== null"/>
       <to-boat
         v-if = "this.map !== null"
         :map = "this.map"
