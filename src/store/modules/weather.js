@@ -131,13 +131,21 @@ export default {
     },
 
     latLngWind: (state, getters) => (latLng) => {
-      if ((state.data.boundary === null) ||
-          !state.data.boundary.contains(latLng)) {
+      if (state.data.boundary === null) {
+        return undefined;
+      }
+      /* De-wrap if longitude < origo because the wx boundary of the source
+       * data is not-wrapped when crossing the anti-meridian
+       */
+      const wxLatLng = L.latLng(latLng.lat,
+                                latLng.lng +
+                                (latLng.lng < state.data.origo[1] ? 360 : 0));
+      if (!state.data.boundary.contains(wxLatLng)) {
         return undefined;
       }
 
-      const lonIdx = Math.floor((latLng.lng - state.data.origo[1]) / state.data.increment[1]);
-      const latIdx = Math.floor((latLng.lat - state.data.origo[0]) / state.data.increment[0]);
+      const lonIdx = Math.floor((wxLatLng.lng - state.data.origo[1]) / state.data.increment[1]);
+      const latIdx = Math.floor((wxLatLng.lat - state.data.origo[0]) / state.data.increment[0]);
 
       /* latitude (y) solution */
       let firstRes = [[], []];
@@ -145,7 +153,7 @@ export default {
         for (let x = 0; x <= 1; x++) {
           firstRes[t][x] = linearInterpolate(
             latIdx * state.data.increment[0] + state.data.origo[0],
-            latLng.lat,
+            wxLatLng.lat,
             (latIdx + 1) * state.data.increment[0] + state.data.origo[0],
             state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx],
             state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx+1]
@@ -158,7 +166,7 @@ export default {
       for (let t = 0; t <= 1; t++) {
           secondRes[t] = linearInterpolate(
             lonIdx * state.data.increment[1] + state.data.origo[1],
-            latLng.lng,
+            wxLatLng.lng,
             (lonIdx + 1) * state.data.increment[1] + state.data.origo[1],
             firstRes[t][0],
             firstRes[t][1]
