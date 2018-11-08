@@ -64,6 +64,7 @@ export default {
           let windPoint = null;
           windPoint = this.map.containerPointToLatLng(L.point(x, y));
           if (windPoint !== null) {
+            windPoint = this.map.wrapLatLng(windPoint);
             const wind = this.$store.getters['weather/latLngWind'](windPoint);
             if (wind !== undefined) {
               ctx.rotate(wind.twd);

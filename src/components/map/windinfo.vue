@@ -56,7 +56,7 @@ export default {
   methods: {
     setPosition (e) {
       /* For some reason it's not camel-cased in the event! */
-      this.latLng = e.latlng;
+      this.latLng = this.map.wrapLatLng(e.latlng);
     },
     clearPosition () {
       this.latLng = null;
