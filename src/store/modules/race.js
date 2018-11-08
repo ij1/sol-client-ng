@@ -40,7 +40,7 @@ export default {
   actions: {
     fetchAuthRaceinfo ({rootState, rootGetters, commit, dispatch}) {
       /* Initialize time before boat/wx is fetched to avoid issues */
-      const now = rootGetters['time/now'];
+      const now = rootGetters['time/now']();
       commit('boat/instruments/initTime', now, {root: true});
       commit('weather/initTime', now, {root: true});
 

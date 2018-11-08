@@ -55,7 +55,7 @@ export default {
         refetchAction: 'boat/fetch',
 
         dataHandler: (boatData) => {
-          boatData.boat.time = rootGetters['time/now'];
+          boatData.boat.time = rootGetters['time/now']();
           let chatData = boatData.chats;
           chatData.id = nextChatroom;
       

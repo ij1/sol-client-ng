@@ -6,12 +6,11 @@ export default {
   },
 
   getters: {
-    /* The results of this call MUST NOT be cached, thus we use a closure.
-     * The extra parenthesis are to make it accessable as if it would not
-     * be a function.
+    /* The results of this call MUST NOT be cached, thus the fancy use
+     * of parenthesis.
      */
-    now: state => (() => {
+    now: state => () => {
       return Date.now() + state.clockOffset;
-    })(),
+    },
   },
 }
