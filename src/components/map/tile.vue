@@ -51,7 +51,7 @@ export default {
     tileGridSize () {
       return this.$store.getters['tiles/tileGridSize'](this.id.l);
     },
-    maxBounds () {
+    drawBounds () {
       const min = this.$parent.pixelBounds.min.subtract(this.$parent.pixelSize);
       const max = this.$parent.pixelBounds.max.add(this.$parent.pixelSize);
       const bounds = L.latLngBounds(this.$parent.map.unproject(min),
@@ -65,17 +65,17 @@ export default {
       let x2 = (this.id.x + 1) * this.tileGridSize - 180;
 
       /* Restrict canvas boundaries if necessary */
-      if (y1 < this.maxBounds.getSouthWest().lat) {
-        y1 = this.maxBounds.getSouthWest().lat;
+      if (y1 < this.drawBounds.getSouthWest().lat) {
+        y1 = this.drawBounds.getSouthWest().lat;
       }
-      if (x1 < this.maxBounds.getSouthWest().lng) {
-        x1 = this.maxBounds.getSouthWest().lng;
+      if (x1 < this.drawBounds.getSouthWest().lng) {
+        x1 = this.drawBounds.getSouthWest().lng;
       }
-      if (y2 > this.maxBounds.getNorthEast().lat) {
-        y2 = this.maxBounds.getNorthEast().lat;
+      if (y2 > this.drawBounds.getNorthEast().lat) {
+        y2 = this.drawBounds.getNorthEast().lat;
       }
-      if (x2 > this.maxBounds.getNorthEast().lng) {
-        x2 = this.maxBounds.getNorthEast().lng;
+      if (x2 > this.drawBounds.getNorthEast().lng) {
+        x2 = this.drawBounds.getNorthEast().lng;
       }
 
       return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
