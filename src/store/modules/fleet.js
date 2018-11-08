@@ -167,7 +167,7 @@ export default {
               continue;
             }
 
-            var trace = [];
+            let trace = [];
             for (let lngLatTxt of boat.data.split(/ /)) {
               const lngLatArr = lngLatTxt.split(/,/);
               trace.push(L.latLng(lngLatArr[1], lngLatArr[0]));
