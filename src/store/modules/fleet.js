@@ -163,7 +163,7 @@ export default {
             const id = boat.id;
 
             /* Update only for the existing boats */
-            if (typeof state.boat[id] === 'undefined') {
+            if (typeof state.id2idx[id] === 'undefined') {
               continue;
             }
 
