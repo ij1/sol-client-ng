@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { MS_TO_KNT } from '../../lib/sol.js';
 
 function defaultFormat (instrument) {
@@ -121,6 +122,18 @@ export default {
     initTime (state, time) {
       state.time.value = time;
       state.date.value = time;
+    },
+    updateInstruments (state, data) {
+      for (let i of state.list) {
+        let val = data[state[i].datafield];
+        if (typeof state[i].notNum !== 'undefined') {
+          val = parseFloat(val);
+          if (!Number.isFinite(val)) {
+            val = undefined;
+          }
+        }
+        Vue.set(state[i], 'value', val);
+      }
     },
   }
 }

@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import L from 'leaflet'
 import steeringModule from './steering'
 import instrumentModule from './instruments';
@@ -18,16 +17,6 @@ export default {
 
   mutations: {
     updateBoat (state, data) {
-      for (let i of state.instruments.list) {
-        let val = data[state.instruments[i].datafield];
-        if (typeof state.instruments[i].notNum !== 'undefined') {
-          val = parseFloat(val);
-          if (!Number.isFinite(val)) {
-            val = undefined;
-          }
-        }
-        Vue.set(state.instruments[i], 'value', val);
-      }
       state.position = L.latLng(data.lat, data.lon);
     },
     setPolar (state, polar) {
@@ -59,6 +48,7 @@ export default {
           let chatData = boatData.chats;
           chatData.id = nextChatroom;
       
+          commit('instruments/updateInstruments', boatData.boat);
           commit('updateBoat', boatData.boat);
           commit('weather/minTime', state.instruments.time, {root: true});
 
