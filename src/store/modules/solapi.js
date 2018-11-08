@@ -49,7 +49,7 @@ export default {
 
       .then((data) => {
         if (typeof reqDef.compressedPayload !== 'undefined') {
-          var input = new Uint8Array(data);
+          let input = new Uint8Array(data);
           return zlibInflate(input, null);
         } else {
           return data;

@@ -68,11 +68,11 @@ export default {
         compressedPayload: true,
 
         dataHandler: (data) => {
-          var geoms = {};
+          let geoms = {};
 
           if (typeof data.cell[0].poly !== 'undefined') {
             for (let poly of data.cell[0].poly) {
-              var geom = [];
+              let geom = [];
               for (let pt of poly.point) {
                 geom.push(L.latLng(pt.$.lat, pt.$.lon));
               }
