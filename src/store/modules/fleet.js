@@ -9,6 +9,7 @@ export default {
      * should have it for all boats if the SOL API is sane.
      */
     newBoatId: null,
+    fleetTime: 0,
     boat: [],
     id2idx: {},
   },
@@ -18,6 +19,7 @@ export default {
       if (typeof state.id2idx[boatData.id] !== 'undefined') {
         return;
       }
+      state.fleetTime = boatData.time;
       Vue.set(state.id2idx, boatData.id, state.boat.length);
       state.boat.push({
         id: boatData.id,
@@ -46,8 +48,10 @@ export default {
         trace: [],
       });
     },
-    updateFleet (state, fleet) {
-      for (let boat of fleet) {
+    updateFleet (state, update) {
+      state.fleetTime = update.timestamp;
+
+      for (let boat of update.fleet) {
         const id = boat.id;
         const latLng = L.latLng(boat.lat, boat.lon);
 
@@ -118,7 +122,7 @@ export default {
   },
 
   actions: {
-    fetchRace({rootState, state, commit, dispatch}) {
+    fetchRace({rootState, state, rootGetters, commit, dispatch}) {
       const getDef = {
         url: "/webclient/race_" + rootState.auth.race_id + ".xml",
         params: {
@@ -130,6 +134,7 @@ export default {
         compressedPayload: true,
 
         dataHandler: (raceInfo) => {
+          const now = rootGetters['time/now']();
           if ((typeof raceInfo.boats !== 'undefined') &&
               (typeof raceInfo.boats.boat !== 'undefined')) {
             let boatList = raceInfo.boats.boat;
@@ -137,7 +142,10 @@ export default {
               boatList = [boatList];
             }
 
-            commit('updateFleet', boatList);
+            commit('updateFleet', {
+              timestamp: now,
+              fleet: boatList,
+            });
 
             if (state.newBoats !== null) {
               dispatch('fetchMetainfo');
