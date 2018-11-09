@@ -1,9 +1,9 @@
 <template>
   <div id="weather-panel">
-    <div id="weather-panel-placeholder" v-if="!this.$store.state.weather.loaded">
+    <div id="weather-panel-placeholder" v-if="!this.wxLoaded">
       Waiting for the weather information to load...
     </div>
-    <div id="weather-panel-control" v-if="this.$store.state.weather.loaded">
+    <div id="weather-panel-control" v-if="this.wxLoaded">
       <button @click="setTime(0)">&#124;&#9664;</button>
       <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
       <span>Weather forecasted for</span>
@@ -20,8 +20,8 @@
         </option>
       </select>
       <span>(Issued
-        {{ this.$store.state.weather.data.updated | formatTime }}):
-        {{ this.$store.state.weather.time | formatTime }}
+        {{ this.wxUpdatedTime | formatTime }}):
+        {{ this.wxTime | formatTime }}
         (+{{ this.timeOffset | formatOffset }})
       </span>
       <button>&#9654;</button>
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+
 function h (value) {
   return value * 3600 * 1000;
 }
@@ -104,8 +106,7 @@ export default {
 
   computed: {
     fullTimescale () {
-      let f = this.$store.getters['weather/dataTimescale'];
-      return f.toFixed(0);
+      return this.wxDataTimescale.toFixed(0);
     },
     offsetMax () {
       const range = this.weatherTimescales[this.selectedTimescale].range;
@@ -115,8 +116,17 @@ export default {
       return range.toFixed(0);
     },
     timeOffset () {
-      return this.$store.state.weather.time - this.$store.state.boat.instruments.time.value;
-    }
+      return this.wxTime - this.boatTime;
+    },
+    ...mapState({
+      wxLoaded: state => state.weather.loaded,
+      wxUpdatedTime: state => state.weather.data.updated,
+    }),
+    ...mapGetters({
+      boatTime: 'boat/time',
+      wxTime: 'weather/time',
+      wxDataTimescale: 'weather/dataTimescale',
+    }),
   },
 
   filters: {
@@ -165,7 +175,7 @@ export default {
       }
     },
     setTime (value) {
-      this.$store.commit('weather/setTime', this.$store.state.boat.instruments.time.value + value);
+      this.$store.commit('weather/setTime', this.boatTime + value);
     },
     changeTime (delta) {
       let value = this.timeOffset + delta;

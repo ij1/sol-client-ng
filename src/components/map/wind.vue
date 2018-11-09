@@ -1,9 +1,10 @@
 <template>
-  <div v-if = 'this.$store.state.weather.loaded'>
+  <div v-if = 'this.wxLoaded'>
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet'
 
 export default {
@@ -25,9 +26,6 @@ export default {
     }
   },
   computed: {
-    wxTime () {
-      return this.$store.state.weather.time;
-    },
     gridOrigo () {
       const centerPoint = this.map.latLngToContainerPoint(this.center);
 
@@ -36,13 +34,19 @@ export default {
     },
     needsRedraw () {
       /* Dummy access for the dependencies */
-      this.$store.state.weather.loaded;
+      this.wxLoaded;
       this.wxTime;
       this.center;
       this.zoom;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
+    ...mapState({
+      wxLoaded: state => state.weather.loaded,
+    }),
+    ...mapGetters({
+      wxTime: 'weather/time',
+    }),
   },
   methods: {
     onMove () {

@@ -2,7 +2,7 @@
   <l-control
     id = "wind-info"
     :position = "'topright'"
-    v-if = 'this.$store.state.weather.loaded'
+    v-if = 'this.wxLoaded'
   >
     <div>
       {{ latLng | positionFormat }}
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet'
 import { radToDeg } from '../../lib/utils.js'
 
@@ -52,6 +53,9 @@ export default {
       }
       return wind.knots.toFixed(2) + 'kn @' + radToDeg(wind.twd).toFixed(2) + '\xb0';
     },
+    ...mapState({
+      wxLoaded: state => state.weather.loaded,
+    }),
   },
   methods: {
     setPosition (e) {
