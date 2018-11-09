@@ -99,11 +99,14 @@ export default {
   },
 
   getters: {
+    time: (state) => {
+      return state.time;
+    },
     lastTimestamp: (state) => {
       return state.data.timeSeries[state.data.timeSeries.length - 1];
     },
-    dataTimescale: (state, getters, rootState) => {
-      return getters.lastTimestamp - rootState.boat.instruments.time.value;
+    dataTimescale: (state, getters, rootState, rootGetters) => {
+      return getters.lastTimestamp - rootGetters['boat/time'];
     },
     timeIndex: (state) => {
       /* Short-circuit for the common case near the beginning of the wx series */

@@ -32,6 +32,13 @@ export default {
     }
   },
 
+  getters: {
+    time: (state) => {
+      // CHECKME: is it ok to access submodule state like this (it works)
+      return state.instruments.time.value;
+    },
+  },
+
   actions: {
     fetch ({state, rootState, rootGetters, commit, dispatch}) {
       const nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
