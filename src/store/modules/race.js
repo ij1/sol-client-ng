@@ -2,6 +2,7 @@ import Vue from 'vue';
 import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
+import { UTCToMsec } from '../../lib/utils.js';
 
 export default {
   namespaced: true,
@@ -60,6 +61,7 @@ export default {
 
           delete raceInfo.boat;
           delete raceInfo.chatrooms;
+          raceInfo.start_time = UTCToMsec(raceInfo.start_time);
           commit('init', raceInfo);
 
           commit('boat/setPolar', polarRawData, {root: true});
