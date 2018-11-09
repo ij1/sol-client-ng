@@ -1,13 +1,13 @@
 <template>
-  <l-layer-group v-if="this.$store.state.race.loaded">
+  <l-layer-group v-if="this.race.loaded">
     <l-rectangle
-       :bounds="this.$store.state.race.boundary"
+       :bounds="this.race.boundary"
        :fill="false"
        :weight="2"
        color="magenta"
     />
     <l-circle-marker
-      v-for="(waypoint, index) in this.$store.state.race.route"
+      v-for="(waypoint, index) in this.race.route"
       :key="index"
       :latLng="waypoint.latLng"
       :fillColor="wpColor"
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { LLayerGroup, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 
 export default {
@@ -45,6 +46,12 @@ export default {
         className: 'wp-tooltip',
       },
     }
+  },
+
+  computed: {
+    ...mapState({
+      race: state => state.race,
+    }),
   },
 }
 </script>
