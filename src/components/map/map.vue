@@ -14,6 +14,7 @@
       <race-info v-if = "this.map !== null"/>
       <wind-info v-if = "this.map !== null" :map = "this.map"/>
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
+      <fleet-map v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null"/>
       <to-boat v-if = "this.map !== null" :map = "this.map"/>
       <towback-flag v-if = "this.map !== null"/>
@@ -29,6 +30,7 @@ import MapTiles from './tiles';
 import RaceInfo from './race';
 import WindMap from './wind';
 import WindInfo from './windinfo';
+import FleetMap from './fleet';
 import PlayerBoat from './playerboat';
 import ToBoatButton from './toboat';
 import TowbackFlag from '../towbackflag';
@@ -45,6 +47,7 @@ export default {
     'race-info': RaceInfo,
     'wind-map': WindMap,
     'wind-info': WindInfo,
+    'fleet-map': FleetMap,
     'player-boat': PlayerBoat,
     'to-boat': ToBoatButton,
     'towback-flag': TowbackFlag,
