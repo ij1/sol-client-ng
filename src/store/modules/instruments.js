@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { speedTowardsBearing } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 
 function defaultFormat (instrument) {
@@ -71,7 +72,19 @@ export default {
       decimals: 2,
       format: defaultFormat,
     },
-    // VMG
+    vmg: {
+      value: null,
+      name: "VMG",
+      unit: "kn",
+      mult: 1,
+      calculate: (state) => {
+        return speedTowardsBearing(state.speed.value,
+                                   state.course.value,
+                                   state.twd.value);
+      },
+      decimals: 2,
+      format: defaultFormat,
+    },
     // VMC
     perf: {
       value: null,
@@ -114,7 +127,7 @@ export default {
     },
 
     list: [
-      'lat', 'lon', 'speed', 'course', 'twa', 'twd', 'tws', 'perf',
+      'lat', 'lon', 'speed', 'course', 'twa', 'twd', 'tws', 'vmg', 'perf',
       'date', 'time',
     ],
   },
@@ -125,7 +138,12 @@ export default {
     },
     updateInstruments (state, data) {
       for (let i of state.list) {
-        let val = data[state[i].datafield];
+        let val;
+        if (typeof state[i].calculate !== 'undefined') {
+          val = state[i].calculate(state, data);
+        } else {
+          val = data[state[i].datafield];
+        }
         if (typeof state[i].notNum !== 'undefined') {
           val = parseFloat(val);
           if (!Number.isFinite(val)) {

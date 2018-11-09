@@ -26,3 +26,10 @@ export function radToDeg(rad) {
 export function degToRad(deg) {
   return deg * Math.PI / 180;
 }
+
+/* Returns the minimum angle between a and b (parameters in radians)
+ * always 0 <= x <= PI
+ */
+export function minAngle(a, b) {
+  return Math.PI - Math.abs(Math.abs(a - b) - Math.PI);
+}
