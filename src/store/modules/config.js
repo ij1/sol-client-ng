@@ -1,5 +1,5 @@
 const state = {
-  server: 'http://localhost:8080/api',
+  server: 'http://localhost:8080/proxy',
 }
 
 export default {
