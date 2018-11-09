@@ -47,7 +47,6 @@ export default {
       return this.latLngToTilePoint(this.bounds.getSouthEast()).floor();
     },
 
-    // FIXME: mapgetters
     tileGridSize () {
       return this.$store.getters['tiles/tileGridSize'](this.id.l);
     },
