@@ -15,6 +15,9 @@
       <div v-if="activeTab === 1" class="control-panel-content">
         <control-dcs/>
       </div>
+      <div v-if="activeTab === 2" class="control-panel-content">
+        <control-leaderboard/>
+      </div>
       <div v-if="activeTab === 3" class="control-panel-content">
         <control-chats/>
       </div>
@@ -28,6 +31,7 @@
 <script>
 import ControlSteering from './steering.vue';
 import ControlDCs from './dcs.vue';
+import ControlLeaderboard from './leaderboard.vue';
 import ControlChats from './chats.vue';
 import ControlRaceMessages from './racemessages.vue';
 
@@ -36,6 +40,7 @@ export default {
   components: {
     'control-steering': ControlSteering,
     'control-dcs': ControlDCs,
+    'control-leaderboard': ControlLeaderboard,
     'control-chats': ControlChats,
     'control-race-messages': ControlRaceMessages,
   },
