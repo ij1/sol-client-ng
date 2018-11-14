@@ -31,12 +31,12 @@ export default {
         },
         type: '',
 
-        dtg: boatData.dtg,
+        dtg: parseFloat(boatData.dtg),
         dbl: boatData.dbl,
 
         lat: boatData.lat,
         lon: boatData.lon,
-        cog: boatData.cog,
+        cog: parseFloat(boatData.cog),
 
         ranking: parseInt(boatData.ranking),
         current_leg: boatData.current_leg,
@@ -60,10 +60,10 @@ export default {
           state.boat[idx].name = boat.name;
           state.boat[idx].type = boat.type;
           state.boat[idx].latLng = latLng;
-          state.boat[idx].cog = boat.cog;
+          state.boat[idx].cog = parseFloat(boat.cog);
 
           state.boat[idx].ranking = parseInt(boat.ranking);
-          state.boat[idx].dtg = boat.dtg;
+          state.boat[idx].dtg = parseFloat(boat.dtg);
           state.boat[idx].dbl = boat.dbl;
           state.boat[idx].log = boat.log;
           state.boat[idx].current_leg = boat.current_leg;
@@ -86,7 +86,9 @@ export default {
           delete boat.color_B;
 
           boat.trace = [];
+          boat.cog = parseFloat(boat.cog);
           boat.ranking = parseInt(boat.ranking);
+          boat.dtg = parseFloat(boat.dtg);
 
           Vue.set(state.id2idx, id, state.boat.length);
           state.boat.push(boat);
