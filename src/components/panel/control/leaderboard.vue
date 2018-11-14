@@ -27,7 +27,7 @@
          >
            <td class="leaderboard-right">{{boat.ranking}}</td>
            <td class="leaderboard-left">{{boat.country}}</td>
-           <td>{{boat.syc === 'true' ? 't' : 'f'}}</td>
+           <td>{{boat.syc === true ? 't' : 'f'}}</td>
            <td class="leaderboard-left">{{boat.name}}</td>
            <td class="leaderboard-right">{{boat.dtg | prettyDtf}}</td>
            <td class="leaderboard-left" v-if="showType">{{boat.type}}</td>
