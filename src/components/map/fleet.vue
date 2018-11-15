@@ -96,6 +96,7 @@ export default {
     const GLayer = L.GridLayer.extend({});
     this.layer = new GLayer();
     this.layer.createTile = this.createTile;
+    this.layer.setZIndex(250);
     this.map.addLayer(this.layer);
   },
   beforeDestroy () {
