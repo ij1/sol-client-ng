@@ -13,12 +13,12 @@
      <div id="leaderboard-table">
      <table>
        <thead>
-         <th>#</th>
-         <th></th>
-         <th></th>
-         <th>Name</th>
-         <th>DTF</th>
-         <th v-if="showType">Boat Type</th>
+         <th @click="selectSort('ranking')">#</th>
+         <th @click="selectSort('country')"></th>
+         <th @click="selectSort('syc')"></th>
+         <th @click="selectSort('name')">Name</th>
+         <th @click="selectSort('dtg')">DTF</th>
+         <th @click="selectSort('type')" v-if="showType">Boat Type</th>
        </thead>
        <tbody>
          <tr
@@ -73,6 +73,16 @@ export default {
         return 0;
       });
     },
+  },
+  methods: {
+    selectSort (column) {
+      if (this.sortKey === column) {
+        this.sortDir = (this.sortDir === 'asc' ? 'desc' : 'asc');
+      } else {
+        this.sortKey = column;
+        this.sortDir = 'asc';
+      }
+    }
   },
 }
 </script>
