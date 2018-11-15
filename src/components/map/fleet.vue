@@ -56,12 +56,12 @@ export default {
         ctx.translate(center.x - prev.x, center.y - prev.y);
         if (boat.dtg > 0) {
           ctx.rotate(boat.cog);
-          ctx.strokeStyle = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.g + ')';
+          ctx.strokeStyle = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
           ctx.stroke(this.boatPath);
           ctx.rotate(-boat.cog);
         } else {
           ctx.arc(0, 0, 2, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.g + ')';
+          ctx.fillStyle = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
           ctx.fill();
         }
 
