@@ -13,24 +13,25 @@
      <div id="leaderboard-table">
      <table>
        <thead>
-         <th @click="selectSort('ranking')">#</th>
-         <th @click="selectSort('country')"></th>
-         <th @click="selectSort('syc')"></th>
-         <th @click="selectSort('name')">Name</th>
-         <th @click="selectSort('dtg')">DTF</th>
-         <th @click="selectSort('type')" v-if="showType">Boat Type</th>
+         <th
+           v-for = "column in visibleColumnsWithSort"
+           :key = "column.dataField"
+           @click="selectSort(column.dataField)"
+         >
+           {{column.thWithSort}}
+         </th>
        </thead>
        <tbody>
          <tr
            v-for = "boat in boatList"
            :key = "boat.id"
          >
-           <td class="leaderboard-right">{{boat.ranking}}</td>
-           <td class="leaderboard-left">{{boat.country}}</td>
-           <td>{{boat.syc === true ? 't' : 'f'}}</td>
-           <td class="leaderboard-left">{{boat.name}}</td>
-           <td class="leaderboard-right">{{boat.dtg | prettyDtf}}</td>
-           <td class="leaderboard-left" v-if="showType">{{boat.type}}</td>
+           <td
+             v-for = "column in visibleColumnsWithSort"
+             :key = "column.dataField"
+           >
+             {{boat[column.dataField] | prettyPrint(column) }}
+           </td>
          </tr>
        </tbody>
      </table>
@@ -47,15 +48,44 @@ export default {
       filter: '',
       sortKey: 'ranking',
       sortDir: 'asc',
-      showType: true,
+      columns: [
+        {dataField: 'ranking', th: '#', align: 'r', visible: true},
+        {dataField: 'country', th: '', align: 'l', visible: true},
+        {dataField: 'syc', th: '', align: 'l', visible: true},
+        {dataField: 'name', th: 'Name', align: 'l', visible: true},
+        {dataField: 'dtg', th: 'DTF', align: 'r', visible: true},
+        {dataField: 'type', th: 'Boat Type', align: 'l', visible: true},
+      ],
     }
   },
   filters: {
-    prettyDtf (value) {
-      return value.toFixed(2);
+    prettyPrint (value, column) {
+      if (column.dataField === 'dtg') {
+        return value.toFixed(2);
+      } else if (column.dataField === 'syc') {
+        return value === true ? 't' : 'f';
+      }
+      return value;
     }
   },
   computed: {
+    visibleColumnsWithSort () {
+      let cols = [];
+      for (let i of this.columns) {
+        if (!i.visible) {
+          continue;
+        }
+        let sortVisualizer = '';
+        if (i.dataField === this.sortKey) {
+          sortVisualizer = this.sortDir === 'asc' ? '\u25b2' : '\u25bc';
+        }
+        cols.push({
+          ...i,
+          thWithSort: i.th + ' ' + sortVisualizer,
+        });
+      }
+      return cols;
+    },
     boatList () {
       const dir = this.sortDir === 'asc' ? 1 : -1;
       const needle = this.filter.toLowerCase();
