@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import configModule from './modules/config'
 import timeModule from './modules/time'
 import authModule from './modules/auth'
 import solapiModule from './modules/solapi'
@@ -14,7 +13,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    config: configModule,
     time: timeModule,
     auth: authModule,
     solapi: solapiModule,

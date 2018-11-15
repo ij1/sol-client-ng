@@ -11,6 +11,7 @@ export default {
   namespaced: true,
 
   state: {
+    server: 'http://localhost:8080/proxy',
     apiState: "Inactive",
     errorLog: [],
   },
@@ -25,7 +26,7 @@ export default {
   },
 
   actions: {
-    get ({rootState, commit, dispatch}, reqDef) {
+    get ({state, commit, dispatch}, reqDef) {
       let retry = true;
       let respType = 'text';
       if (typeof reqDef.compressedPayload !== 'undefined') {
@@ -35,7 +36,7 @@ export default {
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       const url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
 
-      axios.get(rootState.config.server + url, {
+      axios.get(state.server + url, {
         responseType: respType,
         params: reqDef.params,
       })
@@ -103,13 +104,13 @@ export default {
       })
     },
 
-    post ({rootState, commit}, reqDef) {
+    post ({state, commit}, reqDef) {
       const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }
-      axios.post(rootState.config.server + reqDef.url,
+      axios.post(state.server + reqDef.url,
                  queryString.stringify(reqDef.params), config)
 
       .then((response) => {
