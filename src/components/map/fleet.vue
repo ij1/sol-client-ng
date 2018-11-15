@@ -54,6 +54,7 @@ export default {
         const boat = this.$store.state.race.fleet.boat[idx];
         const center = this.map.project(boat.latLng).subtract(L.point(sw.x, ne.y));
         ctx.translate(center.x - prev.x, center.y - prev.y);
+        ctx.beginPath();
         if (boat.dtg > 0) {
           ctx.rotate(boat.cog);
           ctx.strokeStyle = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
