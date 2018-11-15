@@ -100,6 +100,7 @@ export default {
   },
   beforeDestroy () {
     this.map.removeLayer(this.layer);
+    this.layer = null;
   },
 }
 </script>
