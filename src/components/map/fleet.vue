@@ -18,7 +18,7 @@ export default {
     return {
       layer: null,
       searchTree: rbush(),
-      boatPath: new Path2D('M -4,16 C -8 2, -6 2, 0 -16 C 6 2, 8 2, 4 16 Z'),
+      boatPath: new Path2D('M -3,11 C -6 -1, -2 1, 0 -11 C 2 1, 6 -1, 3,11 Z'),
     }
   },
   computed: {
