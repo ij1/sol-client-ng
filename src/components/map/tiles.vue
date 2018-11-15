@@ -169,10 +169,12 @@ export default {
     if (this.animFrame !== null) {
       L.Util.cancelAnimFrame(this.animFrame);
     }
+    this.map.removeLayer(this.layer);
     this.map.off('move', this.onMove);
     this.map.off('moveend', this.onMove);
     this.map.off('zoomend', this.updateZoom);
     this.removeContainer();
+    this.layer = null;
   },
 }
 </script>
