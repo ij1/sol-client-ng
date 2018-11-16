@@ -16,7 +16,7 @@
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null"/>
-      <map-highlight/>
+      <map-highlight v-if = "this.map !== null" :map = "this.map"/>
       <to-boat v-if = "this.map !== null" :map = "this.map"/>
       <towback-flag v-if = "this.map !== null"/>
     </l-map>

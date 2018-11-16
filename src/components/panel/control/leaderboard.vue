@@ -123,7 +123,6 @@ export default {
       if (this.selected !== null) {
         const idx = this.$store.state.race.fleet.id2idx[this.selected];
         const position = this.$store.state.race.fleet.boat[idx].latLng;
-        // ADDME: map panTo
         EventBus.$emit('map-highlight', position);
       }
     }

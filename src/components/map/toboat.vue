@@ -27,7 +27,6 @@ export default {
   methods: {
     onClick () {
       if (this.$store.state.boat.position) {
-        this.map.panTo(this.$store.state.boat.position);
         EventBus.$emit('map-highlight', this.$store.state.boat.position);
       }
     },

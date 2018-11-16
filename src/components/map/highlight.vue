@@ -21,7 +21,12 @@ export default {
     'l-layer-group': LLayerGroup,
     'l-circle-marker': LCircleMarker,
   },
-
+  props: {
+    map: {
+      type: Object,
+      required: true,
+    },
+  },
   data () {
     return {
       initialRadius: 100,
@@ -54,6 +59,8 @@ export default {
       this.startTimestamp = Date.now();
       this.nowTimestamp = this.startTimestamp;
       this.timer = setInterval(this.updateNow.bind(this), this.interval);
+
+      this.map.panTo(this.latLng);
     },
   },
 
