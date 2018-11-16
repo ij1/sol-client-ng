@@ -37,7 +37,6 @@ export default {
     radius () {
       let r = this.initialRadius - (this.nowTimestamp - this.startTimestamp) / this.interval;
       r = Math.round(r);
-      console.log("Recalc radius: " + r);
       return r > 0 ? r : 0;
     },
   },
