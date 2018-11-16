@@ -21,10 +21,12 @@
            {{column.thWithSort}}
          </th>
        </thead>
-       <tbody>
+       <tbody id="leaderboard-body">
          <tr
            v-for = "boat in boatList"
            :key = "boat.id"
+           :class = "{'active': boat.id === selected }"
+           @click = "selectBoat(boat.id)"
          >
            <td
              v-for = "column in visibleColumnsWithSort"
@@ -40,11 +42,14 @@
 </template>
 
 <script>
+import { EventBus } from '../../../lib/event-bus.js';
+
 export default {
   name: 'Leadeboard',
   data () {
     return {
       listname: 'Main Fleet',
+      selected: null,
       filter: '',
       sortKey: 'ranking',
       sortDir: 'asc',
@@ -112,6 +117,15 @@ export default {
         this.sortKey = column;
         this.sortDir = 'asc';
       }
+    },
+    selectBoat (id) {
+      this.selected = (this.selected === id) ? null : id;
+      if (this.selected !== null) {
+        const idx = this.$store.state.race.fleet.id2idx[this.selected];
+        const position = this.$store.state.race.fleet.boat[idx].latLng;
+        // ADDME: map panTo
+        EventBus.$emit('map-highlight', position);
+      }
     }
   },
 }
@@ -132,6 +146,12 @@ export default {
   font-size: 10px;
   white-space: nowrap;
   overflow: scroll;
+}
+#leaderboard-body tr {
+  background: #ffffff;
+}
+#leaderboard-body .active {
+  background: #d0d0ff;
 }
 
 .leaderboard-left {
