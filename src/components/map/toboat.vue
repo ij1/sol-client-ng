@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { EventBus } from '../../lib/event-bus.js';
 import { LControl } from 'vue2-leaflet'
 
 export default {
@@ -27,7 +28,7 @@ export default {
     onClick () {
       if (this.$store.state.boat.position) {
         this.map.panTo(this.$store.state.boat.position);
-        // ADDME: circle highlight at the boat position, perhaps emit it?
+        EventBus.$emit('map-highlight', this.$store.state.boat.position);
       }
     },
   },

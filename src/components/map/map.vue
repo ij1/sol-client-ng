@@ -16,6 +16,7 @@
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null"/>
+      <map-highlight/>
       <to-boat v-if = "this.map !== null" :map = "this.map"/>
       <towback-flag v-if = "this.map !== null"/>
     </l-map>
@@ -32,6 +33,7 @@ import WindMap from './wind';
 import WindInfo from './windinfo';
 import FleetMap from './fleet';
 import PlayerBoat from './playerboat';
+import MapHighlight from './highlight';
 import ToBoatButton from './toboat';
 import TowbackFlag from '../towbackflag';
 
@@ -49,6 +51,7 @@ export default {
     'wind-info': WindInfo,
     'fleet-map': FleetMap,
     'player-boat': PlayerBoat,
+    'map-highlight': MapHighlight,
     'to-boat': ToBoatButton,
     'towback-flag': TowbackFlag,
   },
