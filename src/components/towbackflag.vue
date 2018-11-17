@@ -21,8 +21,8 @@ export default {
   },
   computed: {
     isTowbackPeriod () {
-      return (((this.race.start_time - 3600 * 1000) <= this.boatTime) &&
-              (this.boatTime < this.race.start_time));
+      return (((this.race.info.start_time - 3600 * 1000) <= this.boatTime) &&
+              (this.boatTime < this.race.info.start_time));
     },
     ...mapState({
       race: state => state.race,
