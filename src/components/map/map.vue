@@ -12,6 +12,9 @@
     >
       <map-tiles v-if = "this.map !== null" :map = "this.map"/>
       <race-info v-if = "this.map !== null"/>
+      <race-info v-if = "this.map !== null" :lngOffset = "-720"/>
+      <race-info v-if = "this.map !== null" :lngOffset = "-360"/>
+      <race-info v-if = "this.map !== null" :lngOffset = "360"/>
       <wind-info v-if = "this.map !== null" :map = "this.map"/>
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
