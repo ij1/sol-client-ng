@@ -27,6 +27,11 @@ export default {
       for (let i = 0; i < raceInfo.course.waypoint.length; i++) {
         let waypoint = raceInfo.course.waypoint[i];
         const idx = parseInt(waypoint.order) - 1;
+        waypoint.lat = parseFloat(waypoint.lat);
+        waypoint.lon = parseFloat(waypoint.lon);
+        if (waypoint.lon < parseFloat(raceInfo.minlon)) {
+          waypoint.lon += 360;
+        }
         waypoint.latLng = L.latLng(waypoint.lat, waypoint.lon);
         // ADDME: need to calculate the side to pass
         Vue.set(state.route, idx, waypoint);
