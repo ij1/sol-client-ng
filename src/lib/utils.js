@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 export function UTCToMsec(dateString) {
   const regex = new RegExp(/^(\d{4})\/([01]\d)\/([0-3]\d) ([012]\d):([0-5]\d):([0-5]\d)/);
 
@@ -32,4 +34,14 @@ export function degToRad(deg) {
  */
 export function minAngle(a, b) {
   return Math.PI - Math.abs(Math.abs(a - b) - Math.PI);
+}
+
+export function latLngAddOffset(latLng, offset) {
+  return L.latLng(latLng.lat, latLng.lng + offset);
+}
+
+export function latLngBoundsAddOffset(latLngBounds, offset) {
+  return L.latLngBounds(latLngAddOffset(latLngBounds.getSouthWest(), offset),
+                        latLngAddOffset(latLngBounds.getNorthEast(), offset));
+
 }
