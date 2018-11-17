@@ -2,7 +2,7 @@
   <l-control
     id = "towback-flag"
     :position = "'topleft'"
-    v-if = 'this.race.loaded && this.isTowbackPeriod'
+    v-if = 'this.raceLoaded && this.isTowbackPeriod'
   >
     <div id = "towback-flag-outer">
       <div id = "towback-flag-inner"/>
@@ -21,11 +21,12 @@ export default {
   },
   computed: {
     isTowbackPeriod () {
-      return (((this.race.info.start_time - 3600 * 1000) <= this.boatTime) &&
-              (this.boatTime < this.race.info.start_time));
+      return (((this.raceStartTime - 3600 * 1000) <= this.boatTime) &&
+              (this.boatTime < this.raceStartTime));
     },
     ...mapState({
-      race: state => state.race,
+      raceLoaded: state => state.race.loaded,
+      raceStartTime: state => state.race.info.start_time,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
