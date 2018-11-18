@@ -36,6 +36,11 @@ export function minAngle(a, b) {
   return Math.PI - Math.abs(Math.abs(a - b) - Math.PI);
 }
 
+export function signedMinAngle(nextAngle, currentAngle) {
+  /* PI * 3 ensures a positive number for the modulo */
+  return (nextAngle - currentAngle + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+}
+
 export function latLngAddOffset(latLng, offset) {
   return L.latLng(latLng.lat, latLng.lng + offset);
 }

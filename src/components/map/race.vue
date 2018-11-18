@@ -18,7 +18,8 @@
       <l-tooltip
         :options="wpTooltipOptions"
       >
-        <span v-html="waypoint.name"/>
+        <span v-html="waypoint.name"/><br>
+        {{waypoint.info}}
       </l-tooltip>
     </l-circle-marker>
   </l-layer-group>
@@ -27,7 +28,7 @@
 <script>
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
-import { latLngAddOffset } from '../../lib/utils.js';
+import { latLngAddOffset, signedMinAngle } from '../../lib/utils.js';
 
 export default {
   name: 'Map',
@@ -39,6 +40,10 @@ export default {
   },
 
   props: {
+    map: {
+      type: Object,
+      required: true,
+    },
     lngOffset: {
       type: Number,
       default: 0,
@@ -62,18 +67,62 @@ export default {
     },
     raceRoute () {
       let route = [];
+
       for (let i = 0; i < this.race.route.length; i++) {
+        let loxoDiff = this.loxoDiffAtMark(i);
+
         route.push({
           latLng: latLngAddOffset(this.race.route[i].latLng, this.lngOffset),
           name: this.race.route[i].name,
           radius: (i !== this.race.route.length - 1) ? 2 : 1,
+          info: this.markInfoText(i, loxoDiff),
         });
       }
       return route;
     },
     ...mapState({
       race: state => state.race,
+      lastRoundedMark: state => state.boat.current_leg,
+      finishTime: state => state.boat.finish_time,
     }),
+  },
+
+  methods: {
+    markInfoText (mark, angle) {
+      if (mark === 0) {
+        return "(Start)";
+      }
+
+      if (mark < this.race.route.length - 1) {
+        if (mark <= this.lastRoundedMark) {
+          return "Rounded.";
+        }
+
+        return "Leave to " + (angle < 0 ? "Port" : "Starboard");
+      }
+
+      return this.finishTime === null ? "Cross line to Finish" : "Finished.";
+    },
+    loxoDiffAtMark(mark) {
+      if ((mark <= 0) || (mark >= this.race.route.length - 1)) {
+        return undefined;
+      }
+
+      let projected = [];
+      for (let i = -1; i <= 1; i++) {
+        const latLng = latLngAddOffset(this.race.route[mark + i].latLng,
+                                       this.lngOffset);
+        projected.push(this.map.project(latLng));
+      }
+
+      let angles = [];
+      for (let i = 0; i <= 1; i++) {
+        angles.push(Math.atan2(-(projected[i+1].x - projected[i].x),
+                               projected[i+1].y - projected[i].y) + Math.PI);
+      }
+
+      return signedMinAngle(angles[1], angles[0]);
+    },
   },
 }
 </script>
