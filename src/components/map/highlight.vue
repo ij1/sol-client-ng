@@ -60,7 +60,7 @@ export default {
       this.nowTimestamp = this.startTimestamp;
       this.timer = setInterval(this.updateNow.bind(this), this.interval);
 
-      this.map.panTo(this.latLng);
+      this.map.flyTo(this.latLng);
     },
   },
 
