@@ -21,7 +21,7 @@ export default {
       return tileIdToKey(id);
     },
     tileGridSize: () => (tileset) => {
-      const degrees = {c: 45, l: 10, h: 1};
+      const degrees = {c: 45, l: 10, i: 2, h: 1};
       return degrees[tileset];
     },
   },
