@@ -28,7 +28,8 @@
 <script>
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
-import { latLngAddOffset, signedMinAngle } from '../../lib/utils.js';
+import { latLngAddOffset } from '../../lib/utils.js';
+import { minTurnAngle } from '../../lib/nav.js';
 
 export default {
   name: 'Map',
@@ -121,7 +122,7 @@ export default {
                                projected[i+1].y - projected[i].y) + Math.PI);
       }
 
-      return signedMinAngle(angles[1], angles[0]);
+      return minTurnAngle(angles[1], angles[0]);
     },
   },
 }

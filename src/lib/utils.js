@@ -29,18 +29,6 @@ export function degToRad(deg) {
   return deg * Math.PI / 180;
 }
 
-/* Returns the minimum angle between a and b (parameters in radians)
- * always 0 <= x <= PI
- */
-export function minAngle(a, b) {
-  return Math.PI - Math.abs(Math.abs(a - b) - Math.PI);
-}
-
-export function signedMinAngle(nextAngle, currentAngle) {
-  /* PI * 3 ensures a positive number for the modulo */
-  return (nextAngle - currentAngle + Math.PI * 3) % (Math.PI * 2) - Math.PI;
-}
-
 export function latLngAddOffset(latLng, offset) {
   return L.latLng(latLng.lat, latLng.lng + offset);
 }
