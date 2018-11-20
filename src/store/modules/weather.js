@@ -1,27 +1,15 @@
 import L from 'leaflet'
-import { UTCToMsec } from '../../lib/utils.js'
+import { UTCToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js'
 import { UVToWind } from '../../lib/sol.js'
 
-function linearInterpolate(startPoint, intermediatePoint, endPoint, startData, endData) {
-  const factor = (intermediatePoint - startPoint) / (endPoint - startPoint);
-
-  if (factor < 0 || factor > 1.0) {
-    console.log("Invalid factor: " + factor);
-  }
-
+function wxLinearInterpolate(factor, startData, endData) {
   return [
-    startData[0] + factor * (endData[0] - startData[0]),
-    startData[1] + factor * (endData[1] - startData[1]),
+    linearInterpolate(factor, startData[0], endData[0]),
+    linearInterpolate(factor, startData[1], endData[1]),
   ];
 }
 
-function wxTimeInterpolate(startPoint, intermediatePoint, endPoint, startData, endData) {
-  const factor = (intermediatePoint - startPoint) / (endPoint - startPoint);
-
-  if (factor < 0 || factor > 1.0) {
-    console.log("Invalid factor: " + factor);
-  }
-
+function wxTimeInterpolate(factor, startData, endData) {
   const fEnd = -2 * Math.pow(factor, 3) + 3 * Math.pow(factor, 2)
   const fStart = 1 - fEnd;
 
@@ -152,12 +140,15 @@ export default {
 
       /* latitude (y) solution */
       let firstRes = [[], []];
+      const firstFactor = interpolateFactor(
+        latIdx * state.data.increment[0] + state.data.origo[0],
+        wxLatLng.lat,
+        (latIdx + 1) * state.data.increment[0] + state.data.origo[0]
+      );
       for (let t = 0; t <= 1; t++) {
         for (let x = 0; x <= 1; x++) {
-          firstRes[t][x] = linearInterpolate(
-            latIdx * state.data.increment[0] + state.data.origo[0],
-            wxLatLng.lat,
-            (latIdx + 1) * state.data.increment[0] + state.data.origo[0],
+          firstRes[t][x] = wxLinearInterpolate(
+            firstFactor,
             state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx],
             state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx+1]
           );
@@ -166,21 +157,27 @@ export default {
 
       /* longitude (x) solution */
       let secondRes = [];
+      const secondFactor = interpolateFactor(
+        lonIdx * state.data.increment[1] + state.data.origo[1],
+        wxLatLng.lng,
+        (lonIdx + 1) * state.data.increment[1] + state.data.origo[1]
+      );
       for (let t = 0; t <= 1; t++) {
-          secondRes[t] = linearInterpolate(
-            lonIdx * state.data.increment[1] + state.data.origo[1],
-            wxLatLng.lng,
-            (lonIdx + 1) * state.data.increment[1] + state.data.origo[1],
+          secondRes[t] = wxLinearInterpolate(
+            secondFactor,
             firstRes[t][0],
             firstRes[t][1]
           );
       }
 
       /* time (z) solution */
-      return UVToWind(wxTimeInterpolate(
+      const thirdFactor = interpolateFactor(
         state.data.timeSeries[getters.timeIndex],
         state.time,
         state.data.timeSeries[getters.timeIndex+1],
+      );
+      return UVToWind(wxTimeInterpolate(
+        thirdFactor,
         secondRes[0],
         secondRes[1]
       ));

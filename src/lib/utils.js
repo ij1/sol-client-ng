@@ -38,3 +38,20 @@ export function latLngBoundsAddOffset(latLngBounds, offset) {
                         latLngAddOffset(latLngBounds.getNorthEast(), offset));
 
 }
+
+/* Calculates the factor for interpolating the intermediate point from
+ * a range between start and end.
+ */
+export function interpolateFactor(startPoint, intermediatePoint, endPoint) {
+  const factor = (intermediatePoint - startPoint) / (endPoint - startPoint);
+
+  if (factor < 0 || factor > 1.0) {
+    console.log("Invalid factor: " + factor);
+  }
+
+  return factor;
+}
+
+export function linearInterpolate(factor, startData, endData) {
+  return startData + factor * (endData - startData);
+}
