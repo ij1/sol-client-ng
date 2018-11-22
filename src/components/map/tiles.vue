@@ -38,8 +38,7 @@ export default {
 
   computed: {
     selectTileset() {
-      // FIXME: check these zoom levels and tweak if necessary
-      if (this.zoom > 9) {
+      if ((this.zoom > 9) && (this.maxTileset === 'h')) {
         return 'h';
       } else if (this.zoom > 7) {
         return 'i';
@@ -48,7 +47,12 @@ export default {
       }
       return 'c';
     },
-    // mapgetter?
+    maxTileset() {
+      if (this.$store.state.race.loaded)
+        return this.$store.state.race.info.tilemap;
+      else
+        return 'h';
+    },
     tileGridSize() {
       return this.$store.getters['tiles/tileGridSize'](this.selectTileset);
     },
