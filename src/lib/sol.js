@@ -13,3 +13,8 @@ export function UVToWind(uv) {
     ms: tws,
   };
 }
+
+export function windToColor(/* wind */) {
+  // FIXME: add colors
+  return '#000000';
+}

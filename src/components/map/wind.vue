@@ -6,6 +6,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet'
+import { windToColor } from '../../lib/sol.js';
 
 export default {
   name: 'WindMap',
@@ -71,7 +72,7 @@ export default {
             const wind = this.$store.getters['weather/latLngWind'](windPoint);
             if (wind !== undefined) {
               ctx.rotate(wind.twd);
-              ctx.strokeStyle = '#000000';
+              ctx.strokeStyle = windToColor(wind);
 
               const lw = wind.knots < 50 ? wind.knots / 10 : 5;
               const len = (wind.knots < 20 ? Math.floor(wind.knots) : 20) + 6;
