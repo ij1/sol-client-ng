@@ -29,7 +29,6 @@
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 import { latLngAddOffset } from '../../lib/utils.js';
-import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
 
 export default {
   name: 'Map',
@@ -70,13 +69,11 @@ export default {
       let route = [];
 
       for (let i = 0; i < this.race.route.length; i++) {
-        let loxoDiff = this.loxoDiffAtMark(i);
-
         route.push({
           latLng: latLngAddOffset(this.race.route[i].latLng, this.lngOffset),
           name: this.race.route[i].name,
           radius: (i !== this.race.route.length - 1) ? 2 : 1,
-          info: this.markInfoText(i, loxoDiff),
+          info: this.markInfoText(i),
         });
       }
       return route;
@@ -89,7 +86,7 @@ export default {
   },
 
   methods: {
-    markInfoText (mark, angle) {
+    markInfoText (mark) {
       if (mark === 0) {
         return "(Start)";
       }
@@ -99,30 +96,10 @@ export default {
           return "Rounded.";
         }
 
-        return "Leave to " + (angle < 0 ? "Port" : "Starboard");
+        return "Leave to " + this.race.route[mark].side;
       }
 
       return this.finishTime === null ? "Cross line to Finish" : "Finished.";
-    },
-    loxoDiffAtMark(mark) {
-      if ((mark <= 0) || (mark >= this.race.route.length - 1)) {
-        return undefined;
-      }
-
-      let projected = [];
-      for (let i = -1; i <= 1; i++) {
-        const latLng = latLngAddOffset(this.race.route[mark + i].latLng,
-                                       this.lngOffset);
-        projected.push(this.map.project(latLng));
-      }
-
-      let angles = [];
-      for (let i = 0; i <= 1; i++) {
-        angles.push(atan2Bearing(projected[i+1].x - projected[i].x,
-                                 -(projected[i+1].y - projected[i].y)));
-      }
-
-      return minTurnAngle(angles[1], angles[0]);
     },
   },
 }

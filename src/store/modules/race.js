@@ -3,6 +3,8 @@ import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
 import { UTCToMsec } from '../../lib/utils.js';
+import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
+import { PROJECTION } from '../../lib/sol.js';
 
 export default {
   namespaced: true,
@@ -33,7 +35,23 @@ export default {
           waypoint.lon += 360;
         }
         waypoint.latLng = L.latLng(waypoint.lat, waypoint.lon);
-        // ADDME: need to calculate the side to pass
+        waypoint.nextWpBearing = null;
+        waypoint.side = null;
+
+        /* Calculate bearing from prev WP to this WP ... */
+        if (i > 0) {
+          const prevwp = PROJECTION.project(state.route[i - 1].latLng);
+          const thiswp = PROJECTION.project(waypoint.latLng);
+          const bearing = atan2Bearing(thiswp.x - prevwp.x, thiswp.y - prevwp.y);
+          state.route[i - 1].nextWpBearing = bearing;
+
+          /* ...and which side to pass the prev WP */
+          if (i > 1) {
+            const turn = minTurnAngle(state.route[i - 2].nextWpBearing,
+                                      bearing);
+            state.route[i - 1].side = (turn < 0 ? "Port" : "Starboard");
+          }
+        }
         Vue.set(state.route, idx, waypoint);
       }
       // ADDME: calculate finish line end points

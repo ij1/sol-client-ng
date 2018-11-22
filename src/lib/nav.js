@@ -1,7 +1,7 @@
 /* Returns the minimum angle (signed) from currentAngle to nextAngle
  * The angles are in radians.
  */
-export function minTurnAngle(nextAngle, currentAngle) {
+export function minTurnAngle(currentAngle, nextAngle) {
   /* PI * 3 ensures a positive number for the modulo */
   return (nextAngle - currentAngle + Math.PI * 3) % (Math.PI * 2) - Math.PI;
 }
