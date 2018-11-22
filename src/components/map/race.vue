@@ -29,7 +29,7 @@
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 import { latLngAddOffset } from '../../lib/utils.js';
-import { minTurnAngle } from '../../lib/nav.js';
+import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
 
 export default {
   name: 'Map',
@@ -118,8 +118,8 @@ export default {
 
       let angles = [];
       for (let i = 0; i <= 1; i++) {
-        angles.push(Math.atan2(-(projected[i+1].x - projected[i].x),
-                               projected[i+1].y - projected[i].y) + Math.PI);
+        angles.push(atan2Bearing(projected[i+1].x - projected[i].x,
+                                 -(projected[i+1].y - projected[i].y)));
       }
 
       return minTurnAngle(angles[1], angles[0]);
