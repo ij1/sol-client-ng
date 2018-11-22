@@ -1,6 +1,8 @@
+import L from 'leaflet';
 import { atan2Bearing } from './nav.js';
 
 export const MS_TO_KNT = 3600 / 1852;
+export const PROJECTION = L.CRS.EPSG3395;
 
 export function UVToWind(uv) {
   /* u,v are negated because u,v points "to", whereas TWD is wind "from" */

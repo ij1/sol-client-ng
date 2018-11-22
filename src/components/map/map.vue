@@ -3,7 +3,7 @@
     <l-map
       id="map"
       ref="map"
-      :crs="L.CRS.EPSG3395"
+      :crs="PROJECTION"
       :zoom="zoom"
       :center="center"
       @update:center="updateCenter"
@@ -29,6 +29,7 @@
 <script>
 import L from 'leaflet'
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
+import { PROJECTION } from '../../lib/sol.js';
 
 import MapTiles from './tiles';
 import RaceInfo from './race';
@@ -68,6 +69,7 @@ export default {
       currentZoom: 3,
 
       L: L,
+      PROJECTION: PROJECTION,
     }
   },
 
