@@ -11,7 +11,8 @@ export default {
   namespaced: true,
 
   state: {
-    server: 'http://localhost:8080/proxy',
+    // eslint-disable-next-line
+    server: process.env.VUE_APP_API_URL,
     apiState: "Inactive",
     errorLog: [],
   },
