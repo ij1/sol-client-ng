@@ -55,3 +55,30 @@ export function interpolateFactor(startPoint, intermediatePoint, endPoint) {
 export function linearInterpolate(factor, startData, endData) {
   return startData + factor * (endData - startData);
 }
+
+/* Binary search 'needle' (or it's "insertion point") from a sorted
+ * 'haystack'.
+ *
+ * Returns: the index of leftmost item matching needle or if 'needle'
+ * does not exist in the array, the first index that is has a value
+ * larger than the 'needle' (that is, the "insertion point" for 'needle').
+ */
+export function bsearchLeft(needle, haystack, min, max) {
+  if (typeof min === 'undefined') {
+    min = 0;
+  }
+  if (typeof max === 'undefined') {
+    max = haystack.length;
+  }
+
+  while (min < max) {
+    const mid = Math.floor((max + min) / 2);
+
+    if (needle > haystack[mid]) {
+      min = mid + 1;
+    } else {
+      max = mid;
+    }
+  }
+  return max;
+}

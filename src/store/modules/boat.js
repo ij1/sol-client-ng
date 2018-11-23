@@ -1,5 +1,6 @@
 import L from 'leaflet'
 import { UTCToMsec } from '../../lib/utils.js';
+import polarModule from './polar';
 import steeringModule from './steering'
 import instrumentModule from './instruments';
 
@@ -7,6 +8,7 @@ export default {
   namespaced: true,
 
   modules: {
+    polar: polarModule,
     steering: steeringModule,
     instruments: instrumentModule,
   },
@@ -17,7 +19,6 @@ export default {
     position: null,
     current_leg: 0,
     finish_time: null,
-    polar: null,
   },
 
   mutations: {
@@ -29,9 +30,6 @@ export default {
       if (data.finish_time.length > 0) {
         state.finish_time = UTCToMsec(data.finish_time);
       }
-    },
-    setPolar (state, polar) {
-      state.polar = polar
     },
 
     setFetching (state, param) {

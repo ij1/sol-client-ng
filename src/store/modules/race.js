@@ -77,7 +77,7 @@ export default {
         dataField: 'race',
 
         dataHandler: (raceInfo) => {
-          const polarRawData = raceInfo.boat;
+          const polarRawData = raceInfo.boat.vpp;
           const chatroomsData = raceInfo.chatrooms.chatroom;
 
           commit('chatrooms/init', chatroomsData, {root: true});
@@ -87,7 +87,7 @@ export default {
           raceInfo.start_time = UTCToMsec(raceInfo.start_time);
           commit('init', raceInfo);
 
-          commit('boat/setPolar', polarRawData, {root: true});
+          commit('boat/polar/set', polarRawData, {root: true});
 
           /* Start race API fetching */
           dispatch('boat/fetch', null, {root: true});
