@@ -63,7 +63,7 @@ export function linearInterpolate(factor, startData, endData) {
  * does not exist in the array, the first index that is has a value
  * larger than the 'needle' (that is, the "insertion point" for 'needle').
  */
-export function bsearchLeft(needle, haystack, min, max) {
+export function bsearchLeft(haystack, needle, min, max) {
   if (typeof min === 'undefined') {
     min = 0;
   }
