@@ -1,5 +1,6 @@
 module.exports = {
   devServer: {
+    host: 'localhost',
     proxy: {
       // proxy all requests starting with /proxy to jsonplaceholder
       '/proxy': {
