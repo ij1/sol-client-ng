@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { degToRad } from '../../../lib/utils.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
 
 export default {
@@ -19,9 +21,13 @@ export default {
     return {
       curves: [3, 6, 9, 12, 15, 20, 25, 30],
       interval: 1,
+
       margins: 2 * 20,
       /* 105% of the real max speed to give a small breathing room for the curves */
       polarHeadroom: 1.05,
+      gridMinSpacing: 20,
+
+      setupDone: false,
     }
   },
   computed: {
@@ -43,13 +49,13 @@ export default {
       return this.$refs.labels.width - this.margins;
     },
     gridIntervalKnots () {
-      return Math.ceil(this.maxSpeed / (this.maxWidth / 20));
+      return Math.ceil(this.maxSpeed / (this.maxWidth / this.gridMinSpacing));
     },
     gridIntervalPixels () {
       return Math.floor(this.maxWidth / Math.ceil(this.maxSpeed / this.gridIntervalKnots));
     },
     gridMaxKnots () {
-      return Math.floor(this.maxWidth / this.gridIntervalPixels)
+      return Math.floor(this.maxWidth / this.gridIntervalPixels) * this.gridIntervalKnots;
     },
     gridScale () {
       return this.gridIntervalPixels / this.gridIntervalKnots;
@@ -60,26 +66,38 @@ export default {
     },
     gridSize () {
       return {
-        x: this.gridMaxKnots * this.gridIntervalPixels,
-        y: this.gridOrigoY + this.gridMaxKnots * this.gridIntervalPixels,
+        x: this.gridMaxKnots * this.gridScale,
+        y: this.gridOrigoY + this.gridMaxKnots * this.gridScale,
       };
+    },
+    topBorderWidth () {
+      return Math.sqrt(Math.pow(this.gridMaxKnots * this.gridScale, 2) -
+                       Math.pow(this.gridOrigoY, 2));
     },
 
     /* Deps access to trigger redraw correctly */
     bgNeedRedraw () {
+      if (!this.setupDone) {
+        return -1;
+      }
       this.bgCurves;
       this.gridSize;
 
       return Date.now();
     },
     fgNeedRedraw () {
+      if (!this.setupDone) {
+        return -1;
+      }
       this.fgCurve;
       this.gridSize;
-      this.$store.state.boat.instruments.twa.value;
-      this.$store.state.boat.instruments.perf.value;
+      this.boatTime;
 
       return Date.now();
     },
+    ...mapGetters({
+      boatTime: 'boat/time',
+    }),
   },
   methods: {
     drawBg () {
@@ -88,34 +106,12 @@ export default {
 
       let ctx = this.$refs.polarbg.getContext('2d');
       ctx.save();
-      ctx.strokeStyle = '#aaa';
 
-      ctx.beginPath();
-      ctx.moveTo(0, this.gridSize.y);
-      ctx.lineTo(0, 0);
-      const xBorderEnd = Math.sqrt(Math.pow(this.gridMaxKnots * this.gridScale, 2) -
-                                   Math.pow(this.gridOrigoY, 2));
-      ctx.lineTo(xBorderEnd, 0);
-      ctx.stroke();
-
-      ctx.translate(0, this.gridOrigoY);
-      let i = 1;
-      while (i * this.gridIntervalKnots <= this.gridMaxKnots) {
-        ctx.beginPath();
-        ctx.arc(0, 0, i * this.gridScale, 1.5 * Math.PI, 0.5 * Math.PI);
-        ctx.stroke();
-        i++;
-      }
-
+      this.drawGrid(ctx);
       for (let curve of this.bgCurves) {
         ctx.strokeStyle = windToColor(curve.knots);
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        for (let pt of curve.values) {
-          ctx.lineTo(Math.sin(pt.twa) * pt.speed * this.gridScale,
-                     -Math.cos(pt.twa) * pt.speed * this.gridScale);
-        }
-        ctx.stroke();
+        ctx.lineWidth = 2;
+        this.drawCurve(ctx, curve);
       }
       ctx.restore();
 
@@ -125,10 +121,84 @@ export default {
       this.drawFg();
     },
     drawFg () {
+      let ctx = this.$refs.polarfg.getContext('2d');
+      ctx.clearRect(0, 0, this.$refs.polarfg.width, this.$refs.polarfg.height);
+      ctx.save();
+      ctx.translate(0, this.gridOrigoY);
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      this.drawCurve(ctx, this.fgCurve);
 
+      const twa = Math.abs(this.$store.state.boat.instruments.twa.value);
+      let twsMod = this.$store.state.boat.instruments.tws.value;
+      twsMod *= this.$store.state.boat.instruments.perf.value;
+      const x = Math.sin(twa) * twsMod * this.gridScale;
+      const y = -Math.cos(twa) * twsMod * this.gridScale;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      ctx.restore();
+    },
+    /* WARNING side-effect: translates context to polar origo */
+    drawGrid (ctx) {
+      ctx.strokeStyle = '#aaa';
+      ctx.strokeWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(0, this.gridSize.y);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(this.topBorderWidth, 0);
+      ctx.stroke();
+
+      ctx.translate(0, this.gridOrigoY);
+
+      ctx.beginPath();
+      for (let twad = 20; twad <= 180; twad += 10) {
+        const twa = degToRad(twad);
+        const x = Math.sin(twa) * this.gridMaxKnots * this.gridScale;
+        const y = -Math.cos(twa) * this.gridMaxKnots * this.gridScale;
+        ctx.moveTo(0, 0);
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      ctx.beginPath();
+      let i = 1;
+      while (i * this.gridIntervalKnots <= this.gridMaxKnots) {
+        ctx.arc(0, 0, i * this.gridIntervalKnots * this.gridScale,
+                1.5 * Math.PI, 0.5 * Math.PI);
+        i++;
+      }
+      ctx.stroke();
+    },
+    drawCurve(ctx, curve) {
+      ctx.beginPath();
+      let first = true;
+      for (let pt of curve.values) {
+        const x = Math.sin(pt.twa) * pt.speed * this.gridScale;
+        const y = -Math.cos(pt.twa) * pt.speed * this.gridScale;
+        first ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        first = false;
+      }
+      ctx.stroke();
+    },
+  },
+  watch: {
+    fgNeedRedraw () {
+      if (this.setupDone) {
+        this.drawFg();
+      }
+    },
+    bgNeedRedraw () {
+      if (this.setupDone) {
+        this.drawBg();
+      }
     },
   },
   mounted () {
+    this.setupDone = true;
     this.drawBg();
   }
 }
