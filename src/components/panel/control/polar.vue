@@ -82,13 +82,6 @@ export default {
   },
   methods: {
     drawBg () {
-      console.log("drawbg");
-      console.log(this.gridSize);
-      console.log(this.gridIntervalKnots);
-      console.log(this.gridIntervalPixels);
-      console.log(this.gridMaxKnots);
-      console.log(this.gridOrigoY);
-
       this.$refs.polarbg.width = this.gridSize.x;
       this.$refs.polarbg.height = this.gridSize.y;
 
