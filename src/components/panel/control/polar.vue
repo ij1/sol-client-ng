@@ -20,6 +20,8 @@ export default {
       curves: [3, 6, 9, 12, 15, 20, 25, 30],
       interval: 1,
       margins: 2 * 20,
+      /* 105% of the real max speed to give a small breathing room for the curves */
+      polarHeadroom: 1.05,
     }
   },
   computed: {
@@ -35,8 +37,7 @@ export default {
       return this.$store.getters['boat/polar/curve'](knots, this.interval);
     },
     maxSpeed () {
-      /* 105% of the real max BS to give a small breathing room for the curves */
-      return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 0) * 1.05;
+      return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 0) * this.polarHeadroom;
     },
     maxWidth () {
       return this.$refs.labels.width - this.margins;
@@ -55,7 +56,7 @@ export default {
     },
     gridOrigoY () {
       const maxVmgUp = Math.max(...this.bgCurves.map(c => c.maxvmg.up.vmg), 0);
-      return Math.ceil(maxVmgUp * this.gridScale * 1.05);
+      return Math.ceil(maxVmgUp * this.gridScale * this.polarHeadroom);
     },
     gridSize () {
       return {
