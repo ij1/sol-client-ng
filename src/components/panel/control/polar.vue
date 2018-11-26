@@ -130,10 +130,9 @@ export default {
       this.drawCurve(ctx, this.fgCurve);
 
       const twa = Math.abs(this.$store.state.boat.instruments.twa.value);
-      let twsMod = this.$store.state.boat.instruments.tws.value;
-      twsMod *= this.$store.state.boat.instruments.perf.value;
-      const x = Math.sin(twa) * twsMod * this.gridScale;
-      const y = -Math.cos(twa) * twsMod * this.gridScale;
+      const speed = this.$store.state.boat.instruments.speed.value;
+      const x = Math.sin(twa) * speed * this.gridScale;
+      const y = -Math.cos(twa) * speed * this.gridScale;
 
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, 2 * Math.PI);
