@@ -15,7 +15,6 @@
 <script>
 import L from 'leaflet';
 import { LLayerGroup } from 'vue2-leaflet';
-import rbush from 'rbush';
 import BoatTrace from './trace.vue';
 
 export default {
@@ -34,7 +33,6 @@ export default {
   data () {
     return {
       layer: null,
-      searchTree: rbush(),
       boatPath: new Path2D('M -3,11 C -6 -1, -2 1, 0 -11 C 2 1, 6 -1, 3,11 Z'),
     }
   },
@@ -69,7 +67,7 @@ export default {
         maxX: ne.x,
         maxY: sw.y,
       };
-      const res = this.searchTree.search(needle);
+      const res = this.$store.state.race.fleet.searchTree.search(needle);
 
       let ctx = canvas.getContext('2d');
       let prev = L.point(0, 0);
@@ -117,8 +115,8 @@ export default {
         data.push(item);
       }
 
-      this.searchTree.clear();
-      this.searchTree.load(data);
+      this.$store.state.race.fleet.searchTree.clear();
+      this.$store.state.race.fleet.searchTree.load(data);
 
       this.layer.redraw();
     }

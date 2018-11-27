@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import L from 'leaflet'
+import rbush from 'rbush';
 
 export default {
   namespaced: true,
@@ -14,6 +15,7 @@ export default {
     id2idx: {},
     leader: null,
     selected: [],
+    searchTree: rbush(),	/* Fleet drawing component will update this */
   },
 
   mutations: {
