@@ -1,7 +1,7 @@
 <template>
   <l-layer-group>
     <boat-trace
-      v-if = "this.$store.state.race.fleet.leader !== null"
+      v-if = "this.showLeaderTrace"
       :id = "this.$store.state.race.fleet.leader"
     />
   </l-layer-group>
@@ -38,7 +38,11 @@ export default {
       // ADDME: zoom change requires recalculation due to bounds in pixels
       this.$store.state.race.fleet.fleetTime;
       return Date.now();
-    }
+    },
+    showLeaderTrace () {
+      return (this.$store.state.race.fleet.leader !== null) &&
+             (this.$store.state.race.fleet.leader !== this.$store.state.boat.id);
+    },
   },
   methods: {
     createTile (coords) {
