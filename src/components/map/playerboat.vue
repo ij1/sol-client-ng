@@ -4,18 +4,7 @@
       :latLng="this.$store.state.boat.position"
       :icon="myBoatIcon"
     />
-    <l-polyline
-      :latLngs = "this.boatTrace"
-      color = "#ff00ff"
-      :weight = "1"
-      :fill = "false"
-    />
-    <l-polyline
-      :latLngs = "this.lastMileTrace"
-      color = "#ff00ff"
-      :weight = "1"
-      :fill = "false"
-    />
+    <boat-trace :id = "this.$store.state.boat.id"/>
   </l-layer-group>
 </template>
 
@@ -23,6 +12,7 @@
 import L from 'leaflet'
 import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet'
 import { radToDeg } from '../../lib/utils.js';
+import BoatTrace from './trace.vue';
 
 export default {
   name: 'PlayerBoat',
@@ -30,6 +20,7 @@ export default {
     'l-layer-group': LLayerGroup,
     'l-marker': LMarker,
     'l-polyline': LPolyline,
+    'boat-trace': BoatTrace,
   },
 
   computed: {
@@ -42,23 +33,6 @@ export default {
         iconUrl: iconUrl,
         iconAnchor: [11, 11],
       });
-    },
-    boat () {
-      const id = this.$store.state.boat.id;
-      const idx = this.$store.state.race.fleet.id2idx[id];
-
-      return this.$store.state.race.fleet.boat[idx];
-    },
-    boatTrace () {
-      return this.boat.trace;
-    },
-    lastMileTrace () {
-      if (this.boat.trace.length === 0) {
-        return [];
-      }
-      return [this.boat.trace[0],
-              this.boat.latLng,
-              this.$store.state.boat.position];
     },
   },
 }
