@@ -43,16 +43,7 @@ export default {
     isPlayerBoat () {
       return this.id === this.$store.state.boat.id;
     },
-    isLeaderBoat () {
-      return this.id === this.$store.state.race.fleet.leader;
-    },
     color () {
-      if (this.isPlayerBoat) {
-        return '#ff00ff';
-      }
-      if (this.isLeaderBoat) {
-        return '#cc00cc';
-      }
       return 'rgb(' + this.boat.color.r + ',' + this.boat.color.g + ',' + this.boat.color.b + ')';
     },
     lastMileTrace () {

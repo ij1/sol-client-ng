@@ -71,6 +71,16 @@ export default {
 
           if (state.boat[idx].ranking === 1) {
             state.leader = id;
+            state.boat[idx].color = { r: 204, g: 0, b: 204 };
+          } else {
+            /* idx === 0 is player's boat, don't set its color */
+            if (idx > 0) {
+              state.boat[idx].color = {
+                r: boat.color_R,
+                g: boat.color_G,
+                b: boat.color_B,
+              };
+            }
           }
         } else {
           delete boat.lat;
@@ -94,14 +104,15 @@ export default {
           boat.ranking = parseInt(boat.ranking);
           boat.dtg = parseFloat(boat.dtg);
 
+          if (boat.ranking === 1) {
+            state.leader = id;
+            boat.color = { r: 204, g: 0, b: 204 };
+          }
           Vue.set(state.id2idx, id, state.boat.length);
           state.boat.push(boat);
 
           state.newBoatId = id;
 
-          if (boat.ranking === 1) {
-            state.leader = id;
-          }
         }
       }
     },
