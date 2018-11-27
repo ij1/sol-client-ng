@@ -4,6 +4,11 @@
       v-if = "this.showLeaderTrace"
       :id = "this.$store.state.race.fleet.leader"
     />
+    <boat-trace
+      v-for = "trace in this.otherTraces"
+      :key = "trace"
+      :id = "trace"
+    />
   </l-layer-group>
 </template>
 
@@ -42,6 +47,9 @@ export default {
     showLeaderTrace () {
       return (this.$store.state.race.fleet.leader !== null) &&
              (this.$store.state.race.fleet.leader !== this.$store.state.boat.id);
+    },
+    otherTraces () {
+      return this.$store.state.race.fleet.selected;
     },
   },
   methods: {

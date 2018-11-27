@@ -25,7 +25,7 @@
          <tr
            v-for = "boat in boatList"
            :key = "boat.id"
-           :class = "{'active': boat.id === selected }"
+           :class = "{'active': selected.includes(boat.id) }"
            @click = "selectBoat(boat.id)"
          >
            <td
@@ -49,7 +49,6 @@ export default {
   data () {
     return {
       listname: 'Main Fleet',
-      selected: null,
       filter: '',
       sortKey: 'ranking',
       sortDir: 'asc',
@@ -108,6 +107,9 @@ export default {
         return 0;
       });
     },
+    selected () {
+      return this.$store.state.race.fleet.selected;
+    }
   },
   methods: {
     selectSort (column) {
@@ -119,8 +121,11 @@ export default {
       }
     },
     selectBoat (id) {
-      this.selected = (this.selected === id) ? null : id;
-      if (this.selected !== null) {
+      if (this.selected.includes(id)) {
+        this.$store.commit('race/fleet/setSelected', []);
+      } else {
+        this.$store.commit('race/fleet/setSelected', [id]);
+
         const idx = this.$store.state.race.fleet.id2idx[this.selected];
         const position = this.$store.state.race.fleet.boat[idx].latLng;
         EventBus.$emit('map-highlight', position);

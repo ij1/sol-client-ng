@@ -13,6 +13,7 @@ export default {
     boat: [],
     id2idx: {},
     leader: null,
+    selected: [],
   },
 
   mutations: {
@@ -140,6 +141,9 @@ export default {
         const idx = state.id2idx[traceData.id];
         state.boat[idx].trace = traceData.trace;
       }
+    },
+    setSelected (state, ids) {
+      state.selected = ids;
     },
   },
 
