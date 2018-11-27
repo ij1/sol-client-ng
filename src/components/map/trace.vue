@@ -2,13 +2,13 @@
   <l-layer-group>
     <l-polyline
       :latLngs = "this.boatTrace"
-      color = "#ff00ff"
+      :color = "this.color"
       :weight = "1"
       :fill = "false"
     />
     <l-polyline
       :latLngs = "this.lastMileTrace"
-      color = "#ff00ff"
+      :color = "this.color"
       :weight = "1"
       :fill = "false"
     />
@@ -40,6 +40,21 @@ export default {
     boatTrace () {
       return this.boat.trace;
     },
+    isPlayerBoat () {
+      return this.id === this.$store.state.boat.id;
+    },
+    isLeaderBoat () {
+      return this.id === this.$store.state.race.fleet.leader;
+    },
+    color () {
+      if (this.isPlayerBoat) {
+        return '#ff00ff';
+      }
+      if (this.isLeaderBoat) {
+        return '#cc00cc';
+      }
+      return 'rgb(' + this.boat.color.r + ',' + this.boat.color.g + ',' + this.boat.color.b + ')';
+    },
     lastMileTrace () {
       if (this.boat.trace.length === 0) {
         return [];
@@ -52,7 +67,7 @@ export default {
        * FIXME: perhaps run dead-reckoning for the whole fleet, then this
        * can be removed.
        */
-      if (this.id === this.$store.state.boat.id) {
+      if (this.isPlayerBoat) {
         res.push(this.$store.state.boat.position);
       }
       return res;

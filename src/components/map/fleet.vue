@@ -45,6 +45,13 @@ export default {
     },
   },
   methods: {
+    isPlayerBoat (id) {
+      return id === this.$store.state.boat.id;
+    },
+    isLeaderBoat (id) {
+      return id === this.$store.state.race.fleet.leader;
+    },
+
     createTile (coords) {
       let canvas = L.DomUtil.create('canvas');
       // FIXME: don't use literals here
@@ -69,16 +76,23 @@ export default {
         const idx = this.$store.state.race.fleet.id2idx[i.id];
         const boat = this.$store.state.race.fleet.boat[idx];
         const center = this.map.project(boat.latLng).subtract(L.point(sw.x, ne.y));
+        let color = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
+        if (this.isPlayerBoat(i.id)) {
+          color = '#ff00ff';
+        }
+        if (this.isLeaderBoat(i.id)) {
+          color = '#cc00cc';
+        }
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
         if (boat.dtg > 0) {
           ctx.rotate(boat.cog);
-          ctx.strokeStyle = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
+          ctx.strokeStyle = color;
           ctx.stroke(this.boatPath);
           ctx.rotate(-boat.cog);
         } else {
           ctx.arc(0, 0, 2, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
+          ctx.fillStyle = color;
           ctx.fill();
         }
 
