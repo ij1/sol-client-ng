@@ -25,7 +25,7 @@ import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet'
 import { radToDeg } from '../../lib/utils.js';
 
 export default {
-  name: 'Map',
+  name: 'PlayerBoat',
   components: {
     'l-layer-group': LLayerGroup,
     'l-marker': LMarker,
