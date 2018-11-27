@@ -1,13 +1,25 @@
 <template>
-  <div style="display: none;"/>
+  <l-layer-group>
+    <boat-trace
+      v-if = "this.$store.state.race.fleet.leader !== null"
+      :id = "this.$store.state.race.fleet.leader"
+    />
+  </l-layer-group>
 </template>
 
 <script>
 import L from 'leaflet';
+import { LLayerGroup } from 'vue2-leaflet';
 import rbush from 'rbush';
+import BoatTrace from './trace.vue';
 
 export default {
   name: 'FleetMap',
+  components: {
+    'l-layer-group': LLayerGroup,
+    'boat-trace': BoatTrace,
+  },
+
   props: {
     map: {
       type: Object,

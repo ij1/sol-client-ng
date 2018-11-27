@@ -12,6 +12,7 @@ export default {
     fleetTime: 0,
     boat: [],
     id2idx: {},
+    leader: null,
   },
 
   mutations: {
@@ -68,6 +69,9 @@ export default {
           state.boat[idx].log = boat.log;
           state.boat[idx].current_leg = boat.current_leg;
 
+          if (state.boat[idx].ranking === 1) {
+            state.leader = id;
+          }
         } else {
           delete boat.lat;
           delete boat.lon;
@@ -94,6 +98,10 @@ export default {
           state.boat.push(boat);
 
           state.newBoatId = id;
+
+          if (boat.ranking === 1) {
+            state.leader = id;
+          }
         }
       }
     },
