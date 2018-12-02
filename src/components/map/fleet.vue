@@ -53,6 +53,8 @@ export default {
   methods: {
     createTile (coords) {
       let canvas = L.DomUtil.create('canvas');
+      /* Anything > 1/2 boat size is fine */
+      const halfsize = L.point(32 / 2, 32 / 2);
       // FIXME: don't use literals here
       canvas.width = 256;
       canvas.height = 256;
@@ -60,12 +62,14 @@ export default {
       const latLngBounds = this.layer._tileCoordsToBounds(coords);
       const sw = this.map.project(latLngBounds.getSouthWest());
       const ne = this.map.project(latLngBounds.getNorthEast());
+      const swWithMargin = this.map.unproject(sw.subtract(halfsize));
+      const neWithMargin = this.map.unproject(ne.add(halfsize));
 
       const needle = {
-        minX: sw.x,
-        minY: ne.y,
-        maxX: ne.x,
-        maxY: sw.y,
+        minX: swWithMargin.lng,
+        minY: swWithMargin.lat,
+        maxX: neWithMargin.lng,
+        maxY: neWithMargin.lat,
       };
       const res = this.$store.state.race.fleet.searchTree.search(needle);
 
@@ -99,15 +103,13 @@ export default {
   watch: {
     needsRedraw () {
       let data = [];
-      const halfsize = 16;
 
       for (let boat of this.$store.state.race.fleet.boat) {
-        const center = this.map.project(boat.latLng);
         let item = {
-          minX: center.x - halfsize,
-          minY: center.y - halfsize,
-          maxX: center.x + halfsize,
-          maxY: center.y + halfsize,
+          minX: boat.latLng.lng,
+          minY: boat.latLng.lat,
+          maxX: boat.latLng.lng,
+          maxY: boat.latLng.lat,
           id: boat.id,
         };
         Object.freeze(item);
