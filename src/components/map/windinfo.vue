@@ -5,7 +5,7 @@
     v-if = 'this.wxLoaded'
   >
     <div>
-      {{ latLng | positionFormat }}
+      {{ hoverLatLng | positionFormat }}
     </div>
     <div>
       {{ this.wind }}
@@ -24,15 +24,10 @@ export default {
     'l-control': LControl,
   },
   props: {
-    map: {
+    hoverLatLng: {
       type: Object,
       required: true,
-    }
-  },
-  data () {
-    return {
-      latLng: null,
-    }
+    },
   },
   filters: {
     positionFormat (value) {
@@ -44,10 +39,10 @@ export default {
   },
   computed: {
     wind () {
-      if (this.latLng === null) {
+      if (this.hoverLatLng === null) {
         return '';
       }
-      const wind = this.$store.getters['weather/latLngWind'](this.latLng);
+      const wind = this.$store.getters['weather/latLngWind'](this.hoverLatLng);
       if (wind === undefined) {
         return '';
       }
@@ -56,23 +51,6 @@ export default {
     ...mapState({
       wxLoaded: state => state.weather.loaded,
     }),
-  },
-  methods: {
-    setPosition (e) {
-      /* For some reason it's not camel-cased in the event! */
-      this.latLng = e.latlng.wrap();
-    },
-    clearPosition () {
-      this.latLng = null;
-    },
-  },
-  mounted () {
-    this.map.on('mousemove', this.setPosition, this);
-    this.map.on('mouseout', this.clearPosition, this);
-  },
-  beforeDestroy () {
-    this.map.off('mousemove', this.setPosition);
-    this.map.off('mousemout', this.clearPosition);
   },
 }
 </script>

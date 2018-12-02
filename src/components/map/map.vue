@@ -15,7 +15,7 @@
       <race-info v-if = "this.map !== null" :map = "this.map" :lngOffset = "-720"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :lngOffset = "-360"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :lngOffset = "360"/>
-      <wind-info v-if = "this.map !== null" :map = "this.map"/>
+      <wind-info v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null"/>
@@ -64,6 +64,7 @@ export default {
     return {
       center: L.latLng(0, 0),
       zoom: 3,
+      hoverLatLng: null,
       map: null,
       currentCenter: L.latLng(0, 0),
       currentZoom: 3,
@@ -76,7 +77,14 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject;
+      this.map.on('mousemove', this.setHoverPos, this);
+      this.map.on('mouseout', this.clearHoverPos, this);
     });
+  },
+  beforeDestroy () {
+    // FIXME: is this racy with nextTick setups? Can we call with bogus values?
+    this.map.off('mousemove', this.setHoverPos);
+    this.map.off('mousemout', this.clearHoverPos);
   },
 
   methods: {
@@ -85,7 +93,14 @@ export default {
     },
     updateCenter(center) {
       this.currentCenter = center;
-    }
+    },
+    setHoverPos (e) {
+      /* For some reason it's not camel-cased in the event! */
+      this.hoverLatLng = e.latlng.wrap();
+    },
+    clearHoverPos () {
+      this.hoverLatLng = null;
+    },
   }
 }
 </script>
