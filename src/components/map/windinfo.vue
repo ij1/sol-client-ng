@@ -26,7 +26,6 @@ export default {
   props: {
     hoverLatLng: {
       type: Object,
-      required: true,
     },
   },
   filters: {
