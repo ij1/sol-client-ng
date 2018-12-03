@@ -62,16 +62,8 @@ export default {
       const latLngBounds = this.layer._tileCoordsToBounds(coords);
       const sw = this.map.project(latLngBounds.getSouthWest());
       const ne = this.map.project(latLngBounds.getNorthEast());
-      const swWithMargin = this.map.unproject(sw.subtract(halfsize));
-      const neWithMargin = this.map.unproject(ne.add(halfsize));
 
-      const needle = {
-        minX: swWithMargin.lng,
-        minY: swWithMargin.lat,
-        maxX: neWithMargin.lng,
-        maxY: neWithMargin.lat,
-      };
-      const res = this.$store.state.race.fleet.searchTree.search(needle);
+      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.map, halfsize);
 
       let ctx = canvas.getContext('2d');
       let prev = L.point(0, 0);

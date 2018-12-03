@@ -161,6 +161,34 @@ export default {
     },
   },
 
+  getters: {
+    /* pixelDistance for these search function is x or y distance, thus
+     * searching squares rather than circles
+     */
+    searchAt: (state, getters) => (latLng, map, pixelDistance = 1) => {
+      return getters['searchBBox'](
+        L.latLngBounds(latLng, latLng),
+        map,
+        pixelDistance,
+      );
+    },
+    searchBBox: (state) => (latLngBounds, map, pixelDistance = 1) => {
+      const sw = map.project(latLngBounds.getSouthWest());
+      const ne = map.project(latLngBounds.getNorthEast());
+      const swWithMargin = map.unproject(sw.subtract(pixelDistance));
+      const neWithMargin = map.unproject(ne.add(pixelDistance));
+
+      const needle = {
+        minX: swWithMargin.lng,
+        minY: swWithMargin.lat,
+        maxX: neWithMargin.lng,
+        maxY: neWithMargin.lat,
+      };
+
+      return state.searchTree.search(needle);
+    },
+  },
+
   actions: {
     fetchRace({rootState, state, rootGetters, commit, dispatch}) {
       const getDef = {
