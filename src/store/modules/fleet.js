@@ -15,7 +15,7 @@ export default {
     id2idx: {},
     leader: null,
     selected: [],
-    searchTree: rbush(),	/* Fleet drawing component will update this */
+    searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
   },
 
   mutations: {
@@ -54,10 +54,19 @@ export default {
     },
     updateFleet (state, update) {
       state.fleetTime = update.timestamp;
+      let searchData = [];
 
       for (let boat of update.fleet) {
         const id = boat.id;
         const latLng = L.latLng(boat.lat, boat.lon);
+
+        let searchItem = {
+          lng: latLng.lng,
+          lat: latLng.lat,
+          id: boat.id,
+        };
+        Object.freeze(searchItem);
+        searchData.push(searchItem);
 
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
@@ -118,6 +127,9 @@ export default {
 
         }
       }
+
+      state.searchTree.clear();
+      state.searchTree.load(searchData);
     },
     updateFleetMeta (state, meta) {
       for (let boat of meta) {

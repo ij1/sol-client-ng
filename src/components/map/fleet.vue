@@ -102,24 +102,6 @@ export default {
 
   watch: {
     needsRedraw () {
-      let data = [];
-
-      for (let boat of this.$store.state.race.fleet.boat) {
-        let item = {
-          minX: boat.latLng.lng,
-          minY: boat.latLng.lat,
-          maxX: boat.latLng.lng,
-          maxY: boat.latLng.lat,
-          id: boat.id,
-        };
-        Object.freeze(item);
-
-        data.push(item);
-      }
-
-      this.$store.state.race.fleet.searchTree.clear();
-      this.$store.state.race.fleet.searchTree.load(data);
-
       this.layer.redraw();
     }
   },
