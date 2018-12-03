@@ -187,6 +187,11 @@ export default {
 
       return state.searchTree.search(needle);
     },
+
+    boatFromId: (state) => (id) => {
+      const idx = state.id2idx[id];
+      return state.boat[idx];
+    }
   },
 
   actions: {

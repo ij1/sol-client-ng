@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { LLayerGroup, LPolyline } from 'vue2-leaflet'
 
 export default {
@@ -34,8 +35,7 @@ export default {
 
   computed: {
     boat () {
-      const idx = this.$store.state.race.fleet.id2idx[this.id];
-      return this.$store.state.race.fleet.boat[idx];
+      return this.fleetBoatFromId(this.id);
     },
     boatTrace () {
       return this.boat.trace;
@@ -63,6 +63,9 @@ export default {
       }
       return res;
     },
+    ...mapGetters({
+      fleetBoatFromId: 'race/fleet/boatFromId',
+    }),
   },
 }
 </script>

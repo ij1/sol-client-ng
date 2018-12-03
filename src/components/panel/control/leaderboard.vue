@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
 
 export default {
@@ -109,7 +110,10 @@ export default {
     },
     selected () {
       return this.$store.state.race.fleet.selected;
-    }
+    },
+    ...mapGetters({
+      fleetBoatFromId: 'race/fleet/boatFromId',
+    }),
   },
   methods: {
     selectSort (column) {
@@ -126,8 +130,7 @@ export default {
       } else {
         this.$store.commit('race/fleet/setSelected', [id]);
 
-        const idx = this.$store.state.race.fleet.id2idx[this.selected];
-        const position = this.$store.state.race.fleet.boat[idx].latLng;
+        const position = this.fleetBoatFromId(this.selected).latLng;
         EventBus.$emit('map-highlight', position);
       }
     }

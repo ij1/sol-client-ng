@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import L from 'leaflet';
 import { LLayerGroup } from 'vue2-leaflet';
 import BoatTrace from './trace.vue';
@@ -49,6 +50,9 @@ export default {
     otherTraces () {
       return this.$store.state.race.fleet.selected;
     },
+    ...mapGetters({
+      fleetBoatFromId: 'race/fleet/boatFromId',
+    }),
   },
   methods: {
     createTile (coords) {
@@ -68,8 +72,7 @@ export default {
       let ctx = canvas.getContext('2d');
       let prev = L.point(0, 0);
       for (let i of res) {
-        const idx = this.$store.state.race.fleet.id2idx[i.id];
-        const boat = this.$store.state.race.fleet.boat[idx];
+        const boat = this.fleetBoatFromId(i.id);
         const center = this.map.project(boat.latLng).subtract(L.point(sw.x, ne.y));
         let color = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
         ctx.translate(center.x - prev.x, center.y - prev.y);
