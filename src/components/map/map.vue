@@ -18,6 +18,7 @@
       <wind-info v-if = "this.map !== null" :hoverLatLng = "this.hoverLatLng"/>
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
+      <fleet-hover v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <player-boat v-if = "this.map !== null"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
       <to-boat v-if = "this.map !== null" :map = "this.map"/>
@@ -36,6 +37,7 @@ import RaceInfo from './race';
 import WindMap from './wind';
 import WindInfo from './windinfo';
 import FleetMap from './fleet';
+import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
 import MapHighlight from './highlight';
 import ToBoatButton from './toboat';
@@ -54,6 +56,7 @@ export default {
     'wind-map': WindMap,
     'wind-info': WindInfo,
     'fleet-map': FleetMap,
+    'fleet-hover': FleetHover,
     'player-boat': PlayerBoat,
     'map-highlight': MapHighlight,
     'to-boat': ToBoatButton,
