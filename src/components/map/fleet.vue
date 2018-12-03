@@ -58,7 +58,7 @@ export default {
     createTile (coords) {
       let canvas = L.DomUtil.create('canvas');
       /* Anything > 1/2 boat size is fine */
-      const halfsize = L.point(32 / 2, 32 / 2);
+      const halfsize = 32 / 2;
       // FIXME: don't use literals here
       canvas.width = 256;
       canvas.height = 256;

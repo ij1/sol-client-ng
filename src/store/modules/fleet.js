@@ -165,19 +165,18 @@ export default {
     /* pixelDistance for these search function is x or y distance, thus
      * searching squares rather than circles
      */
-    searchAt: (state, getters) => (latLng, map, pixelDistance = 1) => {
-      return getters['searchBBox'](
-        L.latLngBounds(latLng, latLng),
-        map,
-        pixelDistance,
-      );
+    searchAt: (state, getters) => (latLng, map, pixelDistance) => {
+      const dummyBBox = L.latLngBounds(latLng, latLng);
+      return getters['searchBBox'](dummyBBox, map, pixelDistance);
     },
-    searchBBox: (state) => (latLngBounds, map, pixelDistance = 1) => {
-      const sw = map.project(latLngBounds.getSouthWest());
-      const ne = map.project(latLngBounds.getNorthEast());
-      const swWithMargin = map.unproject(sw.subtract(pixelDistance));
-      const neWithMargin = map.unproject(ne.add(pixelDistance));
-
+    searchBBox: (state) => (latLngBounds, map, pixelDistance) => {
+      let bl = map.project(latLngBounds.getSouthWest());
+      let tr = map.project(latLngBounds.getNorthEast());
+      bl = bl.add(L.point(-pixelDistance, pixelDistance));
+      tr = tr.add(L.point(pixelDistance, -pixelDistance));
+      const swWithMargin = map.unproject(bl);
+      const neWithMargin = map.unproject(tr);
+      // FIXME: is NaN check needed after unprojects with enlarged coords?
       const needle = {
         minX: swWithMargin.lng,
         minY: swWithMargin.lat,
