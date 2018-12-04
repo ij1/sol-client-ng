@@ -36,12 +36,9 @@ export default {
       canvas.height = this.$parent.tileSize;
 
       const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
-
       const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
       const ne = map.project(latLngBounds.getNorthEast(), this.coords.z);
-
-      // FIXME: this also uses wrong zoom
-      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, map, halfsize);
+      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.coords.z, halfsize);
 
       let ctx = canvas.getContext('2d');
       let prev = L.point(0, 0);

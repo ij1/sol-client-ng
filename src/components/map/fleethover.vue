@@ -44,7 +44,7 @@ export default {
         return [];
       }
 
-      const res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.map, 3);
+      const res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.$parent.$parent.currentZoom, 3);
 
       let self = this;
       return res.sort((a, b) => {

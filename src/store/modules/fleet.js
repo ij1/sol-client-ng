@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import L from 'leaflet'
 import rbush from 'rbush';
+import { PROJECTION } from '../../lib/sol.js';
 
 export default {
   namespaced: true,
@@ -165,17 +166,17 @@ export default {
     /* pixelDistance for these search function is x or y distance, thus
      * searching squares rather than circles
      */
-    searchAt: (state, getters) => (latLng, map, pixelDistance) => {
+    searchAt: (state, getters) => (latLng, zoom, pixelDistance) => {
       const dummyBBox = L.latLngBounds(latLng, latLng);
-      return getters['searchBBox'](dummyBBox, map, pixelDistance);
+      return getters['searchBBox'](dummyBBox, zoom, pixelDistance);
     },
-    searchBBox: (state) => (latLngBounds, map, pixelDistance) => {
-      let bl = map.project(latLngBounds.getSouthWest());
-      let tr = map.project(latLngBounds.getNorthEast());
+    searchBBox: (state) => (latLngBounds, zoom, pixelDistance) => {
+      let bl = PROJECTION.latLngToPoint(latLngBounds.getSouthWest(), zoom);
+      let tr = PROJECTION.latLngToPoint(latLngBounds.getNorthEast(), zoom);
       bl = bl.add(L.point(-pixelDistance, pixelDistance));
       tr = tr.add(L.point(pixelDistance, -pixelDistance));
-      const swWithMargin = map.unproject(bl);
-      const neWithMargin = map.unproject(tr);
+      const swWithMargin = PROJECTION.pointToLatLng(bl, zoom);
+      const neWithMargin = PROJECTION.pointToLatLng(tr, zoom);
       // FIXME: is NaN check needed after unprojects with enlarged coords?
       const needle = {
         minX: swWithMargin.lng,
