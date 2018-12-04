@@ -17,6 +17,7 @@
       <race-info v-if = "this.map !== null" :map = "this.map" :lngOffset = "360"/>
       <wind-info v-if = "this.map !== null" :hoverLatLng = "this.hoverLatLng"/>
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
+      <fleet-traces v-if = "this.map !== null"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-hover v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <player-boat v-if = "this.map !== null"/>
@@ -36,7 +37,8 @@ import MapTiles from './tiles';
 import RaceInfo from './race';
 import WindMap from './wind';
 import WindInfo from './windinfo';
-import FleetMap from './fleet';
+import FleetTraces from './fleettraces';
+import FleetMap from './fleetmap';
 import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
 import MapHighlight from './highlight';
@@ -55,6 +57,7 @@ export default {
     'race-info': RaceInfo,
     'wind-map': WindMap,
     'wind-info': WindInfo,
+    'fleet-traces': FleetTraces,
     'fleet-map': FleetMap,
     'fleet-hover': FleetHover,
     'player-boat': PlayerBoat,

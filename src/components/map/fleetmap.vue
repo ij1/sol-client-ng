@@ -1,31 +1,15 @@
 <template>
-  <l-layer-group>
-    <boat-trace
-      v-if = "this.showLeaderTrace"
-      :id = "this.$store.state.race.fleet.leader"
-    />
-    <boat-trace
-      v-for = "trace in this.otherTraces"
-      :key = "trace"
-      :id = "trace"
-    />
-  </l-layer-group>
+  <div style="display: none;">
+  </div>
 </template>
 
 <script>
 import Vue from 'vue';
-import { mapGetters } from 'vuex';
 import L from 'leaflet';
-import { LLayerGroup } from 'vue2-leaflet';
-import BoatTrace from './trace.vue';
 import FleetTile from './fleettile.vue';
 
 export default {
   name: 'FleetMap',
-  components: {
-    'l-layer-group': LLayerGroup,
-    'boat-trace': BoatTrace,
-  },
 
   props: {
     map: {
@@ -39,18 +23,6 @@ export default {
       boatPath: new Path2D('M -3,11 C -6 -1, -2 1, 0 -11 C 2 1, 6 -1, 3,11 Z'),
       tileComponents: {},
     }
-  },
-  computed: {
-    showLeaderTrace () {
-      return (this.$store.state.race.fleet.leader !== null) &&
-             (this.$store.state.race.fleet.leader !== this.$store.state.boat.id);
-    },
-    otherTraces () {
-      return this.$store.state.race.fleet.selected;
-    },
-    ...mapGetters({
-      fleetBoatFromId: 'race/fleet/boatFromId',
-    }),
   },
   methods: {
     createTile (coords) {
