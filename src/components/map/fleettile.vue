@@ -10,10 +10,6 @@ export default {
   name: 'FleetTile',
 
   props: {
-    latLngBounds: {
-      type: Object,
-      required: true,
-    },
     coords: {
       type: Object,
       required: true,
@@ -37,11 +33,13 @@ export default {
       canvas.width = this.$parent.layer.getTileSize().x;
       canvas.height = this.$parent.layer.getTileSize().y;
 
-      const sw = this.$parent.map.project(this.latLngBounds.getSouthWest(), this.coords.z);
-      const ne = this.$parent.map.project(this.latLngBounds.getNorthEast(), this.coords.z);
+      const latLngBounds = this.$parent.map.wrapLatLngBounds(this.$parent.layer._tileCoordsToBounds(this.coords));
+
+      const sw = this.$parent.map.project(latLngBounds.getSouthWest(), this.coords.z);
+      const ne = this.$parent.map.project(latLngBounds.getNorthEast(), this.coords.z);
 
       // FIXME: this also uses wrong zoom
-      const res = this.$store.getters['race/fleet/searchBBox'](this.latLngBounds, this.$parent.map, halfsize);
+      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.$parent.map, halfsize);
 
       let ctx = canvas.getContext('2d');
       let prev = L.point(0, 0);

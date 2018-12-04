@@ -29,7 +29,6 @@ export default {
       let div = L.DomUtil.create('div');
       let dummy = L.DomUtil.create('div');
       div.appendChild(dummy);
-      const latLngBounds = this.layer._tileCoordsToBounds(coords);
 
       const FleetTileCtor = Vue.extend(FleetTile);
       const fleetTileInstance = new FleetTileCtor({
@@ -37,7 +36,6 @@ export default {
         replace: false,
         parent: this,
         propsData: {
-          latLngBounds: this.map.wrapLatLngBounds(latLngBounds),
           coords: coords,
         }
       });
