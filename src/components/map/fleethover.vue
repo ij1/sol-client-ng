@@ -13,6 +13,9 @@
       >
         {{boat.ranking}} {{boat.country}} {{ boat.name }}
       </div>
+      <div v-if = "this.countNonExpandedBoats > 0">
+        +{{this.countNonExpandedBoats}} boats
+      </div>
     </div>
   </l-control>
 </template>
@@ -35,6 +38,11 @@ export default {
       type: Object,
     },
   },
+  data () {
+    return {
+      maxExpandedBoats: 3,
+    }
+  },
   computed: {
     hoverListIds () {
       /* Dummy dep */
@@ -55,7 +63,12 @@ export default {
     },
     hoverBoatList () {
       let self = this;
-      return this.hoverListIds.map(i => self.fleetBoatFromId(i.id));
+      return this.hoverListIds.slice(0, this.maxExpandedBoats).map(
+        i => self.fleetBoatFromId(i.id)
+      );
+    },
+    countNonExpandedBoats () {
+      return this.hoverListIds.length - this.hoverBoatList.length;
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
