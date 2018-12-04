@@ -33,7 +33,6 @@ export default {
       const FleetTileCtor = Vue.extend(FleetTile);
       const fleetTileInstance = new FleetTileCtor({
         el: dummy,
-        replace: false,
         parent: this,
         propsData: {
           coords: coords,
