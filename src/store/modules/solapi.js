@@ -1,10 +1,9 @@
 import queryString from 'querystring';
 import axios from 'axios';
 import promisify from 'util.promisify';
-import zlib from 'zlib';
+import pako from 'pako';
 import xml2js from 'xml2js' ;
 
-const zlibInflate = promisify(zlib.inflate);
 const parseString = promisify(xml2js.parseString);
 
 export default {
@@ -52,7 +51,7 @@ export default {
       .then((data) => {
         if (typeof reqDef.compressedPayload !== 'undefined') {
           let input = new Uint8Array(data);
-          return zlibInflate(input, null);
+          return Buffer.from(pako.inflate(input)).toString();
         } else {
           return data;
         }
