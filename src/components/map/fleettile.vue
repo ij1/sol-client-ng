@@ -27,32 +27,34 @@ export default {
   },
   methods: {
     redraw () {
+      let map = this.$parent.$parent.map;
+      const boatPath = this.$parent.$parent.boatPath;
       let canvas = this.$el;
       /* Anything > 1/2 boat size is fine */
       const halfsize = 32 / 2;
-      canvas.width = this.$parent.layer.getTileSize().x;
-      canvas.height = this.$parent.layer.getTileSize().y;
+      canvas.width = this.$parent.tileSize;
+      canvas.height = this.$parent.tileSize;
 
-      const latLngBounds = this.$parent.map.wrapLatLngBounds(this.$parent.layer._tileCoordsToBounds(this.coords));
+      const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
 
-      const sw = this.$parent.map.project(latLngBounds.getSouthWest(), this.coords.z);
-      const ne = this.$parent.map.project(latLngBounds.getNorthEast(), this.coords.z);
+      const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
+      const ne = map.project(latLngBounds.getNorthEast(), this.coords.z);
 
       // FIXME: this also uses wrong zoom
-      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.$parent.map, halfsize);
+      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, map, halfsize);
 
       let ctx = canvas.getContext('2d');
       let prev = L.point(0, 0);
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
-        const center = this.$parent.map.project(boat.latLng, this.coords.z).subtract(L.point(sw.x, ne.y));
+        const center = map.project(boat.latLng, this.coords.z).subtract(L.point(sw.x, ne.y));
         let color = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
         if (boat.dtg > 0) {
           ctx.rotate(boat.cog);
           ctx.strokeStyle = color;
-          ctx.stroke(this.$parent.boatPath);
+          ctx.stroke(boatPath);
           ctx.rotate(-boat.cog);
         } else {
           ctx.arc(0, 0, 2, 0, Math.PI * 2);
