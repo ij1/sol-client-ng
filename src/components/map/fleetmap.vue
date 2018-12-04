@@ -55,12 +55,8 @@ export default {
   },
 
   mounted () {
-    const GLayer = L.GridLayer.extend({
-      options: {
-        noWrap: true,
-      },
-    });
-    this.layer = new GLayer();
+    const GLayer = L.GridLayer.extend({});
+    this.layer = new GLayer({noWrap: true});
     this.layer.createTile = this.createTile;
     this.layer.setZIndex(250);
     this.layer.on('tileunload', this.onUnload, this);
