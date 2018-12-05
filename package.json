@@ -16,7 +16,7 @@
     "util": "^0.11.0",
     "util.promisify": "^1.0.0",
     "vue": "^2.5.17",
-    "vue2-leaflet": "^1.2.3",
+    "vue2-leaflet": "^1.2.3-beta.3",
     "vuex": "^3.0.1",
     "xml2js": "^0.4.19"
   },
