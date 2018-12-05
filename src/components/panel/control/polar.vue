@@ -169,7 +169,8 @@ export default {
       labelctx.translate(this.margin, this.gridOrigoY + this.margin);
 
       ctx.beginPath();
-      for (let twad = 20; twad <= 170; twad += 10) {
+      const firstTwad = this.gridOrigoY / this.gridSize.y < 0.75 ? 20 : 10;
+      for (let twad = firstTwad; twad <= 170; twad += 10) {
         const twa = degToRad(twad);
         const polarPos = this.polarCoords(twa, this.gridMaxKnots);
         ctx.moveTo(0, 0);
