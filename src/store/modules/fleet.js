@@ -198,7 +198,7 @@ export default {
     },
     /* Does not use state, just to use common code for boat colors */
     boatColor: () => (boat) => {
-      return 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
+      return 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ', 0.8)';
     },
   },
 
