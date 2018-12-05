@@ -44,7 +44,7 @@ export default {
       return this.id === this.$store.state.boat.id;
     },
     color () {
-      return 'rgb(' + this.boat.color.r + ',' + this.boat.color.g + ',' + this.boat.color.b + ')';
+      return this.boatColor(this.boat);
     },
     lastMileTrace () {
       if (this.boat.trace.length === 0) {
@@ -65,6 +65,7 @@ export default {
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
+      boatColor: 'race/fleet/boatColor',
     }),
   },
 }

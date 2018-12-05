@@ -23,6 +23,7 @@ export default {
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
+      boatColor: 'race/fleet/boatColor',
     }),
   },
   methods: {
@@ -45,7 +46,7 @@ export default {
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
         const center = map.project(boat.latLng, this.coords.z).subtract(L.point(sw.x, ne.y));
-        let color = 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ')';
+        const color = this.boatColor(boat);
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
         if (boat.dtg > 0) {
