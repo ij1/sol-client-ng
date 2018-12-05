@@ -24,7 +24,8 @@
         {{ this.wxTime | formatTime }}
         (+{{ this.timeOffset | formatOffset }})
       </span>
-      <button>&#9654;</button>
+      <button v-if = "this.playTimer === null" @click="onPlay">&#9654;</button>
+      <button v-if = "this.playTimer !== null" @click="cancelPlay">&#9642;</button>
       <span>Use</span>
       <select
         v-model="selectedStep"
@@ -69,6 +70,8 @@ export default {
     return {
       selectedTimescale: 3,  /* this.weatherTimescales.length - 1 */
       selectedStep: h(3),
+      playTimer: null,
+      tickInterval: 100,
 
       weatherTimescales: [
         {
@@ -118,6 +121,9 @@ export default {
     timeOffset () {
       return this.wxTime - this.boatTime;
     },
+    playStep () {
+      return this.weatherTimescales[this.selectedTimescale].playStep;
+    },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       wxUpdatedTime: state => state.weather.data.updated,
@@ -165,6 +171,26 @@ export default {
   },
 
   methods: {
+    onPlay () {
+      if (this.playTimer === null) {
+        this.playTimer = setInterval(this.onPlayTick.bind(this), this.tickInterval);
+      } else {
+        this.cancelPlay();
+      }
+    },
+    cancelPlay () {
+        if (this.playTimer !== null) {
+          clearInterval(this.playTimer);
+          this.playTimer = null;
+        }
+    },
+    onPlayTick () {
+      const oldTimeOffset = this.timeOffset;
+      this.changeTime(this.playStep);
+      if (this.timeOffset === oldTimeOffset) {
+        this.cancelPlay();
+      }
+    },
     onSelectTimescale (value) {
       if (this.selectedTimescale !== parseInt(value)) {
         this.selectedStep = this.weatherTimescales[value].defaultStep;
