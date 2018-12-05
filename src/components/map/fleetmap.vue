@@ -1,6 +1,6 @@
 <template>
   <l-grid-layer
-    :tileComponent = "FleetTile"
+    :tile-component = "FleetTile"
     :zIndex = "250"
     :noWrap = "true"
   />
