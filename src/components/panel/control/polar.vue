@@ -22,7 +22,7 @@ export default {
       curves: [3, 6, 9, 12, 15, 20, 25, 30],
       interval: 1,
 
-      margins: 2 * 20,
+      margin: 20,
       /* 105% of the real max speed to give a small breathing room for the curves */
       polarHeadroom: 1.05,
       gridMinSpacing: 20,
@@ -46,7 +46,7 @@ export default {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 0) * this.polarHeadroom;
     },
     maxWidth () {
-      return this.$refs.labels.width - this.margins;
+      return this.$refs.labels.width - this.margin * 2;
     },
     gridIntervalKnots () {
       return Math.ceil(this.maxSpeed / (this.maxWidth / this.gridMinSpacing));
@@ -74,6 +74,9 @@ export default {
       return Math.sqrt(Math.pow(this.gridMaxKnots * this.gridScale, 2) -
                        Math.pow(this.gridOrigoY, 2));
     },
+    topBorderTwa () {
+      return Math.acos(this.gridOrigoY / (this.gridMaxKnots * this.gridScale));
+    },
 
     /* Deps access to trigger redraw correctly */
     bgNeedRedraw () {
@@ -100,20 +103,30 @@ export default {
     }),
   },
   methods: {
+    polarCoords (twa, speed, extraPixels = 0) {
+      return {
+        x: Math.sin(twa) * (speed * this.gridScale + extraPixels),
+        y: -Math.cos(twa) * (speed * this.gridScale + extraPixels),
+      };
+    },
     drawBg () {
       this.$refs.polarbg.width = this.gridSize.x;
       this.$refs.polarbg.height = this.gridSize.y;
+      this.$refs.labels.height = this.gridSize.y + this.margin * 2;
 
       let ctx = this.$refs.polarbg.getContext('2d');
+      let labelctx = this.$refs.labels.getContext('2d');
       ctx.save();
+      labelctx.save();
 
-      this.drawGrid(ctx);
+      this.drawGrid(ctx, labelctx);
       for (let curve of this.bgCurves) {
         ctx.strokeStyle = windToColor(curve.knots);
         ctx.lineWidth = 2;
         this.drawCurve(ctx, curve);
       }
       ctx.restore();
+      labelctx.restore();
 
       this.$refs.polarfg.width = this.gridSize.x;
       this.$refs.polarfg.height = this.gridSize.y;
@@ -131,19 +144,20 @@ export default {
 
       const twa = Math.abs(this.$store.state.boat.instruments.twa.value);
       const speed = this.$store.state.boat.instruments.speed.value;
-      const x = Math.sin(twa) * speed * this.gridScale;
-      const y = -Math.cos(twa) * speed * this.gridScale;
+      const polarPos = this.polarCoords(twa, speed);
 
       ctx.beginPath();
-      ctx.arc(x, y, 2, 0, 2 * Math.PI);
+      ctx.arc(polarPos.x, polarPos.y, 2, 0, 2 * Math.PI);
       ctx.stroke();
 
       ctx.restore();
     },
     /* WARNING side-effect: translates context to polar origo */
-    drawGrid (ctx) {
+    drawGrid (ctx, labelctx) {
       ctx.strokeStyle = '#aaa';
       ctx.strokeWidth = 1;
+      labelctx.strokeStyle = '#000';
+      labelctx.font = '10px sans-serif';
 
       ctx.beginPath();
       ctx.moveTo(0, this.gridSize.y);
@@ -152,22 +166,40 @@ export default {
       ctx.stroke();
 
       ctx.translate(0, this.gridOrigoY);
+      labelctx.translate(this.margin, this.gridOrigoY + this.margin);
 
       ctx.beginPath();
-      for (let twad = 20; twad <= 180; twad += 10) {
+      for (let twad = 20; twad <= 170; twad += 10) {
         const twa = degToRad(twad);
-        const x = Math.sin(twa) * this.gridMaxKnots * this.gridScale;
-        const y = -Math.cos(twa) * this.gridMaxKnots * this.gridScale;
+        const polarPos = this.polarCoords(twa, this.gridMaxKnots);
         ctx.moveTo(0, 0);
-        ctx.lineTo(x, y);
+        ctx.lineTo(polarPos.x, polarPos.y);
+        if (twa < this.topBorderTwa) {
+          labelctx.textAlign = 'center';
+          labelctx.textBaseline = 'bottom';
+          labelctx.fillText(twad + "\xb0",
+                            Math.tan(twa) * this.gridOrigoY + this.polarCoords(twa, 0, 7).x,
+                            -this.gridOrigoY - 2);
+        } else {
+          labelctx.textAlign = 'left';
+          labelctx.textBaseline = twad < 120 ? 'middle' : 'top';
+          const labelPos = this.polarCoords(twa, this.gridMaxKnots, 5);
+          labelctx.fillText(twad + "\xb0",
+                            labelPos.x - Math.max(twad - 90, 0)/10,
+                            labelPos.y);
+        }
       }
       ctx.stroke();
 
+      labelctx.textAlign = 'end';
+      labelctx.textBaseline = 'middle';
+      labelctx.fillText('kn', -5, 0);
       ctx.beginPath();
       let i = 1;
       while (i * this.gridIntervalKnots <= this.gridMaxKnots) {
-        ctx.arc(0, 0, i * this.gridIntervalKnots * this.gridScale,
-                1.5 * Math.PI, 0.5 * Math.PI);
+        const r = i * this.gridIntervalKnots * this.gridScale;
+        ctx.arc(0, 0, r, 1.5 * Math.PI, 0.5 * Math.PI);
+        labelctx.fillText('' + (i * this.gridIntervalKnots), -5, r);
         i++;
       }
       ctx.stroke();
@@ -176,9 +208,8 @@ export default {
       ctx.beginPath();
       let first = true;
       for (let pt of curve.values) {
-        const x = Math.sin(pt.twa) * pt.speed * this.gridScale;
-        const y = -Math.cos(pt.twa) * pt.speed * this.gridScale;
-        first ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        const polarPos = this.polarCoords(pt.twa, pt.speed);
+        first ? ctx.moveTo(polarPos.x, polarPos.y) : ctx.lineTo(polarPos.x, polarPos.y);
         first = false;
       }
       ctx.stroke();
