@@ -25,7 +25,7 @@
          <tr
            v-for = "boat in boatList"
            :key = "boat.id"
-           :class = "{'active': selected.includes(boat.id) }"
+           :class = "{'active': selected.includes(boat.id), 'maphover': maphover.includes(boat.id)}"
            @click = "selectBoat(boat.id)"
          >
            <td
@@ -111,6 +111,9 @@ export default {
     selected () {
       return this.$store.state.race.fleet.selected;
     },
+    maphover () {
+      return this.$store.state.race.fleet.hover;
+    },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
     }),
@@ -159,6 +162,9 @@ export default {
 }
 #leaderboard-body .active {
   background: #d0d0ff;
+}
+#leaderboard-body .maphover {
+  background: #e0e0ff;
 }
 
 .leaderboard-left {
