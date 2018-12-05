@@ -11,6 +11,10 @@
         v-for = "boat in this.hoverBoatList"
         :key = "boat.id"
       >
+        <div
+          class = "color-floated"
+          :style = "{ background: boatColor(boat) }"
+        />
         {{boat.ranking}} {{boat.country}} {{ boat.name }}
       </div>
       <div v-if = "this.countNonExpandedBoats > 0">
@@ -73,6 +77,7 @@ export default {
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
+      boatColor: 'race/fleet/boatColor',
     }),
   },
   watch: {
@@ -102,5 +107,12 @@ export default {
 }
 #fleet-info {
   text-align: left;
+}
+.color-floated {
+  float: left;
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+  margin-right: 4px;
 }
 </style>
