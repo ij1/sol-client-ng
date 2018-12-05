@@ -21,6 +21,25 @@ export function UTCToMsec(dateString) {
   return ms;
 }
 
+export function days (value) {
+  return value * 24 * 3600 * 1000;
+}
+export function h (value) {
+  return value * 3600 * 1000;
+}
+export function min (value) {
+  return value * 60 * 1000;
+}
+export function toDays (value) {
+  return value / (24 * 3600 * 1000);
+}
+export function toH (value) {
+  return value / (3600 * 1000);
+}
+export function toMin (value) {
+  return value / (60 * 1000);
+}
+
 export function radToDeg(rad) {
   return rad * 180 / Math.PI;
 }

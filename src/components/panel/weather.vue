@@ -47,22 +47,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-
-function h (value) {
-  return value * 3600 * 1000;
-}
-function min (value) {
-  return value * 60 * 1000;
-}
-function toDays (value) {
-  return value / (24 * 3600 * 1000);
-}
-function toH (value) {
-  return value / (3600 * 1000);
-}
-function toMin (value) {
-  return value / (60 * 1000);
-}
+import { days, h, min, toDays, toH, toMin } from '../../lib/utils.js';
 
 export default {
   name: 'WeatherPanel',
@@ -141,7 +126,7 @@ export default {
         value = fullTimescale;
       }
 
-      let divider = h(24);
+      let divider = days(1);
       let unit = 'd';
       if (value < h(100)) {
         divider = h(1);
