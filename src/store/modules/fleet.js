@@ -16,6 +16,7 @@ export default {
     id2idx: {},
     leader: null,
     selected: [],
+    hover: [],
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
   },
 
@@ -159,6 +160,9 @@ export default {
     },
     setSelected (state, ids) {
       state.selected = ids;
+    },
+    setHover (state, ids) {
+      state.hover = ids;
     },
   },
 

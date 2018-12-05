@@ -44,7 +44,7 @@ export default {
     }
   },
   computed: {
-    hoverListIds () {
+    hoverListIdsAll () {
       /* Dummy dep */
       this.$store.state.race.fleet.fleetTime;
 
@@ -59,20 +59,39 @@ export default {
         const aa = self.fleetBoatFromId(a.id).ranking;
         const bb = self.fleetBoatFromId(b.id).ranking;
         return aa - bb;
-      });
+      }).map(i => i.id);
+    },
+    hoverListIds () {
+      return this.hoverListIdsAll.slice(0, this.maxExpandedBoats);
     },
     hoverBoatList () {
       let self = this;
-      return this.hoverListIds.slice(0, this.maxExpandedBoats).map(
-        i => self.fleetBoatFromId(i.id)
-      );
+      return this.hoverListIds.map(id => self.fleetBoatFromId(id));
     },
     countNonExpandedBoats () {
-      return this.hoverListIds.length - this.hoverBoatList.length;
+      return this.hoverListIdsAll.length - this.hoverBoatList.length;
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
     }),
+  },
+  watch: {
+    hoverListIds (newValue, oldValue) {
+      if (newValue.length === oldValue.length) {
+        let i = 0;
+        while (i < newValue.length) {
+          if (newValue !== oldValue[i]) {
+            break;
+          }
+          i++;
+        }
+        /* Arrays equal? Nothing to do */
+        if (i === newValue.length) {
+          return;
+        }
+      }
+      this.$store.commit('race/fleet/setHover', newValue);
+    }
   },
 }
 </script>

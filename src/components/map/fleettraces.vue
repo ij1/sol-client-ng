@@ -29,7 +29,7 @@ export default {
              (this.$store.state.race.fleet.leader !== this.$store.state.boat.id);
     },
     otherTraces () {
-      return this.$store.state.race.fleet.selected;
+      return this.$store.state.race.fleet.selected.concat(this.$store.state.race.fleet.hover);
     },
   },
 }
