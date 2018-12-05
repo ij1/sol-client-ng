@@ -29,7 +29,11 @@ export default {
              (this.$store.state.race.fleet.leader !== this.$store.state.boat.id);
     },
     otherTraces () {
-      return this.$store.state.race.fleet.selected.concat(this.$store.state.race.fleet.hover);
+      return this.$store.state.race.fleet.selected.concat(
+        this.$store.state.race.fleet.hover
+      ).sort().filter((item, pos, arr) => {
+        return !pos || item !== arr[pos - 1]
+      });
     },
   },
 }
