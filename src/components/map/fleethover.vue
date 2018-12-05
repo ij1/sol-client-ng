@@ -56,7 +56,13 @@ export default {
         return [];
       }
 
-      const res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.$parent.$parent.currentZoom, 3);
+      let res;
+      for (let distance = 3; distance < 7; distance++) {
+        res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.$parent.$parent.currentZoom, distance);
+        if (res.length > 0) {
+          break;
+        }
+      }
 
       let self = this;
       return res.sort((a, b) => {
