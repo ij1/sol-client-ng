@@ -23,6 +23,10 @@ export function speedTowardsBearing(speed, heading, bearing) {
  * The input y direction is from up to down as with screen coordinates.
  */
 export function atan2Bearing(x, y) {
+  /* Trap undefined to 0 bearing to avoid need to check for it everywhere */
+  if (x === 0 && y === 0) {
+    return 0;
+  }
   /* The arguments are reversed and negated from (y, x) on purpose */
   return Math.atan2(-x, -y) + Math.PI;
 }
