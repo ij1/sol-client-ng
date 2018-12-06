@@ -39,6 +39,7 @@ export default {
       const ne = map.project(latLngBounds.getNorthEast(), this.coords.z);
       const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.coords.z, halfsize);
 
+      ctx.save();
       let prev = L.point(0, 0);
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
@@ -59,6 +60,7 @@ export default {
 
         prev = center;
       }
+      ctx.restore();
     },
   },
 
