@@ -138,6 +138,8 @@ export default {
       ctx.save();
       let l = 1;
       while (typeof this.geoms['l' + l] !== 'undefined') {
+        ctx.globalCompositeOperation = (l % 2 === 1) ?
+          'source-over' : 'destination-out';
         ctx.fillStyle = '#ffddbb';
         for (let poly of this.geoms['l' + l]) {
           let first = true;
@@ -156,6 +158,7 @@ export default {
         }
 
         /* Draw outline */
+        ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = '#000';
         for (let poly of this.geoms['l' + l]) {
           let first = true;
@@ -189,8 +192,6 @@ export default {
         }
 
         l++;
-        // FIXME: other levels are not correctly handled just yet, thus break
-        break;
       }
       ctx.restore();
     },
