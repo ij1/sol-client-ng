@@ -24,9 +24,13 @@ export default {
   },
   methods: {
     redraw () {
+      let ctx = this.$el.getContext('2d');
+      ctx.clearRect(0, 0, this.$parent.tileSize, this.$parent.tileSize);
+      this._redraw(ctx);
+    },
+    _redraw (ctx) {
       let map = this.$parent.$parent.map;
       const boatPath = this.$parent.$parent.boatPath;
-      let canvas = this.$el;
       /* Anything > 1/2 boat size is fine */
       const halfsize = 32 / 2;
 
@@ -35,8 +39,6 @@ export default {
       const ne = map.project(latLngBounds.getNorthEast(), this.coords.z);
       const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.coords.z, halfsize);
 
-      let ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, this.$parent.tileSize, this.$parent.tileSize);
       let prev = L.point(0, 0);
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
@@ -67,7 +69,7 @@ export default {
   },
 
   mounted () {
-    this.redraw();
+    this._redraw(this.$el.getContext('2d'));
   },
 
   render: function (h) {
