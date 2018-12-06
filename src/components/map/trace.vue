@@ -18,6 +18,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { LLayerGroup, LPolyline } from 'vue2-leaflet'
+import { latLngAddOffset } from '../../lib/utils.js';
 
 export default {
   name: 'BoatTrace',
@@ -31,6 +32,10 @@ export default {
       type: String,
       required: true,
     },
+    lngOffset: {
+      type: Number,
+      default: 0,
+    },
   },
 
   computed: {
@@ -38,7 +43,11 @@ export default {
       return this.fleetBoatFromId(this.id);
     },
     boatTrace () {
-      return this.boat.trace;
+      if (this.lngOffset === 0) {
+        return this.boat.trace;
+      } else {
+        return this.boat.trace.map(i => latLngAddOffset(i, this.lngOffset));
+      }
     },
     isPlayerBoat () {
       return this.id === this.$store.state.boat.id;
@@ -65,7 +74,12 @@ export default {
           this.$store.state.boat.position
         ));
       }
-      return res;
+
+      if (this.lngOffset === 0) {
+        return res;
+      } else {
+        return res.map(i => latLngAddOffset(i, this.lngOffset));
+      }
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
