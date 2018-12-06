@@ -32,7 +32,7 @@ export default {
       initialRadius: 100,
       interval: 10,
       latLng: null,
-      startTimestamp: -1000,
+      startTimestamp: -1000,		/* -(100 * 10) */
       nowTimestamp: 0,
       timer: null,
     }
@@ -50,17 +50,31 @@ export default {
     updateNow () {
       this.nowTimestamp = Date.now();
       if (this.radius <= 0) {
+        this.cancelHighlight();
+      }
+    },
+    cancelHighlight () {
+      this.startTimestamp = -(this.initialRadius * this.interval);
+      if (this.timer !== null) {
         clearInterval(this.timer);
         this.timer = null;
       }
     },
     onHighlight (latLng) {
+      /* This is bit tricky, remove prev/stale highlight first.
+       * Only at the nextTick, launch the next highlight to avoid first
+       * displaying at the wrong position.
+       */
+      this.cancelHighlight();
       this.latLng = latLng;
-      this.startTimestamp = Date.now();
-      this.nowTimestamp = this.startTimestamp;
-      this.timer = setInterval(this.updateNow.bind(this), this.interval);
+      this.$nextTick(() => {
+        this.startTimestamp = Date.now();
+        this.nowTimestamp = this.startTimestamp;
+        this.timer = setInterval(this.updateNow.bind(this), this.interval);
 
-      this.map.flyTo(this.latLng);
+        this.map.flyTo(this.latLng);
+      });
+
     },
   },
 
