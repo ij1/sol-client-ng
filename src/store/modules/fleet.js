@@ -62,13 +62,15 @@ export default {
         const id = boat.id;
         const latLng = L.latLng(boat.lat, boat.lon);
 
-        let searchItem = {
-          lng: latLng.lng,
-          lat: latLng.lat,
-          id: boat.id,
-        };
-        Object.freeze(searchItem);
-        searchData.push(searchItem);
+        for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
+          let searchItem = {
+            lng: latLng.lng + ddeg,
+            lat: latLng.lat,
+            id: boat.id,
+          };
+          Object.freeze(searchItem);
+          searchData.push(searchItem);
+        }
 
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
