@@ -1,7 +1,3 @@
-<template>
-  <canvas/>
-</template>
-
 <script>
 import { mapGetters } from 'vuex';
 import L from 'leaflet';
@@ -33,8 +29,6 @@ export default {
       let canvas = this.$el;
       /* Anything > 1/2 boat size is fine */
       const halfsize = 32 / 2;
-      canvas.width = this.$parent.tileSize;
-      canvas.height = this.$parent.tileSize;
 
       const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
       const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
@@ -42,6 +36,7 @@ export default {
       const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.coords.z, halfsize);
 
       let ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, this.$parent.tileSize, this.$parent.tileSize);
       let prev = L.point(0, 0);
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
@@ -73,6 +68,17 @@ export default {
 
   mounted () {
     this.redraw();
+  },
+
+  render: function (h) {
+    const tileSize = this.$parent.tileSize;
+
+    return h('canvas', {
+      attrs: {
+        width: tileSize,
+        height: tileSize,
+      },
+    });
   },
 }
 </script>
