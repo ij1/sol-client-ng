@@ -51,15 +51,19 @@ export default {
         return [];
       }
 
-      let res = [this.boat.trace[0],
-                 this.boat.latLng];
+      let res = [
+        this.boat.trace[0],
+        this.$store.getters['race/latLngToRaceBounds'](this.boat.latLng)
+      ];
 
       /* Own boat extends beyond the fleet update 
        * FIXME: perhaps run dead-reckoning for the whole fleet, then this
        * can be removed.
        */
       if (this.isPlayerBoat) {
-        res.push(this.$store.state.boat.position);
+        res.push(this.$store.getters['race/latLngToRaceBounds'](
+          this.$store.state.boat.position
+        ));
       }
       return res;
     },
