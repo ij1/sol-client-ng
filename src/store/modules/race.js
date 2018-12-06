@@ -32,6 +32,11 @@ export default {
   },
 
   getters: {
+    latLngToRaceBounds: (state) => (latLng) => {
+      return (latLng.lng < state.boundary[0].lng) ?
+             L.latLng(latLng.lat, latLng.lng + 360) :
+             latLng;
+    },
     parseCourse: () => (raceInfo) => {
       let course = {
         boundary: [

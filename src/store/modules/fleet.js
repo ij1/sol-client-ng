@@ -265,7 +265,7 @@ export default {
       dispatch('solapi/get', getDef, {root: true});
     },
 
-    fetchTraces({rootState, state, commit, dispatch}) {
+    fetchTraces({rootState, state, rootGetters, commit, dispatch}) {
       const getDef = {
         url: "/webclient/traces_" + rootState.auth.race_id + ".xml",
         params: {
@@ -294,7 +294,9 @@ export default {
             let trace = [];
             for (let lngLatTxt of boat.data.split(/ /)) {
               const lngLatArr = lngLatTxt.split(/,/);
-              trace.push(L.latLng(lngLatArr[1], lngLatArr[0]));
+              let latLng = L.latLng(lngLatArr[1], lngLatArr[0]);
+              latLng = rootGetters['race/latLngToRaceBounds'](latLng);
+              trace.push(latLng);
             }
 
             commit('updateBoatTrace', {
