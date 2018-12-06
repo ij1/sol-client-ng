@@ -14,6 +14,9 @@
 <script>
 import { EventBus } from '../../lib/event-bus.js';
 import { LLayerGroup, LCircleMarker } from 'vue2-leaflet';
+import L from 'leaflet';
+import { degToRad, radToDeg } from '../../lib/utils.js';
+import { minTurnAngle } from '../../lib/nav.js';
 
 export default {
   name: 'MapHighlight',
@@ -72,7 +75,12 @@ export default {
         this.nowTimestamp = this.startTimestamp;
         this.timer = setInterval(this.updateNow.bind(this), this.interval);
 
-        this.map.flyTo(this.latLng);
+        const currentLatLng = this.map.getCenter();
+        const minTurn = minTurnAngle(degToRad(currentLatLng.lng),
+                                     degToRad(this.latLng.lng));
+        const targetLatLng = L.latLng(this.latLng.lat,
+                                      currentLatLng.lng + radToDeg(minTurn));
+        this.map.flyTo(targetLatLng);
       });
 
     },
