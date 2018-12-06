@@ -38,7 +38,7 @@ export default {
 
   computed: {
     selectTileset() {
-      if ((this.zoom > 9) && (this.maxTileset === 'h')) {
+      if ((this.zoom > 8) && (this.maxTileset === 'h')) {
         return 'h';
       } else if (this.zoom > 7) {
         return 'i';
