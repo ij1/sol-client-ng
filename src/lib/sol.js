@@ -16,7 +16,24 @@ export function UVToWind(uv) {
   };
 }
 
-export function windToColor(/* wind */) {
-  // FIXME: add colors
-  return '#000000';
+function colorGradient (knots, min, max) {
+  return Math.min(Math.max((knots - min) / (max - min), 0), 1);
+}
+
+export function windToColor(knots) {
+  const r1 = colorGradient(knots, 9, 20) * 255;
+  const g1 = colorGradient(knots, 0, 12) * 255;
+  const b1 = (1 - colorGradient(knots, 9, 20)) * 255;
+  const r2 = (1 - colorGradient(knots, 30, 70)) * 255;
+  const g2 = (1 - colorGradient(knots, 15, 30)) * 255;
+  const b2 = colorGradient(knots, 30, 50) * 255;
+  let r = Math.max(r1 + r2 - 255, 0);
+  let g = Math.max(g1 + g2 - 255, 0);
+  let b = b1 + b2;
+  if (knots > 70) {
+    const v = (1 - colorGradient(knots, 70, 90)) * 255;
+    r = v;
+    b = v;
+  }
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
 }
