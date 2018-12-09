@@ -72,7 +72,9 @@ export default {
             const wind = this.$store.getters['weather/latLngWind'](windPoint);
             if (wind !== undefined) {
               ctx.rotate(wind.twd);
-              ctx.strokeStyle = windToColor(wind);
+              const color = windToColor(wind.knots);
+              ctx.strokeStyle = color;
+              ctx.fillStyle = color;
 
               const lw = wind.knots < 50 ? wind.knots / 10 : 5;
               const len = (wind.knots < 20 ? Math.floor(wind.knots) : 20) + 6;
