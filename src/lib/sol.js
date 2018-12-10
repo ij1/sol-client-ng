@@ -21,11 +21,13 @@ function colorGradient (knots, min, max) {
 }
 
 export function windToColor(knots) {
-  const r1 = colorGradient(knots, 9, 20) * 255;
-  const g1 = colorGradient(knots, 0, 12) * 255;
-  const b1 = (1 - colorGradient(knots, 9, 20)) * 255;
+  const r1 = colorGradient(knots, 10, 15) * 102 +
+             colorGradient(knots, 15, 20) * (255 - 102);
+  const g1 = colorGradient(knots, 0, 9) * 183 +
+             colorGradient(knots, 9, 12) * (255 - 183);
+  const b1 = (1 - colorGradient(knots, 7.5, 20)) * 255;
   const r2 = (1 - colorGradient(knots, 30, 70)) * 255;
-  const g2 = (1 - colorGradient(knots, 15, 30)) * 255;
+  const g2 = (1 - colorGradient(knots, 17.5, 30)) * 255;
   const b2 = colorGradient(knots, 30, 50) * 255;
   let r = Math.max(r1 + r2 - 255, 0);
   let g = Math.max(g1 + g2 - 255, 0);
