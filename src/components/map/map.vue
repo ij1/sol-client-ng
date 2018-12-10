@@ -151,4 +151,8 @@ export default {
 .wp-tooltip::before {
   all: unset;
 }
+
+.leaflet-container {
+  background: #fff;
+}
 </style>
