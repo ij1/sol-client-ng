@@ -1,9 +1,9 @@
 import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
-import { UTCToMsec } from '../../lib/utils.js';
+import { radToDeg, degToRad, UTCToMsec } from '../../lib/utils.js';
 import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
-import { PROJECTION } from '../../lib/sol.js';
+import { PROJECTION, EARTH_R } from '../../lib/sol.js';
 
 export default {
   namespaced: true,
@@ -75,7 +75,29 @@ export default {
         }
         course.route[idx] = waypoint;
       }
-      // ADDME: calculate finish line end points
+
+      // FIXME: correct calculation, GGR leg 2 shows difference finish line
+      // Maybe try with hyperbolic arctangent formula (corrects ellipsoid):
+      //  atanh(sin(...) - e * atanh(e * sin(...))
+      // Or perhaps the error comes from the nextWpBearing differences
+      // (spherical vs ellipsoidal mercator)?
+      const angular_dist = parseFloat(raceInfo.course.goal_radius) * 1852 / EARTH_R;
+      const center = course.route[course.route.length - 1].latLng;
+      for (let i = 0; i <= 1; i++) {
+        const angle = course.route[course.route.length - 2].nextWpBearing +
+                             Math.PI / 2 + i * Math.PI;
+        const dlat = angular_dist * Math.cos(angle);
+        const ep_lat = center.lat + radToDeg(dlat);
+        // FIXME: is this correct for point on different hemispheres (N & S)?
+        const corr_imm = Math.tan(Math.PI / 4 + degToRad(ep_lat) / 2) /
+                         Math.tan(Math.PI / 4 + degToRad(center.lat) / 2);
+        const correction = Math.abs(dlat) > 0 ?
+                             dlat / Math.log(corr_imm) :
+                             Math.cos(dlat);
+        const dlon = angular_dist * Math.sin(angle) / correction;
+        course.finish.push(L.latLng(ep_lat, center.lng + radToDeg(dlon)));
+      }
+
       return course;
     },
   },
