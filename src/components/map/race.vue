@@ -22,12 +22,28 @@
         {{waypoint.info}}
       </l-tooltip>
     </l-circle-marker>
+    <l-circle-marker
+      v-for="(endpoint, index) in this.finishLine"
+      :key="'f' + index"
+      :lat-lng="endpoint"
+      :fillColor="wpColor"
+      :radius="finishPointRadius"
+      :color="wpColor"
+      :fillOpacity="1"
+    />
+    <l-polyline
+      :lat-lngs="finishLine"
+      :fill="false"
+      :color="wpColor"
+      :weight="1"
+    />
+
   </l-layer-group>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import { LLayerGroup, LCircleMarker, LRectangle, LTooltip } from 'vue2-leaflet'
+import { LLayerGroup, LCircleMarker, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet'
 import { latLngAddOffset } from '../../lib/utils.js';
 
 export default {
@@ -35,6 +51,7 @@ export default {
   components: {
     'l-layer-group': LLayerGroup,
     'l-circle-marker': LCircleMarker,
+    'l-polyline': LPolyline,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
   },
@@ -57,6 +74,7 @@ export default {
         direction: 'right',
         className: 'wp-tooltip',
       },
+      finishPointRadius: 1,
     }
   },
 
@@ -72,11 +90,14 @@ export default {
         route.push({
           latLng: latLngAddOffset(this.race.route[i].latLng, this.lngOffset),
           name: this.race.route[i].name,
-          radius: (i !== this.race.route.length - 1) ? 2 : 1,
+          radius: (i !== this.race.route.length - 1) ? 2 : this.finishPointRadius,
           info: this.markInfoText(i),
         });
       }
       return route;
+    },
+    finishLine () {
+      return this.race.finish.map(pt => latLngAddOffset(pt, this.lngOffset));
     },
     ...mapState({
       race: state => state.race,
