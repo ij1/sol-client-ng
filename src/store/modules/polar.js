@@ -10,6 +10,9 @@ export default {
     twsval: [],
     twaval: [],
     bs: [],
+
+    curves: [3, 6, 9, 12, 15, 20, 25, 30],
+    twaInterval: 1,
   },
 
   mutations: {
@@ -106,6 +109,14 @@ export default {
       // ADDME: refine maxvmg calculations!
 
       return curve;
+    },
+
+    staticCurves: (state, getters) => {
+      let res = [];
+      for (let knots of state.curves) {
+        res.push(getters['curve'](knots, state.twaInterval));
+      }
+      return res;
     },
   },
 }

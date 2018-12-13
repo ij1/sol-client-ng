@@ -19,9 +19,6 @@ export default {
   name: 'ControlSteeringPolar',
   data () {
     return {
-      curves: [3, 6, 9, 12, 15, 20, 25, 30],
-      interval: 1,
-
       margin: 20,
       /* 105% of the real max speed to give a small breathing room for the curves */
       polarHeadroom: 1.05,
@@ -32,15 +29,11 @@ export default {
   },
   computed: {
     bgCurves () {
-      let res = [];
-      for (let knots of this.curves) {
-        res.push(this.$store.getters['boat/polar/curve'](knots, this.interval));
-      }
-      return res;
+      return this.$store.getters['boat/polar/staticCurves'];
     },
     fgCurve () {
       const knots = this.$store.state.boat.instruments.tws.value * MS_TO_KNT;
-      return this.$store.getters['boat/polar/curve'](knots, this.interval);
+      return this.$store.getters['boat/polar/curve'](knots, this.$store.state.boat.polar.twaInterval);
     },
     maxSpeed () {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 0) * this.polarHeadroom;
