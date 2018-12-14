@@ -7,20 +7,31 @@
       </div>
     </div>
     <div id="status-bar-right">
-      <div v-if="this.$store.state.boat.steering.dcs.list.length > 0">
+      <div v-if="this.nextDC !== null">
         Next DC:
-        FIXME in FIXME
+        {{ this.nextDC.type | cctocog }}={{ this.nextDC.value | prettyDegrees }}
+        in FIXME
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { radToDeg } from '../lib/utils.js';
+
 export default {
   name: 'StatusBar',
   data () {
     return {
     }
+  },
+  filters: {
+    prettyDegrees (radians) {
+      return radToDeg(radians).toFixed(3).replace(/0*$/, '');
+    },
+    cctocog (type) {
+      return type === 'cc' ? 'cog' : type;
+    },
   },
   computed: {
     boatInfo () {
@@ -33,6 +44,12 @@ export default {
       }
       return txt + ' ranked #' + this.$store.state.boat.ranking +
              ' with ' + this.$store.state.boat.dtg.toFixed(1) + 'nm to go.'
+    },
+    nextDC () {
+      if (this.$store.state.boat.steering.dcs.list.length === 0) {
+        return null;
+      }
+      return this.$store.state.boat.steering.dcs.list[0];
     }
   },
 }
