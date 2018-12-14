@@ -10,19 +10,29 @@
     </div>
     <div>
       <div v-if="activeTab === 0" class="control-panel-content">
-        <control-steering/>
+        <keep-alive>
+          <control-steering/>
+        </keep-alive>
       </div>
       <div v-if="activeTab === 1" class="control-panel-content">
-        <control-dcs/>
+        <keep-alive>
+          <control-dcs/>
+        </keep-alive>
       </div>
       <div v-if="activeTab === 2" class="control-panel-content">
-        <control-leaderboard/>
+        <keep-alive>
+          <control-leaderboard/>
+        </keep-alive>
       </div>
       <div v-if="activeTab === 3" class="control-panel-content">
-        <control-chats/>
+        <keep-alive>
+          <control-chats/>
+        </keep-alive>
       </div>
       <div v-if="activeTab === 4" class="control-panel-content">
-        <control-race-messages/>
+        <keep-alive>
+          <control-race-messages/>
+        </keep-alive>
       </div>
     </div>
   </div>
