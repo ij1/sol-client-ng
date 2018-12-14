@@ -15,7 +15,7 @@
           class = "color-floated"
           :style = "{ background: boatColor(boat) }"
         />
-        {{boat.ranking}} {{boat.country}} {{ boat.name }}
+        {{boat.ranking}} {{boat.country}} {{ boat.name }} ({{ boat.type}})
       </div>
       <div v-if = "this.countNonExpandedBoats > 0">
         +{{this.countNonExpandedBoats}} boats
