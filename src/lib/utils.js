@@ -21,6 +21,16 @@ export function UTCToMsec(dateString) {
   return ms;
 }
 
+export function msecToUTCString (msec) {
+  const d = new Date(msec);
+  return d.getUTCFullYear() + '/' +
+         ('00' + (d.getUTCMonth() + 1)).slice(-2) + '/' +
+         ('00' + d.getUTCDate()).slice(-2) + ' ' +
+         ('00' + d.getUTCHours()).slice(-2) + ':' +
+         ('00' + d.getUTCMinutes()).slice(-2) + ':' +
+         ('00' + d.getUTCSeconds()).slice(-2);
+}
+
 export function days (value) {
   return value * 24 * 3600 * 1000;
 }

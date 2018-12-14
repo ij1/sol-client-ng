@@ -1,4 +1,6 @@
 import { orderBy } from 'lodash';
+import { UTCToMsec } from '../../lib/utils.js';
+
 
 export default {
   namespaced: true,
@@ -58,6 +60,9 @@ export default {
             }
           } else {
             dcList = [];
+          }
+          for (let dc of dcList) {
+            dc.time = UTCToMsec(dc.time);
           }
           commit('updateDCs', dcList);
           commit('setFetching', false);

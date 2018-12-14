@@ -25,7 +25,7 @@
             :class = "{'active': command.id === selected }"
             @click = "selectDC(command.id)"
           >
-            <td>{{ command.time }}</td>
+            <td>{{ command.time | msecToUTCString }}</td>
             <td>{{ command.type | cctocog }}</td>
             <td>{{ command.value | degrees }}</td>
           </tr>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { radToDeg } from '../../../lib/utils.js';
+import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
 
 export default {
   name: 'ControlDCs',
@@ -48,6 +48,9 @@ export default {
     }
   },
   filters: {
+    msecToUTCString (msec) {
+      return msecToUTCString(msec);
+    },
     degrees (radians) {
       return radToDeg(radians).toFixed(2);
     },
