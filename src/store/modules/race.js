@@ -29,6 +29,9 @@ export default {
       state.info = raceInfo;
       state.loaded = true;
     },
+    updateMessage (state, msg) {
+      state.info.message = msg;
+    },
   },
 
   getters: {

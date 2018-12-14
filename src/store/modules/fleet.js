@@ -218,6 +218,9 @@ export default {
 
         dataHandler: (raceInfo) => {
           const now = rootGetters['time/now']();
+
+          commit('race/updateMessage', raceInfo.message, {root: true});
+
           if ((typeof raceInfo.boats !== 'undefined') &&
               (typeof raceInfo.boats.boat !== 'undefined')) {
             let boatList = raceInfo.boats.boat;
