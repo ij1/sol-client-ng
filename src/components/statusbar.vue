@@ -29,7 +29,7 @@ export default {
   },
   filters: {
     prettyDegrees (radians) {
-      return radToDeg(radians).toFixed(3).replace(/0*$/, '');
+      return radToDeg(radians).toFixed(3).replace(/\.*0*$/, '');
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;
