@@ -10,19 +10,21 @@
       <div v-if="this.nextDC !== null">
         Next DC:
         {{ this.nextDC.type | cctocog }}={{ this.nextDC.value | prettyDegrees }}
-        in FIXME
+        in {{ this.toNextDCTime | formatNextDCTime }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { radToDeg } from '../lib/utils.js';
+import { radToDeg, days, h, min, toDays, toH, toMin } from '../lib/utils.js';
 
 export default {
   name: 'StatusBar',
   data () {
     return {
+      dcTimer: null,
+      toNextDCTime: null,
     }
   },
   filters: {
@@ -32,6 +34,20 @@ export default {
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;
     },
+    formatNextDCTime (msecs) {
+      const d = Math.floor(toDays(msecs));
+      msecs -= days(d);
+      const hh = Math.floor(toH(msecs));
+      msecs -= h(hh);
+      const m = Math.floor(toMin(msecs));
+      msecs -= min(m);
+      const secs = Math.floor(msecs / 1000);
+
+      return (d > 0 ? d + 'd ' : '') +
+             ((d > 0 || hh > 0) ? hh + 'h ' : '') +
+             ((d > 0 || hh > 0 || m > 0) ? m + 'm ' : '') +
+             secs + 's';
+    }
   },
   computed: {
     boatInfo () {
@@ -50,8 +66,46 @@ export default {
         return null;
       }
       return this.$store.state.boat.steering.dcs.list[0];
+    },
+  },
+  methods: {
+    updateDCTimer () {
+      const now = this.$store.getters['time/now']();
+      const toNextDC = this.nextDC.time - now;
+      if (toNextDC <= 0) {
+        this.dcTimer = null;
+        this.$store.commit('boat/steering/clearDC');
+        return;
+      }
+      this.toNextDCTime = toNextDC;
+
+      let time = toNextDC;
+      time = time % 1000 + 2;
+      this.dcTimer = setTimeout(this.updateDCTimer.bind(this), time);
     }
   },
+  watch: {
+    nextDC () {
+      if (this.dcTimer !== null) {
+        clearTimeout(this.dcTimer);
+        this.dcTimer = null;
+      }
+      if (this.nextDC !== null) {
+        this.updateDCTimer();
+      }
+    },
+  },
+  mounted () {
+    if (this.nextDC !== null) {
+      this.updateDCTimer();
+    }
+  },
+  beforeDestroy () {
+    if (this.dcTimer !== null) {
+      clearTimeout(this.dcTimer);
+      this.dcTimer = null;
+    }
+  }
 }
 </script>
 

@@ -28,6 +28,9 @@ export default {
     dcsUpdated (state) {
       state.dcs.needReload = true;
     },
+    clearDC (state) {
+      state.dcs.list.shift();
+    },
     setSending (state) {
       state.sending = true;
     },
