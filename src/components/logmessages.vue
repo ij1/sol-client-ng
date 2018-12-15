@@ -23,5 +23,6 @@ export default {
   top: 10%;
   height: 15%;
   font-size: 8px;
+  pointer-events: none;
 }
 </style>
