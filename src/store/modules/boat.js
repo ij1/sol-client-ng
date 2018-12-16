@@ -71,7 +71,7 @@ export default {
           commit('race/fleet/initMyBoat', boatData.boat, {root: true});
           commit('instruments/updateInstruments', boatData.boat);
           commit('updateBoat', boatData.boat);
-          commit('weather/minTime', state.instruments.time, {root: true});
+          commit('weather/minTime', state.instruments.time.value, {root: true});
 
           if (typeof boatData.lmi !== 'undefined') {
             let lmi = parseInt(boatData.lmi);
