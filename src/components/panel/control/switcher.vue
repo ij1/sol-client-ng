@@ -56,7 +56,7 @@ export default {
   },
   data () {
     return {
-      activeTab: 1,
+      activeTab: 0,
     }
   },
 }
