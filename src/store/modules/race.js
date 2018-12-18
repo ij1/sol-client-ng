@@ -1,9 +1,9 @@
 import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
-import { radToDeg, UTCToMsec } from '../../lib/utils.js';
+import { degToRad, radToDeg, UTCToMsec } from '../../lib/utils.js';
 import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
-import { PROJECTION, EARTH_R } from '../../lib/sol.js';
+import { PROJECTION} from '../../lib/sol.js';
 
 export default {
   namespaced: true,
@@ -79,18 +79,13 @@ export default {
         course.route[idx] = waypoint;
       }
 
-      // FIXME: correct calculation, GGR leg 2 shows difference finish line
-      // Maybe try with hyperbolic arctangent formula (corrects ellipsoid):
-      //  atanh(sin(...) - e * atanh(e * sin(...))
-      // Or perhaps the error comes from the nextWpBearing differences
-      // (spherical vs ellipsoidal mercator)?
-      const angular_dist = parseFloat(raceInfo.course.goal_radius) * 1852 / EARTH_R;
+      const angular_dist = degToRad(parseFloat(raceInfo.course.goal_radius) / 60);
       const center = course.route[course.route.length - 1].latLng;
       const centerProj = PROJECTION.project(center);
       for (let i = 0; i <= 1; i++) {
         const angle = course.route[course.route.length - 2].nextWpBearing +
                              Math.PI / 2 + i * Math.PI;
-        const dlat = angular_dist * Math.cos(angle);
+        const dlat = Math.asin(Math.sin(angle - Math.PI / 2) * Math.sin(angular_dist));
         const ep_lat = center.lat + radToDeg(dlat);
         const dy = PROJECTION.project(L.latLng(ep_lat, center.lng)).y - centerProj.y;
         const dx = Math.tan(angle) * dy;
