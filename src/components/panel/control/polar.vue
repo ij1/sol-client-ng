@@ -1,5 +1,5 @@
 <template>
-  <div v-if="this.$store.state.boat.polar.loaded">
+  <div>
     <div id="bg">
       <canvas id="labels" ref="labels"/>
       <div id="polar">
@@ -23,11 +23,12 @@ export default {
       /* 105% of the real max speed to give a small breathing room for the curves */
       polarHeadroom: 1.05,
       gridMinSpacing: 20,
-
-      setupDone: false,
     }
   },
   computed: {
+    polarLoaded () {
+      return this.$store.state.boat.polar.loaded;
+    },
     bgCurves () {
       return this.$store.getters['boat/polar/staticCurves'];
     },
@@ -39,6 +40,7 @@ export default {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 0) * this.polarHeadroom;
     },
     maxWidth () {
+      // FIXME: according to guide, $refs should not be used in computed?
       return this.$refs.labels.width - this.margin * 2;
     },
     gridIntervalKnots () {
@@ -73,7 +75,7 @@ export default {
 
     /* Deps access to trigger redraw correctly */
     bgNeedRedraw () {
-      if (!this.setupDone) {
+      if (!this.polarLoaded) {
         return -1;
       }
       this.bgCurves;
@@ -82,7 +84,7 @@ export default {
       return Date.now();
     },
     fgNeedRedraw () {
-      if (!this.setupDone) {
+      if (!this.polarLoaded) {
         return -1;
       }
       this.fgCurve;
@@ -102,7 +104,10 @@ export default {
         y: -Math.cos(twa) * (speed * this.gridScale + extraPixels),
       };
     },
-    drawBg () {
+    draw () {
+      if (!this.polarLoaded) {
+        return;
+      }
       this.$refs.polarbg.width = this.gridSize.x;
       this.$refs.polarbg.height = this.gridSize.y;
       this.$refs.labels.height = this.gridSize.y + this.margin * 2;
@@ -127,6 +132,9 @@ export default {
       this.drawFg();
     },
     drawFg () {
+      if (!this.polarLoaded) {
+        return;
+      }
       let ctx = this.$refs.polarfg.getContext('2d');
       ctx.clearRect(0, 0, this.$refs.polarfg.width, this.$refs.polarfg.height);
       ctx.save();
@@ -211,19 +219,14 @@ export default {
   },
   watch: {
     fgNeedRedraw () {
-      if (this.setupDone) {
-        this.drawFg();
-      }
+      this.drawFg();
     },
     bgNeedRedraw () {
-      if (this.setupDone) {
-        this.drawBg();
-      }
+      this.draw();
     },
   },
   mounted () {
-    this.setupDone = true;
-    this.drawBg();
+    this.draw();
   }
 }
 </script>
