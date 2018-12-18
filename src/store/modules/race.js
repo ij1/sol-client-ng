@@ -79,13 +79,13 @@ export default {
         course.route[idx] = waypoint;
       }
 
-      const angular_dist = degToRad(parseFloat(raceInfo.course.goal_radius) / 60);
+      const angularDist = degToRad(parseFloat(raceInfo.course.goal_radius) / 60);
       const center = course.route[course.route.length - 1].latLng;
       const centerProj = PROJECTION.project(center);
       for (let i = 0; i <= 1; i++) {
         const angle = course.route[course.route.length - 2].nextWpBearing +
                              Math.PI / 2 + i * Math.PI;
-        const dlat = Math.asin(Math.sin(angle - Math.PI / 2) * Math.sin(angular_dist));
+        const dlat = Math.asin(Math.sin(angle - Math.PI / 2) * Math.sin(angularDist));
         const ep_lat = center.lat + radToDeg(dlat);
         const dy = PROJECTION.project(L.latLng(ep_lat, center.lng)).y - centerProj.y;
         const dx = Math.tan(angle) * dy;
