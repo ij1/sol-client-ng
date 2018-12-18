@@ -23,6 +23,11 @@ export default {
       /* 105% of the real max speed to give a small breathing room for the curves */
       polarHeadroom: 1.05,
       gridMinSpacing: 20,
+      /*
+       * FIXME: only set in mounted(). Should listen resize or perhaps
+       * use vue-resize?
+       */
+      maxWidth: 1,
     }
   },
   computed: {
@@ -38,10 +43,6 @@ export default {
     },
     maxSpeed () {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 0) * this.polarHeadroom;
-    },
-    maxWidth () {
-      // FIXME: according to guide, $refs should not be used in computed?
-      return this.$refs.labels.width - this.margin * 2;
     },
     gridIntervalKnots () {
       return Math.ceil(this.maxSpeed / (this.maxWidth / this.gridMinSpacing));
@@ -226,6 +227,7 @@ export default {
     },
   },
   mounted () {
+    this.maxWidth = this.$refs.labels.width - this.margin * 2;
     this.draw();
   }
 }
