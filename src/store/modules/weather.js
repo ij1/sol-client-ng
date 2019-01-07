@@ -131,7 +131,14 @@ export default {
       const wxLatLng = L.latLng(latLng.lat,
                                 latLng.lng +
                                 (latLng.lng < state.data.origo[1] ? 360 : 0));
-      if (!state.data.boundary.contains(wxLatLng)) {
+      /*
+       * .contains() doesn't prevent access to undefined item at race boundary
+       * so we have to do the checks manually. Lng is linearized above, thus
+       * only >= check is needed for it.
+       */
+      if ((wxLatLng.lng >= state.data.boundary.getNorthEast().lng) ||
+          (wxLatLng.lat < state.data.boundary.getSouthWest().lat) ||
+          (wxLatLng.lat >= state.data.boundary.getNorthEast().lat)) {
         return undefined;
       }
 
