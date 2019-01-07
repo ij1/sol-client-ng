@@ -90,7 +90,7 @@ export default {
         route.push({
           latLng: latLngAddOffset(this.race.route[i].latLng, this.lngOffset),
           name: this.race.route[i].name,
-          radius: (i !== this.race.route.length - 1) ? 2 : this.finishPointRadius,
+          radius: !this.isFinishMark(i) ? 2 : this.finishPointRadius,
           info: this.markInfoText(i),
         });
       }
@@ -107,12 +107,21 @@ export default {
   },
 
   methods: {
+    isStartMark (mark) {
+      return mark === 0;
+    },
+    isFinishMark (mark) {
+      return mark === this.race.route.length - 1;
+    },
+    isIntermediateMark (mark) {
+      return mark < this.race.route.length - 1;
+    },
     markInfoText (mark) {
-      if (mark === 0) {
+      if (this.isStartMark(mark)) {
         return "(Start)";
       }
 
-      if (mark < this.race.route.length - 1) {
+      if (this.isIntermediateMark(mark)) {
         if (mark <= this.lastRoundedMark) {
           return "Rounded.";
         }
