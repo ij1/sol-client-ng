@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import timeModule from './modules/time'
 import authModule from './modules/auth'
+import notificationsModule from './modules/notifications';
 import solapiModule from './modules/solapi'
 import boatModule from './modules/boat'
 import raceModule from './modules/race'
@@ -15,6 +16,7 @@ export default new Vuex.Store({
   modules: {
     time: timeModule,
     auth: authModule,
+    notifications: notificationsModule,
     solapi: solapiModule,
     boat: boatModule,
     race: raceModule,

@@ -110,7 +110,7 @@ export default {
   border-color: #808080;
   background: #fff;
   text-align: left;
-  z-index: 1000;
+  z-index: 1001;
 }
 
 </style>

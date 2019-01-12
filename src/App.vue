@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <login-popup/>
+    <notifications-popup/>
     <div id="left_div">
       <div id="left_top_div">
         <status-bar/>
@@ -21,6 +22,7 @@
 <script>
 import StatusBar from './components/statusbar.vue'
 import LoginPopup from './components/loginpopup.vue'
+import NotificationsPopup from './components/notificationspopup.vue';
 import Map from './components/map/map.vue'
 import BoatInstruments from './components/panel/instruments/instruments.vue'
 import WeatherPanel from './components/panel/weather.vue'
@@ -32,6 +34,7 @@ export default {
   components: {
     'status-bar': StatusBar,
     'login-popup': LoginPopup,
+    'notifications-popup': NotificationsPopup,
     'map-view': Map,
     'boat-instruments': BoatInstruments,
     'weather-panel': WeatherPanel,
