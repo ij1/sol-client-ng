@@ -87,7 +87,7 @@ export default {
         url: '/webclient/command/post/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,
-      }
+      };
 
       return dispatch('solapi/post', postDef, {root: true})
         .catch(() => {
@@ -110,7 +110,7 @@ export default {
         params: sendParams,
         useArrays: false,
         dataField: 'response',
-      }
+      };
 
       return dispatch('solapi/post', postDef, {root: true})
         .catch(() => {

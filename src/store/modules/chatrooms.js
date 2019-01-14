@@ -76,7 +76,7 @@ export default {
         url: '/webclient/chat/post/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,
-      }
+      };
 
       return dispatch('solapi/post', postDef, {root: true})
         .catch(() => {

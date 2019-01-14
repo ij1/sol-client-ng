@@ -17,7 +17,7 @@ export default {
 
   mutations: {
     logError (state, error) {
-      state.errorLog.push(error)
+      state.errorLog.push(error);
     },
   },
 
@@ -70,14 +70,14 @@ export default {
       })
 
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         commit('logError', {
           url: url,
           error: err,
-        })
+        });
         if (typeof reqDef.failHandler !== 'undefined') {
           retry = false;
-          reqDef.failHandler()
+          reqDef.failHandler();
         }
       })
 
@@ -96,7 +96,7 @@ export default {
             dispatch(action, reqDef, {root: true});
           }, interval);
         }
-      })
+      });
     },
 
     post ({state, commit}, reqDef) {
@@ -104,38 +104,37 @@ export default {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
-      }
+      };
+
       return axios.post(state.server + reqDef.url,
                         queryString.stringify(reqDef.params), config)
+        .then((response) => {
+          if (response.status !== 200) {
+            return Promise.reject(new Error("Invalid API call"));
+          } else if (response.data === 'OK') {
+            Promise.resolve();
+          } else if (typeof reqDef.dataField !== 'undefined') {
+            parseString(response.data,
+                        {explicitArray: reqDef.useArrays},
+                        (err, result) => {
 
-      .then((response) => {
-        if (response.status !== 200) {
-          return Promise.reject(new Error("Invalid API call"));
-        } else if (response.data === 'OK') {
-          Promise.resolve();
-        } else if (typeof reqDef.dataField !== 'undefined') {
-          parseString(response.data,
-                      {explicitArray: reqDef.useArrays},
-                      (err, result) => {
+              if (!(result.hasOwnProperty(reqDef.dataField))) {
+                return Promise.reject(new Error("No data from API"));
+              }
 
-            if (!(result.hasOwnProperty(reqDef.dataField))) {
-              return Promise.reject(new Error("No data from API"));
-            }
-
-            const data = result[reqDef.dataField];
-            return data;
-          })
-        }
-      })
-
-      .catch((err) => {
-        console.log(err)
-        commit('logError', {
-          url: reqDef.url,
-          error: err,
+              const data = result[reqDef.dataField];
+              return data;
+            });
+          }
         })
-        throw err;
-      })
+        .catch((err) => {
+          console.log(err);
+          commit('logError', {
+            url: reqDef.url,
+            error: err,
+          });
+          throw err;
+        });
     },
   },
 }
