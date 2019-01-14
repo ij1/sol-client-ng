@@ -36,7 +36,7 @@ export default {
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       const url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
 
-      axios.get(state.server + url, {
+      return axios.get(state.server + url, {
         responseType: respType,
         params: reqDef.params,
       })
@@ -110,8 +110,8 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }
-      axios.post(state.server + reqDef.url,
-                 queryString.stringify(reqDef.params), config)
+      return axios.post(state.server + reqDef.url,
+                        queryString.stringify(reqDef.params), config)
 
       .then((response) => {
         if (response.status !== 200) {
