@@ -87,18 +87,19 @@ export default {
         url: '/webclient/command/post/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,
-        dataHandler: () => {
+      }
+
+      return dispatch('solapi/post', postDef, {root: true})
+        .catch(() => {
+          /* FIXME: Should retry a number of times before giving up? */
+          commit('clearSending');
+        })
+        .then(() => {
           commit('clearSending');
           if (sendParams.delay > 0) {
             dispatch('fetchDCs');
           }
-        },
-        failHandler: () => {
-          /* FIXME: Should retry a number of times before giving up */
-          commit('clearSending');
-        },
-      }
-      dispatch('solapi/post', postDef, {root: true});
+        });
     },
 
     sendDeleteDC({rootState, commit, dispatch}, sendParams) {
@@ -109,16 +110,17 @@ export default {
         params: sendParams,
         useArrays: false,
         dataField: 'response',
-        dataHandler: () => {
+      }
+
+      return dispatch('solapi/post', postDef, {root: true})
+        .catch(() => {
+          /* FIXME: Should retry a number of times before giving up? */
+          commit('clearSending');
+        })
+        .then(() => {
           commit('clearSending');
           dispatch('fetchDCs');
-        },
-        failHandler: () => {
-          /* FIXME: Should retry a number of times before giving up */
-          commit('clearSending');
-        },
-      }
-      dispatch('solapi/post', postDef, {root: true});
+        });
     },
 
   },

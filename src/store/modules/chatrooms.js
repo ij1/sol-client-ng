@@ -76,15 +76,16 @@ export default {
         url: '/webclient/chat/post/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,
-        dataHandler: () => {
-          commit('clearSending', sendParams.room_id);
-        },
-        failHandler: () => {
+      }
+
+      return dispatch('solapi/post', postDef, {root: true})
+        .catch(() => {
           /* FIXME: Should retry a number of times before giving up */
           commit('clearSending', sendParams.room_id);
-        },
-      }
-      dispatch('solapi/post', postDef, {root: true});
+        })
+        .then(() => {
+          commit('clearSending', sendParams.room_id);
+        });
     }
   }
 }

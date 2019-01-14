@@ -112,7 +112,7 @@ export default {
         if (response.status !== 200) {
           return Promise.reject(new Error("Invalid API call"));
         } else if (response.data === 'OK') {
-          reqDef.dataHandler(null);
+          Promise.resolve();
         } else if (typeof reqDef.dataField !== 'undefined') {
           parseString(response.data,
                       {explicitArray: reqDef.useArrays},
@@ -123,7 +123,7 @@ export default {
             }
 
             const data = result[reqDef.dataField];
-            reqDef.dataHandler(data);
+            return data;
           })
         }
       })
@@ -134,9 +134,7 @@ export default {
           url: reqDef.url,
           error: err,
         })
-        if (typeof reqDef.failHandler !== 'undefined') {
-          reqDef.failHandler()
-        }
+        throw err;
       })
     },
   },
