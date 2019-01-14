@@ -12,14 +12,10 @@ export default {
   state: {
     // eslint-disable-next-line
     server: process.env.VUE_APP_API_URL,
-    apiState: "Inactive",
     errorLog: [],
   },
 
   mutations: {
-    setState (state, apiState) {
-      state.apiState = apiState
-    },
     logError (state, error) {
       state.errorLog.push(error)
     },
@@ -65,7 +61,6 @@ export default {
         if (!(result.hasOwnProperty(reqDef.dataField))) {
           return Promise.reject(new Error("No data from API"));
         }
-        commit('setState', "Up")
         if (typeof reqDef.interval === 'undefined') {
           retry = false;
         }
@@ -117,7 +112,6 @@ export default {
         if (response.status !== 200) {
           return Promise.reject(new Error("Invalid API call"));
         } else if (response.data === 'OK') {
-          commit('setState', "Up")
           reqDef.dataHandler(null);
         } else if (typeof reqDef.dataField !== 'undefined') {
           parseString(response.data,
