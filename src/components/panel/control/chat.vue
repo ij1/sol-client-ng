@@ -109,6 +109,11 @@ export default {
       this.$store.dispatch('chatrooms/sendMessage', {
         room_id: this.room_id,
         text: this.myStringClean,
+      })
+      .then(status => {
+        if (status !== 'OK') {
+          this.$store.dispatch('notifications/add', 'Failed to send a message to chat!');
+        }
       });
     }
   }

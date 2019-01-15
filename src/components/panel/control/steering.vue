@@ -288,7 +288,15 @@ export default {
         value: this.type === 'cc' ? this.ccRad : this.twaRad,
         command: this.type,
       };
-      this.$store.dispatch('boat/steering/sendSteeringCommand', sendParams);
+      this.$store.dispatch('boat/steering/sendSteeringCommand', sendParams)
+      .then(status => {
+        if (status !== 'OK') {
+          this.$store.dispatch('notifications/add',
+            'Failed to send ' +
+            ((sendParams.delay > 0) ? 'delayed' : 'steering') +
+            ' command!');
+        }
+      });
     },
 
     /* HACK to avoid side-effect detector for computed properties */

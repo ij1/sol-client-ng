@@ -66,7 +66,13 @@ export default {
       if (this.selected === null) {
         return;
       }
-      this.$store.dispatch('boat/steering/sendDeleteDC', {id: this.selected});
+      this.$store.dispatch('boat/steering/sendDeleteDC', {id: this.selected})
+      .then(status => {
+        if (status !== 'OK') {
+          this.$store.dispatch('notifications/add',
+            'Delete DC send failed!');
+        }
+      });
     },
     selectDC (id) {
       this.selected = (this.selected === id) ? null : id;
