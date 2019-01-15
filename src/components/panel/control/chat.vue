@@ -112,7 +112,10 @@ export default {
       })
       .then(status => {
         if (status !== 'OK') {
-          this.$store.dispatch('notifications/add', 'Failed to send a message to chat!');
+          this.$store.dispatch('notifications/add', {
+            text: 'Failed to send a message to chat!',
+            color: 'red',
+          });
         }
       });
     }

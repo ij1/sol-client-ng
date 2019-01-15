@@ -291,10 +291,12 @@ export default {
       this.$store.dispatch('boat/steering/sendSteeringCommand', sendParams)
       .then(status => {
         if (status !== 'OK') {
-          this.$store.dispatch('notifications/add',
-            'Failed to send ' +
-            ((sendParams.delay > 0) ? 'delayed' : 'steering') +
-            ' command!');
+          this.$store.dispatch('notifications/add', {
+            text: 'Failed to send ' +
+              ((sendParams.delay > 0) ? 'delayed' : 'steering') +
+              ' command!',
+            color: 'red',
+          });
         }
       });
     },

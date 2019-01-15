@@ -69,8 +69,10 @@ export default {
       this.$store.dispatch('boat/steering/sendDeleteDC', {id: this.selected})
       .then(status => {
         if (status !== 'OK') {
-          this.$store.dispatch('notifications/add',
-            'Delete DC send failed!');
+          this.$store.dispatch('notifications/add', {
+            text: 'Delete DC send failed!',
+            color: 'red',
+          });
         }
       });
     },
