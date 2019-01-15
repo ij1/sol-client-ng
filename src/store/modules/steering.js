@@ -93,12 +93,14 @@ export default {
         .catch(() => {
           /* FIXME: Should retry a number of times before giving up? */
           commit('clearSending');
+          return 'ERROR';
         })
         .then(() => {
           commit('clearSending');
           if (sendParams.delay > 0) {
             dispatch('fetchDCs');
           }
+          return 'OK';
         });
     },
 
@@ -116,10 +118,12 @@ export default {
         .catch(() => {
           /* FIXME: Should retry a number of times before giving up? */
           commit('clearSending');
+          return 'ERROR';
         })
         .then(() => {
           commit('clearSending');
           dispatch('fetchDCs');
+          return 'OK';
         });
     },
 

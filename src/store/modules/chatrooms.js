@@ -82,9 +82,11 @@ export default {
         .catch(() => {
           /* FIXME: Should retry a number of times before giving up */
           commit('clearSending', sendParams.room_id);
+          return 'ERROR';
         })
         .then(() => {
           commit('clearSending', sendParams.room_id);
+          return 'OK';
         });
     }
   }
