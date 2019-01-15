@@ -89,18 +89,18 @@ export default {
         useArrays: false,
       };
 
+      let status = 'OK';
       return dispatch('solapi/post', postDef, {root: true})
         .catch(() => {
           /* FIXME: Should retry a number of times before giving up? */
-          commit('clearSending');
-          return 'ERROR';
+          status = 'ERROR';
         })
         .then(() => {
           commit('clearSending');
-          if (sendParams.delay > 0) {
+          if ((status === 'OK') && (sendParams.delay > 0)) {
             dispatch('fetchDCs');
           }
-          return 'OK';
+          return status;
         });
     },
 
@@ -114,16 +114,18 @@ export default {
         dataField: 'response',
       };
 
+      let status = 'OK';
       return dispatch('solapi/post', postDef, {root: true})
         .catch(() => {
           /* FIXME: Should retry a number of times before giving up? */
-          commit('clearSending');
-          return 'ERROR';
+          status = 'ERROR';
         })
         .then(() => {
           commit('clearSending');
-          dispatch('fetchDCs');
-          return 'OK';
+          if (status === 'OK') {
+            dispatch('fetchDCs');
+          }
+          return status;
         });
     },
 
