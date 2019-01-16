@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { radToDeg, degToRad } from '../../../lib/utils.js';
+import { radToDeg, degToRad, toH } from '../../../lib/utils.js';
 
 export default {
   name: 'DCEditor',
@@ -77,12 +77,16 @@ export default {
       return true;
     },
     sendChange() {
+      const now = this.$store.getters['time/now']();
+      // FIXME: is 500 msecs correction ok or should it be something else?
+      let timeDelta = Math.max(this.time - now - 500, 0);
+
       Promise.all([
         this.$store.dispatch('boat/steering/sendDeleteDC', {
           id: this.origDc.id
         }),
         this.$store.dispatch('boat/steering/sendSteeringCommand', {
-          delay: (this.time - this.$store.getters['time/now']()) / 1000,
+          delay: toH(timeDelta),
           command: this.type,
           value: degToRad(this.value),
         }),
