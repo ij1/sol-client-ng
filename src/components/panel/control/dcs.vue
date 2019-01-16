@@ -2,6 +2,12 @@
   <div id="dc-control">
     <div id="dc-header">
       <button
+        @click="doEdit"
+        :disabled = "!this.canEdit"
+      >
+        Edit
+      </button>
+      <button
         @click="doDelete"
         :disabled = "this.$store.state.boat.steering.sending"
       >
@@ -32,19 +38,27 @@
         </tbody>
       </table>
     </div>
+    <portal to="dc-editor-dest" v-if="this.dcToEdit !== null">
+      <dc-editor :dc-to-edit = "this.dcToEdit" :real-parent="this"/>
+    </portal>
   </div>
 </template>
 
 <script>
 import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
+import DcEditor from './dceditor.vue';
 
 export default {
   name: 'ControlDCs',
+  components: {
+    'dc-editor': DcEditor,
+  },
   data () {
     return {
       loading: true,
       commands: null,
       selected: null,
+      dcToEdit: null,
     }
   },
   filters: {
@@ -56,6 +70,11 @@ export default {
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;
+    },
+  },
+  computed: {
+    canEdit () {
+      return (this.selected !== null) && (this.dcToEdit === null);
     },
   },
   methods: {
@@ -75,6 +94,24 @@ export default {
           });
         }
       });
+    },
+    doEdit () {
+      if (!this.canEdit) {
+        return;
+      }
+      let origDc = null;
+      for (let dc of this.$store.state.boat.steering.dcs.list) {
+        if (dc.id === this.selected) {
+          origDc = dc;
+          break;
+        }
+      }
+      /* No DC found, refetch them and clear selection */
+      if (origDc === null) {
+        this.selected = null;
+        this.$store.dispatch('boat/steering/fetchDCs');
+      }
+      this.dcToEdit = Object.assign({}, origDc);
     },
     selectDC (id) {
       this.selected = (this.selected === id) ? null : id;

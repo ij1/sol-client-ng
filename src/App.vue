@@ -2,6 +2,7 @@
   <div id="app">
     <login-popup/>
     <notifications-popup/>
+    <portal-target name="dc-editor-dest"/>
     <div id="left_div">
       <div id="left_top_div">
         <status-bar/>
