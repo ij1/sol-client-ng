@@ -11,7 +11,7 @@
         :room_id = "channel"
       />
     </div>
-    <div v-if="this.$store.state.chatrooms.activeRooms.length < 3">
+    <div v-if="this.roomCount < 3">
       <button @click="addChannel">+</button>
     </div>
   </div>
