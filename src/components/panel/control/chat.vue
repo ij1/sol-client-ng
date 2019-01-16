@@ -4,7 +4,7 @@
       Chatroom:
       <select 
         class="chat-channel-selector"
-        :value="room_id"
+        :value="roomId"
         @input="selectRoom"
       >
         <option disabled value="">
@@ -21,7 +21,7 @@
     </div>
     <div class="chat-block-list">
       <div class="chat-block"
-        v-for = "(msg, index) in this.$store.state.chatrooms.rooms[room_id].msgs"
+        v-for = "(msg, index) in this.$store.state.chatrooms.rooms[roomId].msgs"
         v-bind:key = "index"
       >
         <div class="chat-block-header">
@@ -65,11 +65,11 @@
 export default {
   name: 'ControlChat',
   props: {
-    index: {
+    roomKey: {
       type: Number,
       required: true
     },
-    room_id: {
+    roomId: {
       type: String,
       required: true
     }
@@ -90,7 +90,7 @@ export default {
   computed: {
     canSend () {
       return (this.myMessage.trim().length > 0) &&
-             !this.$store.state.chatrooms.rooms[this.room_id].sending;
+             !this.$store.state.chatrooms.rooms[this.roomId].sending;
     },
     /* Trim, force all consecutive newline chars into singular '\n' */
     myStringClean () {
@@ -101,13 +101,13 @@ export default {
   methods: {
     selectRoom(e) {
       this.$store.commit('chatrooms/selectRoom', {
-        index: this.index,
+        roomKey: this.roomKey,
         newRoom: e.target.value
       }, {root: true});
     },
     sendChatMessage() {
       this.$store.dispatch('chatrooms/sendMessage', {
-        room_id: this.room_id,
+        room_id: this.roomId,
         text: this.myStringClean,
       })
       .then(status => {

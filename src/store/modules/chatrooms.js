@@ -7,6 +7,7 @@ export default {
   state: {
     rooms: {},
     activeRooms: [],
+    roomKey: 0,
     nextRoomIndex: -1,
   },
 
@@ -23,7 +24,10 @@ export default {
           sending: false,
         });
       }
-      state.activeRooms = ['1'];
+      state.activeRooms = [{
+        roomKey: state.roomKey++,
+        id: '1',
+      }];
       state.nextRoomIndex = 0;
     },
 
@@ -44,10 +48,18 @@ export default {
     },
 
     addRoom(state, room) {
-      Vue.set(state.activeRooms, state.activeRooms.length, room);
+      state.activeRooms.push({
+        roomKey: state.roomKey++,
+        id: room,
+      });
     },
     selectRoom(state, roomInfo) {
-      Vue.set(state.activeRooms, roomInfo.index, roomInfo.newRoom);
+      for (let i = 0; i < state.activeRooms.length; i++) {
+        if (state.activeRooms[i].roomKey === roomInfo.roomKey) {
+          state.activeRooms[i].id = roomInfo.newRoom;
+          return;
+        }
+      }
     },
 
     setSending(state, roomId) {
@@ -64,7 +76,7 @@ export default {
      * boat API call
      */
     nextRoomToFetch(state) {
-      return state.activeRooms[state.nextRoomIndex];
+      return state.activeRooms[state.nextRoomIndex].id;
     },
   },
 
