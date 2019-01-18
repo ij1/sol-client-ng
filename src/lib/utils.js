@@ -24,14 +24,22 @@ export function UTCToMsec(dateString) {
   return ms;
 }
 
-export function msecToUTCString (msec) {
+export function msecToUTCTimeString (msec) {
+  const d = new Date(msec);
+  return ('00' + d.getUTCHours()).slice(-2) + ':' +
+         ('00' + d.getUTCMinutes()).slice(-2) + ':' +
+         ('00' + d.getUTCSeconds()).slice(-2);
+}
+
+export function msecToUTCDateString (msec) {
   const d = new Date(msec);
   return d.getUTCFullYear() + '/' +
          ('00' + (d.getUTCMonth() + 1)).slice(-2) + '/' +
-         ('00' + d.getUTCDate()).slice(-2) + ' ' +
-         ('00' + d.getUTCHours()).slice(-2) + ':' +
-         ('00' + d.getUTCMinutes()).slice(-2) + ':' +
-         ('00' + d.getUTCSeconds()).slice(-2);
+         ('00' + d.getUTCDate()).slice(-2);
+}
+
+export function msecToUTCString (msec) {
+  return msecToUTCDateString(msec) + ' ' + msecToUTCTimeString(msec);
 }
 
 export function days (value) {
