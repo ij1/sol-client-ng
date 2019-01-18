@@ -33,7 +33,7 @@
             <span v-html="msg.name"/>
           </span>
           <span class="chat-time">
-            {{ msg.t | timeOnly }}
+            {{ timeOnlyForToday(msg.t) }}
           </span>
         </div>
         <div class="chat-msg">
@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { msecToUTCDateString } from '../../../lib/utils.js';
 
 export default {
   name: 'ControlChat',
@@ -81,12 +83,6 @@ export default {
     }
   },
 
-  filters: {
-    timeOnly (value) {
-      return value.split(" ", 2)[1];
-    }
-  },
-
   computed: {
     canSend () {
       return (this.myMessage.trim().length > 0) &&
@@ -96,9 +92,23 @@ export default {
     myStringClean () {
       return this.myMessage.trim().replace(/[\n\r][\n\r]*/g, '\n');
     },
+    boatTimeString () {
+      return msecToUTCDateString(this.boatTime);
+    },
+    ...mapGetters({
+      boatTime: 'boat/time',
+    }),
   },
 
   methods: {
+    timeOnlyForToday (value) {
+      const s = value.split(" ", 2);
+      if (this.boatTimeString !== s[0]) {
+        const d = s[0].split("/", 3);
+        return d[1] + "/" + d[2] + ' ' + s[1];
+      }
+      return s[1];
+    },
     selectRoom(e) {
       this.$store.commit('chatrooms/selectRoom', {
         roomKey: this.roomKey,
