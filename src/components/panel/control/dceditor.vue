@@ -4,7 +4,20 @@
       Edit Delayed Command
     </div>
     <div>
-      {{ this.time }}
+      <datepicker
+        v-model = "time"
+        format = "yyyy/MM/dd"
+        input-class = "dc-editor-date-input"
+        :use-utc = "true"
+	:typeable = "true"
+        :disabledDates = "disabledDates"
+      />
+      <input
+        input-class = "dc-editor-date-input"
+        v-model = "hours"
+        maxlength = 8
+        size = 8
+      >
     </div>
     <div>
       <input type="radio" id="type" value="cc" v-model="type">COG
@@ -14,7 +27,7 @@
       <input id="value" v-model.trim="value" size=8 maxlength=8>
     </div>
     <div>
-      <button @click="onChange">
+      <button @click="onChange" :disabled="!canSend">
         Change
       </button>
       <button @click="onCancel">
@@ -25,10 +38,15 @@
 </template>
 
 <script>
-import { radToDeg, degToRad, toH } from '../../../lib/utils.js';
+import { mapGetters } from 'vuex';
+import Datepicker from 'vuejs-datepicker';
+import { radToDeg, degToRad, toH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
 
 export default {
   name: 'DCEditor',
+  components: {
+    'datepicker': Datepicker,
+  },
   props: {
     dcToEdit: {
       type: Object,
@@ -42,6 +60,7 @@ export default {
   data () {
     return {
       time: this.dcToEdit.time,
+      hours: msecToUTCTimeString(this.dcToEdit.time),
       type: this.dcToEdit.type,
       value: radToDeg(this.dcToEdit.value).toFixed(3),
       origDc: Object.assign({}, this.dcToEdit),
@@ -49,10 +68,32 @@ export default {
     }
   },
   computed: {
+    newTime () {
+      const date = msecToUTCDateString(this.time) + ' ' + this.hours;
+      return UTCToMsec(date);
+    },
     canSend () {
-      return this.valid && this.dirty &&
+      return this.valid && this.dirty && (this.newTime !== null) &&
              !this.$store.state.boat.steering.sending;
     },
+    disabledDates () {
+      return {
+        to: new Date(this.boatTime - 86400 * 1000),
+      }
+    },
+    dirty () {
+      // FIXME: check also 0.000 -> 0.0 trailing zeros changes
+      return (this.origDc.time !== this.newTime) ||
+             (this.origDc.type !== this.type) ||
+             (radToDeg(this.origDc.value).toFixed(3) !== this.value);
+    },
+    valid () {
+      // FIXME: take common code from steering e.g. to nav.js
+      return true;
+    },
+    ...mapGetters({
+      boatTime: 'boat/time',
+    }),
   },
   methods: {
     close () {
@@ -67,19 +108,10 @@ export default {
         this.sendChange();
       }
     },
-    dirty () {
-      return (this.origDc.time !== this.time) ||
-             (this.origDc.type !== this.type) ||
-             (radToDeg(this.origDc.value) !== this.value);
-    },
-    valid () {
-      // FIXME: take common code from steering e.g. to nav.js
-      return true;
-    },
     sendChange() {
       const now = this.$store.getters['time/now']();
       // FIXME: is 500 msecs correction ok or should it be something else?
-      let timeDelta = Math.max(this.time - now - 500, 0);
+      let timeDelta = Math.max(this.newTime - now - 500, 0);
 
       Promise.all([
         this.$store.dispatch('boat/steering/sendDeleteDC', {
@@ -120,5 +152,12 @@ export default {
   border-color: #808080;
   background: #fff;
   z-index: 1000;
+}
+</style>
+
+<style>
+.dc-editor-date-input {
+  width: 45%;
+  float: left;
 }
 </style>
