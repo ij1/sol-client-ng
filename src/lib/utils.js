@@ -4,6 +4,9 @@ export function UTCToMsec(dateString) {
   const regex = new RegExp(/^(\d{4})\/([01]\d)\/([0-3]\d) ([012]\d):([0-5]\d):([0-5]\d)/);
 
   const s = regex.exec(dateString);
+  if (s === null) {
+    return null;
+  }
   const ms = Date.UTC(s[1], parseInt(s[2])-1, s[3], s[4], s[5], s[6]);
 
   if (isNaN(ms)) {
