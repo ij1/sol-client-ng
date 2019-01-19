@@ -96,10 +96,10 @@ export default {
       return course;
     },
 
-    towBackPeriod () {
+    towBackPeriod: (state) => {
       return {
-        start: this.raceStartTime - hToMsec(1),
-        end: this.raceStartTime
+        start: state.raceStartTime - hToMsec(1),
+        end: state.raceStartTime,
       };
     }
   },
