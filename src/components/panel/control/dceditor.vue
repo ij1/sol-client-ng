@@ -77,8 +77,10 @@ export default {
              !this.$store.state.boat.steering.sending;
     },
     disabledDates () {
+      let today = new Date(this.boatTime);
+      today.setUTCHours(0, 0, 0, 0);
       return {
-        to: new Date(this.boatTime - 86400 * 1000),
+        to: today,
       }
     },
     dirty () {
