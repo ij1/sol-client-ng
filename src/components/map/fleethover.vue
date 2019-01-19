@@ -15,7 +15,10 @@
           class = "color-floated"
           :style = "{ background: boatColor(boat) }"
         />
-        {{boat.ranking}} {{boat.country}} {{ boat.name }} ({{ boat.type}})
+        {{boat.ranking}} {{boat.country}} {{ boat.name }}
+        <span v-if="multiClassRace">
+          ({{ boat.type}})
+        </span>
       </div>
       <div v-if = "this.countNonExpandedBoats > 0">
         +{{this.countNonExpandedBoats}} boats
@@ -84,6 +87,7 @@ export default {
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
       boatColor: 'race/fleet/boatColor',
+      multiClassRace: 'race/fleet/multiClassRace',
     }),
   },
   watch: {

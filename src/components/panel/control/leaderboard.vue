@@ -53,14 +53,6 @@ export default {
       filter: '',
       sortKey: 'ranking',
       sortDir: 'asc',
-      columns: [
-        {dataField: 'ranking', th: '#', align: 'r', visible: true},
-        {dataField: 'country', th: '', align: 'l', visible: true},
-        {dataField: 'syc', th: '', align: 'l', visible: true},
-        {dataField: 'name', th: 'Name', align: 'l', visible: true},
-        {dataField: 'dtg', th: 'DTF', align: 'r', visible: true},
-        {dataField: 'type', th: 'Boat Type', align: 'l', visible: true},
-      ],
     }
   },
   filters: {
@@ -74,6 +66,16 @@ export default {
     }
   },
   computed: {
+    columns () {
+      return [
+        {dataField: 'ranking', th: '#', align: 'r', visible: true},
+        {dataField: 'country', th: '', align: 'l', visible: true},
+        {dataField: 'syc', th: '', align: 'l', visible: true},
+        {dataField: 'name', th: 'Name', align: 'l', visible: true},
+        {dataField: 'dtg', th: 'DTF', align: 'r', visible: true},
+        {dataField: 'type', th: 'Boat Type', align: 'l', visible: this.multiClassRace},
+      ];
+    },
     visibleColumnsWithSort () {
       let cols = [];
       for (let i of this.columns) {
@@ -116,6 +118,7 @@ export default {
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
+      multiClassRace: 'race/fleet/multiClassRace',
     }),
   },
   methods: {

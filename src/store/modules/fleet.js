@@ -15,6 +15,8 @@ export default {
     boat: [],
     id2idx: {},
     leader: null,
+    boatTypes: new Set(),    /* Sets are not not reactive! */
+    boatTypesCount: 0,       /* works around lack of reactivity */
     selected: [],
     hover: [],
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
@@ -75,7 +77,12 @@ export default {
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
           state.boat[idx].name = boat.name;
-          state.boat[idx].type = boat.type;
+          if (state.boat[idx].type !== boat.type) {
+            state.boat[idx].type = boat.type;
+            if (boat.type !== 'Tender boat') {
+              state.boatTypes.add(boat.type);
+            }
+          }
           state.boat[idx].latLng = latLng;
           state.boat[idx].cog = parseFloat(boat.cog);
 
@@ -129,11 +136,16 @@ export default {
 
           state.newBoatId = id;
 
+          if (boat.type !== 'Tender boat') {
+            state.boatTypes.add(boat.type);
+          }
         }
       }
 
       state.searchTree.clear();
       state.searchTree.load(searchData);
+
+      state.boatTypesCount = state.boatTypes.length;
     },
     updateFleetMeta (state, meta) {
       for (let boat of meta) {
@@ -202,6 +214,10 @@ export default {
     boatColor: () => (boat) => {
       return 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ', 0.8)';
     },
+
+    multiClassRace: (state) => {
+      return state.boatTypes.count > 1;
+    }
   },
 
   actions: {
