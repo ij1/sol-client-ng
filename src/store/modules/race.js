@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
-import { degToRad, radToDeg, UTCToMsec } from '../../lib/utils.js';
+import { degToRad, radToDeg, hToMsec, UTCToMsec } from '../../lib/utils.js';
 import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
 import { PROJECTION} from '../../lib/sol.js';
 
@@ -95,6 +95,13 @@ export default {
 
       return course;
     },
+
+    towBackPeriod () {
+      return {
+        start: this.raceStartTime - hToMsec(1),
+        end: this.raceStartTime
+      };
+    }
   },
 
   actions: {
