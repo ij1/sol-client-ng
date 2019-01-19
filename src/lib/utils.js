@@ -42,22 +42,22 @@ export function msecToUTCString (msec) {
   return msecToUTCDateString(msec) + ' ' + msecToUTCTimeString(msec);
 }
 
-export function days (value) {
+export function daysToMsec (value) {
   return value * 24 * 3600 * 1000;
 }
-export function h (value) {
+export function hToMsec (value) {
   return value * 3600 * 1000;
 }
-export function min (value) {
+export function minToMsec (value) {
   return value * 60 * 1000;
 }
-export function toDays (value) {
+export function msecToDays (value) {
   return value / (24 * 3600 * 1000);
 }
-export function toH (value) {
+export function msecToH (value) {
   return value / (3600 * 1000);
 }
-export function toMin (value) {
+export function msecToMin (value) {
   return value / (60 * 1000);
 }
 

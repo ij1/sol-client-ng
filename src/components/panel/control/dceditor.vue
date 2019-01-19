@@ -40,7 +40,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import Datepicker from 'vuejs-datepicker';
-import { radToDeg, degToRad, toH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
+import { radToDeg, degToRad, msecToH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
 
 export default {
   name: 'DCEditor',
@@ -118,7 +118,7 @@ export default {
           id: this.origDc.id
         }),
         this.$store.dispatch('boat/steering/sendSteeringCommand', {
-          delay: toH(timeDelta),
+          delay: msecToH(timeDelta),
           command: this.type,
           value: degToRad(this.value),
         }),

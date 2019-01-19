@@ -13,7 +13,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
-import { h } from '../lib/utils.js';
+import { hToMsec } from '../lib/utils.js';
 
 export default {
   name: 'TowbackFlag',
@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     isTowbackPeriod () {
-      return (((this.raceStartTime - h(1)) <= this.boatTime) &&
+      return (((this.raceStartTime - hToMsec(1)) <= this.boatTime) &&
               (this.boatTime < this.raceStartTime));
     },
     ...mapState({

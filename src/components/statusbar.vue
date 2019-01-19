@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { radToDeg, days, h, min, toDays, toH, toMin } from '../lib/utils.js';
+import { radToDeg, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
 
 export default {
   name: 'StatusBar',
@@ -35,17 +35,17 @@ export default {
       return type === 'cc' ? 'cog' : type;
     },
     formatNextDCTime (msecs) {
-      const d = Math.floor(toDays(msecs));
-      msecs -= days(d);
-      const hh = Math.floor(toH(msecs));
-      msecs -= h(hh);
-      const m = Math.floor(toMin(msecs));
-      msecs -= min(m);
+      const d = Math.floor(msecToDays(msecs));
+      msecs -= daysToMsec(d);
+      const h = Math.floor(msecToH(msecs));
+      msecs -= hToMsec(h);
+      const m = Math.floor(msecToMin(msecs));
+      msecs -= minToMsec(m);
       const secs = Math.floor(msecs / 1000);
 
       return (d > 0 ? d + 'd ' : '') +
-             ((d > 0 || hh > 0) ? hh + 'h ' : '') +
-             ((d > 0 || hh > 0 || m > 0) ? m + 'm ' : '') +
+             ((d > 0 || h > 0) ? h + 'h ' : '') +
+             ((d > 0 || h > 0 || m > 0) ? m + 'm ' : '') +
              secs + 's';
     }
   },

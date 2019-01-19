@@ -47,47 +47,47 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { days, h, min, toDays, toH, toMin } from '../../lib/utils.js';
+import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../../lib/utils.js';
 
 export default {
   name: 'WeatherPanel',
   data () {
     return {
       selectedTimescale: 3,  /* this.weatherTimescales.length - 1 */
-      selectedStep: h(3),
+      selectedStep: hToMsec(3),
       playTimer: null,
       tickInterval: 100,
 
       weatherTimescales: [
         {
-          range: h(12),
-          defaultStep: min(30),
-          playStep: min(2),
+          range: hToMsec(12),
+          defaultStep: minToMsec(30),
+          playStep: minToMsec(2),
         },
         {
-          range: h(24),
-          defaultStep: h(1),
-          playStep: min(5),
+          range: hToMsec(24),
+          defaultStep: hToMsec(1),
+          playStep: minToMsec(5),
         },
         {
-          range: h(48),
-          defaultStep: h(2),
-          playStep: min(10),
+          range: hToMsec(48),
+          defaultStep: hToMsec(2),
+          playStep: minToMsec(10),
         },
         {
           range: -1,
-          defaultStep: h(3),
-          playStep: min(30),
+          defaultStep: hToMsec(3),
+          playStep: minToMsec(30),
         },
       ],
       weatherSteps: [
-        min(2),
-        min(5),
-        min(10),
-        min(30),
-        h(1),
-        h(2),
-        h(3),
+        minToMsec(2),
+        minToMsec(5),
+        minToMsec(10),
+        minToMsec(30),
+        hToMsec(1),
+        hToMsec(2),
+        hToMsec(3),
       ],
     }
   },
@@ -126,19 +126,19 @@ export default {
         value = fullTimescale;
       }
 
-      let divider = days(1);
+      let divider = daysToMsec(1);
       let unit = 'd';
-      if (value < h(100)) {
-        divider = h(1);
+      if (value < hToMsec(100)) {
+        divider = hToMsec(1);
         unit = 'h';
       }
       return (value / divider).toFixed(1).replace(/\.0$/, '') + ' ' + unit;
     },
     formatStep (value) {
-      if (value < min(60)) {
-        return (toMin(value)).toFixed(0) + ' min';
+      if (value < minToMsec(60)) {
+        return (msecToMin(value)).toFixed(0) + ' min';
       }
-      return (toH(value)).toFixed(0) + ' h';
+      return (msecToH(value)).toFixed(0) + ' h';
     },
     formatTime (value) {
       const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -148,8 +148,8 @@ export default {
              ("0" + d.getUTCMinutes()).slice(-2) + "utc";
     },
     formatOffset (value) {
-      const h = toH(value);
-      const d = toDays(value);
+      const h = msecToH(value);
+      const d = msecToDays(value);
       return (d < 1 ? '' : (Math.floor(d) + 'd')) +
              (h - Math.floor(d) * 24).toFixed(1) + 'h';
     }
