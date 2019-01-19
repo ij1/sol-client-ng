@@ -4,6 +4,7 @@
       Edit Delayed Command
     </div>
     <div>
+      <label class="dc-editor-label">Date</label>
       <datepicker
         v-model = "time"
         format = "yyyy/MM/dd"
@@ -12,19 +13,25 @@
 	:typeable = "true"
         :disabledDates = "disabledDates"
       />
+    </div>
+    <div>
+      <label class="dc-editor-label">Time</label>
       <input
-        input-class = "dc-editor-date-input"
         v-model = "hours"
         maxlength = 8
         size = 8
       >
     </div>
     <div>
-      <input type="radio" id="type" value="cc" v-model="type">COG
-      <input type="radio" id="type" value="twa" v-model="type">TWA
+      <label class="dc-editor-label">Type</label>
+      <span>
+        <input type="radio" id="type" value="cc" v-model="type">COG
+        <input type="radio" id="type" value="twa" v-model="type">TWA
+      </span>
     </div>
     <div>
-      <input id="value" v-model.trim="value" size=8 maxlength=8>
+      <label class="dc-editor-label">Value</label>
+      <input id="value" v-model.trim="value" size=8 maxlength=8>&deg;
     </div>
     <div>
       <button @click="onChange" :disabled="!canSend">
@@ -154,12 +161,17 @@ export default {
   border-color: #808080;
   background: #fff;
   z-index: 1000;
+  text-align: left;
+}
+.dc-editor-label {
+  width: 30%;
+  float: left;
+  text-align: left;
 }
 </style>
 
 <style>
 .dc-editor-date-input {
-  width: 45%;
-  float: left;
+  width: 50%;
 }
 </style>
