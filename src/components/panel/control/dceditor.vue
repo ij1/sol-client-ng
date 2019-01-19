@@ -34,11 +34,11 @@
       <input id="value" v-model.trim="value" size=8 maxlength=8>&deg;
     </div>
     <div>
-      <button @click="onChange" :disabled="!canSend">
-        Change
-      </button>
       <button @click="onCancel">
         Cancel
+      </button>
+      <button @click="onChange" :disabled="!canSend">
+        Change
       </button>
     </div>
   </div>
