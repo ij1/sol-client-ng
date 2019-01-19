@@ -11,10 +11,10 @@
       :worldCopyJump="true"
     >
       <map-tiles v-if = "this.map !== null" :map = "this.map"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.currentZoom"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.currentZoom" :lngOffset = "-720"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.currentZoom" :lngOffset = "-360"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.currentZoom" :lngOffset = "360"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lngOffset = "-720"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lngOffset = "-360"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lngOffset = "360"/>
       <wind-info v-if = "this.map !== null" :hoverLatLng = "this.hoverLatLng"/>
       <wind-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-traces v-if = "this.map !== null"/>
@@ -72,8 +72,8 @@ export default {
       initialZoom: 3,
       hoverLatLng: null,
       map: null,
-      currentCenter: L.latLng(0, 0),
-      currentZoom: 3,
+      center: L.latLng(0, 0),
+      zoom: 3,
 
       L: L,
       PROJECTION: PROJECTION,
@@ -95,10 +95,10 @@ export default {
 
   methods: {
     updateZoom(zoom) {
-      this.currentZoom = zoom;
+      this.zoom = zoom;
     },
     updateCenter(center) {
-      this.currentCenter = center;
+      this.center = center;
     },
     setHoverPos (e) {
       /* For some reason it's not camel-cased in the event! */

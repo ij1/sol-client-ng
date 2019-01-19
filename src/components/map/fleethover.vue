@@ -58,7 +58,7 @@ export default {
 
       let res;
       for (let distance = 3; distance < 7; distance++) {
-        res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.$parent.$parent.currentZoom, distance);
+        res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.$parent.$parent.zoom, distance);
         if (res.length > 0) {
           break;
         }
