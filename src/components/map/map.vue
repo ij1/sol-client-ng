@@ -4,8 +4,8 @@
       id="map"
       ref="map"
       :crs="PROJECTION"
-      :zoom="zoom"
-      :center="center"
+      :zoom="initialZoom"
+      :center="initialCenter"
       @update:center="updateCenter"
       @update:zoom="updateZoom"
       :worldCopyJump="true"
@@ -68,8 +68,8 @@ export default {
 
   data () {
     return {
-      center: L.latLng(0, 0),
-      zoom: 3,
+      initialCenter: L.latLng(0, 0),
+      initialZoom: 3,
       hoverLatLng: null,
       map: null,
       currentCenter: L.latLng(0, 0),
