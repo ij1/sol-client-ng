@@ -31,7 +31,12 @@
     </div>
     <div>
       <label class="dc-editor-label">Value</label>
-      <input id="value" v-model.trim="value" size=8 maxlength=8>&deg;
+      <input
+        id = "value"
+        v-model.trim = "value"
+        size = 8
+        maxlength = 8
+      >&deg;
     </div>
     <div>
       <button @click="onCancel">
