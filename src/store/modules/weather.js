@@ -110,8 +110,30 @@ export default {
       }
       return idx;
     },
+    timeIndexAny: (state) => (timestamp) => {
+      /* Short-circuit for the common case near the beginning of the wx series */
+      if (timestamp <= state.data.timeSeries[1]) {
+        return 0;
+      }
 
-    latLngWind: (state, getters) => (latLng) => {
+      let min = 2;
+      let max = state.data.timeSeries.length - 1;
+      if (state.data.timeSeries[this.timeIndex+1] < timestamp) {
+        min = this.timeIndex + 2;
+      } else if (state.data.timeSeries[this.timeIndex] > timestamp) {
+        max = this.timeIndex;
+      }
+
+      let idx = bsearchLeft(state.data.timeSeries, timestamp, min, max) - 1;
+      /* For now, check that the result is valid, */
+      if ((state.data.timeSeries[idx] > timestamp) ||
+          (state.data.timeSeries[idx+1] < timestamp)) {
+        console.log("Bug in binary-search: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?");
+      }
+      return idx;
+    },
+
+    latLngWind: (state, getters) => (latLng, timestamp) => {
       if (state.data.boundary === null) {
         return undefined;
       }
@@ -134,6 +156,13 @@ export default {
 
       const lonIdx = Math.floor((wxLatLng.lng - state.data.origo[1]) / state.data.increment[1]);
       const latIdx = Math.floor((wxLatLng.lat - state.data.origo[0]) / state.data.increment[0]);
+      let timeIdx = getters.timeIndex;
+      let timeVal = state.time;
+
+      if (typeof timestamp !== 'undefined') {
+        timeVal = timestamp;
+        timeIdx = getters['timeIndexAny'](timestamp);
+      }
 
       /* latitude (y) solution */
       let firstRes = [[], []];
@@ -169,9 +198,9 @@ export default {
 
       /* time (z) solution */
       const thirdFactor = interpolateFactor(
-        state.data.timeSeries[getters.timeIndex],
-        state.time,
-        state.data.timeSeries[getters.timeIndex+1],
+        state.data.timeSeries[timeIdx],
+        timeVal,
+        state.data.timeSeries[timeIdx+1],
       );
       return UVToWind(wxTimeInterpolate(
         thirdFactor,
