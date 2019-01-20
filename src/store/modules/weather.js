@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import { UTCToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js'
+import { UTCToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js'
 import { UVToWind } from '../../lib/sol.js'
 
 function wxLinearInterpolate(factor, startData, endData) {
@@ -102,23 +102,13 @@ export default {
         return 0;
       }
 
-      let min = 1;
-      let max = state.data.timeSeries.length - 2;
-      while (min <= max) {
-        const mid = Math.floor((max + min) / 2);
-        /* No point in optimizing for the very rare to occur equal case */
-        if (state.time >= state.data.timeSeries[mid]) {
-          min = mid + 1;
-        } else {
-          max = mid - 1;
-        }
-      }
+      let idx = bsearchLeft(state.data.timeSeries, state.time, 2, state.data.timeSeries.length - 1) - 1;
       /* For now, check that the result is valid, */
-      if ((state.data.timeSeries[max] > state.time) ||
-          (state.data.timeSeries[max+1] < state.time)) {
-        console.log("Bug in binary-search: " + state.data.timeSeries[max] + "<=" + state.time + "<=" + state.data.timeSeries[max+1] + "?!?");
+      if ((state.data.timeSeries[idx] > state.time) ||
+          (state.data.timeSeries[idx+1] < state.time)) {
+        console.log("Bug in binary-search: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?");
       }
-      return max;
+      return idx;
     },
 
     latLngWind: (state, getters) => (latLng) => {
