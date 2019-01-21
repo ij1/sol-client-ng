@@ -74,15 +74,26 @@ export default {
   },
   computed: {
     canEdit () {
-      return (this.selected !== null) && (this.dcToEdit === null);
+      return (this.selectedDC !== null) && (this.dcToEdit === null);
     },
+    selectedDC () {
+      if (this.selected === null) {
+        return null;
+      }
+      for (let dc of this.$store.state.boat.steering.dcs.list) {
+        if (dc.id === this.selected) {
+          return dc;
+        }
+      }
+      return null;
+    }
   },
   methods: {
     doRefresh () {
       this.$store.dispatch('boat/steering/fetchDCs');
     },
     doDelete () {
-      if (this.selected === null) {
+      if (this.selectedDC === null) {
         return;
       }
       this.$store.dispatch('boat/steering/sendDeleteDC', {id: this.selected})
@@ -100,24 +111,19 @@ export default {
       if (!this.canEdit) {
         return;
       }
-      let origDc = null;
-      for (let dc of this.$store.state.boat.steering.dcs.list) {
-        if (dc.id === this.selected) {
-          origDc = dc;
-          break;
-        }
-      }
-      /* No DC found, refetch them and clear selection */
-      if (origDc === null) {
-        this.selected = null;
-        this.$store.dispatch('boat/steering/fetchDCs');
-        return;
-      }
-      this.dcToEdit = Object.assign({}, origDc);
+      this.dcToEdit = Object.assign({}, this.selectedDC);
     },
     selectDC (id) {
       this.selected = (this.selected === id) ? null : id;
     }
+  },
+  watch: {
+    selectedDC (newValue) {
+      /* The selected DC not found anymore, clear the stale selection */
+      if ((newValue === null) && (this.selected !== null)) {
+        this.selected = null;
+      }
+    },
   }
 }
 </script>
