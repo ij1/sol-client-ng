@@ -12,6 +12,7 @@ export default {
     bs: [],
 
     curves: [3, 6, 9, 12, 15, 20, 25, 30],
+    windKeys: [3, 6, 9, 12, 15, 20, 25, 30, 40, 50],
     twaInterval: 1,
   },
 

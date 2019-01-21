@@ -7,6 +7,19 @@
       <canvas id="labels" ref="labels"/>
       <canvas id="polarbg" ref="polarbg"/>
       <canvas id="polarfg" ref="polarfg"/>
+
+      <div id="wind-key">
+        <div
+          v-for = "wind in this.$store.state.boat.polar.windKeys"
+          v-bind:key = "wind"
+          class = "wind-key-entry"
+        >
+          <span
+            class = "wind-key-line"
+            :style = "{background: windToColor(wind)}"
+          />{{ wind }} kn
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -221,6 +234,9 @@ export default {
       }
       ctx.stroke();
     },
+    windToColor(knots) {
+      return windToColor(knots);
+    },
   },
   watch: {
     fgNeedRedraw () {
@@ -254,5 +270,22 @@ export default {
   position: absolute;
   top: 20px;
   left: 20px;
+}
+#wind-key {
+  position: absolute;
+  bottom: 0px;
+  right: 2px;
+}
+.wind-key-line {
+  height: 5px;
+  border-radius: 3px;
+  width: 15px;
+  position: absolute;
+  right: 30px;
+  top: 3px;
+}
+.wind-key-entry {
+  position: relative;
+  bottom: 0px;
 }
 </style>
