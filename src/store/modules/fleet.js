@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import L from 'leaflet'
 import rbush from 'rbush';
-import { secToMsec } from '../../lib/utils.js';
+import { minToMsec, secToMsec } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
 
 export default {
@@ -13,7 +13,9 @@ export default {
      */
     newBoatId: null,
     fleetTime: 0,
-    fetchInterval: secToMsec(55),
+    fleetFetchInterval: secToMsec(55),
+    tracesTime: 0,
+    tracesFetchInterval: minToMsec(3),
     boat: [],
     id2idx: {},
     leader: null,
@@ -171,6 +173,7 @@ export default {
       if (typeof state.id2idx[id] !== 'undefined') {
         const idx = state.id2idx[traceData.id];
         state.boat[idx].trace = traceData.trace;
+        state.tracesTime = traceData.time;
       }
     },
     setSelected (state, ids) {
@@ -221,12 +224,15 @@ export default {
     },
 
     nextTimeToFetch: (state) => {
-      return state.fleetTime + state.fetchInterval;
+      return state.fleetTime + state.fleetFetchInterval;
+    },
+    nextTimeToFetchTraces: (state) => {
+      return state.tracesTime + state.tracesFetchInterval;
     }
   },
 
   actions: {
-    fetchRace({rootState, state, rootGetters, commit, dispatch}) {
+    fetchRace({rootState, state, getters, rootGetters, commit, dispatch}) {
       const getDef = {
         url: "/webclient/race_" + rootState.auth.race_id + ".xml",
         params: {
@@ -253,10 +259,12 @@ export default {
               fleet: boatList,
             });
 
-            if (state.newBoats !== null) {
-              dispatch('fetchMetainfo');
+            if (state.newBoatId !== null) {
+              dispatch('fetchmetainfo');
             }
-            dispatch('fetchTraces');
+            if (getters['nextTimeToFetchTraces'] <= now) {
+              dispatch('fetchTraces');
+            }
           }
         },
       }
@@ -299,6 +307,7 @@ export default {
         compressedPayload: true,
 
         dataHandler: (traces) => {
+          const now = rootGetters['time/now']();
           let boatList = traces.boat;
           if (typeof boatList === 'undefined') {
             return;
@@ -324,6 +333,7 @@ export default {
 
             commit('updateBoatTrace', {
               id: id,
+              time: now,
               trace: trace,
             });
           }
