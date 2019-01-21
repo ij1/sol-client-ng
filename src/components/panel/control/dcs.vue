@@ -111,6 +111,7 @@ export default {
       if (origDc === null) {
         this.selected = null;
         this.$store.dispatch('boat/steering/fetchDCs');
+        return;
       }
       this.dcToEdit = Object.assign({}, origDc);
     },
