@@ -29,7 +29,6 @@ export default {
       if (typeof state.id2idx[boatData.id] !== 'undefined') {
         return;
       }
-      state.fleetTime = Math.max(boatData.time - state.fetchInterval, 0);
       Vue.set(state.id2idx, boatData.id, state.boat.length);
       state.boat.push({
         id: boatData.id,
