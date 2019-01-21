@@ -151,8 +151,7 @@ export default {
 }
 
 .chat-block-list {
-  float: down;
-  height: 80%;
+  height: calc(100% - 100px);
   width: 100%;
   border: solid 1px;
   border-color: #a0a0a0;
@@ -187,7 +186,6 @@ export default {
 
 .chat-channel-input {
   padding-top: 5px;
-  float: bottom;
   width: 100%;
 }
 .chat-channel-input-box {
