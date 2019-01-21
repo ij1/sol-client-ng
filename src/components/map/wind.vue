@@ -143,6 +143,7 @@ export default {
   beforeDestroy () {
     if (this.animFrame !== null) {
       L.Util.cancelAnimFrame(this.animFrame);
+      this.animFrame = null;
     }
 
     this.map.off('resize', this.onResize);
