@@ -93,6 +93,7 @@ export default {
             color: 'red',
           });
         }
+        this.$store.dispatch('boat/steering/fetchDCs');
       });
     },
     doEdit () {

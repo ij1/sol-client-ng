@@ -97,9 +97,6 @@ export default {
         })
         .then(() => {
           commit('clearSending');
-          if ((status === 'OK') && (sendParams.delay > 0)) {
-            dispatch('fetchDCs');
-          }
           return status;
         });
     },
@@ -122,9 +119,6 @@ export default {
         })
         .then(() => {
           commit('clearSending');
-          if (status === 'OK') {
-            dispatch('fetchDCs');
-          }
           return status;
         });
     },

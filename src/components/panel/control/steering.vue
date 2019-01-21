@@ -283,8 +283,9 @@ export default {
       if (!this.canSend) {
         return;
       }
+      const delayTime = this.delayTime;
       const sendParams = {
-        delay: this.delayOn ? this.delayTime : 0,
+        delay: this.delayOn ? delayTime : 0,
         value: this.type === 'cc' ? this.ccRad : this.twaRad,
         command: this.type,
       };
@@ -297,6 +298,9 @@ export default {
               ' command!',
             color: 'red',
           });
+        }
+        if (delayTime > 0) {
+          this.$store.dispatch('boat/steering/fetchDCs');
         }
       });
     },
