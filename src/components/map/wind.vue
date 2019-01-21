@@ -104,13 +104,21 @@ export default {
       }
       ctx.restore();
       this.animFrame = null;
+    },
+    onResize() {
+      const size = this.map.getSize();
+      this.canvas.width = size.x;
+      this.canvas.height = size.y;
+    },
+    requestRedraw() {
+      if (this.animFrame === null) {
+        this.animFrame = L.Util.requestAnimFrame(this.redraw, this);
+      }
     }
   },
   watch: {
     needsRedraw () {
-      if (this.animFrame === null) {
-        this.animFrame = L.Util.requestAnimFrame(this.redraw, this);
-      }
+      this.requestRedraw();
     }
   },
   mounted () {
@@ -123,19 +131,21 @@ export default {
     this.canvas.style.position = 'absolute';
     this.canvas.style.top = 0;
     this.canvas.style.left = 0;
-    const size = this.map.getSize();
-    this.canvas.width = size.x;
-    this.canvas.height = size.y;
+    this.onResize();
     this.map.getContainer().appendChild(this.canvas);
 
     this.map.on('move', this.onMove, this);
     this.map.on('zoom', this.onZoom, this);
+    this.map.on('resize', this.onResize, this);
+
+    this.requestRedraw();
   },
   beforeDestroy () {
     if (this.animFrame !== null) {
       L.Util.cancelAnimFrame(this.animFrame);
     }
 
+    this.map.off('resize', this.onResize);
     this.map.off('zoom', this.onZoom);
     this.map.off('move', this.onMove);
 
