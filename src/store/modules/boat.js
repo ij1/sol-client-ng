@@ -64,7 +64,8 @@ export default {
         refetchAction: 'boat/fetch',
 
         dataHandler: (boatData) => {
-          boatData.boat.time = rootGetters['time/now']();
+          const now = rootGetters['time/now']();
+          boatData.boat.time = now;
           let chatData = boatData.chats;
           chatData.id = nextChatroom;
 
@@ -88,6 +89,10 @@ export default {
             commit('chatrooms/updateRoom', chatData, {root: true});
           }
           commit('chatrooms/nextRoom', null, {root: true});
+
+          if (rootGetters['race/fleet/nextTimeToFetch'] <= now) {
+            dispatch('race/fleet/fetchRace', null, {root: true});
+          }
         },
       };
 

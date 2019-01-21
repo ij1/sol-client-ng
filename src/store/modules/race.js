@@ -137,7 +137,6 @@ export default {
           dispatch('boat/fetch', null, {root: true});
           dispatch('boat/steering/fetchDCs', null, {root: true});
           dispatch('weather/fetchInfo', null, {root: true});
-          dispatch('fleet/fetchRace');
         },
       };
 

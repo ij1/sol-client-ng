@@ -51,6 +51,9 @@ export function hToMsec (value) {
 export function minToMsec (value) {
   return value * 60 * 1000;
 }
+export function secToMsec (value) {
+  return value * 1000;
+}
 export function msecToDays (value) {
   return value / (24 * 3600 * 1000);
 }
@@ -59,6 +62,9 @@ export function msecToH (value) {
 }
 export function msecToMin (value) {
   return value / (60 * 1000);
+}
+export function msecToSec (value) {
+  return value / 1000;
 }
 
 export function radToDeg(rad) {

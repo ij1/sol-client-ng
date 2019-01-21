@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import L from 'leaflet'
 import rbush from 'rbush';
+import { secToMsec } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
 
 export default {
@@ -12,6 +13,7 @@ export default {
      */
     newBoatId: null,
     fleetTime: 0,
+    fetchInterval: secToMsec(55),
     boat: [],
     id2idx: {},
     leader: null,
@@ -27,7 +29,7 @@ export default {
       if (typeof state.id2idx[boatData.id] !== 'undefined') {
         return;
       }
-      state.fleetTime = boatData.time;
+      state.fleetTime = Math.max(boatData.time - state.fetchInterval, 0);
       Vue.set(state.id2idx, boatData.id, state.boat.length);
       state.boat.push({
         id: boatData.id,
@@ -217,6 +219,10 @@ export default {
 
     multiClassRace: (state) => {
       return state.boatTypes.count > 1;
+    },
+
+    nextTimeToFetch: (state) => {
+      return state.fleetTime + state.fetchInterval;
     }
   },
 
@@ -229,7 +235,6 @@ export default {
         },
         useArrays: false,
         dataField: 'race',
-        interval: 30000,
         compressedPayload: true,
 
         dataHandler: (raceInfo) => {
