@@ -128,8 +128,8 @@ export default {
     this.canvas.height = size.y;
     this.map.getContainer().appendChild(this.canvas);
 
-    this.map.on('move', this.onMove);
-    this.map.on('zoom', this.onZoom);
+    this.map.on('move', this.onMove, this);
+    this.map.on('zoom', this.onZoom, this);
   },
   beforeDestroy () {
     if (this.animFrame !== null) {
