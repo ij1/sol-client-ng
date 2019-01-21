@@ -16,6 +16,7 @@ export default {
   state: {
     id: null,
     name: null,
+    type: '',
     ranking: null,
     dtg: null,
     position: null,
@@ -38,7 +39,11 @@ export default {
 
     setFetching (state, param) {
       state.fetching[param.id] = param.state;
-    }
+    },
+
+    setType (state, type) {
+      state.type = type;
+    },
   },
 
   getters: {

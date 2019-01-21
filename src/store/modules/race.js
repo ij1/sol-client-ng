@@ -123,6 +123,7 @@ export default {
           const polarRawData = raceInfo.boat.vpp;
           const chatroomsData = raceInfo.chatrooms.chatroom;
 
+          commit('boat/setType', raceInfo.boat.type, {root: true});
           commit('chatrooms/init', chatroomsData, {root: true});
 
           delete raceInfo.boat;

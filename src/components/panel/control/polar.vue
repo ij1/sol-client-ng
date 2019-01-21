@@ -1,8 +1,13 @@
 <template>
-  <div id="polar">
-    <canvas id="labels" ref="labels"/>
-    <canvas id="polarbg" ref="polarbg"/>
-    <canvas id="polarfg" ref="polarfg"/>
+  <div id="polar-container">
+    <div id="boat-type">
+      <span v-html="this.boatType"/>
+    </div>
+    <div id="polar">
+      <canvas id="labels" ref="labels"/>
+      <canvas id="polarbg" ref="polarbg"/>
+      <canvas id="polarfg" ref="polarfg"/>
+    </div>
   </div>
 </template>
 
@@ -29,6 +34,9 @@ export default {
   computed: {
     polarLoaded () {
       return this.$store.state.boat.polar.loaded;
+    },
+    boatType () {
+      return this.$store.state.boat.type;
     },
     bgCurves () {
       return this.$store.getters['boat/polar/staticCurves'];
@@ -230,11 +238,17 @@ export default {
 </script>
 
 <style scoped>
-#polar {
+#polar-container {
   position: relative;
+  padding-top: 10px;
   text-align: left;
 }
-#labels {
+#boat-type {
+  padding-left: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+#polar, #labels {
   position: relative;
 }
 #polarbg, #polarfg {
