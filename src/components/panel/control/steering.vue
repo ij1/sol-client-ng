@@ -315,6 +315,7 @@ export default {
 
 <style scoped>
 #steering {
+  position: relative;
   font-size: 10px;
 }
 .steering-input {

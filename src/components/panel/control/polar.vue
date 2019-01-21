@@ -1,12 +1,8 @@
 <template>
-  <div>
-    <div id="bg">
-      <canvas id="labels" ref="labels"/>
-      <div id="polar">
-        <canvas id="polarbg" ref="polarbg"/>
-        <canvas id="polarfg" ref="polarfg"/>
-      </div>
-    </div>
+  <div id="polar">
+    <canvas id="labels" ref="labels"/>
+    <canvas id="polarbg" ref="polarbg"/>
+    <canvas id="polarfg" ref="polarfg"/>
   </div>
 </template>
 
@@ -234,18 +230,16 @@ export default {
 </script>
 
 <style scoped>
-#bg {
-  position: absolute;
-  width: 100%;
-}
 #polar {
   position: relative;
+  text-align: left;
+}
+#labels {
+  position: relative;
+}
+#polarbg, #polarfg {
+  position: absolute;
   top: 20px;
   left: 20px;
-}
-#polarbg, #polarfg, #labels {
-  position: absolute;
-  top: 0px;
-  left: 0px;
 }
 </style>
