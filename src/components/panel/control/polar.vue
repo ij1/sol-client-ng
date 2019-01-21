@@ -239,7 +239,6 @@ export default {
 
 <style scoped>
 #polar-container {
-  position: relative;
   padding-top: 10px;
   text-align: left;
 }
