@@ -260,7 +260,7 @@ export default {
             });
 
             if (state.newBoatId !== null) {
-              dispatch('fetchmetainfo');
+              dispatch('fetchMetainfo');
             }
             if (getters['nextTimeToFetchTraces'] <= now) {
               dispatch('fetchTraces');
