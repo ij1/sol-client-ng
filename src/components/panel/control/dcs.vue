@@ -137,9 +137,8 @@ export default {
   margin: 2px;
 }
 #dc-table {
-  float: bottom;
   width: 100%;
-  height: 100%;
+  height: 95%;
   overflow-y: scroll;
   font-size: 10px;
 }
