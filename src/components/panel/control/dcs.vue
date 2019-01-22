@@ -66,7 +66,7 @@ export default {
       return msecToUTCString(msec);
     },
     degrees (radians) {
-      return radToDeg(radians).toFixed(2);
+      return radToDeg(radians).toFixed(3);
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;
