@@ -128,13 +128,13 @@ export default {
       let timeDelta = Math.max(this.newTime - now - 500, 0);
 
       Promise.all([
-        this.$store.dispatch('boat/steering/sendDeleteDC', {
-          id: this.origDc.id
-        }),
         this.$store.dispatch('boat/steering/sendSteeringCommand', {
           delay: msecToH(timeDelta),
           command: this.type,
           value: degToRad(this.value),
+        }),
+        this.$store.dispatch('boat/steering/sendDeleteDC', {
+          id: this.origDc.id
         }),
       ])
       .then(status => {
