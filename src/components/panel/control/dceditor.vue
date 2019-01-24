@@ -11,7 +11,7 @@
         input-class = "dc-editor-date-input"
         :use-utc = "true"
 	:typeable = "true"
-        :disabledDates = "disabledDates"
+        :disabled-dates = "disabledDates"
       />
     </div>
     <div>
