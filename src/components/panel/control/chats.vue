@@ -4,14 +4,14 @@
       class = "chat-channel"
       v-for = "channel in this.$store.state.chatrooms.activeRooms"
       v-bind:key = "channel.key"
-      v-bind:style = "{ height: 800 / roomCount + 'px' }"
+      v-bind:style = "{ height: 'calc((100% - ' + (allowAdd ? 32 : 0) + 'px) / ' + roomCount + ')' }"
     >
       <chat-channel
         :room-key = "channel.roomKey"
         :room-id = "channel.id"
       />
     </div>
-    <div v-if="this.roomCount < 3">
+    <div v-if="this.allowAdd">
       <button @click="addChannel">+</button>
     </div>
   </div>
@@ -33,6 +33,9 @@ export default {
   computed: {
     roomCount () {
       return this.$store.state.chatrooms.activeRooms.length;
+    },
+    allowAdd () {
+      return this.roomCount < 3;
     }
   },
 
@@ -47,8 +50,7 @@ export default {
 
 <style scoped>
 #chat-channels {
-  min-height: 100%;
-  max-height: 100%;
+  height: 100%;
   overflow: hidden;
 }
 </style>
