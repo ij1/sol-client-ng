@@ -34,7 +34,7 @@ export default {
 
 .race-message-list {
   float: down;
-  height: 600px;
+  height: 100%;
   width: 100%;
   border-color: #a0a0a0;
   overflow-y: scroll;
