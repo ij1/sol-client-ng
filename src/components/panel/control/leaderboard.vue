@@ -151,14 +151,13 @@ export default {
 
 <style scoped>
 #leaderboard {
-  height: 800px;
+  height: 100%;
   width: 100%;
 }
 .leaderboard-header, .leaderboard-search, .leaderboard-search input {
   font-size: 11px;
 }
 #leaderboard-table {
-  float: bottom;
   width: 100%;
   height: calc(100% - 48px);
   font-size: 10px;
