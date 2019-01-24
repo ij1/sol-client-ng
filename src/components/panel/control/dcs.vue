@@ -9,7 +9,7 @@
       </button>
       <button
         @click="doDelete"
-        :disabled = "this.$store.state.boat.steering.sending"
+        :disabled = "!this.canDelete"
       >
         Delete
       </button>
@@ -76,6 +76,9 @@ export default {
     canEdit () {
       return (this.selectedDC !== null) && (this.dcToEdit === null);
     },
+    canDelete () {
+      return this.selectedDC !== null;
+    },
     selectedDC () {
       if (this.selected === null) {
         return null;
@@ -105,6 +108,8 @@ export default {
           });
         }
         this.$store.dispatch('boat/steering/fetchDCs');
+	// ADDME: It would be useful to notify DC editor if it has the same
+	// DC open ATM
       });
     },
     doEdit () {
