@@ -3,8 +3,9 @@
      <div class="leaderboard-header">
        {{ listname }}
        <div class="leaderboard-search">
-         Search
+         <label for="search">Search</label>
          <input
+           id = "search"
            class = "leadeboard-search-box"
            v-model = "filter"
          >
