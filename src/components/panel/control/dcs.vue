@@ -135,7 +135,7 @@ export default {
 
 <style scoped>
 #dc-control {
-  height: 800px;
+  height: 100%;
   width: 100%;
 }
 #dc-header button {
@@ -143,7 +143,7 @@ export default {
 }
 #dc-table {
   width: 100%;
-  height: 95%;
+  height: calc(100% - 32px);
   overflow-y: scroll;
   font-size: 10px;
 }
