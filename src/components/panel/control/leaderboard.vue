@@ -2,13 +2,13 @@
   <div id="leaderboard">
      <div class="leaderboard-header">
        {{ listname }}
-     </div>
-     <div class="leaderboard-search">
-       Search
-       <input
-         class = "leadeboard-search-box"
-         v-model = "filter"
-       >
+       <div class="leaderboard-search">
+         Search
+         <input
+           class = "leadeboard-search-box"
+           v-model = "filter"
+         >
+       </div>
      </div>
      <div id="leaderboard-table">
      <table>
@@ -159,10 +159,10 @@ export default {
 #leaderboard-table {
   float: bottom;
   width: 100%;
-  height: 800px;
+  height: calc(100% - 48px);
   font-size: 10px;
   white-space: nowrap;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 #leaderboard-body tr {
   background: #ffffff;
