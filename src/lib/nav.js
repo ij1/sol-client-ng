@@ -46,7 +46,8 @@ export function isCcValid(cc) {
 export function isTwaValid(twa) {
   const regex = new RegExp(/^[-+]\d{1,3}(\.\d{1,3})?$/);
   if (!regex.test(twa)) {
-    return false;
+    const zero = new RegExp(/^0{1,3}(\.0{1,3})?$/);
+    return zero.test(twa);
   }
   const num = Number(twa);
   if (num < -180 || num > 180) {
