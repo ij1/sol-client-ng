@@ -102,6 +102,9 @@ export default {
       }
     },
     dirty () {
+      if (!this.valid) {
+        return false;
+      }
       // FIXME: check also 0.000 -> 0.0 trailing zeros changes
       return (this.origDc.time !== this.newTime) ||
              (this.origDc.type !== this.type) ||
