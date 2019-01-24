@@ -26,7 +26,8 @@
            v-for = "boat in boatList"
            :key = "boat.id"
            :class = "{'active': selected.includes(boat.id), 'maphover': maphover.includes(boat.id)}"
-           @click = "selectBoat(boat.id)"
+           @click.exact = "selectBoat(boat.id, false)"
+           @click.alt.exact = "selectBoat(boat.id, true)"
          >
            <td
              v-for = "column in visibleColumnsWithSort"
@@ -130,14 +131,17 @@ export default {
         this.sortDir = 'asc';
       }
     },
-    selectBoat (id) {
+    selectBoat (id, keepMapPosition) {
       if (this.selected.includes(id)) {
         this.$store.commit('race/fleet/setSelected', []);
       } else {
         this.$store.commit('race/fleet/setSelected', [id]);
 
         const position = this.fleetBoatFromId(this.selected).latLng;
-        EventBus.$emit('map-highlight', position);
+        EventBus.$emit('map-highlight', {
+          latLng: position,
+          keepMapPosition: keepMapPosition,
+        });
       }
     }
   },

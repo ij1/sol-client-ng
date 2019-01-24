@@ -27,7 +27,10 @@ export default {
   methods: {
     onClick () {
       if (this.$store.state.boat.position) {
-        EventBus.$emit('map-highlight', this.$store.state.boat.position);
+        EventBus.$emit('map-highlight', {
+          latLng: this.$store.state.boat.position,
+          keepMapPosition: false,
+        });
       }
     },
   },

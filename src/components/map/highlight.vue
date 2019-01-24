@@ -63,13 +63,13 @@ export default {
         this.timer = null;
       }
     },
-    onHighlight (latLng) {
+    onHighlight (highlightInfo) {
       /* This is bit tricky, remove prev/stale highlight first.
        * Only at the nextTick, launch the next highlight to avoid first
        * displaying at the wrong position.
        */
       this.cancelHighlight();
-      this.latLng = latLng;
+      this.latLng = highlightInfo.latLng;
       this.$nextTick(() => {
         this.startTimestamp = Date.now();
         this.nowTimestamp = this.startTimestamp;
@@ -80,7 +80,9 @@ export default {
                                      degToRad(this.latLng.lng));
         const targetLatLng = L.latLng(this.latLng.lat,
                                       currentLatLng.lng + radToDeg(minTurn));
-        this.map.flyTo(targetLatLng);
+        if (!highlightInfo.keepMapPosition) {
+          this.map.flyTo(targetLatLng);
+        }
       });
 
     },
