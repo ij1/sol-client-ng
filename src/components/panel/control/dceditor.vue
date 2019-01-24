@@ -56,6 +56,7 @@
 import { mapGetters } from 'vuex';
 import Datepicker from 'vuejs-datepicker';
 import { radToDeg, degToRad, msecToH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
+import { isCcValid, isTwaValid } from '../../../lib/nav.js';
 
 export default {
   name: 'DCEditor',
@@ -105,8 +106,16 @@ export default {
              (radToDeg(this.origDc.value).toFixed(3) !== this.value);
     },
     valid () {
-      // FIXME: take common code from steering e.g. to nav.js
-      return true;
+      if (this.newTime === null) {
+        return false;
+      }
+      if (this.type === 'cc') {
+        return isCcValid(this.value);
+      } else if (this.type === 'twa') {
+        return isTwaValid(this.value);
+      } else {
+        return false;
+      }
     },
     ...mapGetters({
       boatTime: 'boat/time',
