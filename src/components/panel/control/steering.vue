@@ -70,6 +70,7 @@
 <script>
 import Polar from './polar.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
+import { isCcValid, isTwaValid } from '../../../lib/nav.js';
 
 // FIXME: The values should probably use some arbitary precision library
 // to avoid unexpected rounding with floating-points.
@@ -131,26 +132,10 @@ export default {
     },
 
     isCcValid () {
-       const regex = new RegExp(/^\d{1,3}(\.\d{1,3})?$/)
-       if (!regex.test(this.cc)) {
-         return false;
-       }
-       const num = Number(this.cc);
-       if (num < 0 || num > 360) {
-         return false;
-       }
-       return true;
+       return isCcValid(this.cc);
     },
     isTwaValid () {
-       const regex = new RegExp(/^[-+]\d{1,3}(\.\d{1,3})?$/)
-       if (!regex.test(this.twa)) {
-         return false;
-       }
-       const num = Number(this.twa);
-       if (num < -180 || num > 180) {
-         return false;
-       }
-       return true;
+      return isTwaValid(this.twa);
     },
 
     isDelayValid () {

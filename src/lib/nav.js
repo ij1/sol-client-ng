@@ -30,3 +30,27 @@ export function atan2Bearing(x, y) {
   /* The arguments are reversed and negated from (y, x) on purpose */
   return Math.atan2(-x, -y) + Math.PI;
 }
+
+export function isCcValid(cc) {
+  const regex = new RegExp(/^\d{1,3}(\.\d{1,3})?$/);
+  if (!regex.test(cc)) {
+    return false;
+  }
+  const num = Number(cc);
+  if (num < 0 || num > 360) {
+    return false;
+  }
+  return true;
+}
+
+export function isTwaValid(twa) {
+  const regex = new RegExp(/^[-+]\d{1,3}(\.\d{1,3})?$/);
+  if (!regex.test(twa)) {
+    return false;
+  }
+  const num = Number(twa);
+  if (num < -180 || num > 180) {
+    return false;
+  }
+  return true;
+}
