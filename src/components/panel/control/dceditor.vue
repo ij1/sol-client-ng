@@ -15,8 +15,9 @@
       />
     </div>
     <div>
-      <label class="dc-editor-label">Time</label>
+      <label for="time" class="dc-editor-label">Time</label>
       <input
+        id = "time"
         v-model = "hours"
         maxlength = 8
         size = 8
@@ -25,12 +26,14 @@
     <div>
       <label class="dc-editor-label">Type</label>
       <span>
-        <input type="radio" id="type" value="cc" v-model="type">COG
-        <input type="radio" id="type" value="twa" v-model="type">TWA
+        <input type="radio" id="cog" value="cc" v-model="type">
+        <label for="cog">COG</label>
+        <input type="radio" id="twa" value="twa" v-model="type">
+        <label for="twa">TWA</label>
       </span>
     </div>
     <div>
-      <label class="dc-editor-label">Value</label>
+      <label for="value" class="dc-editor-label">Value</label>
       <input
         id = "value"
         v-model.trim = "value"
