@@ -9,6 +9,7 @@
       @update:center="updateCenter"
       @update:zoom="updateZoom"
       :worldCopyJump="true"
+      :options="{attributionControl: false}"
     >
       <map-tiles v-if = "this.map !== null" :map = "this.map"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom"/>
