@@ -64,7 +64,7 @@ export default {
 
 <style scoped>
 #control-panel {
-  position: absolute;
+  position: relative;
   top: 0;
   min-height: 100%;
   width: 100%;
