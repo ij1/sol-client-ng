@@ -33,7 +33,7 @@
           >
             <td>{{ command.time | msecToUTCString }}</td>
             <td>{{ command.type | cctocog }}</td>
-            <td>{{ command.value | degrees }}</td>
+            <td>{{ command.value | formatValue(command.type) }}</td>
           </tr>
         </tbody>
       </table>
@@ -65,8 +65,9 @@ export default {
     msecToUTCString (msec) {
       return msecToUTCString(msec);
     },
-    degrees (radians) {
-      return radToDeg(radians).toFixed(3);
+    formatValue (radians, type) {
+      return (((type === 'twa') && (radians > 0)) ? '+' : '') +
+             radToDeg(radians).toFixed(3);
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;

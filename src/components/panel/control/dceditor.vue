@@ -78,7 +78,9 @@ export default {
       time: this.dcToEdit.time,
       hours: msecToUTCTimeString(this.dcToEdit.time),
       type: this.dcToEdit.type,
-      value: radToDeg(this.dcToEdit.value).toFixed(3),
+      value: (((this.dcToEdit.type === 'twa') &&
+               (this.dcToEdit.value > 0)) ? '+' : '') +
+             radToDeg(this.dcToEdit.value).toFixed(3),
       origDc: Object.assign({}, this.dcToEdit),
       closed: false,
     }
