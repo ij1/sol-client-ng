@@ -1,8 +1,3 @@
-<template>
-  <div v-if = 'this.wxLoaded'>
-  </div>
-</template>
-
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet'
@@ -10,25 +5,14 @@ import { windToColor } from '../../lib/sol.js';
 
 export default {
   name: 'WindMap',
-  props: {
-    map: {
-      type: Object,
-      required: true,
-    },
-  },
   data () {
     return {
-      canvas: null,
-      animFrame: null,
-      center: null,
-      zoom: null,
-      redrawCnt: 0,
       gridInterval: 64,
     }
   },
   computed: {
     gridOrigo () {
-      const centerPoint = this.map.latLngToContainerPoint(this.center);
+      const centerPoint = this.$parent.map.latLngToContainerPoint(this.$parent.center);
 
       return L.point(centerPoint.x % this.gridInterval,
                      centerPoint.y % this.gridInterval);
@@ -37,8 +21,6 @@ export default {
       /* Dummy access for the dependencies */
       this.wxLoaded;
       this.wxTime;
-      this.center;
-      this.zoom;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
@@ -50,25 +32,15 @@ export default {
     }),
   },
   methods: {
-    onMove () {
-      this.center = this.map.getCenter();
-    },
-    onZoom () {
-      this.zoom = this.map.getZoom();
-    },
-    redraw () {
-      let ctx = this.canvas.getContext('2d');
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      ctx.save();
+    redraw (ctx) {
       ctx.translate(this.gridOrigo.x, this.gridOrigo.y);
-      for (let y = this.gridOrigo.y; y <= this.canvas.height; y += this.gridInterval) {
+      for (let y = this.gridOrigo.y; y <= this.$parent.size.y; y += this.gridInterval) {
         let xUndo = 0;
-        for (let x = this.gridOrigo.x; x <= this.canvas.width; x += this.gridInterval) {
+        for (let x = this.gridOrigo.x; x <= this.$parent.size.x; x += this.gridInterval) {
           let windPoint = null;
-          windPoint = this.map.containerPointToLatLng(L.point(x, y));
+          windPoint = this.$parent.map.containerPointToLatLng(L.point(x, y));
           if (windPoint !== null) {
-            windPoint = this.map.wrapLatLng(windPoint);
+            windPoint = this.$parent.map.wrapLatLng(windPoint);
             const wind = this.$store.getters['weather/latLngWind'](windPoint);
             if (wind !== undefined) {
               ctx.rotate(wind.twd);
@@ -102,56 +74,10 @@ export default {
         }
         ctx.translate(xUndo, this.gridInterval);
       }
-      ctx.restore();
-      this.animFrame = null;
     },
-    onResize() {
-      const size = this.map.getSize();
-      this.canvas.width = size.x;
-      this.canvas.height = size.y;
-    },
-    requestRedraw() {
-      if (this.animFrame === null) {
-        this.animFrame = L.Util.requestAnimFrame(this.redraw, this);
-      }
-    }
   },
-  watch: {
-    needsRedraw () {
-      this.requestRedraw();
-    }
-  },
-  mounted () {
-    this.center = this.map.getCenter();
-    this.zoom = this.map.getZoom();
-
-    this.canvas = L.DomUtil.create('canvas', 'wind-map');
-    // FIXME: this might not be optimal way to place the canvas!
-    this.canvas.style.zIndex = 550;
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.top = 0;
-    this.canvas.style.left = 0;
-    this.onResize();
-    this.map.getContainer().appendChild(this.canvas);
-
-    this.map.on('move', this.onMove, this);
-    this.map.on('zoom', this.onZoom, this);
-    this.map.on('resize', this.onResize, this);
-
-    this.requestRedraw();
-  },
-  beforeDestroy () {
-    if (this.animFrame !== null) {
-      L.Util.cancelAnimFrame(this.animFrame);
-      this.animFrame = null;
-    }
-
-    this.map.off('resize', this.onResize);
-    this.map.off('zoom', this.onZoom);
-    this.map.off('move', this.onMove);
-
-    this.map.getContainer().removeChild(this.canvas);
-    this.canvas = null;
+  render () {
+    return null;
   },
 }
 </script>
