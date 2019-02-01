@@ -52,6 +52,7 @@
       :fill="false"
       :color="wpColor"
       :weight="1"
+      :smoothFactor="0.1"
     />
   </l-layer-group>
 </template>
