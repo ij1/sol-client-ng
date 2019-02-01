@@ -52,7 +52,6 @@ export default {
         cogPred.latLngs.push(lastLatLng);
         t += this.timeDelta;
       }
-      Object.freeze(cogPred.latLngs);
 
       return cogPred;
     },
@@ -89,7 +88,6 @@ export default {
         twaPred.latLngs.push(lastLatLng);
         t += this.timeDelta;
       }
-      Object.freeze(twaPred.latLngs);
 
       return twaPred;
     },
