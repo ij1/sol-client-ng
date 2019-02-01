@@ -38,6 +38,9 @@ export default {
 
       return this.$parent.map.getPixelBounds().getTopLeft();
     },
+    currentSteering () {
+      return this.$store.state.boat.currentSteering;
+    },
     hourIndexes () {
       let res = [];
       for (let i = 0; i <= 6; i++) {
@@ -98,27 +101,31 @@ export default {
     }),
   },
   methods: {
+    predictorColor (predictor) {
+      return this.currentSteering === predictor ? '#ff00ff' : 'rgb(170, 0, 170, 0.5)';
+    },
     redraw (ctx) {
       const z = this.$parent.zoom;
 
       // ADDME: add mixing to do all world copies and loop then here
       ctx.translate(Math.round(-this.viewOrigo.x),
                     Math.round(-this.viewOrigo.y));
-      // ADDME: active predictor highlight
-      ctx.strokeStyle = '#ff00ff';
+      ctx.strokeStyle = this.predictorColor('cc');
       ctx.stroke(this.cogPath);
+      ctx.strokeStyle = this.predictorColor('twa');
       ctx.stroke(this.twaPath);
 
       for (let pt of this.hoursMarkers) {
-        let tmp = this.$parent.map.project(pt, z).round();
+        let tmp = this.$parent.map.project(pt.latLng, z).round();
+        ctx.strokeStyle = this.predictorColor(pt.type);
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
         ctx.stroke();
       }
 
-      ctx.fillStyle = '#ff00ff';
       for (let pt of this.quarterMarkers) {
-        let tmp = this.$parent.map.project(pt, z).round();
+        let tmp = this.$parent.map.project(pt.latLng, z).round();
+        ctx.fillStyle = this.predictorColor(pt.type);
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
         ctx.fill();
@@ -225,8 +232,14 @@ export default {
       }
       let res = [];
       for (let i of indexes) {
-        res.push(this.twaPredictor.latLngs[i]);
-        res.push(this.cogPredictor.latLngs[i]);
+        res.push({
+          type: 'twa',
+          latLng: this.twaPredictor.latLngs[i],
+        });
+        res.push({
+          type: 'cc',
+          latLng: this.cogPredictor.latLngs[i],
+        });
       }
       return res;
     },
