@@ -100,7 +100,9 @@ export default {
     this.map.getContainer().appendChild(this.canvas);
 
     this.map.on('move', this.onMove, this);
+    this.map.on('moveend', this.onMove, this);
     this.map.on('zoom', this.onZoom, this);
+    this.map.on('zoomend', this.onZoom, this);
     this.map.on('resize', this.onResize, this);
 
     this.ready = true;
@@ -114,7 +116,9 @@ export default {
     this.ready = false;
 
     this.map.off('resize', this.onResize);
+    this.map.off('zoomend', this.onZoom);
     this.map.off('zoom', this.onZoom);
+    this.map.off('moveend', this.onMove);
     this.map.off('move', this.onMove);
 
     this.map.getContainer().removeChild(this.canvas);
