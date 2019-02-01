@@ -36,8 +36,18 @@ export default {
     cogPath () {
       this.cogPredictor.time;
 
-      return this.precalcPath(this.cogPredictor.firstLatLng,
-                              this.cogPredictor.latLngs);
+      let p = new Path2D();
+      if (this.cogPredictor.firstLatLng === null) {
+        return p;
+      }
+      const z = this.$parent.zoom;
+
+      let tmp = this.$parent.map.project(this.cogPredictor.firstLatLng, z).round();
+      p.moveTo(tmp.x, tmp.y);
+      tmp = this.$parent.map.project(this.cogPredictor.latLngs[this.cogPredictor.latLngs.length - 1], z).round();
+      p.lineTo(tmp.x, tmp.y);
+
+      return p;
     },
     twaPath () {
       this.twaPredictor.time;
