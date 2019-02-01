@@ -18,8 +18,8 @@ export default {
 
   mutations: {
     set(state, polar) {
-      state.twsval = polar.tws_splined.split(/\s+/).map(parseFloat);
-      state.twaval = polar.twa_splined.split(/\s+/).map(parseFloat).map(degToRad);
+      state.twsval = Object.freeze(polar.tws_splined.split(/\s+/).map(parseFloat));
+      state.twaval = Object.freeze(polar.twa_splined.split(/\s+/).map(parseFloat).map(degToRad));
 
       let rows = polar.bs_splined.split(/;\s*/);
 
@@ -33,13 +33,10 @@ export default {
         if (tmp.length !== state.twsval.length) {
           console.log("Inconsistent polar check!");
         }
-        bs.push(tmp);
+        bs.push(Object.freeze(tmp));
       }
-      state.bs = bs;
+      state.bs = Object.freeze(bs);
 
-      Object.freeze(state.twsval);
-      Object.freeze(state.twaval);
-      Object.freeze(state.bs);
       state.loaded = true;
     },
   },

@@ -241,7 +241,7 @@ export default {
         dataField: 'weathersystem',
 
         dataHandler: (weatherData) => {
-          const boundary = L.latLngBounds(
+          let boundary = L.latLngBounds(
             L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
             L.latLng(weatherData.$.lat_max, weatherData.$.lon_max));
 
@@ -291,13 +291,14 @@ export default {
               /* Construct last-level [u, v] arrays */
               let windRow = [];
               for (let j = 0; j < uu.length; j++) {
-                windRow.push([parseFloat(uu[j]), parseFloat(vv[j])]);
+                let tmp = [parseFloat(uu[j]), parseFloat(vv[j])];
+                windRow.push(Object.freeze(tmp));
               }
-
-              windFrame.push(windRow);
+              windFrame.push(Object.freeze(windRow));
             }
-            windMap.push(windFrame);
+            windMap.push(Object.freeze(windFrame));
           }
+          windMap = Object.freeze(windMap);
 
           let origo = [parseFloat(weatherData.$.lat_min),
                           parseFloat(weatherData.$.lon_min)];
@@ -307,10 +308,10 @@ export default {
           /* Improve performance by freezing all interpolation related
            * array objects. This avoid adding unnecessary reactivity detectors.
            */
-          windMap = Object.freeze(windMap);
           timeSeries = Object.freeze(timeSeries);
           origo = Object.freeze(origo);
           increment = Object.freeze(increment);
+          boundary = Object.freeze(boundary);
 
           let weatherInfo = {
             updated: updated,
