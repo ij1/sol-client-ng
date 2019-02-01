@@ -175,8 +175,8 @@ export default {
         for (let x = 0; x <= 1; x++) {
           firstRes[t][x] = wxLinearInterpolate(
             firstFactor,
-            state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx],
-            state.data.windMap[getters.timeIndex+t][lonIdx+x][latIdx+1]
+            state.data.windMap[timeIdx+t][lonIdx+x][latIdx],
+            state.data.windMap[timeIdx+t][lonIdx+x][latIdx+1]
           );
         }
       }
