@@ -110,7 +110,7 @@ export default {
       }
       return idx;
     },
-    timeIndexAny: (state) => (timestamp) => {
+    timeIndexAny: (state, getters) => (timestamp) => {
       /* Short-circuit for the common case near the beginning of the wx series */
       if (timestamp <= state.data.timeSeries[1]) {
         return 0;
@@ -118,10 +118,10 @@ export default {
 
       let min = 2;
       let max = state.data.timeSeries.length - 1;
-      if (state.data.timeSeries[this.timeIndex+1] < timestamp) {
-        min = this.timeIndex + 2;
-      } else if (state.data.timeSeries[this.timeIndex] > timestamp) {
-        max = this.timeIndex;
+      if (state.data.timeSeries[getters.timeIndex+1] < timestamp) {
+        min = getters.timeIndex + 2;
+      } else if (state.data.timeSeries[getters.timeIndex] > timestamp) {
+        max = getters.timeIndex;
       }
 
       let idx = bsearchLeft(state.data.timeSeries, timestamp, min, max) - 1;

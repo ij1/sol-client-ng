@@ -1,17 +1,20 @@
 <template>
   <div>
     <wind-map ref = "wind-map"/>
+    <steering-predictors ref = "steering-predictors"/>
   </div>
 </template>
 
 <script>
 import L from 'leaflet';
 import WindMap from './wind';
+import SteeringPredictors from './predictors';
 
 export default {
   name: 'CanvasOverlay',
   components: {
     'wind-map': WindMap,
+    'steering-predictors': SteeringPredictors,
   },
   props: {
     map: {
@@ -38,6 +41,7 @@ export default {
 
       if (this.ready) {
         this.$refs['wind-map'].needsRedraw;
+        this.$refs['steering-predictors'].needsRedraw;
       }
       
       /* Monotonically increasing value to trigger watch reliably every time */
@@ -58,6 +62,9 @@ export default {
       if (this.ready) {
         ctx.save();
         this.$refs['wind-map'].redraw(ctx);
+        ctx.restore();
+        ctx.save();
+        this.$refs['steering-predictors'].redraw(ctx);
         ctx.restore();
       }
 

@@ -55,3 +55,23 @@ export function isTwaValid(twa) {
   }
   return true;
 }
+
+export function cogTwdToTwa(cog, twd) {
+  let diff = twd - cog;
+  if (diff > Math.PI) {
+    diff -= Math.PI * 2;
+  } else if (diff < -Math.PI) {
+    diff += Math.PI * 2;
+  }
+  return diff;
+}
+
+export function twaTwdToCog(twa, twd) {
+  let diff = twd - twa;
+  if (diff < 0) {
+    diff += Math.PI * 2;
+  } else if (diff >= Math.PI * 2) {
+    diff -= Math.PI * 2;
+  }
+  return diff;
+}
