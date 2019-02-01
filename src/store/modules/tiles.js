@@ -74,18 +74,17 @@ export default {
             for (let poly of data.cell[0].poly) {
               let geom = [];
               for (let pt of poly.point) {
-                geom.push(L.latLng(pt.$.lat, pt.$.lon));
+                geom.push(Object.freeze(L.latLng(pt.$.lat, pt.$.lon)));
               }
 
               const level = 'l' + poly.$.level;
               if (typeof geoms[level] === 'undefined') {
                 geoms[level] = [];
               }
-              geoms[level].push(geom);
+              geoms[level].push(Object.freeze(geom));
             }
           }
 
-          // CHECKME: Object.freeze(geoms) useful?
           Object.freeze(geoms);
           commit('storeTileGeoms', {
             key: key,
