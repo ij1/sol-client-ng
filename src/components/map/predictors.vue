@@ -34,10 +34,14 @@ export default {
       return this.$parent.map.getPixelBounds().getTopLeft();
     },
     cogPath () {
+      this.cogPredictor.time;
+
       return this.precalcPath(this.cogPredictor.firstLatLng,
                               this.cogPredictor.latLngs);
     },
     twaPath () {
+      this.twaPredictor.time;
+
       return this.precalcPath(this.twaPredictor.firstLatLng,
                               this.twaPredictor.latLngs);
     },
@@ -109,10 +113,10 @@ export default {
 
         lastLatLng = L.latLng(lastLatLng.lat + dlat,
                               lastLatLng.lng + dlon);
-        cogPred.latLngs.push(lastLatLng);
+        cogPred.latLngs.push(Object.freeze(lastLatLng));
         t += this.timeDelta;
       }
-
+      Object.freeze(cogPred.latLngs);
       return cogPred;
     },
 
@@ -145,9 +149,10 @@ export default {
 
         lastLatLng = L.latLng(lastLatLng.lat + dlat,
                               lastLatLng.lng + dlon);
-        twaPred.latLngs.push(lastLatLng);
+        twaPred.latLngs.push(Object.freeze(lastLatLng));
         t += this.timeDelta;
       }
+      Object.freeze(twaPred.latLngs);
 
       return twaPred;
     },
