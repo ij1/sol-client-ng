@@ -22,7 +22,6 @@ export default {
       return this.$parent.map.getPixelBounds().getTopLeft();
     },
     cogPredictor () {
-      let startTs = Date.now();
       let t = this.boatTime;
       const endTime = t + hToMsec(6);
       let lastLatLng = this.$store.state.boat.position;
@@ -55,8 +54,6 @@ export default {
       }
       Object.freeze(cogPred.latLngs);
 
-      let endTs = Date.now();
-      console.log((endTs - startTs) / 1000);
       return cogPred;
     },
 
