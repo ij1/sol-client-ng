@@ -59,7 +59,7 @@ export default {
       return this.$store.getters['boat/polar/curve'](knots, this.$store.state.boat.polar.twaInterval);
     },
     maxSpeed () {
-      return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 0) * this.polarHeadroom;
+      return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 1) * this.polarHeadroom;
     },
     gridIntervalKnots () {
       return Math.ceil(this.maxSpeed / (this.maxWidth / this.gridMinSpacing));
@@ -74,7 +74,7 @@ export default {
       return this.gridIntervalPixels / this.gridIntervalKnots;
     },
     gridOrigoY () {
-      const maxVmgUp = Math.max(...this.bgCurves.map(c => c.maxvmg.up.vmg), 0);
+      const maxVmgUp = Math.max(...this.bgCurves.map(c => c.maxvmg.up.vmg), 1);
       return Math.ceil(maxVmgUp * this.gridScale * this.polarHeadroom);
     },
     gridSize () {
