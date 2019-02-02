@@ -34,7 +34,10 @@ export default {
       return this.iconCenter * 2 + 1;
     },
     path () {
-      return 'M 8,22 C 5 10, 9 12, 11 0 C 13 12, 17 10,14 22 Z';
+      return 'M 8 22 ' +
+             'C 5 10, 9 12, 11 0 ' +
+             'C 13 12, 17 10, 14 22 ' +
+             'Z';
     },
     myBoatIcon() {
       const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
