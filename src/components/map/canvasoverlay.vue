@@ -89,11 +89,6 @@ export default {
     this.zoom = this.map.getZoom();
 
     this.canvas = L.DomUtil.create('canvas', 'canvas-overlay');
-    // FIXME: this might not be optimal way to place the canvas!
-    this.canvas.style.zIndex = 550;
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.top = 0;
-    this.canvas.style.left = 0;
     this.onResize();
     this.map.getContainer().appendChild(this.canvas);
 
@@ -124,3 +119,12 @@ export default {
   },
 }
 </script>
+
+<style>
+.canvas-overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 550;
+}
+</style>
