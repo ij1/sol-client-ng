@@ -41,8 +41,9 @@ export default {
                   this.iconSize + "px' height='" +
                   this.iconSize + "px'>" +
         "<g transform='rotate(" + this.boatCourse + " " + this.iconCenter +
-                              " " + this.iconCenter + ")'>" +
-        "<path d='" + this.path + "' fill='none' stroke-opacity='1' stroke-width='2' stroke='#ff00ff'/></g></svg>";
+                              " " + this.iconCenter +
+                      ")'  fill='none' stroke-opacity='1' stroke-width='2' stroke='#ff00ff'>" +
+        "<path d='" + this.path + "'/></g></svg>";
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
       return L.icon({
         iconUrl: iconUrl,
