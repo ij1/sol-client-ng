@@ -41,7 +41,7 @@ export default {
        * FIXME: only set in mounted(). Should listen resize or perhaps
        * use vue-resize?
        */
-      maxWidth: 1,
+      maxWidth: 40,
     }
   },
   computed: {
