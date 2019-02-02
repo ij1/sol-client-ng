@@ -1,36 +1,38 @@
 <template>
   <div id="popup-block" v-if="this.$store.state.auth.status !== 'Authenticated'">
     <div id="login-popup">
-      <div>
-        Username:
-        <input v-model="authParams.username">
-      </div>
-      <div>
-        Password:
-        <input v-model="authParams.password" type="password">
-      </div>
-      <div>
-        <select v-model="authParams.race_id">
-          <option disabled value="">
-            {{ raceSelectorInfo }}
-          </option>
-          <option
-            v-for = "race in raceData"
-            v-bind:value = "race.id"
-            v-bind:key = "race.id"
+      <form @submit.prevent = "doLogin">
+        <div>
+          <select v-model = "authParams.race_id">
+            <option disabled value = "">
+              {{ raceSelectorInfo }}
+            </option>
+            <option
+              v-for = "race in raceData"
+              v-bind:value = "race.id"
+              v-bind:key = "race.id"
+            >
+              {{ race.name }}
+            </option>
+          </select>
+        </div>
+        <div>
+          Username:
+          <input v-model = "authParams.username">
+        </div>
+        <div>
+          Password:
+          <input v-model = "authParams.password" type = "password">
+        </div>
+        <div>
+          <button
+            type = "submit"
+            :disabled = "!canSend"
           >
-            {{ race.name }}
-          </option>
-        </select>
-      </div>
-      <div>
-        <button
-          v-on:click = "doLogin"
-          :disabled = "authParams.race_id === ''"
-        >
-          Login
-        </button>
-      </div>
+            Login
+          </button>
+        </div>
+      </form>
       <div v-if="this.$store.state.auth.status !== 'Unauthenticated'">
         {{ this.$store.state.auth.status }}
       </div>
@@ -55,7 +57,12 @@ export default {
   computed: {
     authenticated() {
       return this.$store.state.auth.token !== null;
-    }
+    },
+    canSend () {
+      return (this.authParams.race_id !== '') &&
+             (this.authParams.username.trim().length > 0) &&
+             (this.authParams.password.trim().length > 0);
+    },
   },
   mounted() {
     const getDef = {
@@ -83,6 +90,9 @@ export default {
 
   methods: {
     doLogin: function() {
+      if (!this.canSend) {
+        return;
+      }
       this.$store.dispatch('auth/login', this.authParams)
     }
   }
