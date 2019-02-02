@@ -7,7 +7,7 @@ export default {
   name: 'WindMap',
   data () {
     return {
-      gridInterval: 64,
+      gridInterval: 48,
     }
   },
   computed: {
