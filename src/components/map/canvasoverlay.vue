@@ -35,10 +35,6 @@ export default {
   },
   computed: {
     needsRedraw () {
-      /* Dummy access for the dependencies */
-      this.center;
-      this.zoom;
-
       if (this.ready) {
         this.$refs['wind-map'].needsRedraw;
         this.$refs['steering-predictors'].needsRedraw;
@@ -51,9 +47,11 @@ export default {
   methods: {
     onMove () {
       this.center = this.map.getCenter();
+      this.redraw();
     },
     onZoom () {
       this.zoom = this.map.getZoom();
+      this.redraw();
     },
     redraw () {
       let ctx = this.canvas.getContext('2d');
