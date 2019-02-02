@@ -43,8 +43,8 @@ export default {
       const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
                   this.iconSize + "px' height='" +
                   this.iconSize + "px'>" +
-        "<g transform='rotate(" + this.boatCourse + " " + this.iconCenter +
-                              " " + this.iconCenter +
+        "<g transform='translate(" + this.iconCenter + "," + this.iconCenter +
+                      ") rotate(" + this.boatCourse +
                       ")'  fill='none' stroke-opacity='1' stroke-width='2' stroke='#ff00ff'>" +
         "<path d='" + this.boatPath + "'/></g></svg>";
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     pathPos(x, y) {
-      return (this.iconCenter + x) + " " + (this.iconCenter + y);
+      return x + " " + y;
     },
   },
 }
