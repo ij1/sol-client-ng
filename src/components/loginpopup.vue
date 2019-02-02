@@ -32,7 +32,7 @@
         <div>
           <label
             for = "password"
-            @click = "$refs.username.focus()"
+            @click = "$refs.password.focus()"
           >
             Password:
           </label>
