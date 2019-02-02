@@ -43,7 +43,11 @@
         >&deg;
       </div>
       <div>
-        <button type = "cancel" @click = "onCancel">
+        <button
+          type = "cancel"
+          @click = "onCancel"
+          @keydown.enter.prevent = "onCancel"
+        >
           Cancel
         </button>
         <button type="submit" :disabled="!canSend">
