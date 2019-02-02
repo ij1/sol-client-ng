@@ -57,7 +57,7 @@
         >
       </div>
       <div>
-        <button :disabled = "!canSend">
+        <button type = "submit" :disabled = "!canSend">
           {{applySteeringTxt}}
         </button>
       </div>
