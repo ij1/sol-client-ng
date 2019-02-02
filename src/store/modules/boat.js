@@ -36,7 +36,7 @@ export default {
       if (data.finish_time.length > 0) {
         state.finish_time = UTCToMsec(data.finish_time);
       }
-      state.current_steering = data.last_cmd_type;
+      state.currentSteering = data.last_cmd_type;
     },
 
     setFetching (state, param) {
