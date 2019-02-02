@@ -17,12 +17,31 @@
           </select>
         </div>
         <div>
-          Username:
-          <input v-model = "authParams.username">
+          <label
+            for = "username"
+            @click = "$refs.username.focus()"
+          >
+            Username:
+          </label>
+          <input
+            id = "username"
+            ref = "username"
+            v-model = "authParams.username"
+          >
         </div>
         <div>
-          Password:
-          <input v-model = "authParams.password" type = "password">
+          <label
+            for = "password"
+            @click = "$refs.username.focus()"
+          >
+            Password:
+          </label>
+          <input
+            id = "password"
+            ref = "password"
+            v-model = "authParams.password"
+            type = "password"
+          >
         </div>
         <div>
           <button
