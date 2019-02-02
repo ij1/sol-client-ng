@@ -42,20 +42,22 @@
       </div>
     </div>
     <div class="chat-channel-input">
-      <div>
-        <textarea
-          v-model="myMessage"
-          class="chat-channel-input-box"
-        ></textarea>
-      </div>
-      <div class="chat-channel-input-btn">
-        <button
-          @click="sendChatMessage"
-          :disabled = "!canSend"
-        >
-          Send
-        </button>
-      </div>
+      <form @submit.prevent="sendChatMessage">
+        <div>
+          <textarea
+            v-model="myMessage"
+            class="chat-channel-input-box"
+          ></textarea>
+        </div>
+        <div class="chat-channel-input-btn">
+          <button
+            :disabled = "!canSend"
+            type = "submit"
+          >
+            Send
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
