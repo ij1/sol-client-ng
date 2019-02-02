@@ -34,7 +34,7 @@ export default {
       return 11;
     },
     iconSize () {
-      return this.iconCenter * 2;
+      return this.iconCenter * 2 + 1;
     },
     myBoatIcon() {
       const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
