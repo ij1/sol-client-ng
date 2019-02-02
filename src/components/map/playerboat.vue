@@ -28,15 +28,15 @@ export default {
       return radToDeg(this.$store.state.boat.instruments.course.value);
     },
     iconCenter () {
-      return 11;
+      return 18;
     },
     iconSize () {
       return this.iconCenter * 2 + 1;
     },
     boatPath () {
       return  'M ' + this.pathPos(-3, 11) +
-             ' C ' + this.pathPos(-6, -1) + ',' + this.pathPos(-2, 1) + ',' + this.pathPos(0, -11) +
-             ' C ' + this.pathPos(2, 1) + ',' + this.pathPos(6, -1) + ',' + this.pathPos(3, 11) +
+             ' C ' + this.pathPos(-5, -1) + ',' + this.pathPos(-6, 9) + ',' + this.pathPos(0, -13) +
+             ' C ' + this.pathPos(6, 9) + ',' + this.pathPos(5, -1) + ',' + this.pathPos(3, 11) +
              ' Z';
     },
     myBoatIcon() {
