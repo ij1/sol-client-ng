@@ -15,13 +15,13 @@ export default {
       hourRadius: 3,
       quarterRadius: 2,
 
-      cogPredictor: {
+      cog: {
         time: 0,
         cog: 0,
         firstLatLng: null,
         latLngs: [],
       },
-      twaPredictor: {
+      twa: {
         time: 0,
         twa: 0,
         firstLatLng: null,
@@ -59,26 +59,26 @@ export default {
       return res;
     },
     cogPath () {
-      this.cogPredictor.time;
+      this.cog.time;
 
       let p = new Path2D();
-      if (this.cogPredictor.firstLatLng === null) {
+      if (this.cog.firstLatLng === null) {
         return p;
       }
       const z = this.$parent.zoom;
 
-      let tmp = this.$parent.map.project(this.cogPredictor.firstLatLng, z).round();
+      let tmp = this.$parent.map.project(this.cog.firstLatLng, z).round();
       p.moveTo(tmp.x, tmp.y);
-      tmp = this.$parent.map.project(this.cogPredictor.latLngs[this.cogPredictor.latLngs.length - 1], z).round();
+      tmp = this.$parent.map.project(this.cog.latLngs[this.cog.latLngs.length - 1], z).round();
       p.lineTo(tmp.x, tmp.y);
 
       return p;
     },
     twaPath () {
-      this.twaPredictor.time;
+      this.twa.time;
 
-      return this.precalcPath(this.twaPredictor.firstLatLng,
-                              this.twaPredictor.latLngs);
+      return this.precalcPath(this.twa.firstLatLng,
+                              this.twa.latLngs);
     },
     hoursMarkers () {
       return this.getMarkers(this.hourIndexes);
@@ -88,8 +88,8 @@ export default {
     },
 
     needsRedraw() {
-      this.cogPredictor;
-      this.twaPredictor;
+      this.cog;
+      this.twa;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
@@ -148,7 +148,7 @@ export default {
       return p;
     },
 
-    cogPredictorCalc () {
+    cogCalc () {
       let t = this.boatTime;
       const endTime = t + hToMsec(6);
       let lastLatLng = this.$store.state.boat.position;
@@ -185,7 +185,7 @@ export default {
       return cogPred;
     },
 
-    twaPredictorCalc () {
+    twaCalc () {
       let t = this.boatTime;
       const endTime = t + hToMsec(6);
       let lastLatLng = this.$store.state.boat.position;
@@ -224,21 +224,21 @@ export default {
     },
 
     getMarkers (indexes) {
-      this.twaPredictor.time;
+      this.twa.time;
 
-      if ((this.cogPredictor.firstLatLng === null) ||
-          (this.twaPredictor.firstLatLng === null)) {
+      if ((this.cog.firstLatLng === null) ||
+          (this.twa.firstLatLng === null)) {
         return [];
       }
       let res = [];
       for (let i of indexes) {
         res.push({
           type: 'twa',
-          latLng: this.twaPredictor.latLngs[i],
+          latLng: this.twa.latLngs[i],
         });
         res.push({
           type: 'cc',
-          latLng: this.cogPredictor.latLngs[i],
+          latLng: this.cog.latLngs[i],
         });
       }
       return res;
@@ -250,8 +250,8 @@ export default {
       if (!this.wxLoaded) {
         return;
       }
-      this.cogPredictor = this.cogPredictorCalc();
-      this.twaPredictor = this.twaPredictorCalc();
+      this.cog = this.cogCalc();
+      this.twa = this.twaCalc();
     },
   },
   render () {
