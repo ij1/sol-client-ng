@@ -3,52 +3,54 @@
     <div>
       Edit Delayed Command
     </div>
-    <div>
-      <label class="dc-editor-label">Date</label>
-      <datepicker
-        v-model = "time"
-        format = "yyyy/MM/dd"
-        input-class = "dc-editor-date-input"
-        :use-utc = "true"
-	:typeable = "true"
-        :disabled-dates = "disabledDates"
-      />
-    </div>
-    <div>
-      <label for="time" class="dc-editor-label">Time</label>
-      <input
-        id = "time"
-        v-model = "hours"
-        maxlength = 8
-        size = 8
-      >
-    </div>
-    <div>
-      <label class="dc-editor-label">Type</label>
-      <span>
-        <input type="radio" id="cog" value="cc" v-model="type">
-        <label for="cog">COG</label>
-        <input type="radio" id="twa" value="twa" v-model="type">
-        <label for="twa">TWA</label>
-      </span>
-    </div>
-    <div>
-      <label for="value" class="dc-editor-label">Value</label>
-      <input
-        id = "value"
-        v-model.trim = "value"
-        size = 8
-        maxlength = 8
-      >&deg;
-    </div>
-    <div>
-      <button @click="onCancel">
-        Cancel
-      </button>
-      <button @click="onChange" :disabled="!canSend">
-        Change
-      </button>
-    </div>
+    <form @submit.prevent="onChange">
+      <div>
+        <label class="dc-editor-label">Date</label>
+        <datepicker
+          v-model = "time"
+          format = "yyyy/MM/dd"
+          input-class = "dc-editor-date-input"
+          :use-utc = "true"
+          :typeable = "true"
+          :disabled-dates = "disabledDates"
+        />
+      </div>
+      <div>
+        <label for="time" class="dc-editor-label">Time</label>
+        <input
+          id = "time"
+          v-model = "hours"
+          maxlength = 8
+          size = 8
+        >
+      </div>
+      <div>
+        <label class="dc-editor-label">Type</label>
+        <span>
+          <input type="radio" id="cog" value="cc" v-model="type">
+          <label for="cog">COG</label>
+          <input type="radio" id="twa" value="twa" v-model="type">
+          <label for="twa">TWA</label>
+        </span>
+      </div>
+      <div>
+        <label for="value" class="dc-editor-label">Value</label>
+        <input
+          id = "value"
+          v-model.trim = "value"
+          size = 8
+          maxlength = 8
+        >&deg;
+      </div>
+      <div>
+        <button @click="onCancel">
+          Cancel
+        </button>
+        <button type="submit" :disabled="!canSend">
+          Change
+        </button>
+      </div>
+    </form>
   </div>
 </template>
 
