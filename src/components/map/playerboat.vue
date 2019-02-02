@@ -34,10 +34,10 @@ export default {
       return this.iconCenter * 2 + 1;
     },
     boatPath () {
-      return 'M 8 22 ' +
-             'C 5 10, 9 12, 11 0 ' +
-             'C 13 12, 17 10, 14 22 ' +
-             'Z';
+      return  'M ' + this.pathPos(-3, 11) +
+             ' C ' + this.pathPos(-6, -1) + ',' + this.pathPos(-2, 1) + ',' + this.pathPos(0, -11) +
+             ' C ' + this.pathPos(2, 1) + ',' + this.pathPos(6, -1) + ',' + this.pathPos(3, 11) +
+             ' Z';
     },
     myBoatIcon() {
       const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
@@ -52,6 +52,11 @@ export default {
         iconUrl: iconUrl,
         iconAnchor: [this.iconCenter, this.iconCenter],
       });
+    },
+  },
+  methods: {
+    pathPos(x, y) {
+      return (this.iconCenter + x) + " " + (this.iconCenter + y);
     },
   },
 }
