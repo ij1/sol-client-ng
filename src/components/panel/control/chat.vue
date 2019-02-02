@@ -119,6 +119,9 @@ export default {
       }, {root: true});
     },
     sendChatMessage() {
+      if (!this.canSend) {
+        return;
+      }
       this.$store.dispatch('chatrooms/sendMessage', {
         room_id: this.roomId,
         text: this.myStringClean,
