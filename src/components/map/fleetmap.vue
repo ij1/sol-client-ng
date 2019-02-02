@@ -25,7 +25,7 @@ export default {
   },
   data () {
     return {
-      boatPath: new Path2D('M -3,11 C -6 -1, -2 1, 0 -11 C 2 1, 6 -1, 3,11 Z'),
+      boatPath: new Path2D('M -3 11 C -5 -1, -6 9, 0 -13 C 6 9, 5 -1, 3,11 Z'),
       FleetTile: FleetTile,
     }
   },
