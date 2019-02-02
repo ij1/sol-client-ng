@@ -1,68 +1,67 @@
 <template>
   <div id="steering">
-    <div class="steering-input">
-      <input
-        type="radio"
-        id="type"
-        value="cc"
-        v-model="type"
-        @click="$refs.cc.focus()"
-      >
-      <label for="cc" @click="type = 'cc'">COG</label>
-      <input
-        class = "steering-input-box"
-        ref="cc"
-        id="cc"
-        @click="type = 'cc'"
-        v-model.trim="cc"
-        maxlength = 7
-        size = 7
-      >&deg;
-    </div>
-    <div class="steering-input">
-      <input
-        type="radio"
-        id="type"
-        value="twa"
-        v-model="type"
-        @click="$refs.twa.focus()"
-      >
-      <label for="twa" @click="type = 'twa'">TWA</label>
-      <input
-        class = "steering-input-box"
-        ref="twa"
-        id="twa"
-        @click="type = 'twa'"
-        v-model.trim="twa"
-        maxlength = 8
-        size = 8
-      >&deg;
-    </div>
-    <div class="steering-input">
-      <input
-        type="checkbox"
-        id="delayOn"
-        v-model="delayOn"
-        @click="$refs.delay.focus()"
-      >
-      <label for="delay" @click="delayOn = true">Delay for</label>
-      <input
-        class = "steering-input-box"
-        ref="delay"
-        id="delay"
-        v-model.trim="delay"
-        maxlength = 8
-        size = 8
-      >
-    </div>
-    <div>
-      <button
-        @click="sendSteeringCommand"
-        :disabled = "!canSend"
-      >
-        {{applySteeringTxt}}
-      </button>
-    </div>
+    <form @submit.prevent = "sendSteeringCommand">
+      <div class = "steering-input">
+        <input
+          type = "radio"
+          id = "type"
+          value = "cc"
+          v-model = "type"
+          @click = "$refs.cc.focus()"
+        >
+        <label for = "cc" @click = "type = 'cc'">COG</label>
+        <input
+          class = "steering-input-box"
+          ref = "cc"
+          id = "cc"
+          @click="type = 'cc'"
+          v-model.trim = "cc"
+          maxlength = 7
+          size = 7
+        >&deg;
+      </div>
+      <div class = "steering-input">
+        <input
+          type = "radio"
+          id = "type"
+          value = "twa"
+          v-model = "type"
+          @click = "$refs.twa.focus()"
+        >
+        <label for = "twa" @click = "type = 'twa'">TWA</label>
+        <input
+          class = "steering-input-box"
+          ref = "twa"
+          id = "twa"
+          @click = "type = 'twa'"
+          v-model.trim = "twa"
+          maxlength = 8
+          size = 8
+        >&deg;
+      </div>
+      <div class = "steering-input">
+        <input
+          type = "checkbox"
+          id = "delayOn"
+          v-model = "delayOn"
+          @click = "$refs.delay.focus()"
+        >
+        <label for = "delay" @click = "delayOn = true">Delay for</label>
+        <input
+          class = "steering-input-box"
+          ref = "delay"
+          id = "delay"
+          v-model.trim = "delay"
+          maxlength = 8
+          size = 8
+        >
+      </div>
+      <div>
+        <button :disabled = "!canSend">
+          {{applySteeringTxt}}
+        </button>
+      </div>
+    </form>
     <control-steering-polar/>
   </div>
 </template>
