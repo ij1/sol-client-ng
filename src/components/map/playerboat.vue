@@ -33,7 +33,7 @@ export default {
     iconSize () {
       return this.iconCenter * 2 + 1;
     },
-    path () {
+    boatPath () {
       return 'M 8 22 ' +
              'C 5 10, 9 12, 11 0 ' +
              'C 13 12, 17 10, 14 22 ' +
@@ -46,7 +46,7 @@ export default {
         "<g transform='rotate(" + this.boatCourse + " " + this.iconCenter +
                               " " + this.iconCenter +
                       ")'  fill='none' stroke-opacity='1' stroke-width='2' stroke='#ff00ff'>" +
-        "<path d='" + this.path + "'/></g></svg>";
+        "<path d='" + this.boatPath + "'/></g></svg>";
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
       return L.icon({
         iconUrl: iconUrl,
