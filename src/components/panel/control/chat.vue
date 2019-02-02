@@ -47,6 +47,7 @@
           <textarea
             v-model="myMessage"
             class="chat-channel-input-box"
+            @keydown.enter.exact.prevent = "sendChatMessage"
           ></textarea>
         </div>
         <div class="chat-channel-input-btn">
