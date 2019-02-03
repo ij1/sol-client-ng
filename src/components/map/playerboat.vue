@@ -59,8 +59,8 @@ export default {
     },
     boatPath () {
       return  'M ' + this.pathPos(-3, 11) +
-             ' C ' + this.pathPos(-5, -1) + ',' + this.pathPos(-6, 9) + ',' + this.pathPos(0, -13) +
-             ' C ' + this.pathPos(6, 9) + ',' + this.pathPos(5, -1) + ',' + this.pathPos(3, 11) +
+             ' C ' + this.pathPos(-5, 7) + ',' + this.pathPos(-6, -1) + ',' + this.pathPos(0, -13) +
+             ' C ' + this.pathPos(6, -1) + ',' + this.pathPos(5, 7) + ',' + this.pathPos(3, 11) +
              ' Z';
     },
     sailAngle () {
