@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { EventBus } from '../../lib/event-bus.js';
 import { LControl } from 'vue2-leaflet'
 
@@ -18,11 +19,16 @@ export default {
   components: {
     'l-control': LControl,
   },
+  computed: {
+    ...mapState({
+      boatPosition: state => state.boat.position,
+    }),
+  },
   methods: {
     onClick () {
-      if (this.$store.state.boat.position) {
+      if (this.boatPosition) {
         EventBus.$emit('map-highlight', {
-          latLng: this.$store.state.boat.position,
+          latLng: this.boatPosition,
           keepMapPosition: false,
         });
       }
