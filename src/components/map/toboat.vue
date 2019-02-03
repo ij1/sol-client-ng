@@ -1,10 +1,10 @@
 <template>
   <l-control
-    id = "to-my-boat"
+    id = "center-boat"
     :position = "'topleft'"
   >
     <div @click = "onClick">
-      ToMyBoat
+      CenterBoat
     </div>
   </l-control>
 </template>
@@ -14,7 +14,7 @@ import { EventBus } from '../../lib/event-bus.js';
 import { LControl } from 'vue2-leaflet'
 
 export default {
-  name: 'ToBoat',
+  name: 'CenterBoat',
   components: {
     'l-control': LControl,
   },

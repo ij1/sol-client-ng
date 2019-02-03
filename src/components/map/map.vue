@@ -23,7 +23,7 @@
       <fleet-hover v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <player-boat v-if = "this.map !== null"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
-      <to-boat v-if = "this.map !== null" :map = "this.map"/>
+      <center-boat v-if = "this.map !== null" :map = "this.map"/>
       <towback-flag v-if = "this.map !== null"/>
     </l-map>
   </div>
@@ -43,7 +43,7 @@ import FleetMap from './fleetmap';
 import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
 import MapHighlight from './highlight';
-import ToBoatButton from './toboat';
+import CenterBoatButton from './toboat';
 import TowbackFlag from '../towbackflag';
 
 export default {
@@ -63,7 +63,7 @@ export default {
     'fleet-hover': FleetHover,
     'player-boat': PlayerBoat,
     'map-highlight': MapHighlight,
-    'to-boat': ToBoatButton,
+    'center-boat': CenterBoatButton,
     'towback-flag': TowbackFlag,
   },
 
