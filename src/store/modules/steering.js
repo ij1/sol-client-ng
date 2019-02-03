@@ -12,6 +12,10 @@ export default {
       needReload: true,
     },
     sending: false,
+    visualSteering: {
+      enabled: false,
+      showPolar: false,
+    },
   },
 
   mutations: {
@@ -36,6 +40,13 @@ export default {
     },
     clearSending (state) {
       state.sending = false;
+    },
+    visualSteering (state, showPolar) {
+      state.visualSteering.enabled = true;
+      state.visualSteering.showPolar = showPolar;
+    },
+    visualSteeringOff (state) {
+      state.visualSteering.enabled = false;
     },
   },
 

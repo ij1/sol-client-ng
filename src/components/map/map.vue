@@ -21,15 +21,18 @@
       <fleet-traces v-if = "this.map !== null"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-hover v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
-      <player-boat v-if = "this.map !== null"/>
+      <player-boat v-if = "this.map !== null && this.boatPosition !== null" :course = "this.boatCourse" :twa = "this.boatTwa"/>
+      <visual-steering v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
       <center-boat-button v-if = "this.map !== null"/>
+      <steer-button v-if = "this.map !== null"/>
       <towback-flag v-if = "this.map !== null"/>
     </l-map>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import L from 'leaflet'
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
 import { PROJECTION } from '../../lib/sol.js';
@@ -42,8 +45,10 @@ import FleetTraces from './fleettraces';
 import FleetMap from './fleetmap';
 import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
+import VisualSteering from './visualsteering';
 import MapHighlight from './highlight';
 import CenterBoatButton from './centerboatbutton';
+import SteerButton from './steerbutton';
 import TowbackFlag from '../towbackflag';
 
 export default {
@@ -62,8 +67,10 @@ export default {
     'fleet-map': FleetMap,
     'fleet-hover': FleetHover,
     'player-boat': PlayerBoat,
+    'visual-steering': VisualSteering,
     'map-highlight': MapHighlight,
     'center-boat-button': CenterBoatButton,
+    'steer-button': SteerButton,
     'towback-flag': TowbackFlag,
   },
 
@@ -79,6 +86,13 @@ export default {
       L: L,
       PROJECTION: PROJECTION,
     }
+  },
+  computed: {
+    ...mapState({
+      boatPosition: state => state.boat.position,
+      boatCourse: state => state.boat.instruments.course.value,
+      boatTwa: state => state.boat.instruments.twa.value,
+    }),
   },
 
   mounted() {
@@ -150,6 +164,13 @@ export default {
 }
 
 .wp-tooltip::before {
+  all: unset;
+}
+
+.steering-tooltip {
+  text-align: left;
+}
+.steering-tooltip::before {
   all: unset;
 }
 

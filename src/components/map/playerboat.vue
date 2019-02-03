@@ -22,16 +22,37 @@ export default {
     'l-polyline': LPolyline,
     'boat-trace': BoatTrace,
   },
-
+  props: {
+    course: {
+      type: Number,
+      required: true,
+    },
+    twa: {
+      type: Number,
+      required: true,
+    },
+    color: {
+      type: String,
+      default: '#ff00ff',
+    },
+    scale: {
+      type: Number,
+      default: 1,
+    },
+    strokeWidth: {
+      type: Number,
+      default: 2,
+    },
+  },
   computed: {
     boatCourse () {
-      return radToDeg(this.$store.state.boat.instruments.course.value);
+      return radToDeg(this.course);
     },
     boatTwa () {
-      return radToDeg(this.$store.state.boat.instruments.twa.value);
+      return radToDeg(this.twa);
     },
     iconCenter () {
-      return 20;
+      return 20 * this.scale;
     },
     iconSize () {
       return this.iconCenter * 2 + 1;
@@ -50,9 +71,11 @@ export default {
       return this.boatTwa / (180 / 75);
     },
     sailPath () {
-      const curvePar = Math.sign(this.sailAngle) * -3;
+      const curvePar = Math.sign(this.sailAngle) * -3 * this.scale;
       return 'M 0 0 ' +
-             'C ' + curvePar + ' 5, ' +  curvePar + ' 12, 0 17';
+             'C ' + curvePar + ' ' + (5 * this.scale) +
+                    ', ' + curvePar + ' ' + (12 * this.scale) +
+                    ', 0 ' + (17 * this.scale);
     },
     myBoatIcon() {
       const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
@@ -60,9 +83,9 @@ export default {
                   this.iconSize + "px'>" +
         "<g transform='translate(" + this.iconCenter + "," + this.iconCenter +
                       ") rotate(" + this.boatCourse +
-                      ")'  fill='none' stroke-opacity='1' stroke-width='2' stroke='#ff00ff'>" +
+                      ")'  fill='none' stroke-opacity='1' stroke-width='" + this.strokeWidth + "' stroke='" + this.color + "'>" +
         "<path d='" + this.boatPath + "'/>" +
-          "<g transform='translate(0, -6) rotate(" + this.sailAngle +
+          "<g transform='translate(0, " + (-6 * this.scale) + ") rotate(" + this.sailAngle +
           ")'><path d='" + this.sailPath + "'/>" +
         "</g></g></svg>";
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
@@ -74,7 +97,7 @@ export default {
   },
   methods: {
     pathPos(x, y) {
-      return x + " " + y;
+      return (x * this.scale) + " " + (y * this.scale);
     },
   },
 }
