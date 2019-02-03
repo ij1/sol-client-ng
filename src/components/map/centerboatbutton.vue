@@ -18,12 +18,6 @@ export default {
   components: {
     'l-control': LControl,
   },
-  props: {
-    map: {
-      type: Object,
-      required: true,
-    },
-  },
   methods: {
     onClick () {
       if (this.$store.state.boat.position) {

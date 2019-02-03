@@ -23,7 +23,7 @@
       <fleet-hover v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <player-boat v-if = "this.map !== null"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
-      <center-boat-button v-if = "this.map !== null" :map = "this.map"/>
+      <center-boat-button v-if = "this.map !== null"/>
       <towback-flag v-if = "this.map !== null"/>
     </l-map>
   </div>
