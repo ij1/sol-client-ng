@@ -14,6 +14,7 @@
       :fill = "false"
     />
     <l-circle
+      v-if = "this.hoverLatLng !== null"
       :lat-lng = "this.target"
       :color = "this.color"
       :radius = "0"
