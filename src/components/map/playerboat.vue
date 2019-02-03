@@ -77,13 +77,17 @@ export default {
                     ', ' + curvePar + ' ' + (12 * this.scale) +
                     ', 0 ' + (17 * this.scale);
     },
+    style () {
+      return "fill='none' stroke-opacity='1' stroke-width='" +
+             this.strokeWidth + "' stroke='" + this.color + "'";
+    },
     myBoatIcon() {
       const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
                   this.iconSize + "px' height='" +
                   this.iconSize + "px'>" +
         "<g transform='translate(" + this.iconCenter + "," + this.iconCenter +
                       ") rotate(" + this.boatCourse +
-                      ")'  fill='none' stroke-opacity='1' stroke-width='" + this.strokeWidth + "' stroke='" + this.color + "'>" +
+                      ")' " + this.style + ">" +
         "<path d='" + this.boatPath + "'/>" +
           "<g transform='translate(0, " + (-6 * this.scale) + ") rotate(" + this.sailAngle +
           ")'><path d='" + this.sailPath + "'/>" +
