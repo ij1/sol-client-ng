@@ -144,7 +144,7 @@ export default {
         } else {
           val = data[state[i].datafield];
         }
-        if (typeof state[i].notNum !== 'undefined') {
+        if (typeof state[i].notNum === 'undefined') {
           val = parseFloat(val);
           if (!Number.isFinite(val)) {
             val = undefined;
