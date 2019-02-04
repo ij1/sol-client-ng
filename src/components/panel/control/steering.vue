@@ -238,7 +238,7 @@ export default {
       if (this.delayOn && this.isDelayValid && this.delayTime > 0) {
         return 'Send command';
       } else if (this.isSteeringValid) {
-        if ((Math.abs(this.twa) > 0) &&
+        if ((Math.abs(this.oldtwa) > 0) && (Math.abs(this.twa) > 0) &&
             (Math.sign(this.oldTwa) !== Math.sign(this.twa))) {
           // ADDME: for 'Tack'/'Gybe' angles need to figured out
           return 'Tack/Gybe';
