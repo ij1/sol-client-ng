@@ -24,6 +24,7 @@ export default {
     selected: [],
     hover: [],
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
+    playerBoatIdx: 0,
   },
 
   mutations: {
@@ -99,8 +100,7 @@ export default {
             state.leader = id;
             state.boat[idx].color = { r: 204, g: 0, b: 204 };
           } else {
-            /* idx === 0 is player's boat, don't set its color */
-            if (idx > 0) {
+            if (idx > state.playerBoatIdx) {
               state.boat[idx].color = {
                 r: boat.color_R,
                 g: boat.color_G,
