@@ -2,13 +2,14 @@
   <l-control
     :position = "'topleft'"
   >
-    <div @click = "onClick">
+    <div ref = "steer-button" @click = "onClick">
       Steer
     </div>
   </l-control>
 </template>
 
 <script>
+import L from 'leaflet';
 import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 
@@ -39,6 +40,9 @@ export default {
         this.$store.commit('boat/steering/visualSteering', showPolar);
       }
     },
+  },
+  mounted () {
+    L.DomEvent.disableClickPropagation(this.$refs['steer-button']);
   },
 }
 </script>
