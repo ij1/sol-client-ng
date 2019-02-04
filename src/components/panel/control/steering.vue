@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { EventBus } from '../../../lib/event-bus.js';
 import Polar from './polar.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { isCcValid, isTwaValid } from '../../../lib/nav.js';
@@ -293,8 +294,18 @@ export default {
     /* HACK to avoid side-effect detector for computed properties */
     setPrevCopyDecimals(value) {
       this.prevCopyDecimals = value;
+    },
+    onSetCourse (e) {
+      this.cc = radToDeg(e.course).toFixed(3);
+      this.type = 'cc';
     }
-  }
+  },
+  mounted () {
+    EventBus.$on('set-course', this.onSetCourse);
+  },
+  beforeDestroy () {
+    EventBus.$off('set-course', this.onSetCourse);
+  },
 }
 </script>
 

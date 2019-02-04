@@ -1,5 +1,5 @@
 <template>
-  <l-layer-group v-if = "this.visualSteeringEnabled">
+  <l-layer-group>
     <player-boat
       :scale = "3"
       :color = "this.color"
@@ -36,6 +36,7 @@
 <script>
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
+import { EventBus } from '../../lib/event-bus.js';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { speedTowardsBearing, cogTwdToTwa, atan2Bearing } from '../../lib/nav.js';
 import PlayerBoat from './playerboat';
@@ -74,13 +75,7 @@ export default {
       return [this.boatPosition, this.target];
     },
     cog () {
-      const z = this.map.getZoom();
-
-      const targetProj = this.map.project(this.target, z).round();
-      const boatProj = this.map.project(this.boatPosition, z).round();
-      
-      return atan2Bearing(targetProj.x - boatProj.x,
-                          -(targetProj.y - boatProj.y));
+      return this.calcBearing(this.target).bearing;
     },
     twa () {
       return cogTwdToTwa(this.cog, this.twd);
@@ -105,9 +100,40 @@ export default {
       boatPosition: state => state.boat.position,
       twd: state => state.boat.instruments.twd.value,
       tws: state => state.boat.instruments.tws.value,
-      visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       showPolar: state => state.boat.steering.visualSteering.showPolar,
     }),
+  },
+  methods: {
+    onClick (e) {
+      const res = this.calcBearing(e.latlng);
+      if (res.dx === 0 && res.dy === 0) {
+        return;
+      }
+      EventBus.$emit('set-course', {
+        course: res.bearing,
+      });
+      this.map.off('click', this.onClick, this);
+      this.$store.commit('boat/steering/visualSteeringOff');
+    },
+    calcBearing (target) {
+      const z = this.map.getZoom();
+
+      const targetProj = this.map.project(target, z).round();
+      const boatProj = this.map.project(this.boatPosition, z).round();
+      const dx = targetProj.x - boatProj.x;
+      const dy = targetProj.y - boatProj.y;
+      return {
+        dx: dx,
+        dy: dy,
+        bearing: atan2Bearing(dx, -dy),
+      };
+    }
+  },
+  mounted () {
+    this.map.on('click', this.onClick, this);
+  },
+  beforeDestroy () {
+    this.map.off('click', this.onClick, this);
   },
 }
 </script>

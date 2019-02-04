@@ -22,7 +22,7 @@
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
       <fleet-hover v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <player-boat v-if = "this.map !== null && this.boatPosition !== null" :course = "this.boatCourse" :twa = "this.boatTwa"/>
-      <visual-steering v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
+      <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
       <center-boat-button v-if = "this.map !== null"/>
       <steer-button v-if = "this.map !== null"/>
@@ -92,6 +92,7 @@ export default {
       boatPosition: state => state.boat.position,
       boatCourse: state => state.boat.instruments.course.value,
       boatTwa: state => state.boat.instruments.twa.value,
+      visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
     }),
   },
 
