@@ -244,7 +244,7 @@ export default {
           return 'Tack/Gybe';
         }
       }
-      return 'Change course';
+      return 'Set course';
     }
   },
 
