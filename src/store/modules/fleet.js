@@ -96,11 +96,11 @@ export default {
           state.boat[idx].log = boat.log;
           state.boat[idx].current_leg = boat.current_leg;
 
-          if (state.boat[idx].ranking === 1) {
-            state.leader = id;
-            state.boat[idx].color = { r: 204, g: 0, b: 204 };
-          } else {
-            if (idx > state.playerBoatIdx) {
+          if (idx > state.playerBoatIdx) {
+            if (state.boat[idx].ranking === 1) {
+              state.leader = id;
+              state.boat[idx].color = { r: 204, g: 0, b: 204 };
+            } else {
               state.boat[idx].color = {
                 r: boat.color_R,
                 g: boat.color_G,
