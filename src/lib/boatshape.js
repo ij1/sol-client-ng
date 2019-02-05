@@ -1,3 +1,5 @@
+export const sailOffset = -6;
+
 function boatPathPos(x, y, scale) {
   return (x * scale) + " " + (y * scale);
 }

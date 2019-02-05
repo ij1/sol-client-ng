@@ -12,7 +12,7 @@
 import L from 'leaflet'
 import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet'
 import { radToDeg } from '../../lib/utils.js';
-import { boatPath, sailPath, sailAngle } from '../../lib/boatshape.js';
+import { boatPath, sailPath, sailAngle, sailOffset } from '../../lib/boatshape.js';
 import BoatTrace from './trace.vue';
 
 export default {
@@ -79,7 +79,7 @@ export default {
                       ") rotate(" + this.boatCourse +
                       ")' " + this.style + ">" +
         "<path d='" + this.boatPath + "'/>" +
-          "<g transform='translate(0, " + (-6 * this.scale) + ") rotate(" + this.sailAngle +
+          "<g transform='translate(0, " + (sailOffset * this.scale) + ") rotate(" + this.sailAngle +
           ")'><path d='" + this.sailPath + "'/>" +
         "</g></g></svg>";
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
