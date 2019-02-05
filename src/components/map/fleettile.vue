@@ -55,10 +55,10 @@ export default {
                                                                  this.$store.state.race.fleet.fleetTime);
           let twa = (typeof wind !== 'undefined') ?
                       cogTwdToTwa(boat.cog, wind.twd) : 0;
-          /* TWA=0 heuristics for <0.05deg to handle wx & fleet time
+          /* TWA=0 heuristics for <0.5deg to handle wx & fleet time
            * mismatch and numeric precision challenges
            */
-          if (Math.abs(twa) < degToRad(0.05)) {
+          if (Math.abs(twa) < degToRad(0.5)) {
             twa = 0;
           }
           const sangle = sailAngle(twa);
