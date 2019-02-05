@@ -9,6 +9,7 @@
 <script>
 import { LGridLayer } from 'vue2-leaflet';
 import FleetTile from './fleettile.vue';
+import { boatPath } from '../../lib/boatshape.js';
 
 export default {
   name: 'FleetMap',
@@ -25,7 +26,7 @@ export default {
   },
   data () {
     return {
-      boatPath: new Path2D('M -3 11 C -5 7, -6 -1, 0 -13 C 6 -1, 5 7, 3,11 Z'),
+      boatPath: new Path2D(boatPath(1)),
       FleetTile: FleetTile,
     }
   },

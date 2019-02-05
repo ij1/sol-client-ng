@@ -12,6 +12,7 @@
 import L from 'leaflet'
 import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet'
 import { radToDeg } from '../../lib/utils.js';
+import { boatPath, sailPath, sailAngle } from '../../lib/boatshape.js';
 import BoatTrace from './trace.vue';
 
 export default {
@@ -58,24 +59,13 @@ export default {
       return this.iconCenter * 2 + 1;
     },
     boatPath () {
-      return  'M ' + this.pathPos(-3, 11) +
-             ' C ' + this.pathPos(-5, 7) + ',' + this.pathPos(-6, -1) + ',' + this.pathPos(0, -13) +
-             ' C ' + this.pathPos(6, -1) + ',' + this.pathPos(5, 7) + ',' + this.pathPos(3, 11) +
-             ' Z';
+      return boatPath(this.scale);
     },
     sailAngle () {
-      /* FIXME:
-       * perhaps some AWA based calculation could result in a better angle
-       * maxvmg angle should be consider especially for headwind
-       */
-      return this.boatTwa / (180 / 75);
+      return sailAngle(this.twa);
     },
     sailPath () {
-      const curvePar = Math.sign(this.sailAngle) * -3 * this.scale;
-      return 'M 0 0 ' +
-             'C ' + curvePar + ' ' + (5 * this.scale) +
-                    ', ' + curvePar + ' ' + (12 * this.scale) +
-                    ', 0 ' + (17 * this.scale);
+      return sailPath(this.sailAngle, this.scale);
     },
     style () {
       return "fill='none' stroke-opacity='1' stroke-width='" +
@@ -97,11 +87,6 @@ export default {
         iconUrl: iconUrl,
         iconAnchor: [this.iconCenter, this.iconCenter],
       });
-    },
-  },
-  methods: {
-    pathPos(x, y) {
-      return (x * this.scale) + " " + (y * this.scale);
     },
   },
 }
