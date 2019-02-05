@@ -8,21 +8,21 @@
       :center="initialCenter"
       @update:center="updateCenter"
       @update:zoom="updateZoom"
-      :worldCopyJump="true"
+      :world-copy-jump="true"
       :options="{attributionControl: false}"
     >
       <map-tiles v-if = "this.map !== null" :map = "this.map"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lngOffset = "-720"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lngOffset = "-360"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lngOffset = "360"/>
-      <wind-info v-if = "this.map !== null" :hoverLatLng = "this.hoverLatLng"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-720"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-360"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "360"/>
+      <wind-info v-if = "this.map !== null" :hover-lat-lng = "this.hoverLatLng"/>
       <canvas-overlay v-if = "this.map !== null" :map = "this.map"/>
       <fleet-traces v-if = "this.map !== null"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
-      <fleet-hover v-if = "this.map !== null" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
+      <fleet-hover v-if = "this.map !== null" :map = "this.map" :hover-lat-lng = "this.hoverLatLng"/>
       <player-boat v-if = "this.map !== null && this.boatPosition !== null" :course = "this.boatCourse" :twa = "this.boatTwa"/>
-      <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map" :hoverLatLng = "this.hoverLatLng"/>
+      <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map" :hover-lat-lng = "this.hoverLatLng"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
       <center-boat-button v-if = "this.map !== null"/>
       <steer-button v-if = "this.map !== null"/>

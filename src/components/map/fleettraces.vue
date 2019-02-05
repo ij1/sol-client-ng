@@ -12,35 +12,35 @@
     <boat-trace
       v-if = "this.showLeaderTrace"
       :id = "this.leaderId"
-      :lngOffset = "-360"
+      :lng-offset = "-360"
     />
     <boat-trace
       v-for = "trace in this.otherTraces"
       :key = "'w' + trace"
       :id = "trace"
-      :lngOffset = "-360"
+      :lng-offset = "-360"
     />
     <boat-trace
       v-if = "this.showLeaderTrace"
       :id = "this.leaderId"
-      :lngOffset = "-720"
+      :lng-offset = "-720"
     />
     <boat-trace
       v-for = "trace in this.otherTraces"
       :key = "'ww' + trace"
       :id = "trace"
-      :lngOffset = "-720"
+      :lng-offset = "-720"
     />
     <boat-trace
       v-if = "this.showLeaderTrace"
       :id = "this.leaderId"
-      :lngOffset = "360"
+      :lng-offset = "360"
     />
     <boat-trace
       v-for = "trace in this.otherTraces"
       :key = "'e' + trace"
       :id = "trace"
-      :lngOffset = "360"
+      :lng-offset = "360"
     />
   </l-layer-group>
 </template>

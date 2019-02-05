@@ -9,11 +9,11 @@
     <l-circle-marker
       v-for="(waypoint, index) in this.raceRoute"
       :key="index"
-      :latLng="waypoint.latLng"
-      :fillColor="wpColor"
+      :lat-lng="waypoint.latLng"
+      :fill-color="wpColor"
       :radius="waypoint.radius"
       :color="wpColor"
-      :fillOpacity="1"
+      :fill-opacity="1"
     >
       <l-tooltip
         :options="wpTooltipOptions"
@@ -26,10 +26,10 @@
       v-for="(endpoint, index) in this.finishLine"
       :key="'f' + index"
       :lat-lng="endpoint"
-      :fillColor="wpColor"
+      :fill-color="wpColor"
       :radius="finishPointRadius"
       :color="wpColor"
-      :fillOpacity="1"
+      :fill-opacity="1"
     />
     <l-polyline
       :lat-lngs="finishLine"
@@ -52,7 +52,7 @@
       :fill="false"
       :color="wpColor"
       :weight="1"
-      :smoothFactor="0.1"
+      :smooth-factor="0.1"
     />
   </l-layer-group>
 </template>

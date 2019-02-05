@@ -1,7 +1,7 @@
 <template>
   <l-layer-group v-if = "this.$store.state.boat.id !== null">
     <l-marker
-      :latLng="this.$store.state.boat.position"
+      :lat-lng="this.$store.state.boat.position"
       :icon="myBoatIcon"
     />
     <boat-trace :id = "this.$store.state.boat.id"/>

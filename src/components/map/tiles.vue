@@ -3,7 +3,7 @@
     <map-tile
       v-for = "tile in tileDrawList"
       :key = "tile.key"
-      :tileKeyIn = "tile.key"
+      :tile-key-in = "tile.key"
       :id = "tile.id"
     />
   </div>
