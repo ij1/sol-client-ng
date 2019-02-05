@@ -63,16 +63,23 @@ export default {
           }
           const sangle = sailAngle(twa);
 
-          ctx.rotate(boat.cog);
-          ctx.strokeStyle = color;
-          ctx.stroke(boatPath);
+          /* Practice marks */
+          if ((boat.ranking === 9999) && boat.name.startsWith('Practice_Mark')) {
+            ctx.arc(0, 0, 2, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgb(255, 0, 255)';
+            ctx.fill();
+          } else {
+            ctx.rotate(boat.cog);
+            ctx.strokeStyle = color;
+            ctx.stroke(boatPath);
 
-          ctx.translate(0, sailOffset);
-          ctx.rotate(sangle);
-          ctx.stroke(new Path2D(sailPath(sangle, 1)));
-          ctx.rotate(-sangle);
-          ctx.translate(0, -sailOffset);
-          ctx.rotate(-boat.cog);
+            ctx.translate(0, sailOffset);
+            ctx.rotate(sangle);
+            ctx.stroke(new Path2D(sailPath(sangle, 1)));
+            ctx.rotate(-sangle);
+            ctx.translate(0, -sailOffset);
+            ctx.rotate(-boat.cog);
+          }
         } else {
           ctx.arc(0, 0, 2, 0, Math.PI * 2);
           ctx.fillStyle = color;
