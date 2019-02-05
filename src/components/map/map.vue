@@ -105,8 +105,8 @@ export default {
   },
   beforeDestroy () {
     // FIXME: is this racy with nextTick setups? Can we call with bogus values?
-    this.map.off('mousemove', this.setHoverPos);
-    this.map.off('mousemout', this.clearHoverPos);
+    this.map.off('mousemove', this.setHoverPos, this);
+    this.map.off('mousemout', this.clearHoverPos, this);
   },
 
   methods: {

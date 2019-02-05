@@ -108,11 +108,11 @@ export default {
     }
     this.ready = false;
 
-    this.map.off('resize', this.onResize);
-    this.map.off('zoomend', this.onZoom);
-    this.map.off('zoom', this.onZoom);
-    this.map.off('moveend', this.onMove);
-    this.map.off('move', this.onMove);
+    this.map.off('resize', this.onResize, this);
+    this.map.off('zoomend', this.onZoom, this);
+    this.map.off('zoom', this.onZoom, this);
+    this.map.off('moveend', this.onMove, this);
+    this.map.off('move', this.onMove, this);
 
     this.map.getContainer().removeChild(this.canvas);
     this.canvas = null;

@@ -176,9 +176,9 @@ export default {
       L.Util.cancelAnimFrame(this.animFrame);
     }
     this.map.removeLayer(this.layer);
-    this.map.off('move', this.onMove);
-    this.map.off('moveend', this.onMove);
-    this.map.off('zoomend', this.updateZoom);
+    this.map.off('move', this.onMove, this);
+    this.map.off('moveend', this.onMove, this);
+    this.map.off('zoomend', this.updateZoom, this);
     this.removeContainer();
     this.layer = null;
   },
