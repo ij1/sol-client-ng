@@ -43,7 +43,7 @@ export default {
       let prev = L.point(0, 0);
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
-        const center = map.project(L.latLng(i.lat, i.lng), this.coords.z).subtract(L.point(sw.x, ne.y));
+        const center = map.project(boat.latLng, this.coords.z).subtract(L.point(sw.x, ne.y));
         const color = this.boatColor(boat);
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
