@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import L from 'leaflet';
+import { degToRad } from '../../lib/utils.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
 import { sailPath, sailAngle, sailOffset } from '../../lib/boatshape.js';
 
@@ -54,7 +55,12 @@ export default {
                                                                  this.$store.state.race.fleet.fleetTime);
           let twa = (typeof wind !== 'undefined') ?
                       cogTwdToTwa(boat.cog, wind.twd) : 0;
-          // ADDME: TWA=0 heuristics
+          /* TWA=0 heuristics for <0.05deg to handle wx & fleet time
+           * mismatch and numeric precision challenges
+           */
+          if (Math.abs(twa) < degToRad(0.05)) {
+            twa = 0;
+          }
           const sangle = sailAngle(twa);
 
           ctx.rotate(boat.cog);
