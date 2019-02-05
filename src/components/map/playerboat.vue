@@ -62,7 +62,7 @@ export default {
       return boatPath(this.scale);
     },
     sailAngle () {
-      return sailAngle(this.twa);
+      return sailAngle(this.boatTwa);
     },
     sailPath () {
       return sailPath(this.sailAngle, this.scale);

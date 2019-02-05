@@ -1,5 +1,3 @@
-import { degToRad } from './utils.js';
-
 function boatPathPos(x, y, scale) {
   return (x * scale) + " " + (y * scale);
 }
@@ -24,5 +22,5 @@ export function sailPath (sailAngle, scale) {
  * maxvmg angle should be consider especially for headwind
  */
 export function sailAngle (twa) {
-  return twa / degToRad(180 / 75);
+  return twa / (180 / 75);
 }
