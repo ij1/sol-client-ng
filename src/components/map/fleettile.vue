@@ -69,8 +69,7 @@ export default {
 
           ctx.translate(0, sailOffset);
           ctx.rotate(sangle);
-          const p = new Path2D(sailPath(sangle, 1));
-          ctx.stroke(p);
+          ctx.stroke(new Path2D(sailPath(sangle, 1)));
           ctx.rotate(-sangle);
           ctx.translate(0, -sailOffset);
           ctx.rotate(-boat.cog);
