@@ -1,6 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import L from 'leaflet';
+import { cogTwdToTwa } from '../../lib/nav.js';
+import { sailPath, sailAngle, sailOffset } from '../../lib/boatshape.js';
 
 export default {
   name: 'FleetTile',
@@ -48,9 +50,23 @@ export default {
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
         if (boat.dtg > 0) {
+          const wind = this.$store.getters['weather/latLngWind'](boat.latLng,
+                                                                 this.$store.state.race.fleet.fleetTime);
+          let twa = (typeof wind !== 'undefined') ?
+                      cogTwdToTwa(boat.cog, wind.twd) : 0;
+          // ADDME: TWA=0 heuristics
+          const sangle = sailAngle(twa);
+
           ctx.rotate(boat.cog);
           ctx.strokeStyle = color;
           ctx.stroke(boatPath);
+
+          ctx.translate(0, sailOffset);
+          ctx.rotate(sangle);
+          const p = new Path2D(sailPath(sangle, 1));
+          ctx.stroke(p);
+          ctx.rotate(-sangle);
+          ctx.translate(0, -sailOffset);
           ctx.rotate(-boat.cog);
         } else {
           ctx.arc(0, 0, 2, 0, Math.PI * 2);
