@@ -36,7 +36,15 @@ export default {
       this.$parent.zoom;
       this.$parent.size;
 
-      return this.$parent.map.getPixelBounds().getTopLeft();
+      return this.$parent.map.getPixelBounds().getTopLeft().round();
+    },
+    boatOrigo () {
+      const z = this.$parent.zoom;
+
+      if (this.$store.state.boat.position === null) {
+        return this.viewOrigo;
+      }
+      return this.$parent.map.project(this.$store.state.boat.position, z).round();
     },
     currentSteering () {
       return this.$store.state.boat.currentSteering;
@@ -67,9 +75,8 @@ export default {
       }
       const z = this.$parent.zoom;
 
-      let tmp = this.$parent.map.project(this.cog.firstLatLng, z).round();
-      p.moveTo(tmp.x, tmp.y);
-      tmp = this.$parent.map.project(this.cog.latLngs[this.cog.latLngs.length - 1], z).round();
+      p.moveTo(0, 0);
+      let tmp = this.$parent.map.project(this.cog.latLngs[this.cog.latLngs.length - 1], z).round().subtract(this.boatOrigo);
       p.lineTo(tmp.x, tmp.y);
 
       return p;
@@ -108,15 +115,15 @@ export default {
       const z = this.$parent.zoom;
 
       // ADDME: add mixing to do all world copies and loop then here
-      ctx.translate(Math.round(-this.viewOrigo.x),
-                    Math.round(-this.viewOrigo.y));
+      ctx.translate(this.boatOrigo.x - this.viewOrigo.x,
+                    this.boatOrigo.y - this.viewOrigo.y);
       ctx.strokeStyle = this.predictorColor('cc');
       ctx.stroke(this.cogPath);
       ctx.strokeStyle = this.predictorColor('twa');
       ctx.stroke(this.twaPath);
 
       for (let pt of this.hoursMarkers) {
-        let tmp = this.$parent.map.project(pt.latLng, z).round();
+        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.strokeStyle = this.predictorColor(pt.type);
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
@@ -124,7 +131,7 @@ export default {
       }
 
       for (let pt of this.quarterMarkers) {
-        let tmp = this.$parent.map.project(pt.latLng, z).round();
+        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.fillStyle = this.predictorColor(pt.type);
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
@@ -137,12 +144,11 @@ export default {
       if (firstPt === null) {
         return p;
       }
-      const z = this.$parent.zoom;
 
-      let tmp = this.$parent.map.project(firstPt, z).round();
-      p.moveTo(tmp.x, tmp.y);
+      const z = this.$parent.zoom;
+      p.moveTo(0, 0);
       for (let pt of otherPts) {
-        tmp = this.$parent.map.project(pt, z).round();
+        let tmp = this.$parent.map.project(pt, z).round().subtract(this.boatOrigo);
         p.lineTo(tmp.x, tmp.y);
       }
       return p;
