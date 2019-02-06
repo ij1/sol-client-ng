@@ -260,7 +260,7 @@ export default {
       if ((this.type === 'twa') || (typeof value === 'undefined')) {
         return;
       }
-      this.twa = ((value[0] !== '-') ? '+' : '') + value;
+      this.twa = ((value.charAt(0) !== '-') ? '+' : '') + value;
     }
   },
 
