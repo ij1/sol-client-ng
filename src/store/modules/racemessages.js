@@ -22,7 +22,7 @@ export default {
     },
     updateExpected(state, expectedId) {
       if (expectedId > state.expectedId) {
-        if (state.expectedId == state.lastId) {
+        if (state.expectedId === state.lastId) {
           this.dispatch('race/messages/fetch');
         }
       }
