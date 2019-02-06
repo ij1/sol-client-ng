@@ -36,7 +36,7 @@ export default {
         url: "/webclient/race_messages.xml",
         params: {
           token: rootState.auth.token,
-          request_msg_id: state.lastid + 1,
+          request_msg_id: state.lastId + 1,
         },
         useArrays: false,
         dataField: 'racemessages',
