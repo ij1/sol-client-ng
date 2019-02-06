@@ -5,8 +5,8 @@ export default {
 
   state: {
     racemsgs: [],
-    lastId: 0,
-    expectedId: 0,
+    lastId: -1,
+    expectedId: -1,
   },
 
   mutations: {
@@ -36,7 +36,7 @@ export default {
         url: "/webclient/race_messages.xml",
         params: {
           token: rootState.auth.token,
-          request_msg_id: state.lastid,
+          request_msg_id: state.lastid + 1,
         },
         useArrays: false,
         dataField: 'racemessages',
