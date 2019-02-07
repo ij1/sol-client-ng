@@ -209,7 +209,7 @@ export default {
     /* WARNING side-effect: translates context to polar origo */
     drawGrid (ctx, labelctx) {
       ctx.strokeStyle = '#aaa';
-      ctx.strokeWidth = 1;
+      ctx.lineWidth = 1;
       labelctx.strokeStyle = '#000';
       labelctx.font = '10px sans-serif';
 
