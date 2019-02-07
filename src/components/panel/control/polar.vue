@@ -7,6 +7,7 @@
       <canvas id="labels" ref="labels"/>
       <canvas id="polarbg" ref="polarbg"/>
       <canvas id="polarfg" ref="polarfg"/>
+      <canvas id="polaroverlay" ref="polaroverlay"/>
 
       <div id="wind-key">
         <div
@@ -111,6 +112,14 @@ export default {
 
       return Date.now();
     },
+    overlayNeedRedraw () {
+      if (!this.polarLoaded) {
+        return -1;
+      }
+      this.$store.state.boat.steering.visualSteering.twa;
+
+      return Date.now();
+    },
     ...mapGetters({
       boatTime: 'boat/time',
     }),
@@ -146,6 +155,8 @@ export default {
 
       this.$refs.polarfg.width = this.gridSize.x;
       this.$refs.polarfg.height = this.gridSize.y;
+      this.$refs.polaroverlay.width = this.gridSize.x;
+      this.$refs.polaroverlay.height = this.gridSize.y;
 
       this.drawFg();
     },
@@ -169,6 +180,30 @@ export default {
       ctx.arc(polarPos.x, polarPos.y, 2, 0, 2 * Math.PI);
       ctx.stroke();
 
+      ctx.restore();
+
+      this.drawOverlay();
+    },
+    drawOverlay () {
+      if (!this.polarLoaded) {
+        return;
+      }
+      let twa = this.$store.state.boat.steering.visualSteering.twa;
+      let ctx = this.$refs.polaroverlay.getContext('2d');
+      ctx.clearRect(0, 0, this.$refs.polaroverlay.width, this.$refs.polaroverlay.height);
+      if (twa === null) {
+        return;
+      }
+      twa = Math.abs(twa);
+      ctx.save();
+      ctx.translate(0, this.gridOrigoY);
+      const polarPos = this.polarCoords(twa, this.gridMaxKnots);
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(polarPos.x, polarPos.y);
+      ctx.stroke();
       ctx.restore();
     },
     /* WARNING side-effect: translates context to polar origo */
@@ -239,6 +274,9 @@ export default {
     },
   },
   watch: {
+    overlayNeedRedraw () {
+      this.drawOverlay();
+    },
     fgNeedRedraw () {
       this.drawFg();
     },
@@ -266,7 +304,7 @@ export default {
 #polar, #labels {
   position: relative;
 }
-#polarbg, #polarfg {
+#polarbg, #polarfg, #polaroverlay {
   position: absolute;
   top: 20px;
   left: 20px;

@@ -135,5 +135,13 @@ export default {
   beforeDestroy () {
     this.map.off('click', this.onClick, this);
   },
+  watch: {
+    twa (val) {
+      if (this.hoverLatLng === null) {
+        val = null;
+      }
+      this.$store.commit('boat/steering/visualSteeringSetTwa', val);
+    }
+  },
 }
 </script>
