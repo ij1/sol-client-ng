@@ -163,7 +163,7 @@ export default {
 
       /* Try to avoid gybe with TWA=+/-180.0 */
       if (Math.abs(diff) > 179.999) {
-        if (Math.sign(diff) != Math.sign(this.$store.state.boat.instruments.twa.value)) {
+        if (Math.sign(diff) !== Math.sign(this.$store.state.boat.instruments.twa.value)) {
           diff = -diff;
         }
       }

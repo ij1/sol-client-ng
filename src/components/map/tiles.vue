@@ -133,7 +133,7 @@ export default {
     },
 
     updateZoom() {
-      if (this.zoom != this.map.getZoom()) {
+      if (this.zoom !== this.map.getZoom()) {
         this.zoom = this.map.getZoom();
       }
       if (this.animFrame === null) {
