@@ -7,8 +7,13 @@
       <canvas id="labels" ref="labels"/>
       <canvas id="polarbg" ref="polarbg"/>
       <canvas id="polarfg" ref="polarfg"/>
-      <canvas id="polaroverlay" ref="polaroverlay"/>
-
+      />
+      <canvas
+        id = "polaroverlay"
+        ref = "polaroverlay"
+        @mousemove = "onMouseMove"
+        @mouseout = "onMouseOut"
+      />
       <div id="wind-key">
         <div
           v-for = "wind in this.$store.state.boat.polar.windKeys"
@@ -22,13 +27,19 @@
         </div>
       </div>
     </div>
+    <div v-if = "this.hover.sog !== null">
+      SOG: {{ this.hover.sog.toFixed(2) }}
+      VMG: {{ this.hover.vmg.toFixed(2) }}
+      TWA: {{ this.hover.twa.toFixed(1) }}
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { degToRad } from '../../../lib/utils.js';
+import { degToRad, radToDeg } from '../../../lib/utils.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
+import { atan2Bearing } from '../../../lib/nav.js';
 
 export default {
   name: 'ControlSteeringPolar',
@@ -43,6 +54,12 @@ export default {
        * use vue-resize?
        */
       maxWidth: 40,
+
+      hover: {
+        sog: null,
+        vmg: null,
+        twa: null,
+      },
     }
   },
   computed: {
@@ -272,6 +289,20 @@ export default {
     windToColor(knots) {
       return windToColor(knots);
     },
+    onMouseMove (ev) {
+      // FIXME: this might be problematic for some browsers we want to support
+      const rect = this.$refs.polaroverlay.getBoundingClientRect();
+      const y = Math.floor((ev.clientY - rect.top) / (rect.bottom - rect.top) * this.gridSize.y) - this.gridOrigoY;
+      const x = Math.floor((ev.clientX - rect.left) / (rect.right - rect.left) * this.gridSize.x);
+      this.hover.sog = Math.hypot(x, y) / this.gridScale;
+      this.hover.vmg = -y / this.gridScale;
+      this.hover.twa = radToDeg(atan2Bearing(x, -y));
+    },
+    onMouseOut () {
+      this.hover.sog = null;
+      this.hover.vmg = null;
+      this.hover.twa = null;
+    }
   },
   watch: {
     overlayNeedRedraw () {
