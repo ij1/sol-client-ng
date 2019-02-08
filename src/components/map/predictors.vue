@@ -98,6 +98,7 @@ export default {
     needsRedraw() {
       this.cog;
       this.twa;
+      this.wxUpdated;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
@@ -106,6 +107,7 @@ export default {
     }),
     ...mapState({
       wxLoaded: state => state.weather.loaded,
+      wxUpdated: state => state.weather.data.updated,
     }),
   },
   methods: {
