@@ -7,7 +7,6 @@
       <canvas id="labels" ref="labels"/>
       <canvas id="polarbg" ref="polarbg"/>
       <canvas id="polarfg" ref="polarfg"/>
-      />
       <canvas
         id = "polaroverlay"
         ref = "polaroverlay"
