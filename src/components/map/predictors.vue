@@ -173,7 +173,7 @@ export default {
 
       const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
 
-      while (t <= endTime) {
+      while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
         const twa = cogTwdToTwa(cogPred.cog, wind.twd);
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa);
@@ -210,7 +210,7 @@ export default {
 
       const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
 
-      while (t <= endTime) {
+      while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twaPred.twa);
 
