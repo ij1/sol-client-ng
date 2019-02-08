@@ -11,6 +11,7 @@ export default {
       time: 0,
       // ADDME: support 10s for the first 10 minutes
       timeDelta: secToMsec(30),
+      predictorLen: 6,
 
       hourRadius: 3,
       quarterRadius: 2,
@@ -51,14 +52,14 @@ export default {
     },
     hourIndexes () {
       let res = [];
-      for (let i = 0; i <= 6; i++) {
+      for (let i = 0; i <= this.predictorLen; i++) {
         res.push(Number((hToMsec(i) / this.timeDelta).toFixed(0)));
       }
       return res;
     },
     quarterIndexes () {
       let res = [];
-      for (let i = 1; i < 4 * 6; i++) {
+      for (let i = 1; i < 4 * this.predictorLen; i++) {
         if ((i % 4) === 0) {
           continue;
         }
@@ -156,7 +157,7 @@ export default {
 
     cogCalc () {
       let t = this.boatTime;
-      const endTime = t + hToMsec(6);
+      const endTime = t + hToMsec(this.predictorLen);
       let lastLatLng = this.$store.state.boat.position;
 
       let cogPred = {
@@ -193,7 +194,7 @@ export default {
 
     twaCalc () {
       let t = this.boatTime;
-      const endTime = t + hToMsec(6);
+      const endTime = t + hToMsec(this.predictorLen);
       let lastLatLng = this.$store.state.boat.position;
 
       let twaPred = {
