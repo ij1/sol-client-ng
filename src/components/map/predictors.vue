@@ -250,15 +250,18 @@ export default {
       }
       return res;
     },
-  },
-  watch: {
-    // FIXME: update when wx is loaded
-    boatTime () {
+    recalc () {
       if (!this.wxLoaded) {
         return;
       }
       this.cog = this.cogCalc();
       this.twa = this.twaCalc();
+    },
+  },
+  watch: {
+    // FIXME: update when wx is loaded
+    boatTime () {
+      this.recalc();
     },
   },
   render () {
