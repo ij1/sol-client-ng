@@ -1,10 +1,10 @@
 <template>
-  <span class="flag-container">
+  <div class="flag-container">
     <img
       v-if = "this.valid"
       :src="'flags/' + this.flagImage + '.png'"
     />
-  </span>
+  </div>
 </template>
 
 <script>
@@ -81,6 +81,7 @@ export default {
 
 <style>
 .flag-container {
+  display: inline-block;
   width: 16px;
   height: 11px;
 }

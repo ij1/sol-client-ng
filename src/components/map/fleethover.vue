@@ -13,7 +13,7 @@
         :key = "boat.id"
       >
         <div
-          class = "color-floated"
+          class = "color-block"
           :style = "{ 'background-color': boatColor(boat) }"
         />
         <span class = "boat-ranking">{{boat.ranking}}</span>
@@ -128,8 +128,8 @@ export default {
 .fleet-row {
   margin: 1px;
 }
-.color-floated {
-  float: left;
+.color-block {
+  display: inline-block;
   width: 12px;
   min-width: 12px;
   height: 12px;
