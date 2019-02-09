@@ -16,7 +16,7 @@
       <button @click="doRefresh">Refresh</button>
     </div>
     <div id="dc-table">
-      <table>
+      <table cellspacing="0" cellpadding="1px">
         <thead>
           <tr>
             <td>Time</td>

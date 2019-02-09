@@ -12,7 +12,7 @@
        </div>
      </div>
      <div id="leaderboard-table">
-     <table>
+     <table cellspacing="0" cellpadding="1px">
        <thead>
          <th
            v-for = "column in visibleColumnsWithSort"
