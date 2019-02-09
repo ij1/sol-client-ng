@@ -34,7 +34,13 @@
              v-for = "column in visibleColumnsWithSort"
              :key = "column.dataField"
            >
-             {{boat[column.dataField] | prettyPrint(column) }}
+             <country-flag
+               v-if = "column.dataField === 'country'"
+               :country = "boat[column.dataField]"
+             />
+             <span v-else>
+               {{boat[column.dataField] | prettyPrint(column) }}
+             </span>
            </td>
          </tr>
        </tbody>
@@ -46,9 +52,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
+import CountryFlag from '../../countryflag.vue';
 
 export default {
   name: 'Leadeboard',
+  components: {
+    'country-flag': CountryFlag,
+  },
   data () {
     return {
       listname: 'Main Fleet',

@@ -8,14 +8,17 @@
       id = "fleet-info"
     >
       <div
+        class = "fleet-row"
         v-for = "boat in this.hoverBoatList"
         :key = "boat.id"
       >
         <div
           class = "color-floated"
-          :style = "{ background: boatColor(boat) }"
+          :style = "{ 'background-color': boatColor(boat) }"
         />
-        {{boat.ranking}} {{boat.country}} {{ boat.name }}
+        <span class = "boat-ranking">{{boat.ranking}}</span>
+        <country-flag :country = "boat.country"/>
+        <span class = "boat-name">{{ boat.name }}</span>
         <span v-if="multiClassRace">
           ({{ boat.type}})
         </span>
@@ -30,11 +33,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet'
+import CountryFlag from '../countryflag.vue';
 
 export default {
   name: 'FleetHover',
   components: {
     'l-control': LControl,
+    'country-flag': CountryFlag,
   },
   props: {
     map: {
@@ -114,15 +119,22 @@ export default {
 <style scoped>
 #fleet-info-ctrl {
   pointer-events: none;
+  margin: 2px;
 }
 #fleet-info {
   text-align: left;
+  margin: 2px;
+}
+.fleet-row {
+  margin: 1px;
 }
 .color-floated {
   float: left;
   width: 12px;
+  min-width: 12px;
   height: 12px;
-  margin-top: 4px;
-  margin-right: 4px;
+}
+.boat-ranking, .boat-name {
+  margin: 2px;
 }
 </style>
