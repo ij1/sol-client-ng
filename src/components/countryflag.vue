@@ -84,5 +84,6 @@ export default {
   display: inline-block;
   width: 16px;
   height: 11px;
+  overflow: hidden;
 }
 </style>
