@@ -31,6 +31,7 @@
         <label for = "twa" @click = "type = 'twa'">TWA</label>
         <input
           class = "steering-input-box"
+          :style = "{'background-color': this.twaColor}"
           ref = "twa"
           id = "twa"
           @click = "type = 'twa'"
@@ -114,6 +115,17 @@ export default {
     canSend () {
       return (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
         !this.$store.state.boat.steering.sending;
+    },
+    twaColor () {
+      if (!this.isTwaValid) {
+        return 'unset';
+      } else if (this.twaRad === 0) {
+        return 'unset';
+      } else if (this.twaRad < 0) {
+        return 'red';
+      } else {
+        return '#7fff00';
+      }
     },
 
     ccTwaDelta () {
