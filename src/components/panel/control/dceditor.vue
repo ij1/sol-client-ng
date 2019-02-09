@@ -36,6 +36,7 @@
       <div>
         <label for="value" class="dc-editor-label">Value</label>
         <input
+          :style = "{'background-color': this.twaColor}"
           id = "value"
           v-model.trim = "value"
           size = 8
@@ -126,6 +127,21 @@ export default {
         return isTwaValid(this.value);
       } else {
         return false;
+      }
+    },
+    twaColor () {
+      if (this.type !== 'twa') {
+        return 'unset';
+      } else if (!isTwaValid(this.value)) {
+        return 'unset';
+      }
+      const num = Number(this.value);
+      if (num === 0) {
+        return 'unset';
+      } else if (num < 0) {
+        return 'red';
+      } else {
+        return '#7fff00';
       }
     },
     ...mapGetters({
