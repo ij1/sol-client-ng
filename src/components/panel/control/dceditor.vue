@@ -46,7 +46,7 @@
       <div>
         <button
           type = "cancel"
-          @click = "onCancel"
+          @click.prevent = "onCancel"
           @keydown.enter.prevent = "onCancel"
         >
           Cancel
