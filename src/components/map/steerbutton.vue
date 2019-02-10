@@ -2,7 +2,7 @@
   <l-control
     :position = "'topleft'"
   >
-    <div ref = "steer-button" @click = "onClick">
+    <div id = "steer-button" ref = "steer-button" @click.prevent = "onClick">
       Steer
     </div>
   </l-control>
@@ -48,3 +48,10 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#steer-button {
+  background-color: rgb(240, 240, 240, 0.8);
+  border: 1px;
+}
+</style>
