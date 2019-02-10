@@ -264,7 +264,7 @@ export default {
     },
 
     delayTime () {
-      if (!this.delayOn && !this.isDelayValid) {
+      if (!this.delayOn || !this.isDelayValid) {
         return null;
       }
 
