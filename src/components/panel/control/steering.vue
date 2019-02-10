@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
 import Polar from './polar.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
@@ -82,17 +83,6 @@ export default {
   components: {
     'control-steering-polar': Polar,
   },
-  data () {
-    return {
-      type: 'cc',
-      cc: '',
-      twa: '',
-      delayOn: false,
-      delay: '',
-      prevCopyDecimals: 2,
-    }
-  },
-
 
   /* The computed properties are tricky in this component! As COG/TWA fields
    * have cross depency based on the radio button, the reactivity might cause
@@ -112,6 +102,50 @@ export default {
    * done until new input.
    */
   computed: {
+    type: {
+      get () {
+        return this.plottedSteering.type;
+      },
+      set (value) {
+        this.$store.commit('boat/steering/setType', value);
+      },
+    },
+    cc: {
+      get () {
+        return this.plottedSteering.cc;
+      },
+      set (value) {
+        this.$store.commit('boat/steering/setCc', value);
+      },
+    },
+    twa: {
+      get () {
+        return this.plottedSteering.twa;
+      },
+      set (value) {
+        this.$store.commit('boat/steering/setTwa', value);
+      },
+    },
+    delayOn: {
+      get () {
+        return this.plottedSteering.delayOn;
+      },
+      set (value) {
+        this.$store.commit('boat/steering/setDelayOn', value);
+      },
+    },
+    delay: {
+      get () {
+        return this.plottedSteering.delay;
+      },
+      set (value) {
+        this.$store.commit('boat/steering/setDelay', value);
+      },
+    },
+    prevCopyDecimals () {
+      return this.plottedSteering.prevCopyDecimals;
+    },
+
     canSend () {
       return (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
         !this.$store.state.boat.steering.sending;
@@ -202,8 +236,7 @@ export default {
      * WARNING: This has a side-effect, it calls setPrevCopyDecimals to
      * update this.prevCopyDecimals, which is only used internally by this
      * function in case the current value is not valid (e.g., user typing
-     * one number too many or something along those lines). The store call
-     * is a HACK to avoid Vue.js detection the side-effect :-).
+     * one number too many or something along those lines).
      */
     copyDecimals () {
        let fromVal;
@@ -227,8 +260,7 @@ export default {
        if ((res !== null) && ((res[0].length - 1) === 3)) {
          decimals = 3;
        }
-       /* HACK to silence side-effects */
-       this.setPrevCopyDecimals(decimals);
+       this.$store.commit("boat/steering/setPrevCopyDecimals", decimals);
        return decimals;
     },
 
@@ -258,7 +290,10 @@ export default {
         }
       }
       return 'Set course';
-    }
+    },
+    ...mapState({
+      plottedSteering: state => state.boat.steering.plottedSteering,
+    }),
   },
 
   watch: {
@@ -303,10 +338,6 @@ export default {
       });
     },
 
-    /* HACK to avoid side-effect detector for computed properties */
-    setPrevCopyDecimals(value) {
-      this.prevCopyDecimals = value;
-    },
     onSetCourse (e) {
       this.cc = radToDeg(e.course).toFixed(3);
       this.type = 'cc';

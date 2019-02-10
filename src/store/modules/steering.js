@@ -6,6 +6,16 @@ export default {
   namespaced: true,
 
   state: {
+    /* Steering UI related state */
+    plottedSteering: {
+      type: 'cc',
+      cc: '',
+      twa: '',
+      delayOn: false,
+      delay: '',
+      prevCopyDecimals: 2,
+    },
+
     dcs: {
       list: [],
       fetching: false,
@@ -20,6 +30,33 @@ export default {
   },
 
   mutations: {
+    setType(state, type) {
+      state.plottedSteering.type = type;
+    },
+    setCc(state, cc) {
+      state.plottedSteering.cc = cc;
+    },
+    setTwa(state, twa) {
+      state.plottedSteering.twa = twa;
+    },
+    setSteering(state, cmd) {
+      state.plottedSteering.type = cmd.type;
+      if (cmd.type === 'cc') {
+        state.plottedSteering.cc = cmd.value;
+      } else {
+        state.plottedSteering.twa = cmd.value;
+      }
+    },
+    setDelayOn(state, delayOn) {
+      state.plottedSteering.delayOn = delayOn;
+    },
+    setDelay(state, delay) {
+      state.plottedSteering.delay = delay;
+    },
+    setPrevCopyDecimals(state, prevCopyDecimals) {
+      state.plottedSteering.prevCopyDecimals = prevCopyDecimals;
+    },
+
     updateDCs (state, dcList) {
       state.dcs.list = orderBy(dcList, 'time', 'asc')
     },
