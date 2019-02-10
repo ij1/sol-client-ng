@@ -10,9 +10,7 @@
     </div>
     <div>
       <div v-if="activeTab === 0" class="control-panel-content">
-        <keep-alive>
-          <control-steering/>
-        </keep-alive>
+        <control-steering/>
       </div>
       <div v-if="activeTab === 1" class="control-panel-content">
         <keep-alive>
