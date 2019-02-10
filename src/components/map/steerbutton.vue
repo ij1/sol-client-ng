@@ -36,6 +36,8 @@ export default {
              return;
           }
           showPolar = true;
+        } else {
+          this.$store.commit('ui/setActiveTab', 0);
         }
         this.$store.commit('boat/steering/visualSteering', showPolar);
       }
