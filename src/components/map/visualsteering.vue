@@ -36,7 +36,6 @@
 <script>
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
-import { EventBus } from '../../lib/event-bus.js';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { speedTowardsBearing, cogTwdToTwa, atan2Bearing } from '../../lib/nav.js';
 import PlayerBoat from './playerboat';
@@ -109,8 +108,9 @@ export default {
       if (res.dx === 0 && res.dy === 0) {
         return;
       }
-      EventBus.$emit('set-course', {
-        course: res.bearing,
+      this.$store.commit('boat/steering/setSteering', {
+        type: 'cc',
+        value: radToDeg(res.bearing).toFixed(3),
       });
       this.map.off('click', this.onClick, this);
       this.$store.commit('boat/steering/visualSteeringOff');

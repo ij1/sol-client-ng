@@ -69,7 +69,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import { EventBus } from '../../../lib/event-bus.js';
 import Polar from './polar.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { isCcValid, isTwaValid } from '../../../lib/nav.js';
@@ -344,10 +343,11 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('set-course', this.onSetCourse);
-  },
-  beforeDestroy () {
-    EventBus.$off('set-course', this.onSetCourse);
+    if (this.type === 'cc') {
+      this.$refs.cc.focus();
+    } else {
+      this.$refs.twa.focus();
+    }
   },
 }
 </script>
