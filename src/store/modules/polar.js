@@ -42,13 +42,20 @@ export default {
   },
 
   getters: {
-    getSpeed: (state) => (twsms, twa) => {
+    maxTws: (state) => {
+      return state.twsval[state.twsval.length - 1];
+    },
+    getSpeed: (state, getters) => (twsms, twa) => {
       twa = Math.abs(twa);
 
       let twsidx = bsearchLeft(state.twsval, twsms);
       let twaidx = bsearchLeft(state.twaval, twa);
       if (twsidx > 0) {
         twsidx--;
+        /* Wind beyond the max tws defined by the polar? */
+        if (twsms > getters.maxTws) {
+          twsms = getters.maxTws;
+        }
       }
       if (twaidx > 0) {
         twaidx--;
