@@ -52,10 +52,15 @@ export default {
     'control-chats': ControlChats,
     'control-race-messages': ControlRaceMessages,
   },
-  data () {
-    return {
-      activeTab: 0,
-    }
+  computed: {
+    activeTab: {
+      get () {
+        return this.$store.state.ui.activeTab;
+      },
+      set (value) {
+        this.$store.commit('ui/setActiveTab', value);
+      }
+    },
   },
 }
 </script>
