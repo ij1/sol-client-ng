@@ -15,6 +15,8 @@ export default {
 
       hourRadius: 3,
       quarterRadius: 2,
+      plottedDelayRadius: 3,
+      otherDelayRadius: 2,
 
       cog: {
         time: 0,
@@ -94,11 +96,23 @@ export default {
     quarterMarkers () {
       return this.getMarkers(this.quarterIndexes);
     },
+    predictorMarkers () {
+      const time = this.plottedDcDelay;
+      if ((time === null) ||
+          (time > this.predictorLen)) {
+        return [];
+      } else {
+        const idx = Number((hToMsec(time) / this.timeDelta).toFixed(0));
+        return this.getMarkers([idx]);
+      }
+    },
 
     needsRedraw() {
       this.cog;
       this.twa;
       this.wxUpdated;
+      this.plottedDcDelay;
+
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
@@ -108,6 +122,7 @@ export default {
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       wxUpdated: state => state.weather.data.updated,
+      plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
     }),
   },
   methods: {
@@ -138,6 +153,15 @@ export default {
         ctx.fillStyle = this.predictorColor(pt.type);
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
+        ctx.fill();
+      }
+      for (let pt of this.predictorMarkers) {
+        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+        ctx.fillStyle = 'orange';
+        ctx.beginPath();
+        const radius = (this.currentSteering === pt.type) ?
+                       this.plottedDelayRadius : this.otherDelayRadius;
+        ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
         ctx.fill();
       }
     },
