@@ -18,6 +18,7 @@
         />
         <span class = "boat-ranking">{{boat.ranking}}</span>
         <country-flag :country = "boat.country"/>
+        <syc-flag :syc = "boat.syc"/>
         <span class = "boat-name">{{ boat.name }}</span>
         <span v-if="multiClassRace">
           ({{ boat.type}})
@@ -34,12 +35,14 @@
 import { mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet'
 import CountryFlag from '../countryflag.vue';
+import SycFlag from '../sycflag.vue';
 
 export default {
   name: 'FleetHover',
   components: {
     'l-control': LControl,
     'country-flag': CountryFlag,
+    'syc-flag': SycFlag,
   },
   props: {
     map: {
@@ -124,6 +127,7 @@ export default {
 #fleet-info {
   text-align: left;
   margin: 2px;
+  font-size: 10px;
 }
 .fleet-row {
   margin: 1px;

@@ -38,6 +38,10 @@
                v-if = "column.dataField === 'country'"
                :country = "boat[column.dataField]"
              />
+             <syc-flag
+               v-else-if = "column.dataField === 'syc'"
+               :syc = "boat[column.dataField]"
+             />
              <span v-else>
                {{boat[column.dataField] | prettyPrint(column) }}
              </span>
@@ -53,11 +57,13 @@
 import { mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
 import CountryFlag from '../../countryflag.vue';
+import SycFlag from '../../sycflag.vue';
 
 export default {
   name: 'Leadeboard',
   components: {
     'country-flag': CountryFlag,
+    'syc-flag': SycFlag,
   },
   data () {
     return {
