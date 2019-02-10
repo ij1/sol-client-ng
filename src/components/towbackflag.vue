@@ -20,17 +20,13 @@ export default {
     'l-control': LControl,
   },
   computed: {
-    isTowbackPeriod () {
-      return (this.towBackPeriod.start <= this.boatTime) &&
-             (this.boatTime < this.towBackPeriod.end);
-    },
     ...mapState({
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.start_time,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
-      towBackPeriod: 'race/towBackPeriod',
+      isTowbackPeriod: 'race/isTowbackPeriod',
     }),
   },
 }

@@ -101,7 +101,12 @@ export default {
         start: state.raceStartTime - hToMsec(1),
         end: state.raceStartTime,
       };
-    }
+    },
+    isTowbackPeriod: (state, getters, rootGetters) => {
+      const boatTime = rootGetters['boat/time'];
+      return (getters.towBackPeriod.start <= boatTime) &&
+             (boatTime < getters.towBackPeriod.end);
+    },
   },
 
   actions: {
