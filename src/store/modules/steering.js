@@ -13,6 +13,7 @@ export default {
       twa: '',
       delayOn: false,
       delay: '',
+      delayTime: null,
       prevCopyDecimals: 2,
     },
 
@@ -52,6 +53,9 @@ export default {
     },
     setDelay(state, delay) {
       state.plottedSteering.delay = delay;
+    },
+    setDelayTime(state, delayTime) {
+      state.plottedSteering.delayTime = delayTime;
     },
     setPrevCopyDecimals(state, prevCopyDecimals) {
       state.plottedSteering.prevCopyDecimals = prevCopyDecimals;

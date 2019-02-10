@@ -307,7 +307,10 @@ export default {
         return;
       }
       this.twa = ((value.charAt(0) !== '-') ? '+' : '') + value;
-    }
+    },
+    delayTime (value) {
+      this.$store.commit('boat/steering/setDelayTime', value);
+    },
   },
 
   methods: {
