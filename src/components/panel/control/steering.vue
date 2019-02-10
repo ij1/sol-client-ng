@@ -85,7 +85,7 @@ export default {
   data () {
     return {
       type: 'cc',
-      cc: '0.0',
+      cc: '',
       twa: '',
       delayOn: false,
       delay: '',
