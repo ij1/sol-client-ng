@@ -96,7 +96,7 @@ export default {
       return course;
     },
 
-    towBackPeriod: (state) => {
+    towbackPeriod: (state) => {
       return {
         start: state.raceStartTime - hToMsec(1),
         end: state.raceStartTime,
@@ -104,8 +104,8 @@ export default {
     },
     isTowbackPeriod: (state, getters, rootGetters) => {
       const boatTime = rootGetters['boat/time'];
-      return (getters.towBackPeriod.start <= boatTime) &&
-             (boatTime < getters.towBackPeriod.end);
+      return (getters.towbackPeriod.start <= boatTime) &&
+             (boatTime < getters.towbackPeriod.end);
     },
   },
 
