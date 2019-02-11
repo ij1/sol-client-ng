@@ -98,8 +98,8 @@ export default {
 
     towbackPeriod: (state) => {
       return {
-        start: state.raceStartTime - hToMsec(1),
-        end: state.raceStartTime,
+        start: state.info.start_time - hToMsec(1),
+        end: state.info.start_time,
       };
     },
     isPracticePeriod: (state, getters, rootGetters) => {
