@@ -1,4 +1,5 @@
 import { orderBy } from 'lodash';
+import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
 
 export default {
   namespaced: true,
@@ -40,23 +41,31 @@ export default {
         },
         useArrays: false,
         dataField: 'racemessages',
+      };
 
-        dataHandler: (raceMessages) => {
-          if (typeof raceMessages.racemessage === 'undefined') {
-            return;
-          }
-          if (!Array.isArray(raceMessages.racemessage)) {
-            raceMessages.racemessage = [raceMessages.racemessage];
-          }
-          commit('add', raceMessages.racemessage);
-          /* New messages appeared during our last fetch, fetch again */
-          if (state.expectedId > state.lastId) {
-            dispatch('fetch');
-          }
-        },
-      }
-
-      dispatch('solapi/get', getDef, {root: true});
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(raceMessages => {
+        if (typeof raceMessages.racemessage === 'undefined') {
+          return;
+        }
+        if (!Array.isArray(raceMessages.racemessage)) {
+          raceMessages.racemessage = [raceMessages.racemessage];
+        }
+        commit('add', raceMessages.racemessage);
+      })
+      .catch(err => {
+        solapiLogError(err);
+      })
+      .finally(() => {
+        /* New messages appeared during our last fetch, fetch again */
+        if (state.expectedId > state.lastId) {
+          solapiRetryDispatch(dispatch, 'fetch', undefined, 1000);
+        }
+      });
     },
   },
 }

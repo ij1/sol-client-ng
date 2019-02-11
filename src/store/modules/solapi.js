@@ -22,8 +22,7 @@ export default {
   },
 
   actions: {
-    get ({state, commit, dispatch}, reqDef) {
-      let retry = true;
+    get ({state}, reqDef) {
       let respType = 'text';
       if (typeof reqDef.compressedPayload !== 'undefined') {
         respType = 'arraybuffer';
@@ -61,41 +60,8 @@ export default {
         if (!(result.hasOwnProperty(reqDef.dataField))) {
           return Promise.reject(new Error("No data from API"));
         }
-        if (typeof reqDef.interval === 'undefined') {
-          retry = false;
-        }
 
-        const data = result[reqDef.dataField];
-        reqDef.dataHandler(data);
-      })
-
-      .catch((err) => {
-        console.log(err);
-        commit('logError', {
-          url: url,
-          error: err,
-        });
-        if (typeof reqDef.failHandler !== 'undefined') {
-          retry = false;
-          reqDef.failHandler();
-        }
-      })
-
-      /* Retry if there is error or interval is given in reqDef */
-      .finally(() => {
-        if (retry) {
-          let interval = 10000;
-          let action = 'solapi/get';
-          if (typeof reqDef.interval !== 'undefined') {
-            interval = reqDef.interval;
-          }
-          if (typeof reqDef.refetchAction !== 'undefined') {
-            action = reqDef.refetchAction;
-          }
-          setTimeout(() => {
-            dispatch(action, reqDef, {root: true});
-          }, interval);
-        }
+        return result[reqDef.dataField];
       });
     },
 

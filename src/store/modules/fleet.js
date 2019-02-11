@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import L from 'leaflet'
 import rbush from 'rbush';
+import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 import { minToMsec, secToMsec } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
 
@@ -241,35 +242,41 @@ export default {
         useArrays: false,
         dataField: 'race',
         compressedPayload: true,
+      };
 
-        dataHandler: (raceInfo) => {
-          const now = rootGetters['time/now']();
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(raceInfo => {
+        const now = rootGetters['time/now']();
 
-          commit('race/updateMessage', raceInfo.message, {root: true});
+        commit('race/updateMessage', raceInfo.message, {root: true});
 
-          if ((typeof raceInfo.boats !== 'undefined') &&
-              (typeof raceInfo.boats.boat !== 'undefined')) {
-            let boatList = raceInfo.boats.boat;
-            if (!Array.isArray(boatList)) {
-              boatList = [boatList];
-            }
-
-            commit('updateFleet', {
-              timestamp: now,
-              fleet: boatList,
-            });
-
-            if (state.newBoatId !== null) {
-              dispatch('fetchMetainfo');
-            }
-            if (getters['nextTimeToFetchTraces'] <= now) {
-              dispatch('fetchTraces');
-            }
+        if ((typeof raceInfo.boats !== 'undefined') &&
+            (typeof raceInfo.boats.boat !== 'undefined')) {
+          let boatList = raceInfo.boats.boat;
+          if (!Array.isArray(boatList)) {
+            boatList = [boatList];
           }
-        },
-      }
 
-      dispatch('solapi/get', getDef, {root: true});
+          commit('updateFleet', {
+            timestamp: now,
+            fleet: boatList,
+          });
+
+          if (state.newBoatId !== null) {
+            dispatch('fetchMetainfo');
+          }
+          if (getters['nextTimeToFetchTraces'] <= now) {
+            dispatch('fetchTraces');
+          }
+        }
+      })
+      .catch(err => {
+        solapiLogError(err);
+      });
     },
 
     fetchMetainfo({rootState, commit, dispatch}) {
@@ -281,19 +288,25 @@ export default {
         useArrays: false,
         dataField: 'boatinfo',
         compressedPayload: true,
+      };
 
-        dataHandler: (metaInfo) => {
-          let boatList = metaInfo.b;
-          if (typeof boatList !== 'undefined') {
-            if (!Array.isArray(boatList)) {
-              boatList = [boatList];
-            }
-            commit('updateFleetMeta', boatList);
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(metaInfo => {
+        let boatList = metaInfo.b;
+        if (typeof boatList !== 'undefined') {
+          if (!Array.isArray(boatList)) {
+            boatList = [boatList];
           }
-        },
-      }
-
-      dispatch('solapi/get', getDef, {root: true});
+          commit('updateFleetMeta', boatList);
+        }
+      })
+      .catch(err => {
+        solapiLogError(err);
+      });
     },
 
     fetchTraces({rootState, state, rootGetters, commit, dispatch}) {
@@ -305,42 +318,48 @@ export default {
         useArrays: false,
         dataField: 'content',
         compressedPayload: true,
+      };
 
-        dataHandler: (traces) => {
-          const now = rootGetters['time/now']();
-          let boatList = traces.boat;
-          if (typeof boatList === 'undefined') {
-            return;
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(traces => {
+        const now = rootGetters['time/now']();
+        let boatList = traces.boat;
+        if (typeof boatList === 'undefined') {
+          return;
+        }
+        if (!Array.isArray(boatList)) {
+          boatList = [boatList];
+        }
+        for (let boat of boatList) {
+          const id = boat.id;
+
+          /* Update only for the existing boats */
+          if (typeof state.id2idx[id] === 'undefined') {
+            continue;
           }
-          if (!Array.isArray(boatList)) {
-            boatList = [boatList];
+
+          let trace = [];
+          for (let lngLatTxt of boat.data.split(/ /)) {
+            const lngLatArr = lngLatTxt.split(/,/);
+            let latLng = L.latLng(lngLatArr[1], lngLatArr[0]);
+            latLng = rootGetters['race/latLngToRaceBounds'](latLng);
+            trace.push(latLng);
           }
-          for (let boat of boatList) {
-            const id = boat.id;
 
-            /* Update only for the existing boats */
-            if (typeof state.id2idx[id] === 'undefined') {
-              continue;
-            }
-
-            let trace = [];
-            for (let lngLatTxt of boat.data.split(/ /)) {
-              const lngLatArr = lngLatTxt.split(/,/);
-              let latLng = L.latLng(lngLatArr[1], lngLatArr[0]);
-              latLng = rootGetters['race/latLngToRaceBounds'](latLng);
-              trace.push(latLng);
-            }
-
-            commit('updateBoatTrace', {
-              id: id,
-              time: now,
-              trace: trace,
-            });
-          }
-        },
-      }
-
-      dispatch('solapi/get', getDef, {root: true});
+          commit('updateBoatTrace', {
+            id: id,
+            time: now,
+            trace: trace,
+          });
+        }
+      })
+      .catch(err => {
+        solapiLogError(err);
+      });
     },
   },
 }

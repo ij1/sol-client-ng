@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import { SkipThenError } from '../lib/solapi.js';
+
 export default {
   name: 'Login',
   data () {
@@ -71,7 +73,8 @@ export default {
       },
       raceData: null,
       raceSelectorInfo: 'Still loading races...',
-    }
+      retryTimeout: null,
+    };
   },
   computed: {
     authenticated() {
@@ -84,14 +87,33 @@ export default {
     },
   },
   mounted() {
-    const getDef = {
-      url: '/webclient/races.xml',
-      params: {
-        filter: 'active',
-      },
-      useArrays: false,
-      dataField: 'races',
-      dataHandler: (races) => {
+    this.fetchRaces();
+  },
+  beforeDestroy () {
+    if (this.retryTimeout !== null) {
+      clearTimeout(this.retryTimeout);
+      this.retryTimeout = null;
+    }
+  },
+
+  methods: {
+    fetchRaces () {
+      this.retryTimeout = null;
+
+      const getDef = {
+        url: '/webclient/races.xml',
+        params: {
+          filter: 'active',
+        },
+        useArrays: false,
+        dataField: 'races',
+      };
+
+      this.$store.dispatch('solapi/get', getDef, {root: true})
+      .catch(() => {
+        throw new SkipThenError();
+      })
+      .then(races => {
         if (typeof races.race === 'undefined') {
           this.raceSelectorInfo = 'No active races at the moment';
           return;
@@ -102,12 +124,15 @@ export default {
           this.raceData = races.race;
         }
         this.raceSelectorInfo = 'Please select the race';
-      },
-    }
-    this.$store.dispatch('solapi/get', getDef, {root: true});
-  },
-
-  methods: {
+      })
+      .catch((err) => {
+        if (err instanceof SkipThenError) {
+          this.retryTimeout = setTimeout(this.fetchRaces.bind(this), 3000);
+        } else {
+          console.log(err);
+        }
+      });
+    },
     doLogin: function() {
       if (!this.canSend) {
         return;

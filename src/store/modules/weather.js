@@ -1,4 +1,5 @@
 import L from 'leaflet'
+import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 import { UTCToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js'
 import { UVToWind } from '../../lib/sol.js'
 
@@ -221,14 +222,20 @@ export default {
         },
         useArrays: false,
         dataField: 'weatherinfo',
+      };
 
-        dataHandler: (weatherInfo) => {
-          let dataUrl = weatherInfo.url;
-          dispatch('fetchData', dataUrl);
-        },
-      }
-
-      dispatch('solapi/get', getDef, {root: true});
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(weatherInfo => {
+        let dataUrl = weatherInfo.url;
+        dispatch('fetchData', dataUrl);
+      })
+      .catch(err => {
+        solapiLogError(err);
+      });
     },
 
     fetchData ({rootState, commit, dispatch}, dataUrl) {
@@ -239,93 +246,99 @@ export default {
         },
         useArrays: false,
         dataField: 'weathersystem',
+      };
 
-        dataHandler: (weatherData) => {
-          let boundary = L.latLngBounds(
-            L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
-            L.latLng(weatherData.$.lat_max, weatherData.$.lon_max));
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(weatherData => {
+        let boundary = L.latLngBounds(
+          L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
+          L.latLng(weatherData.$.lat_max, weatherData.$.lon_max));
 
-          const updated = UTCToMsec(weatherData.$.last_updated);
-          if (updated === null) {
+        const updated = UTCToMsec(weatherData.$.last_updated);
+        if (updated === null) {
+          console.log("Invalid date in weather data!");
+          return;
+        }
+
+        let timeSeries = [];
+        let windMap = [];
+        /* FIXME: It takes quite long time to parse&mangle the arrays here,
+         * perhaps use vue-worker for this but then also xml2js parsing will
+         * consume lots of time. My initial attempt failed on lacking
+         * this.$worker for solapi side so the JS syntax needs to solved
+         * for this conversion to take place.
+         */
+        for (let frame of weatherData.frames.frame) {
+          const utc = UTCToMsec(frame.$.target_time);
+          if (utc === null) {
             console.log("Invalid date in weather data!");
             return;
           }
+          timeSeries.push(utc);
 
-          let timeSeries = [];
-          let windMap = [];
-          /* FIXME: It takes quite long time to parse&mangle the arrays here,
-           * perhaps use vue-worker for this but then also xml2js parsing will
-           * consume lots of time. My initial attempt failed on lacking
-           * this.$worker for solapi side so the JS syntax needs to solved
-           * for this conversion to take place.
-           */
-          for (let frame of weatherData.frames.frame) {
-            const utc = UTCToMsec(frame.$.target_time);
-            if (utc === null) {
-              console.log("Invalid date in weather data!");
-              return;
+          let u = frame.U.trim().split(/;\s*/);
+          let v = frame.V.trim().split(/;\s*/);
+          if (u.length !== v.length) {
+            console.log("Inconsistent weather data!");
+            return;
+          }
+
+          let windFrame = [];
+          for (let i = 0; i < u.length-1; i++) {
+            if (u[i] === '') {
+              break;
             }
-            timeSeries.push(utc);
 
-            let u = frame.U.trim().split(/;\s*/);
-            let v = frame.V.trim().split(/;\s*/);
-            if (u.length !== v.length) {
+            let uu = u[i].trim().split(/\s+/);
+            let vv = v[i].trim().split(/\s+/);
+
+            if (uu.length !== vv.length) {
               console.log("Inconsistent weather data!");
               return;
             }
 
-            let windFrame = [];
-            for (let i = 0; i < u.length-1; i++) {
-              if (u[i] === '') {
-                break;
-              }
-
-              let uu = u[i].trim().split(/\s+/);
-              let vv = v[i].trim().split(/\s+/);
-
-              if (uu.length !== vv.length) {
-                console.log("Inconsistent weather data!");
-                return;
-              }
-
-              /* Construct last-level [u, v] arrays */
-              let windRow = [];
-              for (let j = 0; j < uu.length; j++) {
-                let tmp = [parseFloat(uu[j]), parseFloat(vv[j])];
-                windRow.push(Object.freeze(tmp));
-              }
-              windFrame.push(Object.freeze(windRow));
+            /* Construct last-level [u, v] arrays */
+            let windRow = [];
+            for (let j = 0; j < uu.length; j++) {
+              let tmp = [parseFloat(uu[j]), parseFloat(vv[j])];
+              windRow.push(Object.freeze(tmp));
             }
-            windMap.push(Object.freeze(windFrame));
+            windFrame.push(Object.freeze(windRow));
           }
-          windMap = Object.freeze(windMap);
+          windMap.push(Object.freeze(windFrame));
+        }
+        windMap = Object.freeze(windMap);
 
-          let origo = [parseFloat(weatherData.$.lat_min),
-                          parseFloat(weatherData.$.lon_min)];
-          let increment = [parseFloat(weatherData.$.lat_increment),
-                             parseFloat(weatherData.$.lon_increment)];
+        let origo = [parseFloat(weatherData.$.lat_min),
+                     parseFloat(weatherData.$.lon_min)];
+        let increment = [parseFloat(weatherData.$.lat_increment),
+                         parseFloat(weatherData.$.lon_increment)];
 
-          /* Improve performance by freezing all interpolation related
-           * array objects. This avoid adding unnecessary reactivity detectors.
-           */
-          timeSeries = Object.freeze(timeSeries);
-          origo = Object.freeze(origo);
-          increment = Object.freeze(increment);
-          boundary = Object.freeze(boundary);
+        /* Improve performance by freezing all interpolation related
+         * array objects. This avoid adding unnecessary reactivity detectors.
+         */
+        timeSeries = Object.freeze(timeSeries);
+        origo = Object.freeze(origo);
+        increment = Object.freeze(increment);
+        boundary = Object.freeze(boundary);
 
-          let weatherInfo = {
-            updated: updated,
-            boundary: boundary,
-            timeSeries: timeSeries,
-            origo: origo,
-            increment: increment,
-            windMap: windMap,
-          };
-          commit('update', weatherInfo);
-        },
-      }
-
-      dispatch('solapi/get', getDef, {root: true});
+        let weatherInfo = {
+          updated: updated,
+          boundary: boundary,
+          timeSeries: timeSeries,
+          origo: origo,
+          increment: increment,
+          windMap: windMap,
+        };
+        commit('update', weatherInfo);
+      })
+      .catch(err => {
+        solapiLogError(err);
+      });
     },
   },
 }

@@ -1,4 +1,5 @@
 import { orderBy } from 'lodash';
+import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 import { UTCToMsec } from '../../lib/utils.js';
 
 
@@ -109,32 +110,38 @@ export default {
         },
         useArrays: false,
         dataField: 'commands',
-
-        dataHandler: (dcData) => {
-          let dcList;
-          if (typeof dcData.cmd !== 'undefined') {
-            dcList = dcData.cmd
-          
-            if (!Array.isArray(dcList)) {
-              dcList = [dcList];
-            }
-          } else {
-            dcList = [];
-          }
-          for (let dc of dcList) {
-            dc.time = UTCToMsec(dc.time);
-          }
-          commit('updateDCs', dcList);
-          commit('setFetching', false);
-
-          if (state.dcs.needReload) {
-            dispatch('fetchDCs');
-          }
-        },
       };
 
       commit('setFetching', true);
-      dispatch('solapi/get', getDef, {root: true});
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(dcData => {
+        let dcList;
+        if (typeof dcData.cmd !== 'undefined') {
+          dcList = dcData.cmd
+
+          if (!Array.isArray(dcList)) {
+            dcList = [dcList];
+          }
+        } else {
+          dcList = [];
+        }
+        for (let dc of dcList) {
+          dc.time = UTCToMsec(dc.time);
+        }
+        commit('updateDCs', dcList);
+        commit('setFetching', false);
+
+        if (state.dcs.needReload) {
+          dispatch('fetchDCs');
+        }
+      })
+      .catch(err => {
+        solapiLogError(err);
+      });
     },
 
     sendSteeringCommand({rootState, commit, dispatch}, sendParams) {

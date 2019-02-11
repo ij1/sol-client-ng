@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import L from 'leaflet';
+import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
 
 function tileIdToKey(id) {
   return id.l + ':' + id.x + ':' + id.y;
@@ -50,7 +51,10 @@ export default {
 
     setLoading (state, key) {
       state.tiles[key].loading = true;
-    }
+    },
+    clearLoading (state, key) {
+      state.tiles[key].loading = false;
+    },
   },
 
   actions: {
@@ -66,34 +70,44 @@ export default {
         useArrays: true,
         dataField: 'data',
         compressedPayload: true,
-
-        dataHandler: (data) => {
-          let geoms = {};
-
-          if (typeof data.cell[0].poly !== 'undefined') {
-            for (let poly of data.cell[0].poly) {
-              let geom = [];
-              for (let pt of poly.point) {
-                geom.push(Object.freeze(L.latLng(pt.$.lat, pt.$.lon)));
-              }
-
-              const level = 'l' + poly.$.level;
-              if (typeof geoms[level] === 'undefined') {
-                geoms[level] = [];
-              }
-              geoms[level].push(Object.freeze(geom));
-            }
-          }
-
-          Object.freeze(geoms);
-          commit('storeTileGeoms', {
-            key: key,
-            geoms: geoms,
-          });
-        }
       };
+
       commit('setLoading', key);
-      dispatch('solapi/get', getDef, {root: true});
+
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(data => {
+        let geoms = {};
+
+        if (typeof data.cell[0].poly !== 'undefined') {
+          for (let poly of data.cell[0].poly) {
+            let geom = [];
+            for (let pt of poly.point) {
+              geom.push(Object.freeze(L.latLng(pt.$.lat, pt.$.lon)));
+            }
+
+            const level = 'l' + poly.$.level;
+            if (typeof geoms[level] === 'undefined') {
+              geoms[level] = [];
+            }
+            geoms[level].push(Object.freeze(geom));
+          }
+        }
+
+        Object.freeze(geoms);
+        commit('storeTileGeoms', {
+          key: key,
+          geoms: geoms,
+        });
+      })
+      .catch(err => {
+        commit('clearLoading', key);
+        solapiLogError(err);
+        solapiRetryDispatch(dispatch, 'loadTile', id);
+      });
     },
 
     //

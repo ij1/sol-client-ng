@@ -1,3 +1,5 @@
+import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
+
 export default {
   namespaced: true,
 
@@ -25,20 +27,26 @@ export default {
         params: authParams,
         useArrays: false,
         dataField: 'response',
-        dataHandler: (response) => {
-          if (typeof response.token === 'undefined') {
-            commit('loginFailed');
-            return;
-          }
-          authParams.token = response.token
-          commit('loggedIn', authParams);
-          dispatch('race/fetchAuthRaceinfo', null, {root: true});
-        },
-        failHandler: () => {
+      };
+
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        commit('loginFailed');
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(response => {
+        if (typeof response.token === 'undefined') {
           commit('loginFailed');
+          return;
         }
-      }
-      dispatch('solapi/get', getDef, {root: true});
+        authParams.token = response.token
+        commit('loggedIn', authParams);
+        dispatch('race/fetchAuthRaceinfo', null, {root: true});
+      })
+      .catch(err => {
+        solapiLogError(err);
+      });
     },
   },
 }

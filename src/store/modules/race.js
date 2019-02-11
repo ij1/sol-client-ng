@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
+import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
 import { degToRad, radToDeg, hToMsec, UTCToMsec } from '../../lib/utils.js';
 import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
 import { PROJECTION} from '../../lib/sol.js';
@@ -129,30 +130,37 @@ export default {
         },
         useArrays: false,
         dataField: 'race',
-
-        dataHandler: (raceInfo) => {
-          const polarRawData = raceInfo.boat.vpp;
-          const chatroomsData = raceInfo.chatrooms.chatroom;
-
-          commit('boat/setType', raceInfo.boat.type, {root: true});
-          commit('chatrooms/init', chatroomsData, {root: true});
-
-          delete raceInfo.boat;
-          delete raceInfo.chatrooms;
-          raceInfo.start_time = UTCToMsec(raceInfo.start_time);
-          raceInfo.course = getters['parseCourse'](raceInfo);
-          commit('init', raceInfo);
-
-          commit('boat/polar/set', polarRawData, {root: true});
-
-          /* Start race API fetching */
-          dispatch('boat/fetch', null, {root: true});
-          dispatch('boat/steering/fetchDCs', null, {root: true});
-          dispatch('weather/fetchInfo', null, {root: true});
-        },
       };
 
-      dispatch('solapi/get', getDef, {root: true});
+      dispatch('solapi/get', getDef, {root: true})
+      .catch(err => {
+        solapiLogError(err);
+        throw new SkipThenError();
+      })
+      .then(raceInfo => {
+        const polarRawData = raceInfo.boat.vpp;
+        const chatroomsData = raceInfo.chatrooms.chatroom;
+
+        commit('boat/setType', raceInfo.boat.type, {root: true});
+        commit('chatrooms/init', chatroomsData, {root: true});
+
+        delete raceInfo.boat;
+        delete raceInfo.chatrooms;
+        raceInfo.start_time = UTCToMsec(raceInfo.start_time);
+        raceInfo.course = getters['parseCourse'](raceInfo);
+        commit('init', raceInfo);
+
+        commit('boat/polar/set', polarRawData, {root: true});
+
+        /* Start race API fetching */
+        dispatch('boat/fetch', null, {root: true});
+        dispatch('boat/steering/fetchDCs', null, {root: true});
+        dispatch('weather/fetchInfo', null, {root: true});
+      })
+      .catch(err => {
+        solapiLogError(err);
+        solapiRetryDispatch(dispatch, 'fetchAuthRaceinfo');
+      })
     },
   },
 }
