@@ -102,15 +102,15 @@ export default {
         end: state.info.start_time,
       };
     },
-    isPracticePeriod: (state, getters, rootGetters) => {
+    isPracticePeriod: (state, getters, rootState, rootGetters) => {
       return rootGetters['boat/time'] < getters.towbackPeriod.start;
     },
-    isTowbackPeriod: (state, getters, rootGetters) => {
+    isTowbackPeriod: (state, getters, rootState, rootGetters) => {
       const boatTime = rootGetters['boat/time'];
       return (getters.towbackPeriod.start <= boatTime) &&
              (boatTime < getters.towbackPeriod.end);
     },
-    isRaceStarted: (state, getters, rootGetters) => {
+    isRaceStarted: (state, getters, rootState, rootGetters) => {
       return rootGetters['boat/time'] >= getters.towbackPeriod.end;
     },
   },
