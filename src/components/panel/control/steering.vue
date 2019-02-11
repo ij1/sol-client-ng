@@ -183,10 +183,46 @@ export default {
       return isTwaValid(this.twa);
     },
 
-    isDelayValid () {
-      // ADDME: parse 1h10m format too
+    isDelayNumber () {
       const delay = parseFloat(this.delay);
       return (Number.isFinite(delay) && delay >= 0);
+    },
+    isDelayStart () {
+      return (this.delay === 'start') &&
+             !this.$store.getters['race/isRaceStarted'];
+    },
+    isDelayHourMin () {
+      // ADDME: parse 1h10m format too
+      return false;
+    },
+    isDelayValid () {
+      return this.isDelayNumber || this.isDelayStart || this.isDelayHourMin;
+    },
+    delayTime () {
+      if (!this.delayOn || !this.isDelayValid) {
+        return null;
+      }
+      if (this.isDelayNumber) {
+        return parseFloat(this.delay);
+      }
+      if (this.isDelayStart) {
+        if (this.$store.getters['race/isTowbackPeriod']) {
+          return 0;
+        } else {
+          const now = this.$store.getters['time/now']();
+          const towbackPeriod = this.$store.getters['race/towbackPeriod'];
+
+          return (towbackPeriod.end - towbackPeriod.start) * 0.8 *
+                 Math.random() +
+                 towbackPeriod.start - now;
+        }
+      }
+      if (this.isDelayHourMin) {
+        return null;
+      }
+
+      /* Should never be reached */
+      return null;
     },
 
     isSteeringValid () {
@@ -263,13 +299,6 @@ export default {
        return decimals;
     },
 
-    delayTime () {
-      if (!this.delayOn || !this.isDelayValid) {
-        return null;
-      }
-
-      return parseFloat(this.delay);
-    },
 
     ccRad () {
       return degToRad(this.cc);
