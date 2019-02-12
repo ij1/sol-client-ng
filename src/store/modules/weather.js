@@ -40,6 +40,7 @@ export default {
   state: {
     loaded: false,
     time: 0,
+    updateTimes: [430, 1030, 1630, 2230],
     data: {
       updated: null,
       boundary: null,
@@ -84,6 +85,9 @@ export default {
         }
         state.time = time;
       }
+    },
+    setUpdateTimes(state, updateTimes) {
+      state.updateTimes = updateTimes;
     },
   },
 
@@ -339,6 +343,24 @@ export default {
       .catch(err => {
         solapiLogError(err);
       });
+    },
+    parseUpdateTimes({commit}, description) {
+      const regex = new RegExp('WX [Uu]pdates: *<br> *([0-2][0-9][0-5][0-9]) */ *([0-2][0-9][0-5][0-9]) */ *([0-2][0-9][0-5][0-9]) */ *([0-2][0-9][0-5][0-9]) *<br>');
+      const w = regex.exec(description);
+      if (w === null) {
+        console.log('No WX update times found in description!');
+        return;
+      }
+      let times = [];
+      for (let i = 1; i <= 4; i++) {
+        let time = +('1' + w[i]);
+        if ((time < 10000) || (12400 < time)) {
+          console.log('Invalid WX update time: ' + w[i]);
+          return;
+        }
+        times.push(time - 10000);
+      }
+      commit('setUpdateTimes', times);
     },
   },
 }

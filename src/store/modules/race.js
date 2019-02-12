@@ -155,6 +155,7 @@ export default {
         /* Start race API fetching */
         dispatch('boat/fetch', null, {root: true});
         dispatch('boat/steering/fetchDCs', null, {root: true});
+        dispatch('weather/parseUpdateTimes', raceInfo.description, {root: true});
         dispatch('weather/fetchInfo', null, {root: true});
       })
       .catch(err => {
