@@ -56,6 +56,7 @@ export default {
           raceMessages.racemessage = [raceMessages.racemessage];
         }
         commit('add', raceMessages.racemessage);
+        commit('ui/setActiveTab', 4, {root: true});
       })
       .catch(err => {
         solapiLogError(err);
