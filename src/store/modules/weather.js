@@ -1,6 +1,6 @@
 import L from 'leaflet'
 import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
-import { UTCToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js'
+import { UTCToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js'
 import { UVToWind } from '../../lib/sol.js'
 
 function wxLinearInterpolate(factor, startData, endData) {
@@ -40,8 +40,10 @@ export default {
   state: {
     loaded: false,
     time: 0,
+    fetchTime: 0,
     updateTimes: [430, 1030, 1630, 2230],
     data: {
+      url: null,
       updated: null,
       boundary: null,
       timeSeries: [],
@@ -88,6 +90,9 @@ export default {
     },
     setUpdateTimes(state, updateTimes) {
       state.updateTimes = updateTimes;
+    },
+    updateFetchTime(state, fetchTime) {
+      state.fetchTime = fetchTime;
     },
   },
 
@@ -213,12 +218,16 @@ export default {
         secondRes[1]
       ));
     },
+
+    nextTimeToFetch: (state) => {
+      return state.fetchTime + secToMsec(30) + secToMsec(30+60) * Math.random();
+    },
   },
 
   actions: {
     // ADDME: when to fetch the next wx, add the support in a concurrency
     // safe way to avoid multiple overlapping weather fetches.
-    fetchInfo ({rootState, dispatch}) {
+    fetchInfo ({state, rootState, rootGetters, dispatch, commit}) {
       const getDef = {
         url: rootState.race.info.weatherurl,
         params: {
@@ -235,6 +244,10 @@ export default {
       })
       .then(weatherInfo => {
         let dataUrl = weatherInfo.url;
+        if (dataUrl === state.data.url) {
+          commit('updateFetchTime', rootGetters['time/now']());
+          return;
+        }
         dispatch('fetchData', dataUrl);
       })
       .catch(err => {
@@ -242,7 +255,7 @@ export default {
       });
     },
 
-    fetchData ({rootState, commit, dispatch}, dataUrl) {
+    fetchData ({state, rootState, rootGetters, commit, dispatch}, dataUrl) {
       const getDef = {
         url: dataUrl,
         params: {
@@ -258,6 +271,8 @@ export default {
         throw new SkipThenError();
       })
       .then(weatherData => {
+        const firstWeather = (state.data.updated === null);
+
         let boundary = L.latLngBounds(
           L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
           L.latLng(weatherData.$.lat_max, weatherData.$.lon_max));
@@ -331,6 +346,7 @@ export default {
         boundary = Object.freeze(boundary);
 
         let weatherInfo = {
+          url: dataUrl,
           updated: updated,
           boundary: boundary,
           timeSeries: timeSeries,
@@ -339,6 +355,15 @@ export default {
           windMap: windMap,
         };
         commit('update', weatherInfo);
+        const now = rootGetters['time/now']();
+        commit('updateFetchTime', now);
+        if (!firstWeather) {
+          const d = new Date(now);
+          const time = d.getUTCHours() + ':' + d.getUTCMinutes();
+          dispatch('notifications/add', {
+            text: 'Weather updated at ' + time,
+          }, {root: true});
+        }
       })
       .catch(err => {
         solapiLogError(err);

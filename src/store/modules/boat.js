@@ -102,9 +102,7 @@ export default {
         }
         commit('chatrooms/nextRoom', null, {root: true});
 
-        if (rootGetters['race/fleet/nextTimeToFetch'] <= now) {
-          dispatch('race/fleet/fetchRace', null, {root: true});
-        }
+        dispatch('race/fetchRaceComponents', null, {root: true});
       })
       .catch(err => {
         solapiLogError(err);

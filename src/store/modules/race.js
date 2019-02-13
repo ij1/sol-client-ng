@@ -163,5 +163,15 @@ export default {
         solapiRetryDispatch(dispatch, 'fetchAuthRaceinfo');
       })
     },
+    fetchRaceComponents({dispatch, getters, rootGetters}) {
+      const now = rootGetters['time/now']();
+
+      if (getters['fleet/nextTimeToFetch'] <= now) {
+        dispatch('fleet/fetchRace');
+      }
+      if (rootGetters['weather/nextTimeToFetch'] <= now) {
+        dispatch('weather/fetchInfo', null, {root: true});
+      }
+    },
   },
 }
