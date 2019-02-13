@@ -243,6 +243,10 @@ export default {
         dataField: 'race',
         compressedPayload: true,
       };
+      if (rootGetters['solapi/isLocked']('fleet')) {
+        return;
+      }
+      commit('solapi/lock', 'fleet', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
       .catch(err => {
@@ -276,6 +280,9 @@ export default {
       })
       .catch(err => {
         solapiLogError(err);
+      })
+      .finally(() => {
+        commit('solapi/unlock', 'fleet', {root: true});
       });
     },
 
@@ -319,6 +326,10 @@ export default {
         dataField: 'content',
         compressedPayload: true,
       };
+      if (rootGetters['solapi/isLocked']('traces')) {
+        return;
+      }
+      commit('solapi/lock', 'traces', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
       .catch(err => {
@@ -359,6 +370,9 @@ export default {
       })
       .catch(err => {
         solapiLogError(err);
+      })
+      .finally(() => {
+        commit('solapi/unlock', 'traces', {root: true});
       });
     },
   },

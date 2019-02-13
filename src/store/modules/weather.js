@@ -236,6 +236,10 @@ export default {
         useArrays: false,
         dataField: 'weatherinfo',
       };
+      if (rootGetters['solapi/isLocked']('weather')) {
+        return;
+      }
+      commit('solapi/lock', 'weather', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
       .catch(err => {
@@ -246,12 +250,14 @@ export default {
         let dataUrl = weatherInfo.url;
         if (dataUrl === state.data.url) {
           commit('updateFetchTime', rootGetters['time/now']());
+          commit('solapi/unlock', 'weather', {root: true});
           return;
         }
         dispatch('fetchData', dataUrl);
       })
       .catch(err => {
         solapiLogError(err);
+        commit('solapi/unlock', 'weather', {root: true});
       });
     },
 
@@ -367,6 +373,9 @@ export default {
       })
       .catch(err => {
         solapiLogError(err);
+      })
+      .finally(() => {
+        commit('solapi/unlock', 'weather', {root: true});
       });
     },
     parseUpdateTimes({commit}, description) {

@@ -12,12 +12,24 @@ export default {
   state: {
     // eslint-disable-next-line
     server: process.env.VUE_APP_API_URL,
+    activeApiCalls: new Set(),
     errorLog: [],
   },
 
   mutations: {
+    lock(state, apiCall) {
+      state.activeApiCalls.add(apiCall);
+    },
+    unlock(state, apiCall) {
+      state.activeApiCalls.delete(apiCall);
+    },
     logError (state, error) {
       state.errorLog.push(error);
+    },
+  },
+  getters: {
+    isLocked: (state) => (apiCall) => {
+      return state.activeApiCalls.has(apiCall);
     },
   },
 
