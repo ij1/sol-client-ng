@@ -82,6 +82,11 @@ export default {
   components: {
     'control-steering-polar': Polar,
   },
+  data () {
+    return {
+      sending: false,
+    };
+  },
 
   /* The computed properties are tricky in this component! As COG/TWA fields
    * have cross depency based on the radio button, the reactivity might cause
@@ -147,7 +152,7 @@ export default {
 
     canSend () {
       return (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
-        !this.$store.state.boat.steering.sending;
+        !this.sending;
     },
     twaColor () {
       if (!this.isTwaValid) {
@@ -353,6 +358,7 @@ export default {
         value: this.type === 'cc' ? this.ccRad : this.twaRad,
         command: this.type,
       };
+      this.sending = true;
       this.$store.dispatch('boat/steering/sendSteeringCommand', sendParams)
       .then(status => {
         if (status !== 'OK') {
@@ -366,6 +372,9 @@ export default {
         if (delayTime > 0) {
           this.$store.dispatch('boat/steering/fetchDCs');
         }
+      })
+      .finally(() => {
+        this.sending = false;
       });
     },
 

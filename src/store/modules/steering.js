@@ -23,7 +23,7 @@ export default {
       fetching: false,
       needReload: true,
     },
-    sending: false,
+
     visualSteering: {
       enabled: false,
       showPolar: false,
@@ -77,12 +77,6 @@ export default {
     },
     clearDC (state) {
       state.dcs.list.shift();
-    },
-    setSending (state) {
-      state.sending = true;
-    },
-    clearSending (state) {
-      state.sending = false;
     },
     visualSteering (state, showPolar) {
       state.visualSteering.enabled = true;
@@ -144,9 +138,7 @@ export default {
       });
     },
 
-    sendSteeringCommand({rootState, commit, dispatch}, sendParams) {
-      commit('setSending');
-
+    sendSteeringCommand({rootState, dispatch}, sendParams) {
       const postDef = {
         url: '/webclient/command/post/?token=' + rootState.auth.token,
         params: sendParams,
@@ -160,14 +152,11 @@ export default {
           status = 'ERROR';
         })
         .then(() => {
-          commit('clearSending');
           return status;
         });
     },
 
-    sendDeleteDC({rootState, commit, dispatch}, sendParams) {
-      commit('setSending');
-
+    sendDeleteDC({rootState, dispatch}, sendParams) {
       const postDef = {
         url: '/webclient/command/delete/?token=' + rootState.auth.token,
         params: sendParams,
@@ -182,7 +171,6 @@ export default {
           status = 'ERROR';
         })
         .then(() => {
-          commit('clearSending');
           return status;
         });
     },
