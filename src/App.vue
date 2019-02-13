@@ -9,7 +9,6 @@
       </div>
       <div id="left_main_div">
         <map-view/>
-        <log-messages/>
         <weather-panel/>
         <boat-instruments/>
       </div>
@@ -27,7 +26,6 @@ import NotificationsPopup from './components/notificationspopup.vue';
 import Map from './components/map/map.vue'
 import BoatInstruments from './components/panel/instruments/instruments.vue'
 import WeatherPanel from './components/panel/weather.vue'
-import LogMessages from './components/logmessages.vue'
 import ControlPanelSwitcher from './components/panel/control/switcher.vue'
 
 export default {
@@ -39,7 +37,6 @@ export default {
     'map-view': Map,
     'boat-instruments': BoatInstruments,
     'weather-panel': WeatherPanel,
-    'log-messages': LogMessages,
     'control-panel-switcher': ControlPanelSwitcher,
   }
 }
