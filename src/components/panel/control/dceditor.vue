@@ -98,8 +98,7 @@ export default {
       return UTCToMsec(date);
     },
     canSend () {
-      return this.valid && this.dirty && (this.newTime !== null) &&
-             !this.$store.state.boat.steering.sending;
+      return this.valid && this.dirty && (this.newTime !== null);
     },
     disabledDates () {
       let today = new Date(this.boatTime);
