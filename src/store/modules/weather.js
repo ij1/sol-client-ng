@@ -1,6 +1,6 @@
 import L from 'leaflet'
 import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
-import { UTCToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js'
+import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js'
 import { UVToWind } from '../../lib/sol.js'
 
 function wxLinearInterpolate(factor, startData, endData) {
@@ -41,7 +41,7 @@ export default {
     loaded: false,
     time: 0,
     fetchTime: 0,
-    updateTimes: [430, 1030, 1630, 2230],
+    updateTimes: [4*60 + 30, 10*60 + 30, 16*60 + 30, 22*60 + 30],
     data: {
       url: null,
       updated: null,
@@ -219,8 +219,41 @@ export default {
       ));
     },
 
-    nextTimeToFetch: (state) => {
-      return state.fetchTime + secToMsec(30) + secToMsec(30+60) * Math.random();
+    nextTimeToFetch: (state, rootState, getters, rootGetters) => {
+      const now = rootGetters['time/now']();
+      let hotPeriod = false;
+
+      /* First fetch(es) failed so far, retry soon enough */
+      if (state.data.updated === null) {
+        hotPeriod = true;
+
+      /* No hot periods within 1h from last wx update */
+      } else if (state.data.updated + hToMsec(1) < now) {
+        const d = new Date(now);
+        const nowMinutes = d.getUTCHours() * 60 + d.getUTCMinutes();
+
+        for (let updateMinutes of state.updateTimes) {
+          /* Same formula as in minTurnAngle (now in minutes) */
+          const delta = (nowMinutes - updateMinutes + ((24+12)*60)) % (24*60) - (12*60);
+          /* Hot period with +/-25 minutes around the given update time.
+           * In practice, however, it won't start until the previous cold
+           * timer expires (see the values below).
+           */
+          if (Math.abs(delta) < 25) {
+            hotPeriod = true;
+            break;
+          }
+        }
+      }
+
+      let minWait = 3 * 60;
+      let variation = 10 * 60;
+      if (hotPeriod) {
+        minWait = 30;
+        variation = 60;
+      }
+      return state.fetchTime + secToMsec(minWait) +
+             secToMsec(variation) * Math.random();
     },
   },
 
@@ -392,7 +425,9 @@ export default {
           console.log('Invalid WX update time: ' + w[i]);
           return;
         }
-        times.push(time - 10000);
+        time -= 10000;
+        const wxMinutes = Number((time / 100).toFixed(0)) * 60 + (time % 100);
+        times.push(wxMinutes);
       }
       commit('setUpdateTimes', times);
     },
