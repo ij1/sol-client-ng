@@ -13,15 +13,18 @@ export default {
     // eslint-disable-next-line
     server: process.env.VUE_APP_API_URL,
     activeApiCalls: new Set(),
+    activeApiCallsStamp: 0,	/* Set is not reactive, dummy dep this */
     errorLog: [],
   },
 
   mutations: {
     lock(state, apiCall) {
       state.activeApiCalls.add(apiCall);
+      state.activeApiCallsStamp++;
     },
     unlock(state, apiCall) {
       state.activeApiCalls.delete(apiCall);
+      state.activeApiCallsStamp++;
     },
     logError (state, error) {
       state.errorLog.push(error);
