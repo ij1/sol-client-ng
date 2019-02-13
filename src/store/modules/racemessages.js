@@ -6,8 +6,8 @@ export default {
 
   state: {
     racemsgs: [],
-    lastId: -1,
-    expectedId: -1,
+    lastId: 0,
+    expectedId: 0,
   },
 
   mutations: {
