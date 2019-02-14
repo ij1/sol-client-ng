@@ -9,7 +9,10 @@
       @update:center="updateCenter"
       @update:zoom="updateZoom"
       :world-copy-jump="true"
-      :options="{attributionControl: false}"
+      :options="{
+        zoomControl: false,
+        attributionControl: false,
+      }"
     >
       <map-tiles v-if = "this.map !== null" :map = "this.map"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom"/>
@@ -25,6 +28,7 @@
       <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map" :hover-lat-lng = "this.hoverLatLng"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
 
+      <l-control-zoom :position = "'topleft'"/>
       <center-boat-button v-if = "this.map !== null"/>
       <steer-button v-if = "this.map !== null"/>
       <towback-flag v-if = "this.map !== null"/>
@@ -38,7 +42,7 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet'
-import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet'
+import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip, LControlZoom } from 'vue2-leaflet'
 import { PROJECTION } from '../../lib/sol.js';
 
 import MapTiles from './tiles';
@@ -67,6 +71,8 @@ export default {
     'l-marker': LMarker,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
+    'l-control-zoom': LControlZoom,
+
     'map-tiles': MapTiles,
     'race-info': RaceInfo,
     'canvas-overlay': CanvasOverlay,
