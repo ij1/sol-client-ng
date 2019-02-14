@@ -60,7 +60,7 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
-import { LLayerGroup, LCircleMarker, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet'
+import { LLayerGroup, LCircleMarker, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet';
 import { latLngAddOffset } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
 import { degToRad } from '../../lib/utils.js';

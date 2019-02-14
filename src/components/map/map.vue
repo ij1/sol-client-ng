@@ -42,8 +42,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import L from 'leaflet'
-import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip, LControlZoom } from 'vue2-leaflet'
+import L from 'leaflet';
+import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip, LControlZoom } from 'vue2-leaflet';
 import { PROJECTION } from '../../lib/sol.js';
 
 import MapTiles from './tiles';

@@ -17,7 +17,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { LLayerGroup, LPolyline } from 'vue2-leaflet'
+import { LLayerGroup, LPolyline } from 'vue2-leaflet';
 import { latLngAddOffset } from '../../lib/utils.js';
 
 export default {

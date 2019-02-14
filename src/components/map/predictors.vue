@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import L from 'leaflet'
+import L from 'leaflet';
 import { degToRad, hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
 import { cogTwdToTwa, twaTwdToCog } from '../../lib/nav.js';
 

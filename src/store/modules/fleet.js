@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import L from 'leaflet'
+import L from 'leaflet';
 import rbush from 'rbush';
 import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 import { minToMsec, secToMsec } from '../../lib/utils.js';

@@ -1,7 +1,7 @@
-import L from 'leaflet'
+import L from 'leaflet';
 import { UTCToMsec } from '../../lib/utils.js';
 import polarModule from './polar';
-import steeringModule from './steering'
+import steeringModule from './steering';
 import instrumentModule from './instruments';
 import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
 

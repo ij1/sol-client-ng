@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import L from 'leaflet'
+import L from 'leaflet';
 import { windToColor } from '../../lib/sol.js';
 
 export default {

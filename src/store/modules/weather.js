@@ -1,7 +1,7 @@
-import L from 'leaflet'
+import L from 'leaflet';
 import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
-import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js'
-import { UVToWind } from '../../lib/sol.js'
+import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
+import { UVToWind } from '../../lib/sol.js';
 
 function wxLinearInterpolate(factor, startData, endData) {
   return [

@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import L from 'leaflet'
-import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet'
+import L from 'leaflet';
+import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
 import { boatPath, sailPath, sailAngle, sailOffset } from '../../lib/boatshape.js';
 import BoatTrace from './trace.vue';

@@ -15,8 +15,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import { LControl } from 'vue2-leaflet'
-import { radToDeg } from '../../lib/utils.js'
+import { LControl } from 'vue2-leaflet';
+import { radToDeg } from '../../lib/utils.js';
 
 export default {
   name: 'WindInfo',

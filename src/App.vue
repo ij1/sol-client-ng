@@ -15,12 +15,12 @@
 </template>
 
 <script>
-import LoginPopup from './components/loginpopup.vue'
+import LoginPopup from './components/loginpopup.vue';
 import NotificationsPopup from './components/notificationspopup.vue';
-import Map from './components/map/map.vue'
-import BoatInstruments from './components/panel/instruments/instruments.vue'
-import WeatherPanel from './components/panel/weather.vue'
-import ControlPanelSwitcher from './components/panel/control/switcher.vue'
+import Map from './components/map/map.vue';
+import BoatInstruments from './components/panel/instruments/instruments.vue';
+import WeatherPanel from './components/panel/weather.vue';
+import ControlPanelSwitcher from './components/panel/control/switcher.vue';
 
 export default {
   name: 'app',

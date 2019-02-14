@@ -33,7 +33,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { LControl } from 'vue2-leaflet'
+import { LControl } from 'vue2-leaflet';
 import CountryFlag from '../countryflag.vue';
 import SycFlag from '../sycflag.vue';
 
