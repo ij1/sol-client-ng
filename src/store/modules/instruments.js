@@ -6,6 +6,10 @@ function defaultFormat (instrument) {
   return (instrument.value * instrument.mult).toFixed(instrument.decimals);
 }
 
+function twaFormat (instrument) {
+  return ((instrument.value > 0) ? '+' : '') + defaultFormat(instrument);
+}
+
 export default {
   namespaced: true,
   state: {
@@ -52,7 +56,7 @@ export default {
       datafield: "twa",
       mult: 180 / Math.PI,
       decimals: 2,
-      format: defaultFormat,
+      format: twaFormat,
     },
     twd: {
       value: null,
