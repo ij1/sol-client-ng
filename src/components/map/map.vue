@@ -16,6 +16,7 @@
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-720"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-360"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "360"/>
+      <dc-bar v-if = "this.map !== null"/>
       <wind-info v-if = "this.map !== null" :hover-lat-lng = "this.hoverLatLng"/>
       <canvas-overlay v-if = "this.map !== null" :map = "this.map"/>
       <fleet-traces v-if = "this.map !== null"/>
@@ -40,6 +41,7 @@ import { PROJECTION } from '../../lib/sol.js';
 import MapTiles from './tiles';
 import RaceInfo from './race';
 import CanvasOverlay from './canvasoverlay';
+import DcBar from '../dcbar.vue';
 import WindInfo from './windinfo';
 import FleetTraces from './fleettraces';
 import FleetMap from './fleetmap';
@@ -62,6 +64,7 @@ export default {
     'map-tiles': MapTiles,
     'race-info': RaceInfo,
     'canvas-overlay': CanvasOverlay,
+    'dc-bar': DcBar,
     'wind-info': WindInfo,
     'fleet-traces': FleetTraces,
     'fleet-map': FleetMap,
