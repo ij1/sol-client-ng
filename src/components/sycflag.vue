@@ -1,6 +1,6 @@
 <template>
-  <div class="syc-container">
-    <span v-if="syc" class="syc-flag">&#9658;</span>
+  <div class="syc-container" v-if="syc">
+    <span class="syc-flag">&#9658;</span>
   </div>
 </template>
 
