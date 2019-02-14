@@ -32,7 +32,7 @@ export default {
   },
 
   actions: {
-    fetch({rootState, state, commit, dispatch}) {
+    fetch({state, rootState, commit, dispatch}) {
       const getDef = {
         url: "/webclient/race_messages.xml",
         params: {
