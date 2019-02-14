@@ -104,6 +104,7 @@ export default {
       map: null,
       center: L.latLng(0, 0),
       zoom: 3,
+      touched: false,
 
       L: L,
       PROJECTION: PROJECTION,
@@ -111,6 +112,8 @@ export default {
   },
   computed: {
     ...mapState({
+      raceLoaded: state => state.race.loaded,
+      raceBoundary: state => state.race.boundary,
       boatPosition: state => state.boat.position,
       boatCourse: state => state.boat.instruments.course.value,
       boatTwa: state => state.boat.instruments.twa.value,
@@ -133,9 +136,11 @@ export default {
 
   methods: {
     updateZoom(zoom) {
+      this.touched = true;
       this.zoom = zoom;
     },
     updateCenter(center) {
+      this.touched = true;
       this.center = center;
     },
     setHoverPos (e) {
@@ -145,7 +150,22 @@ export default {
     clearHoverPos () {
       this.hoverLatLng = null;
     },
-  }
+  },
+
+  watch: {
+    raceLoaded (newValue, oldValue) {
+      /* Don't force zoom when user has interacted with the view already */
+      if (this.touched) {
+        return;
+      }
+      if (this.map === null) {
+        return;
+      }
+      if (newValue && !oldValue) {
+        this.map.flyToBounds(this.raceBoundary);
+      }
+    }
+  },
 }
 </script>
 
