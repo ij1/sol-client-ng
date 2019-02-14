@@ -67,7 +67,7 @@ export default {
         if (i > 0) {
           const prevwp = PROJECTION.project(course.route[i - 1].latLng);
           const thiswp = PROJECTION.project(waypoint.latLng);
-          const bearing = atan2Bearing(thiswp.x - prevwp.x, thiswp.y - prevwp.y);
+          const bearing = atan2Bearing(thiswp.x - prevwp.x, -(thiswp.y - prevwp.y));
           course.route[i - 1].nextWpBearing = bearing;
 
           /* ...and which side to pass the prev WP */

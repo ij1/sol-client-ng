@@ -125,7 +125,7 @@ export default {
       return {
         dx: dx,
         dy: dy,
-        bearing: atan2Bearing(dx, -dy),
+        bearing: atan2Bearing(dx, dy),
       };
     }
   },

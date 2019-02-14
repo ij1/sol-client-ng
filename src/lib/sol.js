@@ -7,7 +7,7 @@ export const PROJECTION = L.CRS.EPSG3857;
 
 export function UVToWind(uv) {
   /* u,v are negated because u,v points "to", whereas TWD is wind "from" */
-  let twd = atan2Bearing(-uv[0], -uv[1]);
+  let twd = atan2Bearing(-uv[0], uv[1]);
   const tws = Math.hypot(uv[0], uv[1]);
   
   return {

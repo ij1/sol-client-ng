@@ -295,7 +295,7 @@ export default {
       const x = Math.floor((ev.clientX - rect.left) / (rect.right - rect.left) * this.gridSize.x);
       this.hover.sog = Math.hypot(x, y) / this.gridScale;
       this.hover.vmg = -y / this.gridScale;
-      this.hover.twa = radToDeg(atan2Bearing(x, -y));
+      this.hover.twa = radToDeg(atan2Bearing(x, y));
     },
     onMouseOut () {
       this.hover.sog = null;

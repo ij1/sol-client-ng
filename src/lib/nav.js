@@ -28,7 +28,7 @@ export function atan2Bearing(x, y) {
     return 0;
   }
   /* The arguments are reversed and negated from (y, x) on purpose */
-  return Math.atan2(-x, -y) + Math.PI;
+  return Math.atan2(-x, y) + Math.PI;
 }
 
 export function isCcValid(cc) {
