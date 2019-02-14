@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet'
-import { degToRad, hToMsec, minToMsec, secToMsec } from '../../lib/utils.js';
+import { degToRad, hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
 import { cogTwdToTwa, twaTwdToCog } from '../../lib/nav.js';
 
 export default {
@@ -102,8 +102,28 @@ export default {
           (time > this.predictorLen)) {
         return [];
       } else {
-        const idx = Number((hToMsec(time) / this.timeDelta).toFixed(0));
-        return this.getMarkers([idx]);
+        const idx = hToMsec(time) / this.timeDelta;
+        const lowIdx = Math.floor(idx);
+        let markers = this.getMarkers([lowIdx]);
+        if (time < this.predictorLen) {
+          const highMarkers = this.getMarkers([lowIdx + 1]);
+          const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
+
+          /* Assumes the same order (twa & cc) */
+          markers[0].latLng = L.latLng(linearInterpolate(frac,
+                                         markers[0].latLng.lat,
+                                         highMarkers[0].latLng.lat),
+                                       linearInterpolate(frac,
+                                         markers[0].latLng.lng,
+                                         highMarkers[0].latLng.lng));
+          markers[1].latLng = L.latLng(linearInterpolate(frac,
+                                         markers[1].latLng.lat,
+                                         highMarkers[1].latLng.lat),
+                                       linearInterpolate(frac,
+                                         markers[1].latLng.lng,
+                                         highMarkers[1].latLng.lng));
+        }
+        return markers;
       }
     },
 
