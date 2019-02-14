@@ -63,13 +63,13 @@
         </button>
       </div>
     </form>
-    <control-steering-polar/>
+    <polar-container/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import Polar from './polar.vue';
+import PolarContainer from './polarcontainer.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
 
@@ -80,7 +80,7 @@ import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
 export default {
   name: 'ControlSteering',
   components: {
-    'control-steering-polar': Polar,
+    'polar-container': PolarContainer,
   },
   data () {
     return {

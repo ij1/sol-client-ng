@@ -1,30 +1,16 @@
 <template>
-  <div id="polar-container">
-    <div id="boat-type">
-      <span v-html="this.boatType"/>
-    </div>
-    <div id="polar">
-      <canvas id="labels" ref="labels"/>
-      <canvas id="polarbg" ref="polarbg"/>
-      <canvas id="polarfg" ref="polarfg"/>
-      <canvas
-        id = "polaroverlay"
-        ref = "polaroverlay"
-        @mousemove = "onMouseMove"
-        @mouseout = "onMouseOut"
-      />
-      <div id="wind-key">
-        <div
-          v-for = "wind in this.$store.state.boat.polar.windKeys"
-          v-bind:key = "wind"
-          class = "wind-key-entry"
-        >
-          <span
-            class = "wind-key-line"
-            :style = "{background: windToColor(wind)}"
-          />{{ wind }} kn
-        </div>
-      </div>
+  <div id="polar">
+    <canvas id="labels" ref="labels"/>
+    <canvas id="polarbg" ref="polarbg"/>
+    <canvas id="polarfg" ref="polarfg"/>
+    <canvas
+      id = "polaroverlay"
+      ref = "polaroverlay"
+      @mousemove = "onMouseMove"
+      @mouseout = "onMouseOut"
+    />
+    <div id = "wind-key-container" :style="{top: windKeyY + 'px'}">
+      <wind-key/>
     </div>
     <div v-if = "this.hover.sog !== null">
       SOG: {{ this.hover.sog.toFixed(2) }}
@@ -39,9 +25,13 @@ import { mapGetters } from 'vuex';
 import { degToRad, radToDeg } from '../../../lib/utils.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
 import { atan2Bearing } from '../../../lib/nav.js';
+import WindKey from './windkey.vue';
 
 export default {
-  name: 'ControlSteeringPolar',
+  name: 'PolarGraph',
+  components: {
+    'wind-key': WindKey,
+  },
   data () {
     return {
       margin: 20,
@@ -62,12 +52,6 @@ export default {
     }
   },
   computed: {
-    polarLoaded () {
-      return this.$store.state.boat.polar.loaded;
-    },
-    boatType () {
-      return this.$store.state.boat.type;
-    },
     bgCurves () {
       return this.$store.getters['boat/polar/staticCurves'];
     },
@@ -107,21 +91,19 @@ export default {
     topBorderTwa () {
       return Math.acos(this.gridOrigoY / (this.gridMaxKnots * this.gridScale));
     },
+    windKeyY () {
+      return this.polarCoords(degToRad(125), this.gridMaxKnots, 5).y + 10 +
+             this.gridOrigoY + this.margin;
+    },
 
     /* Deps access to trigger redraw correctly */
     bgNeedRedraw () {
-      if (!this.polarLoaded) {
-        return -1;
-      }
       this.bgCurves;
       this.gridSize;
 
       return Date.now();
     },
     fgNeedRedraw () {
-      if (!this.polarLoaded) {
-        return -1;
-      }
       this.fgCurve;
       this.gridSize;
       this.boatTime;
@@ -129,9 +111,6 @@ export default {
       return Date.now();
     },
     overlayNeedRedraw () {
-      if (!this.polarLoaded) {
-        return -1;
-      }
       this.$store.state.boat.steering.visualSteering.twa;
 
       return Date.now();
@@ -148,9 +127,6 @@ export default {
       };
     },
     draw () {
-      if (!this.polarLoaded) {
-        return;
-      }
       this.$refs.polarbg.width = this.gridSize.x;
       this.$refs.polarbg.height = this.gridSize.y;
       this.$refs.labels.height = this.gridSize.y + this.margin * 2;
@@ -177,9 +153,6 @@ export default {
       this.drawFg();
     },
     drawFg () {
-      if (!this.polarLoaded) {
-        return;
-      }
       let ctx = this.$refs.polarfg.getContext('2d');
       ctx.clearRect(0, 0, this.$refs.polarfg.width, this.$refs.polarfg.height);
       ctx.save();
@@ -201,9 +174,6 @@ export default {
       this.drawOverlay();
     },
     drawOverlay () {
-      if (!this.polarLoaded) {
-        return;
-      }
       let twa = this.$store.state.boat.steering.visualSteering.twa;
       let ctx = this.$refs.polaroverlay.getContext('2d');
       ctx.clearRect(0, 0, this.$refs.polaroverlay.width, this.$refs.polaroverlay.height);
@@ -285,9 +255,6 @@ export default {
       }
       ctx.stroke();
     },
-    windToColor(knots) {
-      return windToColor(knots);
-    },
     onMouseMove (ev) {
       // FIXME: this might be problematic for some browsers we want to support
       const rect = this.$refs.polaroverlay.getBoundingClientRect();
@@ -322,15 +289,6 @@ export default {
 </script>
 
 <style scoped>
-#polar-container {
-  padding-top: 10px;
-  text-align: left;
-}
-#boat-type {
-  padding-left: 20px;
-  font-size: 14px;
-  font-weight: bold;
-}
 #polar, #labels {
   position: relative;
 }
@@ -339,21 +297,8 @@ export default {
   top: 20px;
   left: 20px;
 }
-#wind-key {
+#wind-key-container {
   position: absolute;
-  bottom: 0px;
   right: 2px;
-}
-.wind-key-line {
-  height: 5px;
-  border-radius: 3px;
-  width: 15px;
-  position: absolute;
-  right: 30px;
-  top: 3px;
-}
-.wind-key-entry {
-  position: relative;
-  bottom: 0px;
 }
 </style>
