@@ -46,7 +46,7 @@ export default {
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       const url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
 
-      return axios.get(state.server + url, {
+      let p = axios.get(state.server + url, {
         responseType: respType,
         params: reqDef.params,
       })
@@ -56,18 +56,16 @@ export default {
           return Promise.reject(new Error("Invalid API call"));
         }
         return response.data;
-      })
+      });
 
-      .then((data) => {
-        if (typeof reqDef.compressedPayload !== 'undefined') {
+      if (typeof reqDef.compressedPayload !== 'undefined') {
+        p = p.then((data) => {
           let input = new Uint8Array(data);
           return Buffer.from(pako.inflate(input)).toString();
-        } else {
-          return data;
-        }
-      })
+        });
+      }
 
-      .then((data) => {
+      p = p.then((data) => {
         return parseString(data, {explicitArray: reqDef.useArrays});
       })
 
@@ -78,6 +76,8 @@ export default {
 
         return result[reqDef.dataField];
       });
+
+      return p;
     },
 
     post ({state, commit}, reqDef) {
