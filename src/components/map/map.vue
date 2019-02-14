@@ -28,7 +28,8 @@
       <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map" :hover-lat-lng = "this.hoverLatLng"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
 
-      <l-control-zoom :position = "'topleft'"/>
+      <race-status v-if = "this.map !== null"/>
+      <l-control-zoom v-if = "this.map !== null" :position = "'topleft'" />
       <center-boat-button v-if = "this.map !== null"/>
       <steer-button v-if = "this.map !== null"/>
       <towback-flag v-if = "this.map !== null"/>
@@ -56,6 +57,7 @@ import PlayerBoat from './playerboat';
 import VisualSteering from './visualsteering';
 import MapHighlight from './highlight';
 
+import RaceStatus from '../racestatus.vue';
 import CenterBoatButton from './centerboatbutton';
 import SteerButton from './steerbutton';
 import TowbackFlag from '../towbackflag';
@@ -84,6 +86,7 @@ export default {
     'visual-steering': VisualSteering,
     'map-highlight': MapHighlight,
 
+    'race-status': RaceStatus,
     'center-boat-button': CenterBoatButton,
     'steer-button': SteerButton,
     'towback-flag': TowbackFlag,

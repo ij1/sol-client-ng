@@ -1,17 +1,20 @@
 <template>
-  <div id="status-bar">
-    <div id="status-bar-left">
-      <div v-if="this.$store.state.race.loaded">
-        <span v-html="this.$store.state.race.info['message']"/>
-        {{ this.boatInfo }}
-      </div>
+  <l-control :position = "'topleft'">
+    <div id = "race-status" v-if="this.$store.state.race.loaded">
+      <span v-html="this.$store.state.race.info['message']"/>
+      {{ this.boatInfo }}
     </div>
-  </div>
+  </l-control>
 </template>
 
 <script>
+import { LControl } from 'vue2-leaflet';
+
 export default {
   name: 'StatusBar',
+  components: {
+    'l-control': LControl,
+  },
   computed: {
     boatInfo () {
       if (this.$store.state.boat.id === null) {
@@ -29,15 +32,8 @@ export default {
 </script>
 
 <style scoped>
-#status-bar {
-  position: absolute;
-  width: 100%;
-  z-index: 1;
+#race-status {
+  pointer-events: none;
   font-size: 12px;
-}
-
-#status-bar-left {
-  position: absolute;
-  left: 0;
 }
 </style>
