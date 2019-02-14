@@ -16,8 +16,7 @@
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-720"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-360"/>
       <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "360"/>
-      <dc-bar v-if = "this.map !== null"/>
-      <wind-info v-if = "this.map !== null" :hover-lat-lng = "this.hoverLatLng"/>
+
       <canvas-overlay v-if = "this.map !== null" :map = "this.map"/>
       <fleet-traces v-if = "this.map !== null"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
@@ -25,9 +24,13 @@
       <player-boat v-if = "this.map !== null && this.boatPosition !== null" :course = "this.boatCourse" :twa = "this.boatTwa"/>
       <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map" :hover-lat-lng = "this.hoverLatLng"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
+
       <center-boat-button v-if = "this.map !== null"/>
       <steer-button v-if = "this.map !== null"/>
       <towback-flag v-if = "this.map !== null"/>
+
+      <dc-bar v-if = "this.map !== null"/>
+      <wind-info v-if = "this.map !== null" :hover-lat-lng = "this.hoverLatLng"/>
     </l-map>
   </div>
 </template>
@@ -41,17 +44,20 @@ import { PROJECTION } from '../../lib/sol.js';
 import MapTiles from './tiles';
 import RaceInfo from './race';
 import CanvasOverlay from './canvasoverlay';
-import DcBar from '../dcbar.vue';
-import WindInfo from './windinfo';
+
 import FleetTraces from './fleettraces';
 import FleetMap from './fleetmap';
 import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
 import VisualSteering from './visualsteering';
 import MapHighlight from './highlight';
+
 import CenterBoatButton from './centerboatbutton';
 import SteerButton from './steerbutton';
 import TowbackFlag from '../towbackflag';
+
+import DcBar from '../dcbar.vue';
+import WindInfo from './windinfo';
 
 export default {
   name: 'Map',
@@ -64,17 +70,21 @@ export default {
     'map-tiles': MapTiles,
     'race-info': RaceInfo,
     'canvas-overlay': CanvasOverlay,
-    'dc-bar': DcBar,
-    'wind-info': WindInfo,
+
     'fleet-traces': FleetTraces,
     'fleet-map': FleetMap,
     'fleet-hover': FleetHover,
     'player-boat': PlayerBoat,
     'visual-steering': VisualSteering,
     'map-highlight': MapHighlight,
+
     'center-boat-button': CenterBoatButton,
     'steer-button': SteerButton,
     'towback-flag': TowbackFlag,
+
+    'dc-bar': DcBar,
+    'wind-info': WindInfo,
+
   },
 
   data () {
