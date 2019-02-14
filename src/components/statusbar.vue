@@ -9,7 +9,7 @@
     <div id="status-bar-right">
       <div v-if="this.nextDC !== null">
         Next DC:
-        {{ this.nextDC.type | cctocog }}={{ this.nextDC.value | prettyDegrees }}
+        {{ this.nextDC.type | cctocog }}={{ this.nextDC | prettyDegrees }}
         in {{ this.toNextDCTime | formatNextDCTime }}
       </div>
     </div>
@@ -18,6 +18,7 @@
 
 <script>
 import { radToDeg, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
+import { twaTextPrefix } from '../lib/nav.js';
 
 export default {
   name: 'StatusBar',
@@ -28,8 +29,9 @@ export default {
     }
   },
   filters: {
-    prettyDegrees (radians) {
-      return radToDeg(radians).toFixed(3).replace(/\.*0*$/, '');
+    prettyDegrees (dc) {
+      return twaTextPrefix(dc) +
+             radToDeg(dc.value).toFixed(3).replace(/\.*0*$/, '');
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;
