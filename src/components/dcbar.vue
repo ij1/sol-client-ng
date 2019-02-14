@@ -1,7 +1,5 @@
 <template>
-  <l-control
-    :position = "'topright'"
-  >
+  <l-control :position = "'topright'">
     <div id = "dc-bar" v-if = "this.nextDC !== null">
       Next DC:
       {{ this.nextDC.type | cctocog }}={{ this.nextDC | prettyDegrees }}
