@@ -12,14 +12,20 @@ export default {
 
   mutations: {
     add (state, messages) {
-      for (let message of messages) {
+      for (let i = messages.length - 1; i >= 0; i--) {
+        let message = messages[i];
         const newId = parseInt(message.id);
-        if (Number.isFinite(newId) && newId > state.lastId) {
+        if (!Number.isFinite(newId)) {
+          continue;
+        } else if (newId <= state.lastId) {
+          continue;
+        } else if (newId > state.lastId) {
           state.lastId = newId;
         }
         message.message = ('<p>' + message.message.replace(/\n/g, '</p><p>') + '</p>').replace(/<p><\/p>/g, '')
+        state.racemsgs.unshift(message);
       }
-      state.racemsgs = orderBy(messages.concat(state.racemsgs), 'last_updated', 'desc');
+      state.racemsgs = orderBy(state.racemsgs, 'last_updated', 'desc');
     },
     updateExpected(state, expectedId) {
       if (expectedId > state.expectedId) {
@@ -37,7 +43,7 @@ export default {
         url: "/webclient/race_messages.xml",
         params: {
           token: rootState.auth.token,
-          request_msg_id: state.lastId + 1,
+          request_msg_id: state.lastId + 1, /* Doesn't seem to work as expected */
         },
         useArrays: false,
         dataField: 'racemessages',
