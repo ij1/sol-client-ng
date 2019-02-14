@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { speedTowardsBearing } from '../../lib/nav.js';
+import { speedTowardsBearing, twaTextPrefix } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 
 function defaultFormat (instrument) {
@@ -7,7 +7,7 @@ function defaultFormat (instrument) {
 }
 
 function twaFormat (instrument) {
-  return ((instrument.value > 0) ? '+' : '') + defaultFormat(instrument);
+  return twaTextPrefix(instrument.value) + defaultFormat(instrument);
 }
 
 export default {

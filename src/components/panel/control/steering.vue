@@ -71,7 +71,7 @@
 import { mapState } from 'vuex';
 import Polar from './polar.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
-import { isCcValid, isTwaValid } from '../../../lib/nav.js';
+import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
 
 // FIXME: The values should probably use some arbitary precision library
 // to avoid unexpected rounding with floating-points.
@@ -340,7 +340,7 @@ export default {
       if ((this.type === 'twa') || (typeof value === 'undefined')) {
         return;
       }
-      this.twa = ((value.charAt(0) !== '-') ? '+' : '') + value;
+      this.twa = twaTextPrefix(value) + value;
     },
     delayTime (value) {
       this.$store.commit('boat/steering/setDelayTime', value);
