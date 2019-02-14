@@ -63,7 +63,7 @@
 import { mapGetters } from 'vuex';
 import Datepicker from 'vuejs-datepicker';
 import { radToDeg, degToRad, msecToH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
-import { isCcValid, isTwaValid } from '../../../lib/nav.js';
+import { isCcValid, isTwaValid, dcTwaTextPrefix } from '../../../lib/nav.js';
 
 export default {
   name: 'DCEditor',
@@ -85,7 +85,7 @@ export default {
       time: this.dcToEdit.time,
       hours: msecToUTCTimeString(this.dcToEdit.time),
       type: this.dcToEdit.type,
-      value: this.twaTextPrefix(this.dcToEdit) +
+      value: dcTwaTextPrefix(this.dcToEdit) +
              radToDeg(this.dcToEdit.value).toFixed(3),
       origDc: Object.assign({}, this.dcToEdit),
       closed: false,
@@ -113,7 +113,7 @@ export default {
       // FIXME: check also 0.000 -> 0.0 trailing zeros changes
       return (this.origDc.time !== this.newTime) ||
              (this.origDc.type !== this.type) ||
-             ((this.twaTextPrefix(this.origDc) +
+             ((dcTwaTextPrefix(this.origDc) +
                radToDeg(this.origDc.value).toFixed(3)) !== this.value);
     },
     valid () {
@@ -159,9 +159,6 @@ export default {
       if (this.canSend) {
         this.sendChange();
       }
-    },
-    twaTextPrefix (dc) {
-      return ((dc.type === 'twa') && (dc.value > 0)) ? '+' : '';
     },
     sendChange() {
       const now = this.$store.getters['time/now']();

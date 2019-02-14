@@ -18,7 +18,7 @@
 
 <script>
 import { radToDeg, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
-import { twaTextPrefix } from '../lib/nav.js';
+import { dcTwaTextPrefix } from '../lib/nav.js';
 
 export default {
   name: 'StatusBar',
@@ -30,7 +30,7 @@ export default {
   },
   filters: {
     prettyDegrees (dc) {
-      return twaTextPrefix(dc) +
+      return dcTwaTextPrefix(dc) +
              radToDeg(dc.value).toFixed(3).replace(/\.*0*$/, '');
     },
     cctocog (type) {

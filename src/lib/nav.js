@@ -76,6 +76,10 @@ export function twaTwdToCog(twa, twd) {
   return diff;
 }
 
-export function twaTextPrefix (dc) {
-  return ((dc.type === 'twa') && (dc.value > 0)) ? '+' : '';
+export function twaTextPrefix (value) {
+  return (value > 0 ? '+' : '');
+}
+
+export function dcTwaTextPrefix (dc) {
+  return (dc.type === 'twa') ? twaTextPrefix(dc.value) : '';
 }

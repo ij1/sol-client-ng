@@ -33,7 +33,7 @@
           >
             <td>{{ command.time | msecToUTCString }}</td>
             <td>{{ command.type | cctocog }}</td>
-            <td>{{ command.value | formatValue(command.type) }}</td>
+            <td>{{ command | formatValue }}</td>
           </tr>
         </tbody>
       </table>
@@ -46,6 +46,7 @@
 
 <script>
 import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
+import { dcTwaTextPrefix } from '../../../lib/nav.js';
 import DcEditor from './dceditor.vue';
 
 export default {
@@ -65,9 +66,8 @@ export default {
     msecToUTCString (msec) {
       return msecToUTCString(msec);
     },
-    formatValue (radians, type) {
-      return (((type === 'twa') && (radians > 0)) ? '+' : '') +
-             radToDeg(radians).toFixed(3);
+    formatValue (dc) {
+      return dcTwaTextPrefix(dc) + radToDeg(dc.value).toFixed(3);
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;
