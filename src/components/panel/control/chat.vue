@@ -1,9 +1,9 @@
 <template>
   <div class="chat-channel">
     <div class="chat-channel-header">
-      Chatroom:
+      <label for = "chat-channel-selector">Chatroom:</label>
       <select 
-        class="chat-channel-selector"
+        id = "chat-channel-selector"
         :value="roomId"
         @input="selectRoom"
       >
