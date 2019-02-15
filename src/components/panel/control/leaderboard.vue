@@ -33,6 +33,7 @@
            <td
              v-for = "column in visibleColumnsWithSort"
              :key = "column.dataField"
+             :class = "{ 'leaderboard-left': column.align === 'l', 'leaderboard-right': column.align === 'r' }"
            >
              <country-flag
                v-if = "column.dataField === 'country'"
