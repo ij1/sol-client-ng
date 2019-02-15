@@ -199,6 +199,8 @@ export default {
   font-size: 9px;
   height: 4em;
   box-sizing: border-box;
+  resize: none;
+  overflow: hidden;
 }
 .chat-channel-input-btn {
   text-align: right;
