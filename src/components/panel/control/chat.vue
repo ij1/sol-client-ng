@@ -18,6 +18,13 @@
           {{ channel.name }}
         </option>
       </select>
+      <button
+        class = "chat-channel-close"
+        @click = "onClose"
+        :disabled = "!canClose"
+      >
+        Close
+      </button>
     </div>
     <div class="chat-block-list">
       <div class="chat-block"
@@ -91,6 +98,9 @@ export default {
       return (this.myMessage.trim().length > 0) &&
              !this.$store.state.chatrooms.rooms[this.roomId].sending;
     },
+    canClose () {
+      return this.$store.state.chatrooms.activeRooms.length > 1;
+    },
     /* Trim, force all consecutive newline chars into singular '\n' */
     myStringClean () {
       return this.myMessage.trim().replace(/[\n\r][\n\r]*/g, '\n');
@@ -134,7 +144,12 @@ export default {
           });
         }
       });
-    }
+    },
+    onClose () {
+      if (this.canClose) {
+        this.$store.commit('chatrooms/closeRoom', this.roomKey);
+      }
+    },
   }
 }
 </script>
@@ -154,6 +169,10 @@ export default {
 
 .chat-channel-header select {
   font-size: 9px;
+}
+
+.chat-channel-close {
+  float: right;
 }
 
 .chat-block-list {

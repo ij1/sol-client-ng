@@ -53,6 +53,23 @@ export default {
         id: room,
       });
     },
+    closeRoom(state, roomKey) {
+      for (let i = 0; i < state.activeRooms.length; i++) {
+        if (state.activeRooms[i].roomKey === roomKey) {
+          state.activeRooms.splice(i, 1);
+
+          /* Fix index as element was removed */
+          if (i > state.nextRoomIndex) {
+            state.nextRoomIndex--;
+          }
+          /* At the last element (that got removed) handling */
+          if (state.nextRoomIndex >= state.activeRooms.length) {
+            state.nextRoomIndex = 0;
+          }
+          return;
+        }
+      }
+    },
     selectRoom(state, roomInfo) {
       for (let i = 0; i < state.activeRooms.length; i++) {
         if (state.activeRooms[i].roomKey === roomInfo.roomKey) {
