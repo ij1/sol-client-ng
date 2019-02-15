@@ -148,7 +148,7 @@ export default {
 }
 
 .chat-channel-header {
-  text-align: right;
+  text-align: left;
   padding-bottom: 5px;
 }
 
