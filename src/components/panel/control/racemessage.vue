@@ -1,5 +1,8 @@
 <template>
   <div class="race-message">
+    <div class="race-message-flag">
+      <lima-flag :size = "28"/>
+    </div>
     <div class="race-message-title">
       <span v-html="racemsg.title"/>
     </div>
@@ -13,9 +16,13 @@
 </template>
 
 <script>
+import LimaFlag from '../../limaflag.vue';
 
 export default {
   name: 'RaceMessage',
+  components: {
+    'lima-flag': LimaFlag,
+  },
   props: {
     racemsg: {
       type: Object,
@@ -36,6 +43,10 @@ export default {
 }
 .race-message:last-child {
   border-bottom: 0px;
+}
+.race-message-flag {
+  float: left;
+  margin: 2px;
 }
 .race-message-title {
   font-size: 14px;
