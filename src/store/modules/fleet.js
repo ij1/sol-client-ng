@@ -237,7 +237,7 @@ export default {
   actions: {
     fetchRace({rootState, state, getters, rootGetters, commit, dispatch}) {
       const getDef = {
-        url: "/webclient/race_" + rootState.auth.race_id + ".xml",
+        url: "/webclient/race_" + rootState.auth.raceId + ".xml",
         params: {
           token: rootState.auth.token,
         },
@@ -290,7 +290,7 @@ export default {
 
     fetchMetainfo({rootState, commit, dispatch}) {
       const getDef = {
-        url: "/webclient/metainfo_" + rootState.auth.race_id + ".xml",
+        url: "/webclient/metainfo_" + rootState.auth.raceId + ".xml",
         params: {
           token: rootState.auth.token,
         },
@@ -320,7 +320,7 @@ export default {
 
     fetchTraces({rootState, state, rootGetters, commit, dispatch}) {
       const getDef = {
-        url: "/webclient/traces_" + rootState.auth.race_id + ".xml",
+        url: "/webclient/traces_" + rootState.auth.raceId + ".xml",
         params: {
           token: rootState.auth.token,
         },

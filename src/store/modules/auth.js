@@ -6,14 +6,14 @@ export default {
   state: {
     status: 'Unauthenticated',
     token: null,
-    race_id: null,
+    raceId: null,
   }, 
 
   mutations: {
     loggedIn (state, params) {
       state.status = 'Authenticated';
       state.token = params.token;
-      state.race_id = params.race_id;
+      state.raceId = params.race_id;
     },
     loginFailed (state) {
       state.status = 'Login failed';

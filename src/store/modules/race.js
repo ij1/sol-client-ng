@@ -124,7 +124,7 @@ export default {
       commit('weather/initTime', now, {root: true});
 
       const getDef = {
-        url: "/webclient/auth_raceinfo_" + rootState.auth.race_id + ".xml",
+        url: "/webclient/auth_raceinfo_" + rootState.auth.raceId + ".xml",
         params: {
           token: rootState.auth.token,
         },
