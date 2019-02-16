@@ -87,8 +87,8 @@ export default {
         const angle = course.route[course.route.length - 2].nextWpBearing +
                              Math.PI / 2 + i * Math.PI;
         const dlat = Math.asin(Math.sin(angle - Math.PI / 2) * Math.sin(angularDist));
-        const ep_lat = center.lat + radToDeg(dlat);
-        const dy = PROJECTION.project(L.latLng(ep_lat, center.lng)).y - centerProj.y;
+        const epLat = center.lat + radToDeg(dlat);
+        const dy = PROJECTION.project(L.latLng(epLat, center.lng)).y - centerProj.y;
         const dx = Math.tan(angle) * dy;
         const endpoint = PROJECTION.unproject(L.point(centerProj.x + dx, centerProj.y + dy));
         course.finish.push(endpoint);
