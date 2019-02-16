@@ -33,10 +33,6 @@ export default {
   methods: {
     msecToUTCString: msecToUTCString,
   },
-
-  data () {
-    return {}
-  },
 }
 </script>
 
