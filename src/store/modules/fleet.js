@@ -52,7 +52,7 @@ export default {
         cog: parseFloat(boatData.cog),
 
         ranking: parseInt(boatData.ranking),
-        current_leg: boatData.current_leg,
+        lastRoundedMark: parseInt(boatData.current_leg),
         log: 0,
 
         latLng: L.latLng(boatData.lat, boatData.lon),
@@ -95,7 +95,7 @@ export default {
           state.boat[idx].dtg = parseFloat(boat.dtg);
           state.boat[idx].dbl = boat.dbl;
           state.boat[idx].log = boat.log;
-          state.boat[idx].current_leg = boat.current_leg;
+          state.boat[idx].lastRoundedMark = parseInt(boat.current_leg);
 
           if (idx > state.playerBoatIdx) {
             if (state.boat[idx].ranking === 1) {
@@ -130,6 +130,8 @@ export default {
           boat.cog = parseFloat(boat.cog);
           boat.ranking = parseInt(boat.ranking);
           boat.dtg = parseFloat(boat.dtg);
+          boat.lastRoundedMark = parseInt(boat.current_leg);
+          delete boat.current_leg;
 
           if (boat.ranking === 1) {
             state.leader = id;

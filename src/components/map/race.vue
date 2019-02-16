@@ -199,7 +199,7 @@ export default {
     },
     ...mapState({
       race: state => state.race,
-      lastRoundedMark: state => state.boat.current_leg,
+      lastRoundedMark: state => state.boat.lastRoundedMark,
       finishTime: state => state.boat.finish_time,
     }),
   },

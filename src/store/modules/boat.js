@@ -21,7 +21,7 @@ export default {
     ranking: null,
     dtg: null,
     position: null,
-    current_leg: 0,
+    lastRoundedMark: 0,
     finish_time: null,
     currentSteering: 'twa',
   },
@@ -31,7 +31,7 @@ export default {
       state.id = data.id;
       state.name = data.name;
       state.position = L.latLng(data.lat, data.lon);
-      state.current_leg = parseInt(data.current_leg);
+      state.lastRoundedMark = parseInt(data.current_leg);
       state.ranking = parseInt(data.ranking);
       state.dtg = parseFloat(data.dtg);
       if (data.finish_time.length > 0) {
