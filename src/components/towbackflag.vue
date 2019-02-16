@@ -22,7 +22,7 @@ export default {
   computed: {
     ...mapState({
       raceLoaded: state => state.race.loaded,
-      raceStartTime: state => state.race.info.start_time,
+      raceStartTime: state => state.race.info.startTime,
     }),
     ...mapGetters({
       boatTime: 'boat/time',

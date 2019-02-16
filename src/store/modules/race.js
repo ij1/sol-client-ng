@@ -99,8 +99,8 @@ export default {
 
     towbackPeriod: (state) => {
       return {
-        start: state.info.start_time - hToMsec(1),
-        end: state.info.start_time,
+        start: state.info.startTime - hToMsec(1),
+        end: state.info.startTime,
       };
     },
     isPracticePeriod: (state, getters, rootState, rootGetters) => {
@@ -146,7 +146,8 @@ export default {
 
         delete raceInfo.boat;
         delete raceInfo.chatrooms;
-        raceInfo.start_time = UTCToMsec(raceInfo.start_time);
+        raceInfo.startTime = UTCToMsec(raceInfo.start_time);
+        delete raceInfo.start_time;
         raceInfo.course = getters['parseCourse'](raceInfo);
         commit('init', raceInfo);
 
