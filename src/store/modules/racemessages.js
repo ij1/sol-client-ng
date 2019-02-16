@@ -1,4 +1,5 @@
 import { orderBy } from 'lodash';
+import { UTCToMsec } from '../../lib/utils.js';
 import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
 
 export default {
@@ -23,9 +24,12 @@ export default {
           state.lastId = newId;
         }
         message.message = ('<p>' + message.message.replace(/\n/g, '</p><p>') + '</p>').replace(/<p><\/p>/g, '')
+        message.lastUpdated = UTCToMsec(message.last_updated);
+        delete message.last_updated;
+
         state.racemsgs.unshift(message);
       }
-      state.racemsgs = orderBy(state.racemsgs, 'last_updated', 'desc');
+      state.racemsgs = orderBy(state.racemsgs, 'lastUpdated', 'desc');
     },
     updateExpected(state, expectedId) {
       if (expectedId > state.expectedId) {

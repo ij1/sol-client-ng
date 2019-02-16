@@ -7,7 +7,7 @@
       <span v-html="racemsg.title"/>
     </div>
     <div class="race-message-datetime">
-        {{ racemsg.last_updated }}
+      {{ msecToUTCString(racemsg.lastUpdated) }}
     </div>
     <div class="race-message-msg">
       <span v-html="racemsg.message"/>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { msecToUTCString } from '../../../lib/utils.js';
 import LimaFlag from '../../limaflag.vue';
 
 export default {
@@ -28,6 +29,9 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  methods: {
+    msecToUTCString: msecToUTCString,
   },
 
   data () {
