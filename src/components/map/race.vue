@@ -200,7 +200,7 @@ export default {
     ...mapState({
       race: state => state.race,
       lastRoundedMark: state => state.boat.lastRoundedMark,
-      finishTime: state => state.boat.finish_time,
+      finishTime: state => state.boat.finishTime,
     }),
   },
 

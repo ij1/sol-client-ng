@@ -21,7 +21,7 @@ export default {
         return '';
       }
       let txt = 'Boat ' + this.$store.state.boat.name;
-      if (this.$store.state.boat.finish_time !== null) {
+      if (this.$store.state.boat.finishTime !== null) {
         return txt + ' has finished the race.';
       }
       return txt + ' ranked #' + this.$store.state.boat.ranking +

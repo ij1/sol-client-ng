@@ -22,7 +22,7 @@ export default {
     dtg: null,
     position: null,
     lastRoundedMark: 0,
-    finish_time: null,
+    finishTime: null,
     currentSteering: 'twa',
   },
 
@@ -35,7 +35,7 @@ export default {
       state.ranking = parseInt(data.ranking);
       state.dtg = parseFloat(data.dtg);
       if (data.finish_time.length > 0) {
-        state.finish_time = UTCToMsec(data.finish_time);
+        state.finishTime = UTCToMsec(data.finish_time);
       }
       state.currentSteering = data.last_cmd_type;
     },
