@@ -3,12 +3,12 @@
     <login-popup/>
     <notifications-popup/>
     <portal-target name="dc-editor-dest"/>
-    <div id="left_div">
+    <div id = "left-div">
       <map-view/>
       <weather-panel/>
       <boat-instruments/>
     </div>
-    <div id="right_div">
+    <div id = "right-div">
       <control-panel-switcher/>
     </div>
   </div>
@@ -61,7 +61,7 @@ html, body {
 </style>
 
 <style scoped>
-#left_div {
+#left-div {
   position: absolute;
   top: 0;
   left: 0;
@@ -69,7 +69,7 @@ html, body {
   height: 100%;
   overflow: hidden;
 }
-#right_div {
+#right-div {
   position: absolute;
   top: 0;
   right: 0;
