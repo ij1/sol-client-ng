@@ -1,5 +1,4 @@
 import queryString from 'querystring';
-import axios from 'axios';
 import promisify from 'util.promisify';
 import pako from 'pako';
 import xml2js from 'xml2js' ;
@@ -38,30 +37,28 @@ export default {
 
   actions: {
     get ({state}, reqDef) {
-      let respType = 'text';
-      if (typeof reqDef.compressedPayload !== 'undefined') {
-        respType = 'arraybuffer';
+      /* Due to dev CORS reasons, we need to mangle some API provided URLs */
+      let url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
+      const params = queryString.stringify(reqDef.params);
+      if (params.length > 0) {
+        url += '?' + params;
       }
 
-      /* Due to dev CORS reasons, we need to mangle some API provided URLs */
-      const url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
-
-      let p = axios.get(state.server + url, {
-        responseType: respType,
-        params: reqDef.params,
-      })
+      let p = fetch(state.server + url)
 
       .then((response) => {
         if (response.status !== 200) {
           return Promise.reject(new Error("Invalid API call"));
         }
-        return response.data;
+        if (typeof reqDef.compressedPayload !== 'undefined') {
+          return response.arrayBuffer();
+        }
+        return response.text();
       });
 
       if (typeof reqDef.compressedPayload !== 'undefined') {
         p = p.then((data) => {
-          let input = new Uint8Array(data);
-          return Buffer.from(pako.inflate(input)).toString();
+          return Buffer.from(pako.inflate(data)).toString();
         });
       }
 
@@ -81,21 +78,21 @@ export default {
     },
 
     post ({state, commit}, reqDef) {
-      const config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      };
-
-      return axios.post(state.server + reqDef.url,
-                        queryString.stringify(reqDef.params), config)
+      return fetch(state.server + reqDef.url, {
+          method: "POST",
+          body: queryString.stringify(reqDef.params),
+        })
         .then((response) => {
           if (response.status !== 200) {
             return Promise.reject(new Error("Invalid API call"));
-          } else if (response.data === 'OK') {
+          }
+          return response.text();
+        })
+        .then(data => {
+          if (data === 'OK') {
             Promise.resolve();
           } else if (typeof reqDef.dataField !== 'undefined') {
-            parseString(response.data,
+            parseString(data,
                         {explicitArray: reqDef.useArrays},
                         (err, result) => {
 
