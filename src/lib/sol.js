@@ -33,9 +33,8 @@ export function windToColor(knots) {
   let r = Math.max(r1 + r2 - 255, 0);
   let g = Math.max(g1 + g2 - 255, 0);
   let b = b1 + b2;
-  if (knots > 70) {
-    const v = (1 - colorGradient(knots, 70, 90)) * 255;
-    r = v;
+  if (knots > 60) {
+    const v = (1 - colorGradient(knots, 60, 90)) * 255;
     b = v;
   }
   return 'rgb(' + r + ',' + g + ',' + b + ')';
