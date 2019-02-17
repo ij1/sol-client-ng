@@ -127,6 +127,9 @@ export default {
       return true;
     },
     setBounds() {
+      if (this.zoom !== this.map.getZoom()) {
+        this.zoom = this.map.getZoom();
+      }
       this.latLngBounds = this.map.getBounds();
       this.pixelBounds = this.map.getPixelBounds();
       this.pixelSize = this.map.getSize();
@@ -134,9 +137,6 @@ export default {
     },
 
     updateZoom() {
-      if (this.zoom !== this.map.getZoom()) {
-        this.zoom = this.map.getZoom();
-      }
       if (this.animFrame === null) {
         this.animFrame = L.Util.requestAnimFrame(this.setBounds, this);
       }
