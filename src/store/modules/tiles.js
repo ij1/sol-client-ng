@@ -59,12 +59,13 @@ export default {
   },
 
   actions: {
-    addTile ({state, getters, commit}, id) {
+    addTile ({state, getters, commit, dispatch}, id) {
       const key = getters.tileIdToKey(id);
       if (typeof state.tiles[key] !== 'undefined') {
         commit('lockTile', id);
       } else {
         commit('addTile', id);
+        dispatch('loadTile', id);
       }
     },
     loadTile ({state, getters, commit, dispatch}, id) {

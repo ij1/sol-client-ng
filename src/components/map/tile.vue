@@ -240,9 +240,6 @@ export default {
      */
     this.$store.dispatch('tiles/addTile', this.$options.propsData.id);
   },
-  created () {
-    this.$store.dispatch('tiles/loadTile', this.id);
-  },
   mounted () {
     this.drawTile();
   },
