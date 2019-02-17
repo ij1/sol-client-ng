@@ -94,7 +94,7 @@ export default {
             continue;
           }
           tile.displayKey = this.$store.getters['tiles/tileIdToKey'](tile.id);
-          tile.id.x = (x >= 0) ? x % xSize : xSize - (-x % xSize);
+          tile.id.x = (x % xSize + xSize) % xSize;
           tile.key = this.$store.getters['tiles/tileIdToKey'](tile.id);
           tile.lngOffset = (x - tile.id.x) * this.tileGridSize;
           list.push(tile);
