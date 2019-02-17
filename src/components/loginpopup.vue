@@ -86,7 +86,7 @@ export default {
              (this.authParams.password.trim().length > 0);
     },
   },
-  mounted() {
+  created() {
     this.fetchRaces();
   },
   beforeDestroy () {
