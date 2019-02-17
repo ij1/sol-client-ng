@@ -29,15 +29,9 @@ export default {
 
   computed: {
     geoms () {
-      if (this.tileKey === null) {
-        return {}
-      }
       return this.$store.state.tiles.tiles[this.tileKey].geoms;
     },
     loaded () {
-      if (this.tileKey === null) {
-        return false;
-      }
       return this.$store.state.tiles.tiles[this.tileKey].loaded;
     },
     tilesize() {
