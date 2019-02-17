@@ -29,13 +29,7 @@ export default {
 
   mutations: {
     addTile (state, id) {
-      const key = tileIdToKey(id);
-      if (typeof state.tiles[key] !== 'undefined') {
-        state.tiles[key].refCount++;
-        return;
-      }
-
-      Vue.set(state.tiles, key, {
+      Vue.set(state.tiles, tileIdToKey(id), {
         id: id,
         loading: false,
         loaded: false,
@@ -43,9 +37,11 @@ export default {
         geoms: {},
       });
     },
+    lockTile (state, id) {
+      state.tiles[tileIdToKey(id)].refCount++;
+    },
     unlockTile (state, id) {
-      const key = tileIdToKey(id);
-      state.tiles[key].refCount--;
+      state.tiles[tileIdToKey(id)].refCount--;
     },
 
     storeTileGeoms (state, tileInfo) {
@@ -63,6 +59,14 @@ export default {
   },
 
   actions: {
+    addTile ({state, getters, commit}, id) {
+      const key = getters.tileIdToKey(id);
+      if (typeof state.tiles[key] !== 'undefined') {
+        commit('lockTile', id);
+      } else {
+        commit('addTile', id);
+      }
+    },
     loadTile ({state, getters, commit, dispatch}, id) {
       const key = getters.tileIdToKey(id);
       if (state.tiles[key].loading || state.tiles[key].loaded) {
