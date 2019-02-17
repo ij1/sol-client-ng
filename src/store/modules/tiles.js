@@ -31,6 +31,7 @@ export default {
     addTile (state, id) {
       const key = tileIdToKey(id);
       if (typeof state.tiles[key] !== 'undefined') {
+        state.tiles[key].refCount++;
         return;
       }
 
@@ -38,9 +39,13 @@ export default {
         id: id,
         loading: false,
         loaded: false,
-        refcount: 0,
+        refCount: 1,
         geoms: {},
       });
+    },
+    unlockTile (state, id) {
+      const key = tileIdToKey(id);
+      state.tiles[key].refCount--;
     },
 
     storeTileGeoms (state, tileInfo) {

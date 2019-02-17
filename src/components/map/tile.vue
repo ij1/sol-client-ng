@@ -245,5 +245,8 @@ export default {
       L.Util.cancelAnimFrame(this.animFrame);
     }
   },
+  destroyed () {
+    this.$store.commit('tiles/unlockTile', this.id);
+  }
 }
 </script>
