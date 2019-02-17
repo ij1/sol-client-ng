@@ -4,6 +4,7 @@
 
 <script>
 import L from 'leaflet';
+import { latLngBoundsAddOffset } from '../../lib/utils.js';
 
 export default {
   name: 'MapTile',
@@ -61,8 +62,8 @@ export default {
     drawBounds () {
       const min = this.$parent.pixelBounds.min.subtract(L.point(100, 100));
       const max = this.$parent.pixelBounds.max.add(L.point(100, 100));
-      const bounds = L.latLngBounds(this.$parent.map.unproject(min),
-                                    this.$parent.map.unproject(max));
+      const bounds = L.latLngBounds(this.$parent.map.unproject(min, this.$parent.zoom),
+                                    this.$parent.map.unproject(max, this.$parent.zoom));
       return bounds;
     },
     bounds() {
@@ -70,19 +71,20 @@ export default {
       let x1 = this.maxBounds.getSouthWest().lng;
       let y2 = this.maxBounds.getNorthEast().lat;
       let x2 = this.maxBounds.getNorthEast().lng;
+      const drawBounds = latLngBoundsAddOffset(this.drawBounds, -this.lngOffset);
 
       /* Restrict canvas boundaries if necessary */
-      if (y1 < this.drawBounds.getSouthWest().lat) {
-        y1 = this.drawBounds.getSouthWest().lat;
+      if (y1 < drawBounds.getSouthWest().lat) {
+        y1 = drawBounds.getSouthWest().lat;
       }
-      if (x1 < this.drawBounds.getSouthWest().lng) {
-        x1 = this.drawBounds.getSouthWest().lng;
+      if (x1 < drawBounds.getSouthWest().lng) {
+        x1 = drawBounds.getSouthWest().lng;
       }
-      if (y2 > this.drawBounds.getNorthEast().lat) {
-        y2 = this.drawBounds.getNorthEast().lat;
+      if (y2 > drawBounds.getNorthEast().lat) {
+        y2 = drawBounds.getNorthEast().lat;
       }
-      if (x2 > this.drawBounds.getNorthEast().lng) {
-        x2 = this.drawBounds.getNorthEast().lng;
+      if (x2 > drawBounds.getNorthEast().lng) {
+        x2 = drawBounds.getNorthEast().lng;
       }
 
       return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
