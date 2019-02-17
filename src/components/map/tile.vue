@@ -21,7 +21,7 @@ export default {
   },
   data () {
     return {
-      tileKey: null,
+      tileKey: this.tileKeyIn,
       drawnZoom: null,
       animFrame: null,
     }
@@ -225,9 +225,6 @@ export default {
     },
   },
 
-  created () {
-    this.tileKey = this.tileKeyIn;
-  },
   mounted () {
     this.$store.dispatch('tiles/loadTile', this.id);
     this.drawTile();
