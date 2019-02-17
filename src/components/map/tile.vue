@@ -82,6 +82,9 @@ export default {
 
       return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
     },
+    projectedOrigo() {
+      return this.$parent.map.project(this.bounds.getNorthWest());
+    },
 
     needsUpdate() {
       /* Dummy access to dependencies */
@@ -102,9 +105,7 @@ export default {
 
   methods: {
     latLngToTilePoint(latLng) {
-      const origo = this.$parent.map.project(this.bounds.getNorthWest());
-      let tgt = this.$parent.map.project(latLng);
-      return tgt.subtract(origo);
+      return this.$parent.map.project(latLng).subtract(this.projectedOrigo);
     },
     tileToLayerPoint() {
       return this.$parent.map.latLngToLayerPoint(this.bounds.getNorthWest());
