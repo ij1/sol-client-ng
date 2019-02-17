@@ -2,9 +2,10 @@
   <div class = "leaflet-layer map-tiles">
     <map-tile
       v-for = "tile in tileDrawList"
-      :key = "tile.key"
+      :key = "tile.displayKey"
       :tile-key-in = "tile.key"
       :id = "tile.id"
+      :lng-offset = "tile.lngOffset"
     />
   </div>
 </template>
@@ -72,6 +73,7 @@ export default {
 
     tileDrawList() {
       const bounds = this.gridBounds;
+      const xSize = 360 / this.tileGridSize;
       let list = [];
 
       /* Should probably do better ordering, that is, center first but given
@@ -83,17 +85,18 @@ export default {
           let tile = {
             id: {
               l: this.selectTileset,
-              x: x,
+              x: x,                  /* Updated below */
               y: y,
             },
           };
 
           if (!this.isValidTile(tile.id)) {
-            // FIXME: how to do wraps with canvases? Maybe copy canvases
-            // somewhere?
             continue;
           }
+          tile.displayKey = this.$store.getters['tiles/tileIdToKey'](tile.id);
+          tile.id.x = (x >= 0) ? x % xSize : xSize - (-x % xSize);
           tile.key = this.$store.getters['tiles/tileIdToKey'](tile.id);
+          tile.lngOffset = (x - tile.id.x) * this.tileGridSize;
           list.push(tile);
         }
       }
@@ -115,11 +118,10 @@ export default {
      * but it should be enough for our usecases
      */
     isValidTile (id) {
-      if (id.x < 0 || id.y < 0) {
+      if (id.y < 0) {
         return false;
       }
-      if ((id.x * this.tileGridSize >= 360) ||
-          (id.y * this.tileGridSize >= 180)) {
+      if (id.y * this.tileGridSize >= 180) {
         return false;
       }
       return true;

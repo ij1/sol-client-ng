@@ -18,6 +18,11 @@ export default {
       type: String,
       required: true,
     },
+
+    lngOffset: {
+      type: Number,
+      default: 0,
+    },
   },
   data () {
     return {
@@ -108,7 +113,10 @@ export default {
       return this.$parent.map.project(latLng).subtract(this.projectedOrigo);
     },
     tileToLayerPoint() {
-      return this.$parent.map.latLngToLayerPoint(this.bounds.getNorthWest());
+      const nw = this.bounds.getNorthWest();
+      const displayNw = L.latLng(nw.lat, nw.lng + this.lngOffset);
+
+      return this.$parent.map.latLngToLayerPoint(displayNw);
     },
 
     resetCanvasPlacement() {
