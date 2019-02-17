@@ -95,7 +95,6 @@ export default {
           }
           tile.key = this.$store.getters['tiles/tileIdToKey'](tile.id);
           list.push(tile);
-          this.$store.commit('tiles/addTile', tile.id);
         }
       }
       return list;

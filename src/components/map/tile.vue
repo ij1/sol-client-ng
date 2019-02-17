@@ -225,8 +225,16 @@ export default {
     },
   },
 
-  mounted () {
+  beforeCreate () {
+    /* Props not yet initialized but addTile must occur before computed
+     * (reactivity) is setup to avoid undefined tile errors from them
+     */
+    this.$store.commit('tiles/addTile', this.$options.propsData.id);
+  },
+  created () {
     this.$store.dispatch('tiles/loadTile', this.id);
+  },
+  mounted () {
     this.drawTile();
     L.DomUtil.addClass(this.$el, 'leaflet-tile');
     L.DomUtil.addClass(this.$el, 'leaflet-tile-loaded');
