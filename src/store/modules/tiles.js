@@ -65,17 +65,16 @@ export default {
         commit('lockTile', id);
       } else {
         commit('addTile', id);
-        dispatch('loadTile', id);
+        dispatch('loadTile', key);
       }
     },
-    loadTile ({state, getters, commit, dispatch}, id) {
-      const key = getters.tileIdToKey(id);
+    loadTile ({state, getters, commit, dispatch}, key) {
       if (state.tiles[key].loading || state.tiles[key].loaded) {
         return;
       }
 
       const getDef = {
-        url: getters.tileIdToUrl(id),
+        url: getters.tileIdToUrl(state.tiles[key].id),
         params: {},
         useArrays: true,
         dataField: 'data',
@@ -116,7 +115,7 @@ export default {
       .catch(err => {
         commit('clearLoading', key);
         solapiLogError(err);
-        solapiRetryDispatch(dispatch, 'loadTile', id);
+        solapiRetryDispatch(dispatch, 'loadTile', key);
       });
     },
 
