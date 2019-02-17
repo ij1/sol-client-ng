@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = "leaflet-layer map-tiles">
     <map-tile
       v-for = "tile in tileDrawList"
       :key = "tile.key"
@@ -146,8 +146,6 @@ export default {
     },
 
     addContainer () {
-      L.DomUtil.addClass(this.container, 'leaflet-layer');
-      L.DomUtil.addClass(this.container, 'map-tiles');
       this.map.getPane('tilePane').appendChild(this.container);
     },
     removeContainer () {

@@ -1,5 +1,5 @@
 <template>
-  <canvas/>
+  <canvas class = "leaflet-tile leaflet-tile-loaded"/>
 </template>
 
 <script>
@@ -239,8 +239,6 @@ export default {
   },
   mounted () {
     this.drawTile();
-    L.DomUtil.addClass(this.$el, 'leaflet-tile');
-    L.DomUtil.addClass(this.$el, 'leaflet-tile-loaded');
   },
   beforeDestroy () {
     if (this.animFrame !== null) {
