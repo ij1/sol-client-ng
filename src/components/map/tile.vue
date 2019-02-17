@@ -88,6 +88,7 @@ export default {
       return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
     },
     projectedOrigo() {
+      this.$parent.zoom;
       return this.$parent.map.project(this.bounds.getNorthWest());
     },
 
