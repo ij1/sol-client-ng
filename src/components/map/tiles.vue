@@ -74,6 +74,13 @@ export default {
     tileDrawList() {
       const bounds = this.gridBounds;
       const xSize = 360 / this.tileGridSize;
+      /*
+       * With less than 360 deg span in longitudes, reuse tiles to reduce
+       * flicker when a pan across anti-meridian occurs. Still some remain
+       * while the tiles are repositioned (first out, then in) but no new
+       * tile needs to be created.
+       */
+      const reuseDisplayKeys = ((bounds.max.x - bounds.min.x) <= xSize);
       let list = [];
 
       /* Should probably do better ordering, that is, center first but given
@@ -93,9 +100,11 @@ export default {
           if (!this.isValidTile(tile.id)) {
             continue;
           }
-          tile.displayKey = this.$store.getters['tiles/tileIdToKey'](tile.id);
+          let displayKey = reuseDisplayKeys ? null :
+                             this.$store.getters['tiles/tileIdToKey'](tile.id);
           tile.id.x = (x % xSize + xSize) % xSize;
           tile.key = this.$store.getters['tiles/tileIdToKey'](tile.id);
+          tile.displayKey = reuseDisplayKeys ? tile.key : displayKey;
           tile.lngOffset = (x - tile.id.x) * this.tileGridSize;
           list.push(tile);
         }
