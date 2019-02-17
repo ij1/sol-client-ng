@@ -124,6 +124,9 @@ export default {
     },
 
     drawTile () {
+      if (typeof this.$el === 'undefined') {
+        return;
+      }
       if (this.animFrame === null) {
         this.animFrame = L.Util.requestAnimFrame(this._drawTile, this);
       }
