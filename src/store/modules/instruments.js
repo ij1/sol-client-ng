@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { speedTowardsBearing, twaTextPrefix } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 
@@ -154,7 +153,7 @@ export default {
             val = undefined;
           }
         }
-        Vue.set(state[i], 'value', val);
+        state[i].value = val;
       }
     },
   }
