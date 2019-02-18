@@ -219,7 +219,7 @@ export default {
       ));
     },
 
-    nextTimeToFetch: (state, rootState, getters, rootGetters) => {
+    nextTimeToFetch: (state, getters, rootState, rootGetters) => {
       const now = rootGetters['time/now']();
       let hotPeriod = false;
 
