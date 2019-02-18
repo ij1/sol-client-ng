@@ -58,20 +58,13 @@ export default {
 
       return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
     },
-    /* Reserve 100px extra beyond the viewport for panning */
-    drawBounds () {
-      const min = this.$parent.pixelBounds.min.subtract(L.point(100, 100));
-      const max = this.$parent.pixelBounds.max.add(L.point(100, 100));
-      const bounds = L.latLngBounds(this.$parent.map.unproject(min, this.$parent.zoom),
-                                    this.$parent.map.unproject(max, this.$parent.zoom));
-      return bounds;
-    },
     bounds() {
       let y1 = this.maxBounds.getSouthWest().lat;
       let x1 = this.maxBounds.getSouthWest().lng;
       let y2 = this.maxBounds.getNorthEast().lat;
       let x2 = this.maxBounds.getNorthEast().lng;
-      const drawBounds = latLngBoundsAddOffset(this.drawBounds, -this.lngOffset);
+      const drawBounds = latLngBoundsAddOffset(this.$parent.drawBounds,
+                                               -this.lngOffset);
 
       /* Restrict canvas boundaries if necessary */
       if (y1 < drawBounds.getSouthWest().lat) {

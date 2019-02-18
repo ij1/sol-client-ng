@@ -57,6 +57,14 @@ export default {
     tileGridSize() {
       return this.$store.getters['tiles/tileGridSize'](this.selectTileset);
     },
+    /* Reserve 100px extra beyond the viewport for panning */
+    drawBounds () {
+      const min = this.pixelBounds.min.subtract(L.point(100, 100));
+      const max = this.pixelBounds.max.add(L.point(100, 100));
+      const bounds = L.latLngBounds(this.map.unproject(min, this.zoom),
+                                    this.map.unproject(max, this.zoom));
+      return bounds;
+    },
 
     gridBounds() {
       const sw = this.latLngBounds.getSouthWest();
