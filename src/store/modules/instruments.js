@@ -81,10 +81,10 @@ export default {
       name: "VMG",
       unit: "kn",
       mult: 1,
-      calculate: (state) => {
-        return speedTowardsBearing(state.speed.value,
-                                   state.course.value,
-                                   state.twd.value);
+      calculate: (state, data) => {
+        return speedTowardsBearing(data.speed.value,
+                                   data.course.value,
+                                   data.twd.value);
       },
       decimals: 2,
       format: defaultFormat,
@@ -95,10 +95,10 @@ export default {
       unit: "kn",
       mult: 1,
       calculate: (state, data, rootGetters) => {
-        const gcPath = gcCalc(L.latLng(data.lat, data.lon),
+        const gcPath = gcCalc(L.latLng(data.lat.value, data.lon.value),
                                rootGetters['race/nextWaypoint'].latLng);
-        return speedTowardsBearing(state.speed.value,
-                                   state.course.value,
+        return speedTowardsBearing(data.speed.value,
+                                   data.course.value,
                                    gcPath.startBearing);
       },
       decimals: 2,
@@ -168,7 +168,7 @@ export default {
       for (let i of state.list) {
         let val;
         if (typeof state[i].calculate !== 'undefined') {
-          val = state[i].calculate(state, data, rootGetters);
+          val = state[i].calculate(state, updateList, rootGetters);
         } else {
           val = data[state[i].datafield];
         }
