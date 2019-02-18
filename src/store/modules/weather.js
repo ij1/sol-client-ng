@@ -282,15 +282,15 @@ export default {
       .then(weatherInfo => {
         let dataUrl = weatherInfo.url;
         if (dataUrl === state.data.url) {
-          commit('updateFetchTime', rootGetters['time/now']());
           commit('solapi/unlock', 'weather', {root: true});
+          commit('updateFetchTime', rootGetters['time/now']());
           return;
         }
         dispatch('fetchData', dataUrl);
       })
       .catch(err => {
-        solapiLogError(err);
         commit('solapi/unlock', 'weather', {root: true});
+        solapiLogError(err);
       });
     },
 
