@@ -27,7 +27,7 @@ export default {
   },
   data () {
     return {
-      zoom: 3,
+      zoom: this.$store.state.map.zoom,
       layer: null,
       container: null,
       latLngBounds: this.map.getBounds(),
