@@ -82,8 +82,8 @@ export default {
         chatData.id = nextChatroom;
 
         commit('race/fleet/initMyBoat', boatData.boat, {root: true});
-        dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
         commit('updateBoat', boatData.boat);
+        dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
         commit('weather/minTime', state.instruments.time.value, {root: true});
 
         if (typeof boatData.lmi !== 'undefined') {
