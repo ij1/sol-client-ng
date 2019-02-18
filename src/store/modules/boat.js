@@ -82,7 +82,7 @@ export default {
         chatData.id = nextChatroom;
 
         commit('race/fleet/initMyBoat', boatData.boat, {root: true});
-        commit('instruments/updateInstruments', boatData.boat);
+        dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
         commit('updateBoat', boatData.boat);
         commit('weather/minTime', state.instruments.time.value, {root: true});
 
