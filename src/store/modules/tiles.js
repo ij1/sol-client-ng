@@ -34,7 +34,6 @@ export default {
     addTile (state, id) {
       Vue.set(state.tiles, tileIdToKey(id), {
         id: id,
-        loading: false,
         loaded: false,
         refCount: 1,
         geoms: {},
@@ -50,15 +49,8 @@ export default {
     storeTileGeoms (state, tileInfo) {
       state.tiles[tileInfo.key].geoms = tileInfo.geoms;
       state.tiles[tileInfo.key].loaded = true;
-      state.tiles[tileInfo.key].loading = false;
     },
 
-    setLoading (state, key) {
-      state.tiles[key].loading = true;
-    },
-    clearLoading (state, key) {
-      state.tiles[key].loading = false;
-    },
     addActiveFetches (state, inc) {
       state.activeFetches += inc;
     },
@@ -95,7 +87,7 @@ export default {
       }
     },
     loadTile ({state, getters, commit, dispatch}, key) {
-      if (state.tiles[key].loading || state.tiles[key].loaded) {
+      if (state.tiles[key].loaded) {
         return;
       }
 
@@ -107,8 +99,6 @@ export default {
         dataField: 'data',
         compressedPayload: true,
       };
-
-      commit('setLoading', key);
 
       dispatch('solapi/get', getDef, {root: true})
       .catch(err => {
@@ -140,8 +130,7 @@ export default {
         });
       })
       .catch(err => {
-        commit('clearLoading', key);
-        commit('addTileToLoadWaitList', key);
+        commit('addTileToLoadWaitList', key);   /* Requeue */
         solapiLogError(err);
       })
       .finally(() => {
