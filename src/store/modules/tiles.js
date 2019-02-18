@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import L from 'leaflet';
-import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
+import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 
 function tileIdToKey(id) {
   return id.l + ':' + id.x + ':' + id.y;
@@ -12,6 +12,9 @@ export default {
   state: {
     tiles: {},
     urlBase: '/site_media/maps/tiles/',
+    waitList: [],
+    activeFetches: 0,
+    maxParallelFetches: 4,
   },
 
   getters: {
@@ -56,6 +59,19 @@ export default {
     clearLoading (state, key) {
       state.tiles[key].loading = false;
     },
+    addActiveFetches (state, inc) {
+      state.activeFetches += inc;
+    },
+    addTileToLoadWaitList (state, key) {
+      state.waitList.push(key);
+    },
+    /*
+     * Vuex workaround: unfortunately cannot return the value from here
+     * so get it in action instead :-(
+     */
+    consumeTileToLoad (state) {
+      state.waitList.shift();
+    },
   },
 
   actions: {
@@ -65,6 +81,16 @@ export default {
         commit('lockTile', id);
       } else {
         commit('addTile', id);
+        commit('addTileToLoadWaitList', key);
+        if (state.activeFetches < state.maxParallelFetches) {
+          dispatch('loadTiles');
+        }
+      }
+    },
+    loadTiles ({state, commit, dispatch}) {
+      const key = state.waitList[0];
+      commit('consumeTileToLoad');
+      if (typeof key !== 'undefined') {
         dispatch('loadTile', key);
       }
     },
@@ -73,6 +99,7 @@ export default {
         return;
       }
 
+      commit('addActiveFetches', 1);
       const getDef = {
         url: getters.tileIdToUrl(state.tiles[key].id),
         params: {},
@@ -114,8 +141,12 @@ export default {
       })
       .catch(err => {
         commit('clearLoading', key);
+        commit('addTileToLoadWaitList', key);
         solapiLogError(err);
-        solapiRetryDispatch(dispatch, 'loadTile', key);
+      })
+      .finally(() => {
+        commit('addActiveFetches', -1);
+        dispatch('loadTiles');
       });
     },
 
