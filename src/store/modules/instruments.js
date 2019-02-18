@@ -139,12 +139,16 @@ export default {
       state.time.value = time;
       state.date.value = time;
     },
-    updateInstrument (state, data) {
-      state[data.instrument].value = data.value;
+    updateInstruments (state, updateList) {
+      for (let i of updateList) {
+        state[i.instrument].value = i.value;
+      }
     },
   },
   actions: {
     updateInstruments ({state, commit}, data) {
+      let updateList = [];
+
       for (let i of state.list) {
         let val;
         if (typeof state[i].calculate !== 'undefined') {
@@ -159,11 +163,12 @@ export default {
           }
         }
 
-        commit('updateInstrument', {
+        updateList.push({
           instrument: i,
           value: val,
         });
       }
+      commit('updateInstruments', updateList);
     },
   }
 }
