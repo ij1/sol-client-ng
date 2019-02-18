@@ -81,7 +81,7 @@ export default {
       name: "VMG",
       unit: "kn",
       mult: 1,
-      calculate: (state, data) => {
+      calculate: (data) => {
         return speedTowardsBearing(data.speed.value,
                                    data.course.value,
                                    data.twd.value);
@@ -94,7 +94,7 @@ export default {
       name: "VMC",
       unit: "kn",
       mult: 1,
-      calculate: (state, data, rootGetters) => {
+      calculate: (data, rootGetters) => {
         const gcPath = gcCalc(L.latLng(data.lat.value, data.lon.value),
                                rootGetters['race/nextWaypoint'].latLng);
         return speedTowardsBearing(data.speed.value,
@@ -168,7 +168,7 @@ export default {
       for (let i of state.list) {
         let val;
         if (typeof state[i].calculate !== 'undefined') {
-          val = state[i].calculate(state, updateList, rootGetters);
+          val = state[i].calculate(updateList, rootGetters);
         } else {
           val = data[state[i].datafield];
         }
