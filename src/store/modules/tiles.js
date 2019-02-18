@@ -39,6 +39,9 @@ export default {
         geoms: {},
       });
     },
+    deleteTile (state, key) {
+      Vue.delete(state.tiles, key);
+    },
     lockTile (state, id) {
       state.tiles[tileIdToKey(id)].refCount++;
     },
@@ -80,11 +83,20 @@ export default {
       }
     },
     loadTiles ({state, commit, dispatch}) {
-      const key = state.waitList[0];
-      commit('consumeTileToLoad');
-      if (typeof key !== 'undefined') {
-        dispatch('loadTile', key);
-      }
+      let key;
+      do {
+        key = state.waitList[0];
+        commit('consumeTileToLoad');
+        if (typeof key !== 'undefined') {
+          /* Outside of visible area already? */
+          if (state.tiles[key].refCount === 0) {
+            commit('deleteTile', key);
+            continue;
+          }
+          dispatch('loadTile', key);
+          return;
+        }
+      } while (typeof key !== 'undefined');
     },
     loadTile ({state, getters, commit, dispatch}, key) {
       if (state.tiles[key].loaded) {
