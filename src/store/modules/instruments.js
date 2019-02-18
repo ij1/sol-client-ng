@@ -156,14 +156,14 @@ export default {
       state.date.value = time;
     },
     updateInstruments (state, updateList) {
-      for (let i of updateList) {
-        state[i.instrument].value = i.value;
+      for (let i of state.list) {
+        state[i].value = updateList[i].value;
       }
     },
   },
   actions: {
     updateInstruments ({state, rootGetters, commit}, data) {
-      let updateList = [];
+      let updateList = {};
 
       for (let i of state.list) {
         let val;
@@ -179,10 +179,9 @@ export default {
           }
         }
 
-        updateList.push({
-          instrument: i,
+        updateList[i] = {
           value: val,
-        });
+        };
       }
       commit('updateInstruments', updateList);
     },
