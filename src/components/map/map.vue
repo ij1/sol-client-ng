@@ -6,8 +6,8 @@
       :crs="PROJECTION"
       :zoom="initialZoom"
       :center="initialCenter"
-      @update:center="updateCenter"
-      @update:zoom="updateZoom"
+      @update:center="updateView"
+      @update:zoom="updateView"
       :world-copy-jump="true"
       :options="{
         zoomControl: false,
@@ -15,17 +15,17 @@
       }"
     >
       <map-tiles v-if = "this.map !== null" :map = "this.map"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-720"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "-360"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :zoom="this.zoom" :lng-offset = "360"/>
+      <race-info v-if = "this.map !== null" :map = "this.map"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :lng-offset = "-720"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :lng-offset = "-360"/>
+      <race-info v-if = "this.map !== null" :map = "this.map" :lng-offset = "360"/>
 
       <canvas-overlay v-if = "this.map !== null" :map = "this.map"/>
       <fleet-traces v-if = "this.map !== null"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
-      <fleet-hover v-if = "this.map !== null" :map = "this.map" :hover-lat-lng = "this.hoverLatLng"/>
+      <fleet-hover v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null && this.boatPosition !== null" :course = "this.boatCourse" :twa = "this.boatTwa"/>
-      <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map" :hover-lat-lng = "this.hoverLatLng"/>
+      <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
 
       <race-status v-if = "this.map !== null"/>
@@ -35,7 +35,7 @@
       <towback-flag v-if = "this.map !== null"/>
 
       <dc-bar v-if = "this.map !== null"/>
-      <wind-info v-if = "this.map !== null" :hover-lat-lng = "this.hoverLatLng"/>
+      <wind-info v-if = "this.map !== null"/>
     </l-map>
   </div>
 </template>
@@ -100,10 +100,7 @@ export default {
     return {
       initialCenter: L.latLng(0, 0),
       initialZoom: 3,
-      hoverLatLng: null,
       map: null,
-      center: L.latLng(0, 0),
-      zoom: 3,
       touched: false,
 
       L: L,
@@ -135,20 +132,19 @@ export default {
   },
 
   methods: {
-    updateZoom(zoom) {
+    updateView() {
       this.touched = true;
-      this.zoom = zoom;
-    },
-    updateCenter(center) {
-      this.touched = true;
-      this.center = center;
+      this.$store.commit('map/setView', {
+        center: this.map.getCenter(),
+        zoom: this.map.getZoom(),
+      });
     },
     setHoverPos (e) {
       /* For some reason it's not camel-cased in the event! */
-      this.hoverLatLng = e.latlng.wrap();
+      this.$store.commit('map/setHover', e.latlng.wrap());
     },
     clearHoverPos () {
-      this.hoverLatLng = null;
+      this.$store.commit('map/setHover', null);
     },
   },
 

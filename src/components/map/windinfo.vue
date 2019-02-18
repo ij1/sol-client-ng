@@ -27,11 +27,6 @@ export default {
   components: {
     'l-control': LControl,
   },
-  props: {
-    hoverLatLng: {
-      type: Object,
-    },
-  },
   filters: {
     positionFormat (value) {
       if (value === undefined) {
@@ -63,6 +58,7 @@ export default {
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       boatPosition: state => state.boat.position,
+      hoverLatLng: state => state.map.hoverLatLng,
     }),
   },
 }

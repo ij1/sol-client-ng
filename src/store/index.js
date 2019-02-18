@@ -9,6 +9,7 @@ import boatModule from './modules/boat';
 import raceModule from './modules/race';
 import weatherModule from './modules/weather';
 import chatroomsModule from './modules/chatrooms';
+import mapModule from './modules/map';
 import mapTilesModule from './modules/tiles';
 
 Vue.use(Vuex);
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     race: raceModule,
     weather: weatherModule,
     chatrooms: chatroomsModule,
+    map: mapModule,
     tiles: mapTilesModule,
   },
 });

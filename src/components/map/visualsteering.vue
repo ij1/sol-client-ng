@@ -54,9 +54,6 @@ export default {
       type: Object,
       required: true,
     },
-    hoverLatLng: {
-      type: Object,
-    },
   },
   filters: {
     formatAngle (value) {
@@ -100,6 +97,7 @@ export default {
       twd: state => state.boat.instruments.twd.value,
       tws: state => state.boat.instruments.tws.value,
       showPolar: state => state.boat.steering.visualSteering.showPolar,
+      hoverLatLng: state => state.map.hoverLatLng,
     }),
   },
   methods: {

@@ -80,10 +80,6 @@ export default {
       type: Object,
       required: true,
     },
-    zoom: {
-      type: Number,
-      required: true,
-    },
     lngOffset: {
       type: Number,
       default: 0,
@@ -201,6 +197,7 @@ export default {
       race: state => state.race,
       lastRoundedMark: state => state.boat.lastRoundedMark,
       finishTime: state => state.boat.finishTime,
+      zoom: state => state.map.zoom,
     }),
   },
 

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import CountryFlag from '../countryflag.vue';
 import SycFlag from '../sycflag.vue';
@@ -48,9 +48,6 @@ export default {
     map: {
       type: Object,
       required: true,
-    },
-    hoverLatLng: {
-      type: Object,
     },
   },
   data () {
@@ -69,7 +66,7 @@ export default {
 
       let res;
       for (let distance = 3; distance < 7; distance++) {
-        res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.$parent.$parent.zoom, distance);
+        res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.zoom, distance);
         if (res.length > 0) {
           break;
         }
@@ -96,6 +93,10 @@ export default {
       fleetBoatFromId: 'race/fleet/boatFromId',
       boatColor: 'race/fleet/boatColor',
       multiClassRace: 'race/fleet/multiClassRace',
+    }),
+    ...mapState({
+      hoverLatLng: state => state.map.hoverLatLng,
+      zoom: state => state.map.zoom,
     }),
   },
   watch: {
