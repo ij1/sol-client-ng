@@ -14,7 +14,7 @@ export default {
     urlBase: '/site_media/maps/tiles/',
     waitList: [],
     activeFetches: 0,
-    maxParallelFetches: 4,
+    maxParallelFetches: 8,
   },
 
   getters: {
