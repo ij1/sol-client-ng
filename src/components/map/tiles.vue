@@ -27,7 +27,7 @@ export default {
   },
   data () {
     return {
-      zoom: 0,
+      zoom: 3,
       layer: null,
       container: null,
       latLngBounds: this.map.getBounds(),
