@@ -1,3 +1,5 @@
+import { degToRad } from './utils.js';
+
 /* Returns the minimum angle (signed) from currentAngle to nextAngle
  * The angles are in radians.
  */
@@ -82,4 +84,36 @@ export function twaTextPrefix (value) {
 
 export function dcTwaTextPrefix (dc) {
   return (dc.type === 'twa') ? twaTextPrefix(dc.value) : '';
+}
+
+/*
+ * Distance formula from:
+ *  https://en.wikipedia.org/wiki/Great-circle_distance
+ */
+export function gcCalc(from, to) {
+  const lat1 = degToRad(from.lat);
+  const lat2 = degToRad(to.lat);
+  const lng1 = degToRad(from.lng);
+  const lng2 = degToRad(to.lng);
+  const dlng = lng2 - lng1;
+
+  const slat1 = Math.sin(lat1);
+  const slat2 = Math.sin(lat2);
+  const clat1 = Math.cos(lat1);
+  const clat2 = Math.cos(lat2);
+  const cdlng = Math.cos(dlng);
+
+  /* These can be reused for distance calculations using Vincenty formula */
+  const bearingDividend = clat2 * Math.sin(dlng);
+  const bearingDivisor = clat1 * slat2 - slat1 * clat2 * cdlng;
+
+  const distDividend = bearingDividend * bearingDividend +
+                       bearingDivisor * bearingDivisor;
+  const distDivisor = slat1 * slat2 + clat1 * clat2 * cdlng;
+
+  return {
+    startBearing: (Math.atan2(bearingDividend, bearingDivisor) +
+                   Math.PI * 2) % (Math.PI * 2),
+    distance: Math.atan2(Math.sqrt(distDividend), distDivisor),
+  };
 }

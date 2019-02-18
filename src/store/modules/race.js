@@ -96,6 +96,9 @@ export default {
 
       return course;
     },
+    nextWaypoint: (state, getters, rootState) => {
+      return state.route[rootState.boat.lastRoundedMark+1];
+    },
 
     towbackPeriod: (state) => {
       return {

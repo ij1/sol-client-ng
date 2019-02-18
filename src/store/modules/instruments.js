@@ -1,4 +1,5 @@
-import { speedTowardsBearing, twaTextPrefix } from '../../lib/nav.js';
+import L from 'leaflet';
+import { speedTowardsBearing, gcCalc, twaTextPrefix } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 
 function defaultFormat (instrument) {
@@ -88,7 +89,21 @@ export default {
       decimals: 2,
       format: defaultFormat,
     },
-    // VMC
+    vmc: {
+      value: null,
+      name: "VMC",
+      unit: "kn",
+      mult: 1,
+      calculate: (state, data, rootGetters) => {
+        const gcPath = gcCalc(L.latLng(data.lat, data.lon),
+                               rootGetters['race/nextWaypoint'].latLng);
+        return speedTowardsBearing(state.speed.value,
+                                   state.course.value,
+                                   gcPath.startBearing);
+      },
+      decimals: 2,
+      format: defaultFormat,
+    },
     perf: {
       value: null,
       name: "PERF",
@@ -130,7 +145,8 @@ export default {
     },
 
     list: [
-      'lat', 'lon', 'speed', 'course', 'twa', 'twd', 'tws', 'vmg', 'perf',
+      'lat', 'lon', 'speed', 'course', 'twa', 'twd', 'tws', 'vmg', 'vmc',
+      'perf',
       'date', 'time',
     ],
   },
@@ -146,13 +162,13 @@ export default {
     },
   },
   actions: {
-    updateInstruments ({state, commit}, data) {
+    updateInstruments ({state, rootGetters, commit}, data) {
       let updateList = [];
 
       for (let i of state.list) {
         let val;
         if (typeof state[i].calculate !== 'undefined') {
-          val = state[i].calculate(state, data);
+          val = state[i].calculate(state, data, rootGetters);
         } else {
           val = data[state[i].datafield];
         }
