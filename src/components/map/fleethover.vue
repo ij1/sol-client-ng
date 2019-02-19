@@ -74,10 +74,18 @@ export default {
 
       let self = this;
       return res.sort((a, b) => {
-        const aa = self.fleetBoatFromId(a.id).ranking;
-        const bb = self.fleetBoatFromId(b.id).ranking;
-        return aa - bb;
-      }).map(i => i.id);
+        const boatA = self.fleetBoatFromId(a.id);
+        const boatB = self.fleetBoatFromId(b.id);
+        const aa = boatA.ranking;
+        const bb = boatB.ranking;
+        const diff = aa - bb;
+        if (diff !== 0) {
+          return diff;
+        }
+        return boatA.id - boatB.id;
+      }).map(i => i.id).filter(function(item, idx, arr) {
+        return (idx === arr.length - 1) || (arr[idx + 1] !== item);
+      });
     },
     hoverListIds () {
       return this.hoverListIdsAll.slice(0, this.maxExpandedBoats);
