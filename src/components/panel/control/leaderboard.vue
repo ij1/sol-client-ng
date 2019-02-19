@@ -17,7 +17,7 @@
          <th
            v-for = "column in visibleColumnsWithSort"
            :key = "column.dataField"
-           @click="selectSort(column.dataField)"
+           @click="selectSort(column.dataField, column.localeSort)"
          >
            {{column.thWithSort}}
          </th>
@@ -72,6 +72,7 @@ export default {
       filter: '',
       sortKey: 'ranking',
       sortDir: 'asc',
+      localeSort: false,
     }
   },
   filters: {
@@ -87,12 +88,30 @@ export default {
   computed: {
     columns () {
       return [
-        {dataField: 'ranking', th: '#', align: 'r', visible: true},
-        {dataField: 'country', th: '', align: 'l', visible: true},
-        {dataField: 'syc', th: '', align: 'l', visible: true},
-        {dataField: 'name', th: 'Name', align: 'l', visible: true},
-        {dataField: 'dtg', th: 'DTF', align: 'r', visible: true},
-        {dataField: 'type', th: 'Boat Type', align: 'l', visible: this.multiClassRace},
+        {
+          dataField: 'ranking', th: '#',
+          align: 'r', visible: true, localeSort: false,
+        },
+        {
+          dataField: 'country', th: '',
+          align: 'l', visible: true, localeSort: false,
+        },
+        {
+          dataField: 'syc', th: '',
+          align: 'l', visible: true, localeSort: false,
+        },
+        {
+          dataField: 'name', th: 'Name',
+          align: 'l', visible: true, localeSort: true,
+        },
+        {
+          dataField: 'dtg', th: 'DTF',
+          align: 'r', visible: true, localeSort: false,
+        },
+        {
+          dataField: 'type', th: 'Boat Type',
+          align: 'l', visible: this.multiClassRace, localSort: false,
+        },
       ];
     },
     visibleColumnsWithSort () {
@@ -120,13 +139,17 @@ export default {
         return (this.filter.length === 0) ||
                boat.name.toLowerCase().includes(needle);
       }).sort((a, b) => {
-        if (a[this.sortKey] < b[this.sortKey]) {
-          return -dir;
+        if (!this.localeSort) {
+          if (a[this.sortKey] < b[this.sortKey]) {
+            return -dir;
+          }
+          if (a[this.sortKey] > b[this.sortKey]) {
+            return dir;
+          }
+          return 0;
+        } else {
+          return dir * a[this.sortKey].localeCompare(b[this.sortKey]);
         }
-        if (a[this.sortKey] > b[this.sortKey]) {
-          return dir;
-        }
-        return 0;
       });
     },
     selected () {
@@ -141,13 +164,14 @@ export default {
     }),
   },
   methods: {
-    selectSort (column) {
+    selectSort (column, localeSort) {
       if (this.sortKey === column) {
         this.sortDir = (this.sortDir === 'asc' ? 'desc' : 'asc');
       } else {
         this.sortKey = column;
         this.sortDir = 'asc';
       }
+      this.localeSort = localeSort;
     },
     selectBoat (id, keepMapPosition) {
       if (this.selected.includes(id)) {
