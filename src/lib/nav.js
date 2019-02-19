@@ -34,7 +34,7 @@ export function atan2Bearing(x, y) {
 }
 
 export function isCcValid(cc) {
-  const regex = new RegExp(/^\d{1,3}(\.\d{1,3})?$/);
+  const regex = /^\d{1,3}(\.\d{1,3})?$/;
   if (!regex.test(cc)) {
     return false;
   }
@@ -46,9 +46,9 @@ export function isCcValid(cc) {
 }
 
 export function isTwaValid(twa) {
-  const regex = new RegExp(/^[-+]\d{1,3}(\.\d{1,3})?$/);
+  const regex = /^[-+]\d{1,3}(\.\d{1,3})?$/;
   if (!regex.test(twa)) {
-    const zero = new RegExp(/^0{1,3}(\.0{1,3})?$/);
+    const zero = /^0{1,3}(\.0{1,3})?$/;
     return zero.test(twa);
   }
   const num = Number(twa);

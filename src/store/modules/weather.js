@@ -412,7 +412,7 @@ export default {
       });
     },
     parseUpdateTimes({commit}, description) {
-      const regex = new RegExp('WX [Uu]pdates: *<br> *([0-2][0-9][0-5][0-9]) */ *([0-2][0-9][0-5][0-9]) */ *([0-2][0-9][0-5][0-9]) */ *([0-2][0-9][0-5][0-9]) *<br>');
+      const regex = /WX [Uu]pdates: *<br> *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *<br>/;
       const w = regex.exec(description);
       if (w === null) {
         console.log('No WX update times found in description!');
