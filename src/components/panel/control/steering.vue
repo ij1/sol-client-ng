@@ -189,6 +189,10 @@ export default {
     },
 
     isDelayNumber () {
+      const regex = /^\d+(\.\d+)?$/;
+      if (!regex.test(this.delay)) {
+        return false;
+      }
       const delay = parseFloat(this.delay);
       return (Number.isFinite(delay) && delay >= 0);
     },
