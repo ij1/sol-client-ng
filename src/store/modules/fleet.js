@@ -88,6 +88,13 @@ export default {
               state.boatTypes.add(boat.type);
             }
           }
+          /* Store position to trace if moved. */
+          if (!state.boat[idx].latLng.equals(latLng)) {
+            // ADDME: consider removing constant cog points, maybe not useful?
+            // ADDME: if cog changed a lot, calculate an intersection too?
+            // FIXME: What if traces API fails, this could grow very large.
+            state.boat[idx].trace.push(latLng);
+          }
           state.boat[idx].latLng = latLng;
           state.boat[idx].cog = parseFloat(boat.cog);
 
@@ -126,7 +133,7 @@ export default {
           delete boat.color_G;
           delete boat.color_B;
 
-          boat.trace = [];
+          boat.trace = [boat.latLng];
           boat.cog = parseFloat(boat.cog);
           boat.ranking = parseInt(boat.ranking);
           boat.dtg = parseFloat(boat.dtg);
