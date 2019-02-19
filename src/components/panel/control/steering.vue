@@ -53,8 +53,8 @@
           ref = "delay"
           id = "delay"
           v-model.trim = "delay"
-          maxlength = 8
-          size = 8
+          maxlength = 12
+          size = 12
         >
       </div>
       <div>
@@ -72,6 +72,8 @@ import { mapState } from 'vuex';
 import PolarContainer from './polarcontainer.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
+
+const dayHourMinSecRegex = /^([1-9][0-9]?d)?([012][0-9]*h)?([0-5][0-9]*m)?([0-5][0-9]*s)?$/;
 
 // FIXME: The values should probably use some arbitary precision library
 // to avoid unexpected rounding with floating-points.
@@ -201,8 +203,8 @@ export default {
              !this.$store.getters['race/isRaceStarted'];
     },
     isDelayHourMin () {
-      // ADDME: parse 1h10m format too
-      return false;
+      const d = dayHourMinSecRegex.exec(this.delay);
+      return (d !== null) && (d[0].length > 0);
     },
     isDelayValid () {
       return this.isDelayNumber || this.isDelayStart || this.isDelayHourMin;
@@ -227,7 +229,21 @@ export default {
         }
       }
       if (this.isDelayHourMin) {
-        return null;
+        let d = dayHourMinSecRegex.exec(this.delay);
+        let res = 0;
+        if (typeof d[1] !== 'undefined') {
+          res += +(d[1].substring(0, d[1].length - 1)) * 24;
+        }
+        if (typeof d[2] !== 'undefined') {
+          res += +(d[2].substring(0, d[2].length - 1));
+        }
+        if (typeof d[3] !== 'undefined') {
+          res += +(d[3].substring(0, d[3].length - 1)) / 60.0;
+        }
+        if (typeof d[4] !== 'undefined') {
+          res += +(d[4].substring(0, d[4].length - 1)) / 3600.0;
+        }
+        return res;
       }
 
       /* Should never be reached */
