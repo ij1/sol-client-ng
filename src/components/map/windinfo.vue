@@ -50,6 +50,9 @@ export default {
       if (this.hoverLatLng === null) {
         return '';
       }
+      if (this.boatPosition.equals(this.hoverLatLng)) {
+        return '0nm';
+      }
       const gcPath = gcCalc(this.boatPosition, this.hoverLatLng);
 
       return (radToDeg(gcPath.distance) * 60).toFixed(3) + 'nm @' +
