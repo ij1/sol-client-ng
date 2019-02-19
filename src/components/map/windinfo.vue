@@ -21,6 +21,7 @@ import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
+import { EARTH_R } from '../../lib/sol.js';
 
 export default {
   name: 'WindInfo',
@@ -55,7 +56,7 @@ export default {
       }
       const gcPath = gcCalc(this.boatPosition, this.hoverLatLng);
 
-      return (radToDeg(gcPath.distance) * 60).toFixed(3) + 'nm @' +
+      return (gcPath.distance * EARTH_R / 1852).toFixed(3) + 'nm @' +
              radToDeg(gcPath.startBearing).toFixed(2) + '\xb0 GC';
     },
     ...mapState({
