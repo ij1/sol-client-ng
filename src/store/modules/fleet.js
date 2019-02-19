@@ -69,14 +69,17 @@ export default {
         const id = boat.id;
         const latLng = L.latLng(boat.lat, boat.lon);
 
-        for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
-          let searchItem = {
-            lng: latLng.lng + ddeg,
-            lat: latLng.lat,
-            id: boat.id,
-          };
-          Object.freeze(searchItem);
-          searchData.push(searchItem);
+        /* Don't show PR markers after practice period */
+        if (!boat.name.startsWith('Practice_Mark') || update.inPractice) {
+          for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
+            let searchItem = {
+              lng: latLng.lng + ddeg,
+              lat: latLng.lat,
+              id: boat.id,
+            };
+            Object.freeze(searchItem);
+            searchData.push(searchItem);
+          }
         }
 
         if (typeof state.id2idx[id] !== 'undefined') {
@@ -276,6 +279,7 @@ export default {
 
           commit('updateFleet', {
             timestamp: now,
+            inPractice: rootGetters['race/isPracticePeriod'],
             fleet: boatList,
           });
 
