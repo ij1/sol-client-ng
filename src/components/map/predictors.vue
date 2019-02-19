@@ -99,7 +99,9 @@ export default {
     predictorMarkers () {
       const time = this.plottedDcDelay;
       if ((time === null) ||
-          (time > this.predictorLen)) {
+          (time > this.predictorLen) ||
+          (this.cog.firstLatLng === null) ||
+          (this.twa.firstLatLng === null)) {
         return [];
       } else {
         const idx = hToMsec(time) / this.timeDelta;
