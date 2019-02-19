@@ -356,7 +356,9 @@ export default {
           }
 
           let trace = [];
-          for (let lngLatTxt of boat.data.split(/ /)) {
+          const traceRaw = boat.data.split(/ /);
+          for (let i = traceRaw.length - 1; i >= 0; i--) {
+            const lngLatTxt = traceRaw[i];
             const lngLatArr = lngLatTxt.split(/,/);
             let latLng = L.latLng(lngLatArr[1], lngLatArr[0]);
             latLng = rootGetters['race/latLngToRaceBounds'](latLng);

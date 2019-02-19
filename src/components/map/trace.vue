@@ -61,7 +61,7 @@ export default {
       }
 
       let res = [
-        this.boat.trace[0],
+        this.boat.trace[this.boat.trace.length - 1],
         this.$store.getters['race/latLngToRaceBounds'](this.boat.latLng)
       ];
 
