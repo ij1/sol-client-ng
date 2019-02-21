@@ -6,8 +6,10 @@
       :crs="PROJECTION"
       :zoom="initialZoom"
       :center="initialCenter"
-      @update:center="updateView"
-      @update:zoom="updateView"
+      @move="updateView"
+      @moveend="updateView"
+      @zoom="updateView"
+      @zoomend="updateView"
       :world-copy-jump="true"
       :options="{
         zoomControl: false,
