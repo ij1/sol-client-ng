@@ -35,6 +35,9 @@ export default {
   },
   computed: {
     needsRedraw () {
+      // CHECKME: does this cause duplicated redraws?
+      this.size;
+
       if (this.ready) {
         this.$refs['wind-map'].needsRedraw;
         this.$refs['steering-predictors'].needsRedraw;
