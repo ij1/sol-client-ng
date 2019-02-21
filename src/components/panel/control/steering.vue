@@ -61,6 +61,9 @@
         <button type = "submit" :disabled = "!canSend">
           {{applySteeringTxt}}
         </button>
+        <button type = "button" @click.prevent = "recallCurrent">
+          From current
+        </button>
       </div>
     </form>
     <polar-container/>
@@ -401,7 +404,18 @@ export default {
     onSetCourse (e) {
       this.cc = radToDeg(e.course).toFixed(3);
       this.type = 'cc';
-    }
+    },
+
+    recallCurrent () {
+      const currentType = this.$store.state.boat.currentSteering;
+      this.type = currentType;
+      if (currentType === 'cc') {
+        this.cc = radToDeg(this.$store.state.boat.instruments.course.value).toFixed(3);
+      } else if (currentType === 'twa') {
+        const twaVal = this.$store.state.boat.instruments.twa.value;
+        this.twa = twaTextPrefix(twaVal) + radToDeg(twaVal).toFixed(3);
+      }
+    },
   },
   mounted () {
     if (this.type === 'cc') {
