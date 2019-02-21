@@ -135,6 +135,7 @@ export default {
         room_id: this.roomId,
         text: this.myStringClean,
       });
+      this.myMessage = '';
     },
     onClose () {
       if (this.canClose) {
