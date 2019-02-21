@@ -126,6 +126,9 @@ export default {
       this.map = this.$refs.map.mapObject;
       this.map.on('mousemove', this.setHoverPos, this);
       this.map.on('mouseout', this.clearHoverPos, this);
+      this.updateView();
+      this.setSize();
+      this.touched = false;
     });
   },
   beforeDestroy () {
