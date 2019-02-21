@@ -30,12 +30,10 @@ export default {
       animFrame: null,
       center: null,
       zoom: null,
-      redrawCnt: 0,
     }
   },
   computed: {
     needsRedraw () {
-      // CHECKME: does this cause duplicated redraws?
       this.size;
 
       if (this.ready) {
