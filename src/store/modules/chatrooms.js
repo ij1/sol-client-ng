@@ -1,5 +1,8 @@
 import Vue from 'vue';
 import { orderBy } from 'lodash';
+import { secToMsec } from '../../lib/utils.js';
+import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
+
 
 export default {
   namespaced: true,
@@ -9,6 +12,9 @@ export default {
     activeRooms: [],
     roomKey: 0,
     nextRoomIndex: -1,
+    pendingMessages: [],
+    lastSentStamp: 0,
+    retryTimer: 1000,
   },
 
   mutations: {
@@ -21,7 +27,6 @@ export default {
           name: chatroom.name,
           msgs: [],
           timestamp: 0,
-          sending: false,
         });
       }
       state.activeRooms = [{
@@ -79,13 +84,16 @@ export default {
       }
     },
 
-    setSending(state, roomId) {
-      state.rooms[roomId].sending = true;
+    addMessage(state, msg) {
+      state.pendingMessages.push(msg);
     },
-    clearSending(state, roomId) {
-      state.rooms[roomId].sending = false;
+    messageSent(state) {
+      state.pendingMessages.shift();
+      state.retryTimer = secToMsec(1);
     },
-
+    messageSendFailed(state) {
+      state.retryTimer = Math.min(state.retryTimer * 2, secToMsec(50));
+    },
   },
 
   getters: {
@@ -98,8 +106,14 @@ export default {
   },
 
   actions: {
-    sendMessage({rootState, commit, dispatch}, sendParams) {
-      commit('setSending', sendParams.room_id);
+    queueMessage({state, commit, dispatch}, msg) {
+      commit('addMessage', msg);
+      if (state.pendingMessages.length === 1) {
+        dispatch('sendMessage');
+      }
+    },
+    sendMessage({state, rootState, commit, dispatch}) {
+      const sendParams = state.pendingMessages[0];
 
       const postDef = {
         url: '/webclient/chat/post/?token=' + rootState.auth.token,
@@ -107,15 +121,22 @@ export default {
         useArrays: false,
       };
 
-      let status = 'OK';
       return dispatch('solapi/post', postDef, {root: true})
         .catch(() => {
-          /* FIXME: Should retry a number of times before giving up */
-          status = 'ERROR';
+          commit('messageSendFailed');
+          solapiRetryDispatch(dispatch, 'sendMessage', undefined,
+                              state.retryTimer);
+          throw new SkipThenError();
         })
         .then(() => {
-          commit('clearSending', sendParams.room_id);
-          return status;
+          commit('messageSent');
+          if (state.pendingMessages.length > 0) {
+            solapiRetryDispatch(dispatch, 'sendMessage', undefined,
+                                state.retryTimer);
+          }
+        })
+        .catch((err) => {
+          solapiLogError(err);
         });
     }
   }

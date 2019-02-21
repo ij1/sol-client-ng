@@ -95,8 +95,7 @@ export default {
 
   computed: {
     canSend () {
-      return (this.myMessage.trim().length > 0) &&
-             !this.$store.state.chatrooms.rooms[this.roomId].sending;
+      return (this.myMessage.trim().length > 0);
     },
     canClose () {
       return this.$store.state.chatrooms.activeRooms.length > 1;
@@ -132,17 +131,9 @@ export default {
       if (!this.canSend) {
         return;
       }
-      this.$store.dispatch('chatrooms/sendMessage', {
+      this.$store.dispatch('chatrooms/queueMessage', {
         room_id: this.roomId,
         text: this.myStringClean,
-      })
-      .then(status => {
-        if (status !== 'OK') {
-          this.$store.dispatch('notifications/add', {
-            text: 'Failed to send a message to chat!',
-            color: 'red',
-          });
-        }
       });
     },
     onClose () {
