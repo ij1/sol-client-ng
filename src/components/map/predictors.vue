@@ -307,8 +307,10 @@ export default {
     },
   },
   watch: {
-    // FIXME: update when wx is loaded
     boatTime () {
+      this.recalc();
+    },
+    wxUpdated () {
       this.recalc();
     },
   },
