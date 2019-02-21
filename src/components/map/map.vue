@@ -98,8 +98,8 @@ export default {
 
   data () {
     return {
-      initialCenter: L.latLng(0, 0),
-      initialZoom: 3,
+      initialCenter: Object.assign({}, this.$store.state.map.center),
+      initialZoom: this.$store.state.map.zoom,
       map: null,
       touched: false,
 
