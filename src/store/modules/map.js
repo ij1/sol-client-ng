@@ -7,7 +7,7 @@ export default {
     center: L.latLng(0, 0),
     zoom: 3,
     hoverLatLng: null,
-    size: L.Point(1, 1),
+    size: L.point(1, 1),
   },
 
   mutations: {
