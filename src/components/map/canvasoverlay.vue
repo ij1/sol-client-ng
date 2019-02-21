@@ -28,8 +28,6 @@ export default {
       ready: false,
       canvas: null,
       animFrame: null,
-      center: null,
-      zoom: null,
     }
   },
   computed: {
