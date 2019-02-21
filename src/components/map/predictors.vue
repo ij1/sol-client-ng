@@ -35,14 +35,12 @@ export default {
 
   computed: {
     viewOrigo () {
-      this.$parent.center;
-      this.$parent.zoom;
-      this.$parent.size;
+      this.viewUpdateStamp;
 
       return this.$parent.map.getPixelBounds().getTopLeft().round();
     },
     boatOrigo () {
-      const z = this.$parent.zoom;
+      const z = this.zoom;
 
       if (this.$store.state.boat.position === null) {
         return this.viewOrigo;
@@ -76,7 +74,7 @@ export default {
       if (this.cog.firstLatLng === null) {
         return p;
       }
-      const z = this.$parent.zoom;
+      const z = this.zoom;
 
       p.moveTo(0, 0);
       let tmp = this.$parent.map.project(this.cog.latLngs[this.cog.latLngs.length - 1], z).round().subtract(this.boatOrigo);
@@ -145,6 +143,8 @@ export default {
       wxLoaded: state => state.weather.loaded,
       wxUpdated: state => state.weather.data.updated,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
+      viewUpdateStamp: state => state.map.viewUpdateStamp,
+      zoom: state => state.map.zoom,
     }),
   },
   methods: {
@@ -152,7 +152,7 @@ export default {
       return this.currentSteering === predictor ? '#ff00ff' : 'rgb(170, 0, 170, 0.5)';
     },
     redraw (ctx) {
-      const z = this.$parent.zoom;
+      const z = this.zoom;
 
       // ADDME: add mixing to do all world copies and loop then here
       ctx.translate(this.boatOrigo.x - this.viewOrigo.x,
@@ -194,7 +194,7 @@ export default {
         return p;
       }
 
-      const z = this.$parent.zoom;
+      const z = this.zoom;
       p.moveTo(0, 0);
       for (let pt of otherPts) {
         let tmp = this.$parent.map.project(pt, z).round().subtract(this.boatOrigo);

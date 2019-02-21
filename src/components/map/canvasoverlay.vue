@@ -49,11 +49,9 @@ export default {
   },
   methods: {
     onMove () {
-      this.center = this.map.getCenter();
       this.redraw();
     },
     onZoom () {
-      this.zoom = this.map.getZoom();
       this.redraw();
     },
     redraw () {

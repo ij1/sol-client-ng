@@ -12,7 +12,7 @@ export default {
   },
   computed: {
     gridOrigo () {
-      const centerPoint = this.$parent.map.latLngToContainerPoint(this.$parent.center);
+      const centerPoint = this.$parent.map.latLngToContainerPoint(this.center);
 
       return L.point(centerPoint.x % this.gridInterval,
                      centerPoint.y % this.gridInterval);
@@ -26,6 +26,7 @@ export default {
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
+      center: state => state.map.center,
     }),
     ...mapGetters({
       wxTime: 'weather/time',
