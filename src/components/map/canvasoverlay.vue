@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import L from 'leaflet';
 import WindMap from './wind';
 import SteeringPredictors from './predictors';
@@ -26,7 +27,6 @@ export default {
     return {
       ready: false,
       canvas: null,
-      size: null,
       animFrame: null,
       center: null,
       zoom: null,
@@ -43,6 +43,9 @@ export default {
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
+    ...mapState({
+      size: state => state.map.size,
+    }),
   },
   methods: {
     onMove () {
@@ -68,8 +71,7 @@ export default {
 
       this.animFrame = null;
     },
-    onResize() {
-      this.size = this.map.getSize();
+    setCanvasSize () {
       this.canvas.width = this.size.x;
       this.canvas.height = this.size.y;
     },
@@ -82,21 +84,24 @@ export default {
   watch: {
     needsRedraw () {
       this.requestRedraw();
-    }
+    },
+    size () {
+      this.setCanvasSize();
+      this.requestRedraw();
+    },
   },
   mounted () {
     this.center = this.map.getCenter();
     this.zoom = this.map.getZoom();
 
     this.canvas = L.DomUtil.create('canvas', 'canvas-overlay');
-    this.onResize();
+    this.setCanvasSize();
     this.map.getContainer().appendChild(this.canvas);
 
     this.map.on('move', this.onMove, this);
     this.map.on('moveend', this.onMove, this);
     this.map.on('zoom', this.onZoom, this);
     this.map.on('zoomend', this.onZoom, this);
-    this.map.on('resize', this.onResize, this);
 
     this.ready = true;
     this.requestRedraw();
@@ -108,7 +113,6 @@ export default {
     }
     this.ready = false;
 
-    this.map.off('resize', this.onResize, this);
     this.map.off('zoomend', this.onZoom, this);
     this.map.off('zoom', this.onZoom, this);
     this.map.off('moveend', this.onMove, this);
