@@ -35,7 +35,7 @@ export default {
       let map = this.$parent.$parent.map;
       const boatPath = this.$parent.$parent.boatPath;
       /* Anything > 1/2 boat size is fine */
-      const halfsize = 32 / 2;
+      const halfsize = 40 / 2;
 
       const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
       const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
