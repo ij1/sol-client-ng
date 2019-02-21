@@ -10,6 +10,7 @@
       @moveend="updateView"
       @zoom="updateView"
       @zoomend="updateView"
+      @resize="setSize"
       :world-copy-jump="true"
       :options="{
         zoomControl: false,
@@ -139,6 +140,13 @@ export default {
       this.$store.commit('map/setView', {
         center: this.map.getCenter(),
         zoom: this.map.getZoom(),
+        bounds: this.map.getBounds(),
+      });
+    },
+    setSize () {
+      this.$store.commit('map/setSize', {
+        size: this.map.getSize(),
+        bounds: this.map.getBounds(),
       });
     },
     setHoverPos (e) {
