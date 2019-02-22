@@ -1,56 +1,56 @@
 <template>
   <div id="leaderboard">
-     <div class="leaderboard-header">
-       {{ listname }}
-       <div class="leaderboard-search">
-         <label for="search">Search</label>
-         <input
-           id = "search"
-           class = "leadeboard-search-box"
-           v-model = "filter"
-         >
-       </div>
-     </div>
-     <div id="leaderboard-table">
-     <table cellspacing="0" cellpadding="1px">
-       <thead>
-         <th
-           v-for = "column in visibleColumnsWithSort"
-           :key = "column.dataField"
-           @click="selectSort(column.dataField, column.localeSort)"
-         >
-           {{column.thWithSort}}
-         </th>
-       </thead>
-       <tbody id="leaderboard-body">
-         <tr
-           v-for = "boat in boatList"
-           :key = "boat.id"
-           :class = "{'active': selected.includes(boat.id), 'maphover': maphover.includes(boat.id)}"
-           @click.exact = "selectBoat(boat.id, false)"
-           @click.alt.exact = "selectBoat(boat.id, true)"
-         >
-           <td
-             v-for = "column in visibleColumnsWithSort"
-             :key = "column.dataField"
-             :class = "{ 'leaderboard-left': column.align === 'l', 'leaderboard-right': column.align === 'r' }"
-           >
-             <country-flag
-               v-if = "column.dataField === 'country'"
-               :country = "boat[column.dataField]"
-             />
-             <syc-flag
-               v-else-if = "column.dataField === 'syc'"
-               :syc = "boat[column.dataField]"
-             />
-             <span v-else>
-               {{boat[column.dataField] | prettyPrint(column) }}
-             </span>
-           </td>
-         </tr>
-       </tbody>
-     </table>
-     </div>
+    <div class="leaderboard-header">
+      {{ listname }}
+      <div class="leaderboard-search">
+        <label for="search">Search</label>
+        <input
+          id = "search"
+          class = "leadeboard-search-box"
+          v-model = "filter"
+        >
+      </div>
+    </div>
+    <div id="leaderboard-table">
+    <table cellspacing="0" cellpadding="1px">
+      <thead>
+        <th
+          v-for = "column in visibleColumnsWithSort"
+          :key = "column.dataField"
+          @click="selectSort(column.dataField, column.localeSort)"
+        >
+          {{column.thWithSort}}
+        </th>
+      </thead>
+      <tbody id="leaderboard-body">
+        <tr
+          v-for = "boat in boatList"
+          :key = "boat.id"
+          :class = "{'active': selected.includes(boat.id), 'maphover': maphover.includes(boat.id)}"
+          @click.exact = "selectBoat(boat.id, false)"
+          @click.alt.exact = "selectBoat(boat.id, true)"
+        >
+          <td
+            v-for = "column in visibleColumnsWithSort"
+            :key = "column.dataField"
+            :class = "{ 'leaderboard-left': column.align === 'l', 'leaderboard-right': column.align === 'r' }"
+          >
+            <country-flag
+              v-if = "column.dataField === 'country'"
+              :country = "boat[column.dataField]"
+            />
+            <syc-flag
+              v-else-if = "column.dataField === 'syc'"
+              :syc = "boat[column.dataField]"
+            />
+            <span v-else>
+              {{boat[column.dataField] | prettyPrint(column) }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
   </div>
 </template>
 
