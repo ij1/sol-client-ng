@@ -186,7 +186,7 @@ export default {
 <style scoped>
 #boatlist-table {
   width: 100%;
-  height: calc(100% - 48px);
+  height: 100%;
   font-size: 10px;
   white-space: nowrap;
   overflow-y: scroll;

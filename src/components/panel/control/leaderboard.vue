@@ -11,11 +11,13 @@
         >
       </div>
     </div>
-    <boat-list
-      :filter = "this.filter"
-      :boat-list = "this.boatList"
-      @select-boat = "this.selectBoat"
-    />
+    <div id = "leaderboard-boatlist">
+      <boat-list
+        :filter = "this.filter"
+        :boat-list = "this.boatList"
+        @select-boat = "this.selectBoat"
+      />
+    </div>
   </div>
 </template>
 
@@ -62,5 +64,9 @@ export default {
 }
 .leaderboard-header, .leaderboard-search, .leaderboard-search input {
   font-size: 11px;
+}
+#leaderboard-boatlist {
+  width: 100%;
+  height: calc(100% - 48px);
 }
 </style>
