@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
 import BoatList from './boatlist.vue';
 
@@ -37,7 +38,10 @@ export default {
   computed: {
     boatList () {
       return this.$store.state.race.fleet.boat;
-    }
+    },
+    ...mapGetters({
+      fleetBoatFromId: 'race/fleet/boatFromId',
+    }),
   },
   methods: {
     selectBoat (e) {

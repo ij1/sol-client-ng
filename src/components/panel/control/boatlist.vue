@@ -155,7 +155,6 @@ export default {
       hover: state => state.race.fleet.hover,
     }),
     ...mapGetters({
-      fleetBoatFromId: 'race/fleet/boatFromId',
       multiClassRace: 'race/fleet/multiClassRace',
     }),
   },
