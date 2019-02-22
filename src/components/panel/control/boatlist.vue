@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
@@ -147,12 +147,10 @@ export default {
         }
       });
     },
-    selected () {
-      return this.$store.state.race.fleet.selected;
-    },
-    maphover () {
-      return this.$store.state.race.fleet.hover;
-    },
+    ...mapState({
+      selected: state => state.race.fleet.selected,
+      maphover: state => state.race.fleet.hover,
+    }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
       multiClassRace: 'race/fleet/multiClassRace',
