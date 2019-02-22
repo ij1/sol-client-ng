@@ -79,8 +79,6 @@ export default {
     prettyPrint (value, column) {
       if (column.dataField === 'dtg') {
         return value.toFixed(2);
-      } else if (column.dataField === 'syc') {
-        return value === true ? 't' : 'f';
       }
       return value;
     }
