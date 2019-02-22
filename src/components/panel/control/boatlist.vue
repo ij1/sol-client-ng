@@ -16,7 +16,7 @@
           :key = "boat.id"
           :class = "{
             'active': selected.includes(boat.id),
-            'maphover': maphover.includes(boat.id)
+            'listhover': hover.includes(boat.id)
           }"
           @click.exact = "selectBoat(boat.id, false)"
           @click.alt.exact = "selectBoat(boat.id, true)"
@@ -154,7 +154,7 @@ export default {
     },
     ...mapState({
       selected: state => state.race.fleet.selected,
-      maphover: state => state.race.fleet.hover,
+      hover: state => state.race.fleet.hover,
     }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
@@ -200,7 +200,7 @@ export default {
 #boatlist-body .active {
   background: #d0d0ff;
 }
-#boatlist-body .maphover {
+#boatlist-body .listhover {
   background: #e0e0ff;
 }
 
