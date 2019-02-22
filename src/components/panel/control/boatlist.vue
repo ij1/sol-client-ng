@@ -14,14 +14,20 @@
         <tr
           v-for = "boat in sortedBoatList"
           :key = "boat.id"
-          :class = "{'active': selected.includes(boat.id), 'maphover': maphover.includes(boat.id)}"
+          :class = "{
+            'active': selected.includes(boat.id),
+            'maphover': maphover.includes(boat.id)
+          }"
           @click.exact = "selectBoat(boat.id, false)"
           @click.alt.exact = "selectBoat(boat.id, true)"
         >
           <td
             v-for = "column in visibleColumnsWithSort"
             :key = "column.dataField"
-            :class = "{ 'boatlist-left': column.align === 'l', 'boatlist-right': column.align === 'r' }"
+            :class = "{
+              'boatlist-left': column.align === 'l',
+              'boatlist-right': column.align === 'r'
+            }"
           >
             <country-flag
               v-if = "column.dataField === 'country'"
