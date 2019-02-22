@@ -43,7 +43,6 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { EventBus } from '../../../lib/event-bus.js';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
 
@@ -166,16 +165,14 @@ export default {
       }
       this.localeSort = localeSort;
     },
-    selectBoat (id, keepMapPosition) {
+    selectBoat (id, altModifier) {
       if (this.selected.includes(id)) {
         this.$store.commit('race/fleet/setSelected', []);
       } else {
         this.$store.commit('race/fleet/setSelected', [id]);
-
-        const position = this.fleetBoatFromId(this.selected).latLng;
-        EventBus.$emit('map-highlight', {
-          latLng: position,
-          keepMapPosition: keepMapPosition,
+        this.$emit('select-boat', {
+          boatId: this.selected,
+          altModifier: altModifier
         });
       }
     }

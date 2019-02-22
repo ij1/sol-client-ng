@@ -11,11 +11,16 @@
         >
       </div>
     </div>
-    <boat-list :filter="this.filter" :boat-list="this.boatList"/>
+    <boat-list
+      :filter = "this.filter"
+      :boat-list = "this.boatList"
+      @select-boat = "this.selectBoat"
+    />
   </div>
 </template>
 
 <script>
+import { EventBus } from '../../../lib/event-bus.js';
 import BoatList from './boatlist.vue';
 
 export default {
@@ -33,6 +38,15 @@ export default {
     boatList () {
       return this.$store.state.race.fleet.boat;
     }
+  },
+  methods: {
+    selectBoat (e) {
+      const position = this.fleetBoatFromId(e.boatId).latLng;
+      EventBus.$emit('map-highlight', {
+        latLng: position,
+        keepMapPosition: e.altModifier,
+      });
+    },
   },
 }
 </script>
