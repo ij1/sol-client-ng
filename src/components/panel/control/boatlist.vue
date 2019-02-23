@@ -16,9 +16,7 @@
         <thead id="boatlist-fakehead" ref="fakehead">
           <th
             v-for = "column in visibleColumnsWithSort"
-            :key = "column.dataField"
-            :height = "0"
-            @click="selectSort(column.dataField, column.localeSort)"
+            :key = "'f' + column.dataField"
           >
             {{column.thWithSort}}
           </th>
