@@ -61,11 +61,13 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import TableHeader from './tableheader.js';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
 
 export default {
   name: 'BoatList',
+  mixins: [TableHeader],
   components: {
     'country-flag': CountryFlag,
     'syc-flag': SycFlag,
@@ -191,20 +193,6 @@ export default {
         });
       }
     },
-    setHeaderWidth () {
-      let dstArr = this.$refs.visualhead.children;
-      let srcArr = this.$refs.fakehead.children;
-
-      for (let i = 0; i < dstArr.length; i++) {
-        dstArr[i].style.width = srcArr[i].offsetWidth + 'px';
-      }
-    },
-  },
-  beforeUpdate () {
-    this.setHeaderWidth();
-  },
-  mounted () {
-    this.setHeaderWidth();
   },
 }
 </script>
