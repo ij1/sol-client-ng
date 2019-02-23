@@ -1,11 +1,23 @@
 <template>
   <div id="boatlist">
+    <table cellspacing="0" cellpadding="1px">
+      <thead id="boatlist-visualhead" ref="visualhead">
+        <th
+          v-for = "column in visibleColumnsWithSort"
+          :key = "column.dataField"
+          @click="selectSort(column.dataField, column.localeSort)"
+        >
+          {{column.thWithSort}}
+        </th>
+      </thead>
+    </table>
     <div id="boatlist-table">
       <table cellspacing="0" cellpadding="1px">
-        <thead>
+        <thead id="boatlist-fakehead" ref="fakehead">
           <th
             v-for = "column in visibleColumnsWithSort"
             :key = "column.dataField"
+            :height = "0"
             @click="selectSort(column.dataField, column.localeSort)"
           >
             {{column.thWithSort}}
@@ -180,7 +192,21 @@ export default {
           altModifier: altModifier
         });
       }
-    }
+    },
+    setHeaderWidth () {
+      let dstArr = this.$refs.visualhead.children;
+      let srcArr = this.$refs.fakehead.children;
+
+      for (let i = 0; i < dstArr.length; i++) {
+        dstArr[i].style.width = srcArr[i].offsetWidth + 'px';
+      }
+    },
+  },
+  beforeUpdate () {
+    this.setHeaderWidth();
+  },
+  mounted () {
+    this.setHeaderWidth();
   },
 }
 </script>
@@ -189,13 +215,21 @@ export default {
 #boatlist {
   height: 100%;
   width: 100%;
+  font-size: 10px;
 }
 #boatlist-table {
   width: 100%;
-  height: 100%;
-  font-size: 10px;
+  height: calc(100% - 15px);
   white-space: nowrap;
   overflow-y: scroll;
+}
+#boatlist-visualhead th {
+  padding: 0px;
+}
+#boatlist-fakehead, #boatlist-fakehead th {
+  padding: 0px;
+  line-height: 0px;
+  overflow: hidden;
 }
 #boatlist-body tr {
   background: #ffffff;
