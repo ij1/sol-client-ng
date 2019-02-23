@@ -15,34 +15,23 @@
       </button>
       <button @click="doRefresh">Refresh</button>
     </div>
-    <table cellspacing="0" cellpadding="1px">
-      <thead id="dc-visualhead" ref="visualhead">
+    <scrollable-table id = "dc-table">
+      <template slot = "headers">
         <th>Time</th>
         <th>Type</th>
         <th>&deg;</th>
-      </thead>
-    </table>
-    <div id="dc-table">
-      <table cellspacing="0" cellpadding="1px">
-        <thead id="dc-fakehead" ref="fakehead">
-          <th>Time</th>
-          <th>Type</th>
-          <th>&deg;</th>
-        </thead>
-        <tbody id="dc-list">
-          <tr
-            v-for = "command in this.$store.state.boat.steering.dcs.list"
-            v-bind:key = "command.id"
-            :class = "{'active': command.id === selected }"
-            @click = "selectDC(command.id)"
-          >
-            <td>{{ command.time | msecToUTCString }}</td>
-            <td>{{ command.type | cctocog }}</td>
-            <td>{{ command | formatValue }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </template>
+      <tr
+        v-for = "command in this.$store.state.boat.steering.dcs.list"
+        v-bind:key = "command.id"
+        :class = "{'active': command.id === selected }"
+        @click = "selectDC(command.id)"
+      >
+        <td>{{ command.time | msecToUTCString }}</td>
+        <td>{{ command.type | cctocog }}</td>
+        <td>{{ command | formatValue }}</td>
+      </tr>
+    </scrollable-table>
     <portal to="dc-editor-dest" v-if="this.dcToEdit !== null">
       <dc-editor :dc-to-edit = "this.dcToEdit" :real-parent="this"/>
     </portal>
@@ -52,13 +41,13 @@
 <script>
 import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
 import { dcTwaTextPrefix } from '../../../lib/nav.js';
-import TableHeader from './tableheader.js';
+import ScrollableTable from './scrollabletable.vue';
 import DcEditor from './dceditor.vue';
 
 export default {
   name: 'ControlDCs',
-  mixins: [TableHeader],
   components: {
+    'scrollable-table': ScrollableTable,
     'dc-editor': DcEditor,
   },
   data () {
@@ -150,24 +139,12 @@ export default {
   margin: 2px;
 }
 #dc-table {
-  width: 100%;
-  height: calc(100% - 32px - 15px);
-  overflow-y: scroll;
   font-size: 10px;
 }
-#dc-visualhead th {
-  padding: 0px;
-  font-size: 10px;
-}
-#dc-fakehead, #dc-fakehead th {
-  padding: 0px;
-  line-height: 0px;
-  overflow: hidden;
-}
-#dc-list tr {
+#dc-table tr {
   background: #ffffff;
 }
-#dc-list .active {
+#dc-table .active {
   background: #d0d0ff;
 }
 </style>
