@@ -39,6 +39,9 @@ export default {
   mounted () {
     this.setTableHeaderWidth();
   },
+  activated () {
+    this.setTableHeaderWidth();
+  },
 }
 </script>
 

@@ -18,4 +18,7 @@ export default {
   mounted () {
     this.setTableHeaderWidth();
   },
+  activated () {
+    this.setTableHEaderWidth();
+  },
 }
