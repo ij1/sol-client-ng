@@ -15,9 +15,16 @@
       </button>
       <button @click="doRefresh">Refresh</button>
     </div>
+    <table cellspacing="0" cellpadding="1px">
+      <thead id="dc-visualhead" ref="visualhead">
+        <th>Time</th>
+        <th>Type</th>
+        <th>&deg;</th>
+      </thead>
+    </table>
     <div id="dc-table">
       <table cellspacing="0" cellpadding="1px">
-        <thead>
+        <thead id="dc-fakehead" ref="fakehead">
           <th>Time</th>
           <th>Type</th>
           <th>&deg;</th>
@@ -45,10 +52,12 @@
 <script>
 import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
 import { dcTwaTextPrefix } from '../../../lib/nav.js';
+import TableHeader from './tableheader.js';
 import DcEditor from './dceditor.vue';
 
 export default {
   name: 'ControlDCs',
+  mixins: [TableHeader],
   components: {
     'dc-editor': DcEditor,
   },
@@ -142,9 +151,18 @@ export default {
 }
 #dc-table {
   width: 100%;
-  height: calc(100% - 32px);
+  height: calc(100% - 32px - 15px);
   overflow-y: scroll;
   font-size: 10px;
+}
+#dc-visualhead th {
+  padding: 0px;
+  font-size: 10px;
+}
+#dc-fakehead, #dc-fakehead th {
+  padding: 0px;
+  line-height: 0px;
+  overflow: hidden;
 }
 #dc-list tr {
   background: #ffffff;
