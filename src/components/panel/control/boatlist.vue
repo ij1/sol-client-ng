@@ -1,74 +1,58 @@
 <template>
-  <div id="boatlist">
-    <table cellspacing="0" cellpadding="1px">
-      <thead id="boatlist-visualhead" ref="visualhead">
-        <th
-          v-for = "column in visibleColumnsWithSort"
-          :key = "column.dataField"
-          @click="selectSort(column.dataField, column.localeSort)"
-        >
-          {{column.thWithSort}}
-        </th>
-      </thead>
-    </table>
-    <div id="boatlist-table">
-      <table cellspacing="0" cellpadding="1px">
-        <thead id="boatlist-fakehead" ref="fakehead">
-          <th
-            v-for = "column in visibleColumnsWithSort"
-            :key = "'f' + column.dataField"
-          >
-            {{column.thWithSort}}
-          </th>
-        </thead>
-        <tbody id="boatlist-body">
-          <tr
-            v-for = "boat in sortedBoatList"
-            :key = "boat.id"
-            :class = "{
-              'active': selected.includes(boat.id),
-              'listhover': hover.includes(boat.id)
-            }"
-            @click.exact = "selectBoat(boat.id, false)"
-            @click.alt.exact = "selectBoat(boat.id, true)"
-          >
-            <td
-              v-for = "column in visibleColumnsWithSort"
-              :key = "column.dataField"
-              :class = "{
-                'boatlist-left': column.align === 'l',
-                'boatlist-right': column.align === 'r'
-              }"
-            >
-              <country-flag
-                v-if = "column.dataField === 'country'"
-                :country = "boat[column.dataField]"
-              />
-              <syc-flag
-                v-else-if = "column.dataField === 'syc'"
-                :syc = "boat[column.dataField]"
-              />
-              <span v-else>
-                {{boat[column.dataField] | prettyPrint(column) }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <scrollable-table id = "boatlist-table">
+    <template slot = "headers">
+      <th
+        v-for = "column in visibleColumnsWithSort"
+        :key = "column.dataField"
+        @click="selectSort(column.dataField, column.localeSort)"
+      >
+        {{column.thWithSort}}
+      </th>
+    </template>
+    <tr
+      v-for = "boat in sortedBoatList"
+      :key = "boat.id"
+      :class = "{
+        'active': selected.includes(boat.id),
+        'listhover': hover.includes(boat.id)
+      }"
+      @click.exact = "selectBoat(boat.id, false)"
+      @click.alt.exact = "selectBoat(boat.id, true)"
+    >
+      <td
+        v-for = "column in visibleColumnsWithSort"
+        :key = "column.dataField"
+        :class = "{
+          'boatlist-left': column.align === 'l',
+          'boatlist-right': column.align === 'r'
+        }"
+      >
+        <country-flag
+          v-if = "column.dataField === 'country'"
+          :country = "boat[column.dataField]"
+        />
+        <syc-flag
+          v-else-if = "column.dataField === 'syc'"
+          :syc = "boat[column.dataField]"
+        />
+        <span v-else>
+          {{boat[column.dataField] | prettyPrint(column) }}
+        </span>
+      </td>
+    </tr>
+  </scrollable-table>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import TableHeader from './tableheader.js';
+import ScrollableTable from './scrollabletable.vue';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
 
 export default {
   name: 'BoatList',
-  mixins: [TableHeader],
   components: {
+    'scrollable-table': ScrollableTable,
     'country-flag': CountryFlag,
     'syc-flag': SycFlag,
   },
@@ -198,24 +182,10 @@ export default {
 </script>
 
 <style scoped>
-#boatlist {
-  height: 100%;
-  width: 100%;
-  font-size: 10px;
-}
 #boatlist-table {
   width: 100%;
-  height: calc(100% - 15px);
-  white-space: nowrap;
-  overflow-y: scroll;
-}
-#boatlist-visualhead th {
-  padding: 0px;
-}
-#boatlist-fakehead, #boatlist-fakehead th {
-  padding: 0px;
-  line-height: 0px;
-  overflow: hidden;
+  height: 100%;
+  font-size: 10px;
 }
 #boatlist-body tr {
   background: #ffffff;
