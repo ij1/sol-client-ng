@@ -18,11 +18,9 @@
     <div id="dc-table">
       <table cellspacing="0" cellpadding="1px">
         <thead>
-          <tr>
-            <td>Time</td>
-            <td>Type</td>
-            <td>&deg;</td>
-          </tr>
+          <th>Time</th>
+          <th>Type</th>
+          <th>&deg;</th>
         </thead>
         <tbody id="dc-list">
           <tr
