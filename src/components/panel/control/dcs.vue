@@ -140,6 +140,7 @@ export default {
 }
 #dc-table {
   font-size: 10px;
+  height: calc(100% - 32px);
 }
 #dc-table tr {
   background: #ffffff;
