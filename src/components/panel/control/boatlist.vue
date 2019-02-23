@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="boatlist">
     <div id="boatlist-table">
       <table cellspacing="0" cellpadding="1px">
         <thead>
@@ -186,6 +186,10 @@ export default {
 </script>
 
 <style scoped>
+#boatlist {
+  height: 100%;
+  width: 100%;
+}
 #boatlist-table {
   width: 100%;
   height: 100%;
