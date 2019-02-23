@@ -19,6 +19,6 @@ export default {
     this.setTableHeaderWidth();
   },
   activated () {
-    this.setTableHEaderWidth();
+    this.setTableHeaderWidth();
   },
 }
