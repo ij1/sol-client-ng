@@ -2,6 +2,8 @@
   <div id="leaderboard">
     <div class="leaderboard-header">
       {{ name }}
+    </div>
+    <div v-if = "this.boatlistInfo.boatlistKey === this.activeBoatlist">
       <div class="leaderboard-search">
         <label for="search">Search</label>
         <input
@@ -10,16 +12,16 @@
           v-model = "search"
         >
       </div>
-    </div>
-    <div id = "leaderboard-boatlist">
-      <boat-list
-        :search = "this.search"
-        :boat-list = "this.boatList"
-        :initial-selected = "this.selectedList"
-        :hover-list = "this.hoverList"
-        @select = "this.selectBoat"
-        @input = "this.updateSelection"
-      />
+      <div id = "leaderboard-boatlist">
+        <boat-list
+          :search = "this.search"
+          :boat-list = "this.boatList"
+          :initial-selected = "this.selectedList"
+          :hover-list = "this.hoverList"
+          @select = "this.selectBoat"
+          @input = "this.updateSelection"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -34,17 +36,34 @@ export default {
   components: {
     'boat-list': BoatList,
   },
+  props: {
+    boatlistIndex: {
+      type: Number,
+      required: true,
+    },
+  },
   data () {
     return {
-      name: 'Main Fleet',
       search: '',
     }
   },
   computed: {
     boatList () {
-      return this.$store.state.race.fleet.boat;
+      let res = this.$store.state.race.fleet.boat;
+      if (this.boatlistInfo.filter.boats !== null) {
+        res = res.filter(i => this.boatlistInfo.filter.boats.includes(i.id));
+      }
+      // ADDME: distance filter
+      return res;
+    },
+    name () {
+      return this.boatlistInfo.name;
+    },
+    boatlistInfo () {
+      return this.$store.state.ui.boatlists.boatlists[this.boatlistIndex];
     },
     ...mapState({
+      activeBoatlist: state => state.ui.boatlists.activeList,
       selectedList: state => state.race.fleet.selected,
       hoverList: state => state.race.fleet.hover,
     }),

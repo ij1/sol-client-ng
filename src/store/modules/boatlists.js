@@ -56,5 +56,8 @@ export default {
         distance: filterData.distance,
       };
     },
+    setActive (state, boatlistKey) {
+      state.activeList = boatlistKey;
+    }
   },
 }

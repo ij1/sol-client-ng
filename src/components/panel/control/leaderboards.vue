@@ -1,6 +1,10 @@
 <template>
   <div id="leaderboards">
-    <control-leaderboard/>
+    <control-leaderboard
+      v-for = "(leaderboard, index) in this.boatlists"
+      :key = "leaderboard.boatlistKey"
+      :boatlist-index = "index"
+    />
     <portal to="boatlist-editor-dest">
       <boatlist-editor/>
     </portal>
@@ -8,6 +12,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import ControlLeaderboard from './leaderboard.vue';
 import BoatlistEditor from './boatlist-editor.vue';
 
@@ -16,6 +21,11 @@ export default {
   components: {
     'control-leaderboard': ControlLeaderboard,
     'boatlist-editor': BoatlistEditor,
+  },
+  computed: {
+    ...mapState({
+      boatlists: state => state.ui.boatlists.boatlists,
+    }),
   },
 }
 </script>
