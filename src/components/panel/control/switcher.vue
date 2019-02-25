@@ -20,7 +20,7 @@
       </div>
       <div v-if="activeTab === 2" class="control-panel-content">
         <keep-alive>
-          <control-leaderboard/>
+          <control-leaderboards/>
         </keep-alive>
       </div>
       <div v-if="activeTab === 3" class="control-panel-content">
@@ -43,7 +43,7 @@
 <script>
 import ControlSteering from './steering.vue';
 import ControlDCs from './dcs.vue';
-import ControlLeaderboard from './leaderboard.vue';
+import ControlLeaderboards from './leaderboards.vue';
 import ControlChats from './chats.vue';
 import ControlRaceMessages from './racemessages.vue';
 import ControlDiagnostics from './diagnostics.vue';
@@ -53,7 +53,7 @@ export default {
   components: {
     'control-steering': ControlSteering,
     'control-dcs': ControlDCs,
-    'control-leaderboard': ControlLeaderboard,
+    'control-leaderboards': ControlLeaderboards,
     'control-chats': ControlChats,
     'control-race-messages': ControlRaceMessages,
     'control-diagnostics': ControlDiagnostics,
