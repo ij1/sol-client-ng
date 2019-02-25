@@ -1,7 +1,7 @@
 <template>
   <div id="leaderboard">
     <div class="leaderboard-header">
-      {{ listname }}
+      {{ name }}
       <div class="leaderboard-search">
         <label for="search">Search</label>
         <input
@@ -36,7 +36,7 @@ export default {
   },
   data () {
     return {
-      listname: 'Main Fleet',
+      name: 'Main Fleet',
       filter: '',
     }
   },
