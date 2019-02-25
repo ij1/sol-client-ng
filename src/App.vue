@@ -3,6 +3,7 @@
     <login-popup/>
     <notifications-popup/>
     <portal-target name="dc-editor-dest"/>
+    <portal-target name="boatlist-editor-dest"/>
     <div id = "left-div">
       <map-view/>
       <weather-panel/>
