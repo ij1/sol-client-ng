@@ -12,9 +12,10 @@
     <tr
       v-for = "boat in sortedBoatList"
       :key = "boat.id"
+      class = "boatlist-row"
       :class = "{
-        'active': selected.includes(boat.id),
-        'listhover': hover.includes(boat.id)
+        'boatlist-active': selected.includes(boat.id),
+        'boatlist-hover': hoverList.includes(boat.id)
       }"
       @click.exact = "selectBoat(boat.id, false)"
       @click.alt.exact = "selectBoat(boat.id, true)"
@@ -187,13 +188,13 @@ export default {
   height: 100%;
   font-size: 10px;
 }
-#boatlist-body tr {
+.boatlist-row {
   background: #ffffff;
 }
-#boatlist-body .active {
+.boatlist-active {
   background: #d0d0ff;
 }
-#boatlist-body .listhover {
+.boatlist-hover {
   background: #e0e0ff;
 }
 
