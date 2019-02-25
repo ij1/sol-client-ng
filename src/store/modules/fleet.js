@@ -96,6 +96,7 @@ export default {
             // ADDME: consider removing constant cog points, maybe not useful?
             // ADDME: if cog changed a lot, calculate an intersection too?
             // FIXME: What if traces API fails, this could grow very large.
+            // FIXME: latLngRaceBounds would be needed here but not avail!
             state.boat[idx].trace.push(latLng);
           }
           state.boat[idx].latLng = latLng;
