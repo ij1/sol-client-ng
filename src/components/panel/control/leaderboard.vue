@@ -7,13 +7,13 @@
         <input
           id = "search"
           class = "leadeboard-search-box"
-          v-model = "filter"
+          v-model = "search"
         >
       </div>
     </div>
     <div id = "leaderboard-boatlist">
       <boat-list
-        :filter = "this.filter"
+        :search = "this.search"
         :boat-list = "this.boatList"
         :initial-selected = "this.selectedList"
         :hover-list = "this.hoverList"
@@ -37,7 +37,7 @@ export default {
   data () {
     return {
       name: 'Main Fleet',
-      filter: '',
+      search: '',
     }
   },
   computed: {

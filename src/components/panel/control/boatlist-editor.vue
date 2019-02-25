@@ -13,12 +13,12 @@
         <input
           id = "search"
           class = "boatlist-search-box"
-          v-model = "filter"
+          v-model = "search"
         >
       </div>
       <div class = "offlist">
         <boat-list
-          :filter = "this.filter"
+          :search = "this.search"
           :boat-list = "this.boatLists.offList"
           @input = "offSelected = $event"
         />
@@ -46,7 +46,7 @@
       <div class = "onlist-header">Included boats</div>
       <div class = "onlist">
         <boat-list
-          :filter = "this.filter"
+          :search = "this.search"
           :boat-list = "this.boatLists.onList"
           @input = "onSelected = $event"
         />
@@ -81,7 +81,7 @@ export default {
     return {
       closing: false,
       listname: '',
-      filter: '',
+      search: '',
       onList: {},
       onSelected: [],
       offSelected: [],

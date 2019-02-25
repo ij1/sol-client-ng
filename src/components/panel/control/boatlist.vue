@@ -58,7 +58,7 @@ export default {
     'syc-flag': SycFlag,
   },
   props: {
-    filter: {
+    search: {
       type: String,
       default: '',
     },
@@ -139,10 +139,10 @@ export default {
     },
     sortedBoatList () {
       const dir = this.sortDir === 'asc' ? 1 : -1;
-      const needle = this.filter.toLowerCase();
+      const needle = this.search.toLowerCase();
 
       return this.boatList.filter(boat => {
-        return (this.filter.length === 0) ||
+        return (this.search.length === 0) ||
                boat.name.toLowerCase().includes(needle);
       }).sort((a, b) => {
         if (!this.localeSort) {
