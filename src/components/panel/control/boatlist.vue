@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import ScrollableTable from './scrollabletable.vue';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
@@ -66,9 +66,18 @@ export default {
       type: Array,
       required: true,
     },
+    initialSelected: {
+      type: Array,
+      default: () => [],
+    },
+    hoverList: {
+      type: Array,
+      default: () => [],
+    },
   },
   data () {
     return {
+      selected: this.initialSelected,
       sortKey: 'ranking',
       sortDir: 'asc',
       localeSort: false,
@@ -149,10 +158,6 @@ export default {
         }
       });
     },
-    ...mapState({
-      selected: state => state.race.fleet.selected,
-      hover: state => state.race.fleet.hover,
-    }),
     ...mapGetters({
       multiClassRace: 'race/fleet/multiClassRace',
     }),
@@ -169,14 +174,15 @@ export default {
     },
     selectBoat (id, altModifier) {
       if (this.selected.includes(id)) {
-        this.$store.commit('race/fleet/setSelected', []);
+        this.selected = [];
       } else {
-        this.$store.commit('race/fleet/setSelected', [id]);
-        this.$emit('select-boat', {
-          boatId: this.selected,
-          altModifier: altModifier
+        this.selected = [id];
+        this.$emit('select', {
+          boatId: id,
+          altModifier: altModifier,
         });
       }
+      this.$emit('input', this.selected);
     },
   },
 }

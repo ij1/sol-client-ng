@@ -15,14 +15,17 @@
       <boat-list
         :filter = "this.filter"
         :boat-list = "this.boatList"
-        @select-boat = "this.selectBoat"
+        :initial-selected = "this.selectedList"
+        :hover-list = "this.hoverList"
+        @select = "this.selectBoat"
+        @input = "this.updateSelection"
       />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
 import BoatList from './boatlist.vue';
 
@@ -41,11 +44,18 @@ export default {
     boatList () {
       return this.$store.state.race.fleet.boat;
     },
+    ...mapState({
+      selectedList: state => state.race.fleet.selected,
+      hoverList: state => state.race.fleet.hover,
+    }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
     }),
   },
   methods: {
+    updateSelection (selectedList) {
+      this.$store.commit('race/fleet/setSelected', selectedList);
+    },
     selectBoat (e) {
       const position = this.fleetBoatFromId(e.boatId).latLng;
       EventBus.$emit('map-highlight', {
