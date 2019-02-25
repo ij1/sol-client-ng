@@ -114,7 +114,16 @@ export default {
   },
   methods: {
     createList () {
-      // ADDME: create the list
+      if (!this.canCreate) {
+        return;
+      }
+      this.$store.commit('ui/boatlists/add', {
+        name: this.listname,
+        filter: {
+          boats: Object.keys(this.onList),
+          distance: null,
+        },
+      });
       this.close();
     },
     close () {

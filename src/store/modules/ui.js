@@ -1,5 +1,11 @@
+import boatlistsModule from './boatlists.js';
+
 export default {
   namespaced: true,
+
+  modules: {
+    boatlists: boatlistsModule,
+  },
 
   state: {
     activeTab: 0,
