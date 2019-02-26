@@ -8,7 +8,7 @@
     </div>
     <div
       class = "leaderboard-boatlist-container"
-      v-if = "this.boatlistInfo.boatlistKey === this.activeBoatlist"
+      v-if = "this.active"
     >
       <div class="leaderboard-search">
         <label for="search">Search</label>
@@ -54,6 +54,9 @@ export default {
     }
   },
   computed: {
+    active () {
+      return this.boatlistInfo.boatlistKey === this.activeBoatlist;
+    },
     boatList () {
       let res = this.$store.state.race.fleet.boat;
       if (this.boatlistInfo.filter.boats !== null) {
