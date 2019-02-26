@@ -12,7 +12,7 @@
       <div>
         <slot></slot>
       </div>
-      <div>
+      <div style="margin-top: 10px">
         <button
           type = "close"
           @click.prevent = "$emit('close')"
