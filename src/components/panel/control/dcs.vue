@@ -33,7 +33,10 @@
       </tr>
     </scrollable-table>
     <portal to="dc-editor-dest" v-if="this.dcToEdit !== null">
-      <dc-editor :dc-to-edit = "this.dcToEdit" :real-parent="this"/>
+      <dc-editor
+        :dc-to-edit = "this.dcToEdit"
+        @close = "dcToEdit = null"
+      />
     </portal>
   </div>
 </template>

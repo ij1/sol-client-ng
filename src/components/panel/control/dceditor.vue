@@ -4,7 +4,7 @@
     title = "Edit Delayed Command"
     :z-index = "1000"
     close-button-label = "Cancel"
-    @close = "close"
+    @close = "$emit('close')"
     submit-button-label = "Change"
     @submit = "onChange"
     :can-submit = "this.canSend"
@@ -67,11 +67,6 @@ export default {
   props: {
     dcToEdit: {
       type: Object,
-    },
-    /* Vue portal hides the real parent, thus, pass it for us */
-    realParent: {
-      type: Object,
-      required: true,
     },
   },
   data () {
@@ -141,9 +136,6 @@ export default {
     }),
   },
   methods: {
-    close () {
-      this.realParent.dcToEdit = null;
-    },
     onChange () {
       if (this.canSend) {
         this.sendChange();
@@ -166,7 +158,7 @@ export default {
       ])
       .then(status => {
         if ((status[0] === 'OK') && (status[1] === 'OK')) {
-          this.close();
+          this.$emit('close');
         } else {
           this.$store.dispatch('notifications/add', {
             text: 'DC change failed, please check your DCs!',
