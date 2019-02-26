@@ -131,6 +131,9 @@ export default {
   position: relative;
   width: 100%;
 }
+.leaderboard-search input {
+  font-size: 10px;
+}
 #leaderboard-boatlist {
   width: 100%;
   height: 100%;
