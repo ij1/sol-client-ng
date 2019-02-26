@@ -97,12 +97,16 @@ export default {
 #leaderboard {
   height: 100%;
   width: 100%;
-}
-.leaderboard-header, .leaderboard-search, .leaderboard-search input {
   font-size: 11px;
+  text-align: left;
+}
+.leaderboard-header {
+  background-image: linear-gradient(#f0f0f0, #a0a0a0, #909090, #c0c0c0, #f0f0f0);
+  padding: 5px;
+  font-weight: bold;
 }
 #leaderboard-boatlist {
   width: 100%;
-  height: calc(100% - 48px);
+  height: calc(100% - 64px);
 }
 </style>
