@@ -5,8 +5,16 @@
       :key = "leaderboard.boatlistKey"
       :boatlist-index = "index"
     />
-    <portal to="boatlist-editor-dest">
-      <boatlist-editor/>
+    <div>
+      Create new list by:
+      <button @click = "editorType = 'boat'">Boat</button>
+      <button @click = "editorType = 'distance'">Distance</button>
+    </div>
+    <portal to = "boatlist-editor-dest" v-if = "this.editorType !== null">
+      <boatlist-editor
+        :editor-type = "editorType"
+        @close = "editorType = null"
+      />
     </portal>
   </div>
 </template>
@@ -21,6 +29,11 @@ export default {
   components: {
     'control-leaderboard': ControlLeaderboard,
     'boatlist-editor': BoatlistEditor,
+  },
+  data () {
+    return {
+      editorType: null,
+    }
   },
   computed: {
     ...mapState({

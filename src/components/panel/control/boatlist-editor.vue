@@ -1,9 +1,15 @@
 <template>
-  <div id="boatlist-editor" v-if="!this.closing">
-    <div id="boatlist-editor-header">
-      Select Boats
-    </div>
-    <form @submit.prevent="createList">
+  <popup-window
+    class = "boatlist-editor"
+    title = "Select Boats"
+    :z-index = "1001"
+    close-button-label = "Cancel"
+    @close = "$emit('close')"
+    submit-button-label = "Create list"
+    @submit = "createList"
+    :can-submit = "this.canCreate"
+  >
+    <div class = "boatlist-editor-body">
       <div class="listname">
         <label for="name">List name:</label>
         <input id="name" v-model.trim = "listname">
@@ -51,35 +57,29 @@
           @input = "onSelected = $event"
         />
       </div>
-      <div class = "buttons">
-        <button type = "submit" :disabled="!canCreate">
-          Create list
-        </button>
-        <button
-          type = "cancel"
-          @click.prevent = "close"
-          @keydown.enter.prevent = "close"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  </div>
+    </div>
+  </popup-window>
 </template>
 
 <script>
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
+import PopupWindow from '../../popupwindow.vue';
 import BoatList from './boatlist.vue';
 
 export default {
   name: 'BoatlistSelector',
   components: {
+    'popup-window': PopupWindow,
     'boat-list': BoatList,
+  },
+  props: {
+    editorType: {
+      type: String,
+    },
   },
   data () {
     return {
-      closing: false,
       listname: '',
       search: '',
       onList: {},
@@ -124,10 +124,7 @@ export default {
           distance: null,
         },
       });
-      this.close();
-    },
-    close () {
-      this.closing = true;
+      this.$emit('close');
     },
     onAdd () {
       for (let id of this.offSelected) {
@@ -146,31 +143,15 @@ export default {
 </script>
 
 <style scoped>
-#boatlist-editor {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
-  padding: 10px;
-  border: solid 3px;
-  border-radius: 10px;
-  border-color: #808080;
-  background: #fff;
-  z-index: 2000;
-  text-align: left;
-
-  height: 500px;
-  width: 500px;
+.boatlist-editor {
   font-size: 11px;
 }
-#boatlist-editor form {
+.boatlist-editor-body {
   display: grid;
   grid-template: 
     "listname listname  ."
     "search   .         onlist-header"
-    "offlist  center    onlist"
-    "buttons  buttons   buttons";
+    "offlist  center    onlist";
 }
 .listname {
   grid-area: listname;
@@ -196,8 +177,5 @@ export default {
 }
 .offlist {
   grid-area: offlist;
-}
-.buttons {
-  grid-area: buttons;
 }
 </style>
