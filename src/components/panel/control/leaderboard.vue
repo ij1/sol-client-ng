@@ -1,6 +1,9 @@
 <template>
   <div id="leaderboard">
-    <div class="leaderboard-header">
+    <div
+      class = "leaderboard-header"
+      @click = "onActivate"
+    >
       {{ name }}
     </div>
     <div v-if = "this.boatlistInfo.boatlistKey === this.activeBoatlist">
@@ -82,6 +85,10 @@ export default {
         keepMapPosition: e.altModifier,
       });
     },
+    onActivate () {
+      this.$store.commit('ui/boatlists/setActive',
+                         this.boatlistInfo.boatlistKey);
+    }
   },
 }
 </script>
