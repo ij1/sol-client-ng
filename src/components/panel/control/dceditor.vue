@@ -173,20 +173,6 @@ export default {
 </script>
 
 <style scoped>
-#dc-editor {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
-  padding: 10px;
-  border: solid 3px;
-  border-radius: 10px;
-  border-color: #808080;
-  background: #fff;
-  z-index: 1000;
-  text-align: left;
-}
 .dc-editor-label {
   width: 30%;
   float: left;
