@@ -6,7 +6,10 @@
     >
       {{ name }}
     </div>
-    <div v-if = "this.boatlistInfo.boatlistKey === this.activeBoatlist">
+    <div
+      class = "leaderboard-boatlist-container"
+      v-if = "this.boatlistInfo.boatlistKey === this.activeBoatlist"
+    >
       <div class="leaderboard-search">
         <label for="search">Search</label>
         <input
@@ -95,18 +98,25 @@ export default {
 
 <style scoped>
 #leaderboard {
+  position: relative;
   height: 100%;
   width: 100%;
   font-size: 11px;
   text-align: left;
+  overflow: hidden;
 }
 .leaderboard-header {
   background-image: linear-gradient(#f0f0f0, #a0a0a0, #909090, #c0c0c0, #f0f0f0);
   padding: 5px;
   font-weight: bold;
 }
-#leaderboard-boatlist {
+.leaderboard-boatlist-container {
+  position: relative;
   width: 100%;
   height: calc(100% - 64px);
+}
+#leaderboard-boatlist {
+  width: 100%;
+  height: 100%;
 }
 </style>
