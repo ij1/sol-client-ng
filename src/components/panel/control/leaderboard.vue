@@ -8,6 +8,9 @@
     </div>
     <div
       class = "leaderboard-boatlist-container"
+      :style = "{
+        height: 'calc(100% - 68px - ' + (this.listEditable ? 18 : 0) + 'px)'
+      }"
       v-if = "this.active"
     >
       <div class="leaderboard-search">
@@ -27,6 +30,10 @@
           @select = "this.selectBoat"
           @input = "this.updateSelection"
         />
+      </div>
+      <div class = "leaderboard-buttons" v-if = "this.listEditable">
+        <button disabled>Edit list</button>
+        <button @click = "onDelete">Delete list</button>
       </div>
     </div>
   </div>
@@ -54,6 +61,9 @@ export default {
     }
   },
   computed: {
+    listEditable () {
+      return this.boatlistInfo.boatlistKey >= 0;
+    },
     active () {
       return this.boatlistInfo.boatlistKey === this.activeBoatlist;
     },
@@ -94,7 +104,11 @@ export default {
     onActivate () {
       this.$store.commit('ui/boatlists/setActive',
                          this.boatlistInfo.boatlistKey);
-    }
+    },
+    onDelete () {
+      this.$store.commit('ui/boatlists/delete',
+                         this.boatlistInfo.boatlistKey);
+    },
   },
 }
 </script>
@@ -116,10 +130,16 @@ export default {
 .leaderboard-boatlist-container {
   position: relative;
   width: 100%;
-  height: calc(100% - 64px);
 }
 #leaderboard-boatlist {
   width: 100%;
   height: 100%;
+}
+.leaderboard-buttons {
+  text-align: right;
+}
+.leaderboard-buttons button {
+  font-size: 10px;
+  margin: 2px;
 }
 </style>
