@@ -65,5 +65,6 @@ export default {
 }
 #leaderboard-createbuttons button {
   font-size: 10px;
+  margin-left: 4px;
 }
 </style>
