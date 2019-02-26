@@ -61,5 +61,9 @@ export default {
 #leaderboard-createbuttons {
   flex: none;
   overflow: hidden;
+  font-size: 10px;
+}
+#leaderboard-createbuttons button {
+  font-size: 10px;
 }
 </style>
