@@ -1,62 +1,54 @@
 <template>
-  <div id="dc-editor" v-if="!this.closed">
+  <popup-window
+    ref = "popup-window"
+    title = "Edit Delayed Command"
+    :z-index = "1000"
+    close-button-label = "Cancel"
+    @close = "close"
+    submit-button-label = "Change"
+    @submit = "onChange"
+    :can-submit = "this.canSend"
+  >
     <div>
-      Edit Delayed Command
+      <label class="dc-editor-label">Date</label>
+      <datepicker
+        v-model = "time"
+        format = "yyyy/MM/dd"
+        input-class = "dc-editor-date-input"
+        :use-utc = "true"
+        :typeable = "true"
+        :disabled-dates = "disabledDates"
+      />
     </div>
-    <form @submit.prevent="onChange">
-      <div>
-        <label class="dc-editor-label">Date</label>
-        <datepicker
-          v-model = "time"
-          format = "yyyy/MM/dd"
-          input-class = "dc-editor-date-input"
-          :use-utc = "true"
-          :typeable = "true"
-          :disabled-dates = "disabledDates"
-        />
-      </div>
-      <div>
-        <label for="time" class="dc-editor-label">Time</label>
-        <input
-          id = "time"
-          v-model = "hours"
-          maxlength = 8
-          size = 8
-        >
-      </div>
-      <div>
-        <label class="dc-editor-label">Type</label>
-        <span>
-          <input type="radio" id="cog" value="cc" v-model="type">
-          <label for="cog">COG</label>
-          <input type="radio" id="twa" value="twa" v-model="type">
-          <label for="twa">TWA</label>
-        </span>
-      </div>
-      <div>
-        <label for="value" class="dc-editor-label">Value</label>
-        <input
-          :style = "{'background-color': this.twaColor}"
-          id = "value"
-          v-model.trim = "value"
-          size = 8
-          maxlength = 8
-        >&deg;
-      </div>
-      <div>
-        <button
-          type = "cancel"
-          @click.prevent = "onCancel"
-          @keydown.enter.prevent = "onCancel"
-        >
-          Cancel
-        </button>
-        <button type="submit" :disabled="!canSend">
-          Change
-        </button>
-      </div>
-    </form>
-  </div>
+    <div>
+      <label for="time" class="dc-editor-label">Time</label>
+      <input
+        id = "time"
+        v-model = "hours"
+        maxlength = 8
+        size = 8
+      >
+    </div>
+    <div>
+      <label class="dc-editor-label">Type</label>
+      <span>
+        <input type="radio" id="cog" value="cc" v-model="type">
+        <label for="cog">COG</label>
+        <input type="radio" id="twa" value="twa" v-model="type">
+        <label for="twa">TWA</label>
+      </span>
+    </div>
+    <div>
+      <label for="value" class="dc-editor-label">Value</label>
+      <input
+        :style = "{'background-color': this.twaColor}"
+        id = "value"
+        v-model.trim = "value"
+        size = 8
+        maxlength = 8
+      >&deg;
+    </div>
+  </popup-window>
 </template>
 
 <script>
@@ -64,11 +56,13 @@ import { mapGetters } from 'vuex';
 import Datepicker from 'vuejs-datepicker';
 import { radToDeg, degToRad, msecToH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
 import { isCcValid, isTwaValid, dcTwaTextPrefix } from '../../../lib/nav.js';
+import PopupWindow from '../../popupwindow.vue';
 
 export default {
   name: 'DCEditor',
   components: {
     'datepicker': Datepicker,
+    'popup-window': PopupWindow,
   },
   props: {
     dcToEdit: {
@@ -88,7 +82,6 @@ export default {
       value: dcTwaTextPrefix(this.dcToEdit) +
              radToDeg(this.dcToEdit.value).toFixed(3),
       origDc: Object.assign({}, this.dcToEdit),
-      closed: false,
     }
   },
   computed: {
@@ -149,11 +142,7 @@ export default {
   },
   methods: {
     close () {
-      this.closed = true;
       this.realParent.dcToEdit = null;
-    },
-    onCancel () {
-      this.close();
     },
     onChange () {
       if (this.canSend) {
