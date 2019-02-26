@@ -1,6 +1,5 @@
 <template>
   <popup-window
-    ref = "popup-window"
     title = "Edit Delayed Command"
     :z-index = "1000"
     close-button-label = "Cancel"
