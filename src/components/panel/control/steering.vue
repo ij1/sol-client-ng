@@ -337,7 +337,7 @@ export default {
 
     applySteeringTxt () {
       if (this.delayOn && this.isDelayValid && this.delayTime > 0) {
-        return 'Send command';
+        return 'Send Command';
       } else if (this.isSteeringValid) {
         if ((Math.abs(this.oldTwa) > 0) && (Math.abs(this.twa) > 0) &&
             (Math.sign(this.oldTwa) !== Math.sign(this.twa))) {
@@ -345,7 +345,7 @@ export default {
           return 'Tack/Gybe';
         }
       }
-      return 'Set course';
+      return 'Set Boat Course';
     },
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
