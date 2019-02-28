@@ -4,8 +4,8 @@ import { degToRad } from './utils.js';
  * The angles are in radians.
  */
 export function minTurnAngle(currentAngle, nextAngle) {
-  /* PI * 3 ensures a positive number for the modulo */
-  return (nextAngle - currentAngle + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+  const pi2 = Math.PI * 2;
+  return ((((nextAngle - currentAngle + Math.PI) % pi2) + pi2) % pi2) - Math.PI;
 }
 
 /* Calculates the component towards bearing from a speed towards heading.
@@ -59,13 +59,7 @@ export function isTwaValid(twa) {
 }
 
 export function cogTwdToTwa(cog, twd) {
-  let diff = twd - cog;
-  if (diff > Math.PI) {
-    diff -= Math.PI * 2;
-  } else if (diff < -Math.PI) {
-    diff += Math.PI * 2;
-  }
-  return diff;
+  return minTurnAngle(cog, twd);
 }
 
 export function twaTwdToCog(twa, twd) {
