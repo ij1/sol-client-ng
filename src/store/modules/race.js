@@ -159,7 +159,10 @@ export default {
         dispatch('weather/fetchInfo', null, {root: true});
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'raceinfo',
+          error: err,
+        }, {root: true});
         solapiRetryDispatch(dispatch, 'fetchAuthRaceinfo');
       })
     },

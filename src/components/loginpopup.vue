@@ -121,7 +121,10 @@ export default {
         this.raceSelectorInfo = 'Please select the race';
       })
       .catch(err => {
-        this.$store.commit('solapi/logError', err, {root: true});
+        this.$store.commit('solapi/logError', {
+          apiCall: 'races',
+          error: err,
+        }, {root: true});
       });
     },
     doLogin: function() {

@@ -101,7 +101,10 @@ export default {
         dispatch('race/fetchRaceComponents', null, {root: true});
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'boat',
+          error: err,
+        }, {root: true});
       })
       .finally(() => {
         solapiRetryDispatch(dispatch, 'fetch', undefined, 10000);

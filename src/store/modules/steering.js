@@ -129,7 +129,10 @@ export default {
         }
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'dclist',
+          error: err,
+        }, {root: true});
       });
     },
 

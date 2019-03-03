@@ -285,7 +285,10 @@ export default {
       })
       .catch(err => {
         commit('solapi/unlock', 'weather', {root: true});
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'weather',
+          error: err,
+        }, {root: true});
       });
     },
 
@@ -396,7 +399,10 @@ export default {
         }
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'weather',
+          error: err,
+        }, {root: true});
       })
       .finally(() => {
         commit('solapi/unlock', 'weather', {root: true});

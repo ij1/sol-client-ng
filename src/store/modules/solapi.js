@@ -26,8 +26,8 @@ export default {
       state.activeApiCalls.delete(apiCall);
       state.activeApiCallsStamp++;
     },
-    logError (state, error) {
-      state.errorLog.push(error);
+    logError (state, errorInfo) {
+      state.errorLog.push(errorInfo.error);
     },
   },
   getters: {

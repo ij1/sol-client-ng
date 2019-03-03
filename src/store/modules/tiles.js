@@ -137,7 +137,10 @@ export default {
         });
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'tiles',
+          error: err,
+        }, {root: true});
         commit('addTileToLoadWaitList', key);   /* Requeue */
       })
       .finally(() => {

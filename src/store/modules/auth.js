@@ -38,7 +38,10 @@ export default {
         dispatch('race/fetchAuthRaceinfo', null, {root: true});
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'auth',
+          error: err,
+        }, {root: true});
         commit('loginFailed');
       });
     },

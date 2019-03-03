@@ -136,7 +136,10 @@ export default {
           }
         })
         .catch(err => {
-          commit('solapi/logError', err, {root: true});
+          commit('solapi/logError', {
+            apiCall: 'sendchat',
+            error: err,
+          }, {root: true});
         });
     }
   }

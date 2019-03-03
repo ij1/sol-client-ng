@@ -288,7 +288,10 @@ export default {
         }
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'fleet',
+          error: err,
+        }, {root: true});
       })
       .finally(() => {
         commit('solapi/unlock', 'fleet', {root: true});
@@ -317,7 +320,10 @@ export default {
         }
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'fleetmeta',
+          error: err,
+        }, {root: true});
       });
     },
 
@@ -372,7 +378,10 @@ export default {
         }
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'traces',
+          error: err,
+        }, {root: true});
       })
       .finally(() => {
         commit('solapi/unlock', 'traces', {root: true});

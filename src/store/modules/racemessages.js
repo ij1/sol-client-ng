@@ -65,7 +65,10 @@ export default {
         commit('ui/setActiveTab', 4, {root: true});
       })
       .catch(err => {
-        commit('solapi/logError', err, {root: true});
+        commit('solapi/logError', {
+          apiCall: 'racemsgs',
+          error: err,
+        }, {root: true});
       })
       .finally(() => {
         /* New messages appeared during our last fetch, fetch again */
