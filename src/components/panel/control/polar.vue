@@ -256,18 +256,26 @@ export default {
       }
       ctx.stroke();
     },
+    clearHoverInfo () {
+      this.hover.sog = null;
+      this.hover.vmg = null;
+      this.hover.twa = null;
+    },
     onMouseMove (ev) {
       const pt = L.DomEvent.getMousePosition(ev, this.$refs.polaroverlay);
       const y = Math.floor(pt.y) - this.gridOrigoY;
       const x = Math.floor(pt.x);
-      this.hover.sog = Math.hypot(x, y) / this.gridScale;
+      const sog = Math.hypot(x, y) / this.gridScale;
+      if (sog > this.gridMaxKnots) {
+        this.clearHoverInfo();
+        return;
+      }
+      this.hover.sog = sog;
       this.hover.vmg = -y / this.gridScale;
       this.hover.twa = radToDeg(atan2Bearing(x, y));
     },
     onMouseOut () {
-      this.hover.sog = null;
-      this.hover.vmg = null;
-      this.hover.twa = null;
+      this.clearHoverInfo();
     }
   },
   watch: {
