@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import L from 'leaflet';
 import rbush from 'rbush';
-import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 import { minToMsec, secToMsec } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
 
@@ -262,10 +261,6 @@ export default {
       commit('solapi/lock', 'fleet', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(raceInfo => {
         const now = rootGetters['time/now']();
 
@@ -293,7 +288,7 @@ export default {
         }
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       })
       .finally(() => {
         commit('solapi/unlock', 'fleet', {root: true});
@@ -312,10 +307,6 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(metaInfo => {
         let boatList = metaInfo.b;
         if (typeof boatList !== 'undefined') {
@@ -326,7 +317,7 @@ export default {
         }
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       });
     },
 
@@ -346,10 +337,6 @@ export default {
       commit('solapi/lock', 'traces', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(traces => {
         const now = rootGetters['time/now']();
         let boatList = traces.boat;
@@ -385,7 +372,7 @@ export default {
         }
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       })
       .finally(() => {
         commit('solapi/unlock', 'traces', {root: true});

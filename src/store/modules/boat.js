@@ -3,7 +3,7 @@ import { UTCToMsec } from '../../lib/utils.js';
 import polarModule from './polar';
 import steeringModule from './steering';
 import instrumentModule from './instruments';
-import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
+import { solapiRetryDispatch } from '../../lib/solapi.js';
 
 export default {
   namespaced: true,
@@ -71,10 +71,6 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(boatData => {
         const now = rootGetters['time/now']();
         boatData.boat.time = now;
@@ -105,7 +101,7 @@ export default {
         dispatch('race/fetchRaceComponents', null, {root: true});
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       })
       .finally(() => {
         solapiRetryDispatch(dispatch, 'fetch', undefined, 10000);

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { orderBy } from 'lodash';
 import { secToMsec } from '../../lib/utils.js';
-import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
+import { solapiRetryDispatch } from '../../lib/solapi.js';
 
 
 export default {
@@ -122,11 +122,11 @@ export default {
       };
 
       return dispatch('solapi/post', postDef, {root: true})
-        .catch(() => {
+        .catch(err => {
           commit('messageSendFailed');
           solapiRetryDispatch(dispatch, 'sendMessage', undefined,
                               state.retryTimer);
-          throw new SkipThenError();
+          return Promise.reject(err);
         })
         .then(() => {
           commit('messageSent');
@@ -135,8 +135,8 @@ export default {
                                 state.retryTimer);
           }
         })
-        .catch((err) => {
-          solapiLogError(err);
+        .catch(err => {
+          commit('solapi/logError', err, {root: true});
         });
     }
   }

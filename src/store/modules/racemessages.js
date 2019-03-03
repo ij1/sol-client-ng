@@ -1,6 +1,6 @@
 import { orderBy } from 'lodash';
 import { UTCToMsec } from '../../lib/utils.js';
-import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
+import { solapiRetryDispatch } from '../../lib/solapi.js';
 
 export default {
   namespaced: true,
@@ -54,10 +54,6 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(raceMessages => {
         if (typeof raceMessages.racemessage === 'undefined') {
           return;
@@ -69,7 +65,7 @@ export default {
         commit('ui/setActiveTab', 4, {root: true});
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       })
       .finally(() => {
         /* New messages appeared during our last fetch, fetch again */

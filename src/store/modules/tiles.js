@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import L from 'leaflet';
-import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 
 function tileIdToKey(id) {
   return id.l + ':' + id.x + ':' + id.y;
@@ -113,10 +112,6 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(data => {
         let geoms = {};
 
@@ -142,8 +137,8 @@ export default {
         });
       })
       .catch(err => {
+        commit('solapi/logError', err, {root: true});
         commit('addTileToLoadWaitList', key);   /* Requeue */
-        solapiLogError(err);
       })
       .finally(() => {
         commit('addActiveFetches', -1);

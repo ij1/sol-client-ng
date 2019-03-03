@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
 import { UVToWind } from '../../lib/sol.js';
 
@@ -275,10 +274,6 @@ export default {
       commit('solapi/lock', 'weather', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(weatherInfo => {
         let dataUrl = weatherInfo.url;
         if (dataUrl === state.data.url) {
@@ -290,7 +285,7 @@ export default {
       })
       .catch(err => {
         commit('solapi/unlock', 'weather', {root: true});
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       });
     },
 
@@ -305,10 +300,6 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(weatherData => {
         const firstWeather = (state.data.updated === null);
 
@@ -405,7 +396,7 @@ export default {
         }
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       })
       .finally(() => {
         commit('solapi/unlock', 'weather', {root: true});

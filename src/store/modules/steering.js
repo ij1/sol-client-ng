@@ -1,5 +1,4 @@
 import { orderBy } from 'lodash';
-import { SkipThenError, solapiLogError } from '../../lib/solapi.js';
 import { UTCToMsec } from '../../lib/utils.js';
 
 
@@ -108,10 +107,6 @@ export default {
 
       commit('setFetching', true);
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(dcData => {
         let dcList;
         if (typeof dcData.cmd !== 'undefined') {
@@ -134,7 +129,7 @@ export default {
         }
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
       });
     },
 

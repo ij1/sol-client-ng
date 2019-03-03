@@ -60,8 +60,6 @@
 </template>
 
 <script>
-import { SkipThenError } from '../lib/solapi.js';
-
 export default {
   name: 'Login',
   data () {
@@ -110,9 +108,6 @@ export default {
       };
 
       this.$store.dispatch('solapi/get', getDef, {root: true})
-      .catch(() => {
-        throw new SkipThenError();
-      })
       .then(races => {
         if (typeof races.race === 'undefined') {
           this.raceSelectorInfo = 'No active races at the moment';
@@ -125,12 +120,8 @@ export default {
         }
         this.raceSelectorInfo = 'Please select the race';
       })
-      .catch((err) => {
-        if (err instanceof SkipThenError) {
-          this.retryTimeout = setTimeout(this.fetchRaces.bind(this), 3000);
-        } else {
-          console.log(err);
-        }
+      .catch(err => {
+        this.$store.commit('solapi/logError', err, {root: true});
       });
     },
     doLogin: function() {

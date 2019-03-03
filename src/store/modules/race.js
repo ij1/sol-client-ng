@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
-import { SkipThenError, solapiRetryDispatch, solapiLogError } from '../../lib/solapi.js';
+import { solapiRetryDispatch } from '../../lib/solapi.js';
 import { degToRad, radToDeg, hToMsec, UTCToMsec } from '../../lib/utils.js';
 import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
 import { PROJECTION} from '../../lib/sol.js';
@@ -136,10 +136,6 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .catch(err => {
-        solapiLogError(err);
-        throw new SkipThenError();
-      })
       .then(raceInfo => {
         const polarRawData = raceInfo.boat.vpp;
         const chatroomsData = raceInfo.chatrooms.chatroom;
@@ -163,7 +159,7 @@ export default {
         dispatch('weather/fetchInfo', null, {root: true});
       })
       .catch(err => {
-        solapiLogError(err);
+        commit('solapi/logError', err, {root: true});
         solapiRetryDispatch(dispatch, 'fetchAuthRaceinfo');
       })
     },

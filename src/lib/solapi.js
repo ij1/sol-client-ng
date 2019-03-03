@@ -1,10 +1,9 @@
-export class SkipThenError extends Error {}
-
-export function solapiLogError (err) {
-  if (err instanceof SkipThenError) {
-    return;
+export class SolapiError extends Error {
+  constructor(category, message) {
+    super(message);
+    this.name = 'SolapiError';
+    this.category = category;
   }
-  console.log(err);
 }
 
 export function solapiRetryDispatch (dispatch, action, param, timeout = 10000) {

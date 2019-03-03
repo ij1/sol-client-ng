@@ -1,7 +1,8 @@
 import queryString from 'querystring';
 import promisify from 'util.promisify';
 import pako from 'pako';
-import xml2js from 'xml2js' ;
+import xml2js from 'xml2js';
+import { SolapiError } from '../../lib/solapi.js';
 
 const parseString = promisify(xml2js.parseString);
 
@@ -45,10 +46,13 @@ export default {
       }
 
       let p = fetch(state.server + url)
+      .catch(err => {
+        return Promise.reject(new SolapiError('network', err.message));
+      })
 
       .then((response) => {
         if (response.status !== 200) {
-          return Promise.reject(new Error("Invalid API call"));
+          return Promise.reject(new SolapiError('statuscode', "Invalid API call"));
         }
         if (typeof reqDef.compressedPayload !== 'undefined') {
           return response.arrayBuffer();
@@ -59,16 +63,30 @@ export default {
       if (typeof reqDef.compressedPayload !== 'undefined') {
         p = p.then((data) => {
           return Buffer.from(pako.inflate(data)).toString();
+        })
+        .catch(err => {
+          if (err instanceof SolapiError) {
+            return Promise.reject(err);
+          } else {
+            return Promise.reject(new SolapiError('parsing', err.message));
+          }
         });
       }
 
       p = p.then((data) => {
         return parseString(data, {explicitArray: reqDef.useArrays});
       })
+      .catch(err => {
+        if (err instanceof SolapiError) {
+          return Promise.reject(err);
+        } else {
+          return Promise.reject(new SolapiError('parsing', err.message));
+        }
+      })
 
       .then((result) => {
         if (!(result.hasOwnProperty(reqDef.dataField))) {
-          return Promise.reject(new Error("No data from API"));
+          return Promise.reject(new SolapiError('response', "Response missing datafield: " + reqDef.dataField));
         }
 
         return result[reqDef.dataField];
@@ -78,13 +96,16 @@ export default {
     },
 
     post ({state, commit}, reqDef) {
-      return fetch(state.server + reqDef.url, {
+      let p = fetch(state.server + reqDef.url, {
           method: "POST",
           body: queryString.stringify(reqDef.params),
         })
+        .catch(err => {
+          return Promise.reject(new SolapiError('network', err.message));
+        })
         .then((response) => {
           if (response.status !== 200) {
-            return Promise.reject(new Error("Invalid API call"));
+            return Promise.reject(new SolapiError('statuscode', "Invalid API call"));
           }
           return response.text();
         })
@@ -97,7 +118,7 @@ export default {
                         (err, result) => {
 
               if (!(result.hasOwnProperty(reqDef.dataField))) {
-                return Promise.reject(new Error("No data from API"));
+                return Promise.reject(new SolapiError('response', "Response missing datafield: " + reqDef.dataField));
               }
 
               const data = result[reqDef.dataField];
@@ -105,14 +126,12 @@ export default {
             });
           }
         })
-        .catch((err) => {
-          console.log(err);
-          commit('logError', {
-            url: reqDef.url,
-            error: err,
-          });
+        .catch(err => {
+          commit('logError', err);
           throw err;
         });
+
+      return p;
     },
   },
 }
