@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import queryString from 'querystring';
 import promisify from 'util.promisify';
 import pako from 'pako';
@@ -27,7 +28,10 @@ export default {
       state.activeApiCallsStamp++;
     },
     logError (state, errorInfo) {
-      state.errorLog.push(errorInfo.error);
+      if (typeof state.errorLog[errorInfo.apiCall] === 'undefined') {
+        Vue.set(state.errorLog, errorInfo.apiCall, []);
+      }
+      state.errorLog[errorInfo.apiCall].push(errorInfo.error);
     },
   },
   getters: {
