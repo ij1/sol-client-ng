@@ -10,7 +10,7 @@
       </div>
     </div>
     <div>
-      <div>Locked API calls</div>
+      <div>Locked API calls:</div>
       <div v-for = "call in lockedApiCalls" :key = "call">{{call}}</div>
     </div>
   </div>
@@ -26,7 +26,7 @@ export default {
     },
     erroredApiCalls () {
       return Object.keys(this.$store.state.solapi.errorLog).sort((a, b) => {
-        return a - b;
+        return a.localeCompare(b);
       });
     },
   },
