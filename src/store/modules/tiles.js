@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import L from 'leaflet';
+import { secToMsec } from '../../lib/utils.js';
+import { solapiRetryDispatch } from '../../lib/solapi.js';
 
 function tileIdToKey(id) {
   return id.l + ':' + id.x + ':' + id.y;
@@ -77,11 +79,11 @@ export default {
         commit('addTile', id);
         commit('addTileToLoadWaitList', key);
         if (state.activeFetches < state.maxParallelFetches) {
-          dispatch('loadTiles');
+          dispatch('loadTiles', 0);
         }
       }
     },
-    loadTiles ({state, commit, dispatch}) {
+    loadTiles ({state, commit, dispatch}, failTimer) {
       let key;
       do {
         key = state.waitList[0];
@@ -92,15 +94,21 @@ export default {
             commit('deleteTile', key);
             continue;
           }
-          dispatch('loadTile', key);
+          dispatch('loadTile', {
+            key: key,
+            failTimer: failTimer,
+          });
           return;
         }
       } while (typeof key !== 'undefined');
     },
-    loadTile ({state, getters, commit, dispatch}, key) {
+    loadTile ({state, getters, commit, dispatch}, loadInfo) {
+      const key = loadInfo.key;
       if (state.tiles[key].loaded) {
         return;
       }
+
+      let failTimer = 0;
 
       commit('addActiveFetches', 1);
       const getDef = {
@@ -142,10 +150,14 @@ export default {
           error: err,
         }, {root: true});
         commit('addTileToLoadWaitList', key);   /* Requeue */
+        /* Backoff to up to 60 seconds */
+        failTimer = Math.min((loadInfo.failTimer + 100) * 2, secToMsec(60));
+        /* 50% - 100% of time timer to avoid synchronization bursts */
+        failTimer = Math.random() * failTimer / 2 + failTimer / 2;
       })
       .finally(() => {
         commit('addActiveFetches', -1);
-        dispatch('loadTiles');
+        solapiRetryDispatch(dispatch, 'loadTiles', failTimer, failTimer);
       });
     },
 
