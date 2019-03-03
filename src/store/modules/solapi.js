@@ -97,39 +97,39 @@ export default {
 
     post ({state, commit}, reqDef) {
       let p = fetch(state.server + reqDef.url, {
-          method: "POST",
-          body: queryString.stringify(reqDef.params),
-        })
-        .catch(err => {
-          return Promise.reject(new SolapiError('network', err.message));
-        })
-        .then((response) => {
-          if (response.status !== 200) {
-            return Promise.reject(new SolapiError('statuscode', "Invalid API call"));
-          }
-          return response.text();
-        })
-        .then(data => {
-          if (data === 'OK') {
-            Promise.resolve();
-          } else if (typeof reqDef.dataField !== 'undefined') {
-            parseString(data,
-                        {explicitArray: reqDef.useArrays},
-                        (err, result) => {
+        method: "POST",
+        body: queryString.stringify(reqDef.params),
+      })
+      .catch(err => {
+        return Promise.reject(new SolapiError('network', err.message));
+      })
+      .then((response) => {
+        if (response.status !== 200) {
+          return Promise.reject(new SolapiError('statuscode', "Invalid API call"));
+        }
+        return response.text();
+      })
+      .then(data => {
+        if (data === 'OK') {
+          Promise.resolve();
+        } else if (typeof reqDef.dataField !== 'undefined') {
+          parseString(data,
+                      {explicitArray: reqDef.useArrays},
+                      (err, result) => {
 
-              if (!(result.hasOwnProperty(reqDef.dataField))) {
-                return Promise.reject(new SolapiError('response', "Response missing datafield: " + reqDef.dataField));
-              }
+            if (!(result.hasOwnProperty(reqDef.dataField))) {
+              return Promise.reject(new SolapiError('response', "Response missing datafield: " + reqDef.dataField));
+            }
 
-              const data = result[reqDef.dataField];
-              return data;
-            });
-          }
-        })
-        .catch(err => {
-          commit('logError', err);
-          throw err;
-        });
+            const data = result[reqDef.dataField];
+            return data;
+          });
+        }
+      })
+      .catch(err => {
+        commit('logError', err);
+        throw err;
+      });
 
       return p;
     },
