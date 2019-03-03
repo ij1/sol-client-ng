@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import L from 'leaflet';
 import { mapGetters } from 'vuex';
 import { degToRad, radToDeg } from '../../../lib/utils.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
@@ -256,10 +257,9 @@ export default {
       ctx.stroke();
     },
     onMouseMove (ev) {
-      // FIXME: this might be problematic for some browsers we want to support
-      const rect = this.$refs.polaroverlay.getBoundingClientRect();
-      const y = Math.floor((ev.clientY - rect.top) / (rect.bottom - rect.top) * this.gridSize.y) - this.gridOrigoY;
-      const x = Math.floor((ev.clientX - rect.left) / (rect.right - rect.left) * this.gridSize.x);
+      const pt = L.DomEvent.getMousePosition(ev, this.$refs.polaroverlay);
+      const y = Math.floor(pt.y) - this.gridOrigoY;
+      const x = Math.floor(pt.x);
       this.hover.sog = Math.hypot(x, y) / this.gridScale;
       this.hover.vmg = -y / this.gridScale;
       this.hover.twa = radToDeg(atan2Bearing(x, y));
