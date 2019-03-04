@@ -32,6 +32,10 @@ export default {
         Vue.set(state.errorLog, errorInfo.apiCall, []);
       }
       state.errorLog[errorInfo.apiCall].push(errorInfo.error);
+      if (!(errorInfo.error instanceof SolapiError)) {
+        console.log(errorInfo.error.message);
+        console.log(errorInfo.error.stack);
+      }
     },
   },
   getters: {
