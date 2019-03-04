@@ -1,5 +1,5 @@
 <template>
-  <div id="leaderboard">
+  <div id="leaderboard" :style="{flex: this.active ? 'auto' : 'none'}">
     <div
       class = "leaderboard-header"
       @click = "onActivate"
@@ -116,7 +116,6 @@ export default {
 <style scoped>
 #leaderboard {
   position: relative;
-  height: 100%;
   width: 100%;
   font-size: 11px;
   text-align: left;

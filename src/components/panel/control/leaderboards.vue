@@ -2,7 +2,6 @@
   <div id="leaderboards-container">
     <div id="leaderboards">
       <control-leaderboard
-        class = "leaderboard"
         v-for = "(leaderboard, index) in this.boatlists"
         :key = "leaderboard.boatlistKey"
         :boatlist-index = "index"
@@ -54,9 +53,6 @@ export default {
 #leaderboards {
   display: flex;
   flex-direction: column;
-}
-.leaderboard {
-  flex: auto;
 }
 #leaderboard-createbuttons {
   flex: none;
