@@ -52,6 +52,7 @@ export default {
         ranking: parseInt(boatData.ranking),
         lastRoundedMark: parseInt(boatData.current_leg),
         log: 0,
+        distance: 0,
 
         latLng: boatData.latLng,
         wrappedLatLng: boatData.wrappedLatLng,
@@ -83,6 +84,7 @@ export default {
           state.boat[idx].dtg = boat.dtg;
           state.boat[idx].dbl = boat.dbl;
           state.boat[idx].log = boat.log;
+          state.boat[idx].distance = boat.distance;
           state.boat[idx].lastRoundedMark = boat.lastRoundedMark;
           if (idx > state.playerBoatIdx) {
             state.boat[idx].color = boat.color;
@@ -102,6 +104,7 @@ export default {
             dbl: boat.dbl,
             cog: boat.cog,
             ranking: boat.ranking,
+            distance: boat.distance,
             lastRoundedMark: boat.lastRoundedMark,
             log: boat.log,
             syc: false,
