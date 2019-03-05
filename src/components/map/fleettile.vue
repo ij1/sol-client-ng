@@ -40,8 +40,13 @@ export default {
     },
     _redraw (ctx) {
       let map = this.$parent.$parent.map;
+      const descale = map.getZoomScale(this.zoom, this.coords.z);
+      const scale = 1 / descale;
+      if (scale >= 2) {
+        return;
+      }
       /* Anything > 1/2 boat size is fine */
-      const halfsize = 40 / 2;
+      const halfsize = Math.ceil(scale * 40 / 2);
 
       const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
       const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
@@ -57,6 +62,7 @@ export default {
         const color = this.boatColor(boat);
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
+        ctx.scale(scale, scale);
         if (boat.dtg > 0) {
           const wind = this.$store.getters['weather/latLngWind'](boat.latLng,
                                                                  this.$store.state.race.fleet.fleetTime);
@@ -83,6 +89,7 @@ export default {
           ctx.fillStyle = color;
           ctx.fill();
         }
+        ctx.scale(descale, descale);
 
         prev = center;
       }

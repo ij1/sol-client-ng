@@ -3,6 +3,7 @@
     :tile-component = "FleetTile"
     :z-index = "250"
     :no-wrap = "true"
+    :options = "{ceilZoom: true}"
   />
 </template>
 

@@ -15,6 +15,9 @@
       :options="{
         zoomControl: false,
         attributionControl: false,
+        zoomSnap: 0.1,
+        zoomDelta: 0.1,
+        wheelPxPerZoomLevel: 120,
         doubleClickZoom: false,
       }"
     >
