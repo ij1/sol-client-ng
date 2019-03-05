@@ -2,7 +2,8 @@ import Vue from 'vue';
 import L from 'leaflet';
 import rbush from 'rbush';
 import { minToMsec, secToMsec } from '../../lib/utils.js';
-import { PROJECTION } from '../../lib/sol.js';
+import { gcCalc } from '../../lib/nav.js';
+import { PROJECTION, EARTH_R } from '../../lib/sol.js';
 
 export default {
   namespaced: true,
@@ -44,123 +45,84 @@ export default {
         type: '',
 
         dtg: parseFloat(boatData.dtg),
-        dbl: boatData.dbl,
+        dbl: parseFloat(boatData.dbl),
 
-        lat: boatData.lat,
-        lon: boatData.lon,
         cog: parseFloat(boatData.cog),
 
         ranking: parseInt(boatData.ranking),
         lastRoundedMark: parseInt(boatData.current_leg),
         log: 0,
 
-        latLng: L.latLng(boatData.lat, boatData.lon),
+        latLng: boatData.latLng,
+        wrappedLatLng: boatData.wrappedLatLng,
         syc: false,
         country: null,
-        trace: [],
+        trace: [boatData.wrappedLatLng],
       });
     },
     updateFleet (state, update) {
       state.fleetTime = update.timestamp;
-      let searchData = [];
 
       for (let boat of update.fleet) {
         const id = boat.id;
-        const latLng = L.latLng(boat.lat, boat.lon);
-
-        /* Don't show PR markers after practice period */
-        if (!boat.name.startsWith('Practice_Mark') || update.inPractice) {
-          for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
-            let searchItem = {
-              lng: latLng.lng + ddeg,
-              lat: latLng.lat,
-              id: boat.id,
-            };
-            Object.freeze(searchItem);
-            searchData.push(searchItem);
-          }
-        }
 
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
           state.boat[idx].name = boat.name;
-          if (state.boat[idx].type !== boat.type) {
-            state.boat[idx].type = boat.type;
-            if (boat.type !== 'Tender boat') {
-              state.boatTypes.add(boat.type);
-            }
-          }
+
+          state.boat[idx].latLng = boat.latLng;
           /* Store position to trace if moved. */
-          if (!state.boat[idx].latLng.equals(latLng)) {
+          if (!state.boat[idx].wrappedLatLng.equals(boat.wrappedLatLng)) {
             // ADDME: consider removing constant cog points, maybe not useful?
             // ADDME: if cog changed a lot, calculate an intersection too?
             // FIXME: What if traces API fails, this could grow very large.
-            // FIXME: latLngRaceBounds would be needed here but not avail!
-            state.boat[idx].trace.push(latLng);
+            state.boat[idx].trace.push(boat.wrappedLatLng);
           }
-          state.boat[idx].latLng = latLng;
-          state.boat[idx].cog = parseFloat(boat.cog);
-
-          state.boat[idx].ranking = parseInt(boat.ranking);
-          state.boat[idx].dtg = parseFloat(boat.dtg);
+          state.boat[idx].cog = boat.cog;
+          state.boat[idx].ranking = boat.ranking;
+          state.boat[idx].dtg = boat.dtg;
           state.boat[idx].dbl = boat.dbl;
           state.boat[idx].log = boat.log;
-          state.boat[idx].lastRoundedMark = parseInt(boat.current_leg);
-
+          state.boat[idx].lastRoundedMark = boat.lastRoundedMark;
           if (idx > state.playerBoatIdx) {
-            if (state.boat[idx].ranking === 1) {
-              state.leader = id;
-              state.boat[idx].color = { r: 204, g: 0, b: 204 };
-            } else {
-              state.boat[idx].color = {
-                r: boat.color_R,
-                g: boat.color_G,
-                b: boat.color_B,
-              };
-            }
+            state.boat[idx].color = boat.color;
           }
+
         } else {
-          delete boat.lat;
-          delete boat.lon;
-          boat.latLng = latLng;
-
-          boat.syc = false;
-          boat.country = null;
-
-          boat.color = {
-            r: boat.color_R,
-            g: boat.color_G,
-            b: boat.color_B,
-          };
-          delete boat.color_R;
-          delete boat.color_G;
-          delete boat.color_B;
-
-          boat.trace = [boat.latLng];
-          boat.cog = parseFloat(boat.cog);
-          boat.ranking = parseInt(boat.ranking);
-          boat.dtg = parseFloat(boat.dtg);
-          boat.lastRoundedMark = parseInt(boat.current_leg);
-          delete boat.current_leg;
-
-          if (boat.ranking === 1) {
-            state.leader = id;
-            boat.color = { r: 204, g: 0, b: 204 };
-          }
           Vue.set(state.id2idx, id, state.boat.length);
-          state.boat.push(boat);
+
+          state.boat.push({
+            id: boat.id,
+            latLng: boat.latLng,
+            wrappedLatLng: boat.wrappedLatLng,
+            name: boat.name,
+            color: boat.color,
+            type: boat.type,
+            dtg: boat.dtg,
+            dbl: boat.dbl,
+            cog: boat.cog,
+            ranking: boat.ranking,
+            lastRoundedMark: boat.lastRoundedMark,
+            log: boat.log,
+            syc: false,
+            country: null,
+            trace: [boat.wrappedLatLng],
+          });
 
           state.newBoatId = id;
-
-          if (boat.type !== 'Tender boat') {
-            state.boatTypes.add(boat.type);
-          }
         }
       }
 
-      state.searchTree.clear();
-      state.searchTree.load(searchData);
+      state.leader = update.leaderId;
 
+      state.searchTree.clear();
+      state.searchTree.load(update.searchData);
+
+      for (let boatType of update.boatTypes) {
+        if (!state.boatTypes.has(boatType)) {
+          state.boatTypes.add(boatType);
+        }
+      }
       state.boatTypesCount = state.boatTypes.length;
     },
     updateFleetMeta (state, meta) {
@@ -273,10 +235,70 @@ export default {
             boatList = [boatList];
           }
 
+          let myBoatNew = null;
+          let leaderId = null;
+          let boatTypes = new Set();
+          let searchData = [];
+          const inPractice = rootGetters['race/isPracticePeriod'];
+
+          for (let boat of boatList) {
+            boat.latLng = L.latLng(boat.lat, boat.lon);
+            boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boat.latLng);
+
+            if (!boat.name.startsWith('Practice_Mark') || inPractice) {
+              for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
+                let searchItem = {
+                  lng: boat.latLng.lng + ddeg,
+                  lat: boat.latLng.lat,
+                  id: boat.id,
+                };
+                Object.freeze(searchItem);
+                searchData.push(searchItem);
+              }
+            }
+            delete boat.lat;
+            delete boat.lon;
+
+            boat.cog = parseFloat(boat.cog);
+            boat.ranking = parseInt(boat.ranking);
+            boat.dtg = parseFloat(boat.dtg);
+            boat.dbl = parseFloat(boat.dbl);
+            boat.log = parseFloat(boat.log);
+
+            boat.lastRoundedMark = parseInt(boat.current_leg);
+            delete boat.current_leg;
+
+            boat.color = {
+              r: boat.color_R,
+              g: boat.color_G,
+              b: boat.color_B,
+            }
+            delete boat.color_R;
+            delete boat.color_G;
+            delete boat.color_B;
+            if (boat.ranking === 1) {
+              boat.color = { r: 204, g: 0, b: 204 };
+              leaderId = boat.id;
+            }
+            if (boat.id === rootState.boat.id) {
+              myBoatNew = boat;
+            }
+            if (boat.type !== 'Tender boat') {
+              boatTypes.add(boat.type);
+            }
+          }
+
+          for (let boat of boatList) {
+            boat.distance = gcCalc(myBoatNew.latLng, boat.latLng).distance *
+                              EARTH_R / 1852;
+          }
+
           commit('updateFleet', {
             timestamp: now,
-            inPractice: rootGetters['race/isPracticePeriod'],
             fleet: boatList,
+            leaderId: leaderId,
+            boatTypes: boatTypes,
+            searchData: searchData,
           });
 
           if (state.newBoatId !== null) {

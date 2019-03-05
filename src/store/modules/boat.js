@@ -77,6 +77,8 @@ export default {
         let chatData = boatData.chats;
         chatData.id = nextChatroom;
 
+        boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
+        boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
         commit('race/fleet/initMyBoat', boatData.boat, {root: true});
         commit('updateBoat', boatData.boat);
         dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
