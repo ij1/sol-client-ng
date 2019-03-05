@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { degToRad } from '../../lib/utils.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
@@ -17,14 +17,18 @@ export default {
   computed: {
     needsRedraw () {
       // ADDME: zoom change requires recalculation due to bounds in pixels
-      this.$store.state.race.fleet.fleetTime;
-      this.$store.state.weather.data.updated;
+      this.fleetTime;
+      this.wxUpdated;
 
       return Date.now();
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
       boatColor: 'race/fleet/boatColor',
+    }),
+    ...mapState({
+      fleetTime: state => state.race.fleet.fleetTime,
+      wxUpdated: state => state.weather.data.updated,
     }),
   },
   methods: {
