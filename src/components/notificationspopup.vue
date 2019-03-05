@@ -1,6 +1,6 @@
 <template>
   <div id="notifications-popup" v-if="this.notifications.length > 0">
-    <div>
+    <div id="notifications-content">
       <div
         v-for = "notification in this.notifications"
         :key = "notification.id"
@@ -55,5 +55,8 @@ export default {
   background: #fff;
   text-align: left;
   z-index: 1001;
+}
+#notifications-content {
+  overflow-y: auto;
 }
 </style>
