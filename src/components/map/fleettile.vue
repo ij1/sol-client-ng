@@ -18,6 +18,8 @@ export default {
     needsRedraw () {
       // ADDME: zoom change requires recalculation due to bounds in pixels
       this.$store.state.race.fleet.fleetTime;
+      this.$store.state.weather.data.updated;
+
       return Date.now();
     },
     ...mapGetters({
