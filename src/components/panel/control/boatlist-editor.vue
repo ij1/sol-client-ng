@@ -9,11 +9,15 @@
     @submit = "createList"
     :can-submit = "this.canCreate"
   >
-    <div class = "boatlist-editor-body">
-      <div class="listname">
-        <label for="name">List name:</label>
-        <input id="name" v-model.trim = "listname">
-      </div>
+    <div class="listname">
+      <label for="name">List name:</label>
+      <input id="name" v-model.trim = "listname">
+    </div>
+    <div v-if = "editorType === 'distance'">
+      <label for="name">Distance:</label>
+      <input id="name" v-model.trim = "distance">
+    </div>
+    <div class = "boatlist-editor-body" v-if = "editorType === 'boat'">
       <div class="search">
         <label for="search">Search</label>
         <input
@@ -81,6 +85,7 @@ export default {
   data () {
     return {
       listname: '',
+      distance: '',
       search: '',
       onList: {},
       onSelected: [],
@@ -89,9 +94,22 @@ export default {
   },
   computed: {
     canCreate () {
-      // ADDME: check unique list name
-      return (this.listname.length > 0) &&
-             (Object.keys(this.onList).length > 0);
+      if (this.listname.length === 0) {
+        return false;
+      }
+      for (const existing of this.$store.state.ui.boatlists.boatlists) {
+        if (this.listname === existing.name) {
+          return false;
+        }
+      }
+      if (this.editorType === 'distance') {
+        const regex = /^\d(\.\d)?/;
+        return regex.test(this.distance);
+      } else if (this.editorType === 'boat') {
+        return Object.keys(this.onList).length > 0;
+      }
+      /* Should never be reached */
+      return false;
     },
     boatLists () {
       const boatList = this.$store.state.race.fleet.boat;
@@ -120,8 +138,8 @@ export default {
       this.$store.commit('ui/boatlists/add', {
         name: this.listname,
         filter: {
-          boats: Object.keys(this.onList),
-          distance: null,
+          boats: (this.editorType === 'boat') ? Object.keys(this.onList) : null,
+          distance: (this.editorType === 'distance') ? parseFloat(this.distance) : null,
         },
       });
       this.$emit('close');
@@ -149,12 +167,8 @@ export default {
 .boatlist-editor-body {
   display: grid;
   grid-template: 
-    "listname listname  ."
     "search   .         onlist-header"
     "offlist  center    onlist";
-}
-.listname {
-  grid-area: listname;
 }
 .search {
   grid-area: search;

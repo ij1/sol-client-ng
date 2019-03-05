@@ -72,7 +72,9 @@ export default {
       if (this.boatlistInfo.filter.boats !== null) {
         res = res.filter(i => this.boatlistInfo.filter.boats.includes(i.id));
       }
-      // ADDME: distance filter
+      if (this.boatlistInfo.filter.distance !== null) {
+        res = res.filter(i => i.distance <= this.boatlistInfo.filter.distance);
+      }
       return res;
     },
     name () {
