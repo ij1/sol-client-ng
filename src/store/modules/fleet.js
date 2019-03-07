@@ -154,6 +154,7 @@ export default {
       if (typeof state.id2idx[id] !== 'undefined') {
         const idx = state.id2idx[traceData.id];
         state.boat[idx].trace = traceData.trace;
+        state.boat[idx].trace.push(state.boat[idx].wrappedLatLng);
         state.tracesTime = traceData.time;
       }
     },
