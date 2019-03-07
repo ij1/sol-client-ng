@@ -76,10 +76,7 @@ export default {
           if (!state.boat[idx].wrappedLatLng.equals(boat.wrappedLatLng)) {
             // ADDME: if cog changed a lot, calculate an intersection too?
             // FIXME: What if traces API fails, this could grow very large.
-            if ((state.boat[idx].cog === boat.cog) &&
-                (state.boat[idx].trace.length > 1)) {
-              state.boat[idx].trace.pop();
-            }
+            // ADDME: constant cog reduction logic, the prev one was flawed
             state.boat[idx].trace.push(boat.wrappedLatLng);
           }
           state.boat[idx].cog = boat.cog;
@@ -154,7 +151,6 @@ export default {
       if (typeof state.id2idx[id] !== 'undefined') {
         const idx = state.id2idx[traceData.id];
         state.boat[idx].trace = traceData.trace;
-        state.boat[idx].trace.push(state.boat[idx].wrappedLatLng);
         state.tracesTime = traceData.time;
       }
     },
