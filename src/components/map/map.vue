@@ -39,6 +39,7 @@
 
       <dc-bar v-if = "this.map !== null"/>
       <wind-info v-if = "this.map !== null"/>
+      <map-scale v-if = "this.map !== null" :map = "this.map"/>
     </l-map>
   </div>
 </template>
@@ -67,6 +68,7 @@ import TowbackFlag from '../towbackflag';
 
 import DcBar from '../dcbar.vue';
 import WindInfo from './windinfo';
+import MapScale from './scale.vue';
 
 export default {
   name: 'Map',
@@ -96,7 +98,7 @@ export default {
 
     'dc-bar': DcBar,
     'wind-info': WindInfo,
-
+    'map-scale': MapScale,
   },
 
   data () {
