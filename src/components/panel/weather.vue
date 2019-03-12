@@ -1,5 +1,17 @@
 <template>
   <div id="weather-panel">
+    <div id = "weather-slider-container">
+      <div
+        id = "weather-slider"
+        ref = "weatherslider"
+        @click = "onClick"
+      >
+        <div
+          id = "weather-slider-fg"
+          :style = "{width: 'calc((100% - ' + this.sliderZeroPx + 'px) * ' + this.timeFrac + ' + ' + this.sliderZeroPx + 'px)'}"
+        />
+      </div>
+    </div>
     <div id="weather-panel-placeholder" v-if="!this.wxLoaded">
       Waiting for the weather information to load...
     </div>
@@ -48,6 +60,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../../lib/utils.js';
+import L from 'leaflet';
 
 export default {
   name: 'WeatherPanel',
@@ -57,6 +70,7 @@ export default {
       selectedStep: hToMsec(3),
       playTimer: null,
       tickInterval: 100,
+      sliderZeroPx: 8,
 
       weatherTimescales: [
         {
@@ -105,6 +119,9 @@ export default {
     },
     timeOffset () {
       return this.wxTime - this.boatTime;
+    },
+    timeFrac () {
+      return this.timeOffset / this.offsetMax;
     },
     playStep () {
       return this.weatherTimescales[this.selectedTimescale].playStep;
@@ -197,6 +214,14 @@ export default {
       }
       this.setTime(value);
     },
+    onClick (ev) {
+      const pt = L.DomEvent.getMousePosition(ev, this.$refs.weatherslider);
+      const x = Math.floor(pt.x) - this.sliderZeroPx / 2;
+      let frac = x / (this.$refs.weatherslider.offsetWidth - this.sliderZeroPx);
+      frac = Math.min(1, frac);
+      frac = Math.max(0, frac);
+      this.setTime(Math.round(frac * this.offsetMax));
+    },
   },
 }
 </script>
@@ -212,6 +237,23 @@ export default {
   transform: translate(-50%, 0);
   border: 1px solid #f0f0f0;
   background: #ffffff;
+}
+#weather-slider-container {
+  position: relative;
+  width: 100%;
+}
+#weather-slider {
+  position: relative;
+  width: 100%;
+  background-image: linear-gradient(#eee, #ccc, #eee);
+}
+#weather-slider-fg {
+  position: absolute;
+  background-image: linear-gradient(#7ac, #7cf, #7ac);
+}
+#weather-slider, #weather-slider-fg {
+  border-radius: 5px;
+  height: 9px;
 }
 #weather-panel-control span {
   font-size: 10px;
