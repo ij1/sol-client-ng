@@ -5,6 +5,7 @@
         v-for = "(leaderboard, index) in this.boatlists"
         :key = "leaderboard.boatlistKey"
         :boatlist-index = "index"
+        @editlist = "doEditList"
       />
       <div id = "leaderboard-createbuttons">
         Create new list by:
@@ -15,7 +16,8 @@
     <portal to = "boatlist-editor-dest" v-if = "this.editorType !== null">
       <boatlist-editor
         :editor-type = "editorType"
-        @close = "editorType = null"
+        :edit-list-key = "editListKey"
+        @close = "doClose"
       />
     </portal>
   </div>
@@ -35,12 +37,23 @@ export default {
   data () {
     return {
       editorType: null,
+      editListKey: null,
     }
   },
   computed: {
     ...mapState({
       boatlists: state => state.ui.boatlists.boatlists,
     }),
+  },
+  methods: {
+    doEditList (boatListKey) {
+      this.editorType = 'edit';
+      this.editListKey = boatListKey;
+    },
+    doClose () {
+      this.editorType = null;
+      this.editListKey = null;
+    }
   },
 }
 </script>

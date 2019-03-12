@@ -32,7 +32,7 @@
         />
       </div>
       <div class = "leaderboard-buttons" v-if = "this.listEditable">
-        <button disabled>Edit list</button>
+        <button @click = "onEdit">Edit list</button>
         <button @click = "onDelete">Delete list</button>
       </div>
     </div>
@@ -110,6 +110,9 @@ export default {
     onDelete () {
       this.$store.commit('ui/boatlists/delete',
                          this.boatlistInfo.boatlistKey);
+    },
+    onEdit () {
+      this.$emit('editlist', this.boatlistInfo.boatlistKey);
     },
   },
 }

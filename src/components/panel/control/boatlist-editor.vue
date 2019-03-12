@@ -5,7 +5,7 @@
     :z-index = "1001"
     close-button-label = "Cancel"
     @close = "$emit('close')"
-    submit-button-label = "Create list"
+    :submit-button-label = "this.submitLabel"
     @submit = "createList"
     :can-submit = "this.canCreate"
   >
@@ -13,11 +13,11 @@
       <label for="name">List name:</label>
       <input id="name" v-model.trim = "listname">
     </div>
-    <div v-if = "editorType === 'distance'">
+    <div v-if = "editorMode === 'distance'">
       <label for="name">Distance:</label>
       <input id="name" v-model.trim = "distance">
     </div>
-    <div class = "boatlist-editor-body" v-if = "editorType === 'boat'">
+    <div class = "boatlist-editor-body" v-if = "editorMode === 'boat'">
       <div class="search">
         <label for="search">Search</label>
         <input
@@ -67,7 +67,7 @@
 
 <script>
 import Vue from 'vue';
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import PopupWindow from '../../popupwindow.vue';
 import BoatList from './boatlist.vue';
 
@@ -81,6 +81,9 @@ export default {
     editorType: {
       type: String,
     },
+    editListKey: {
+      type: Number,
+    },
   },
   data () {
     return {
@@ -93,19 +96,30 @@ export default {
     }
   },
   computed: {
+    editorMode () {
+      if (this.editListKey !== null) {
+	return ((this.editList.filter.boats !== null) ? 'boat' : 'distance');
+      }
+      return this.editorType;
+    },
+    submitLabel () {
+      return this.editorType === 'edit' ? 'Edit list' : 'Create list';
+    },
     canCreate () {
       if (this.listname.length === 0) {
         return false;
       }
       for (const existing of this.$store.state.ui.boatlists.boatlists) {
         if (this.listname === existing.name) {
-          return false;
+          if (this.editList.boatlistKey !== existing.boatlistKey) {
+            return false;
+          }
         }
       }
-      if (this.editorType === 'distance') {
+      if (this.editorMode === 'distance') {
         const regex = /^\d(\.\d)?/;
         return regex.test(this.distance);
-      } else if (this.editorType === 'boat') {
+      } else if (this.editorMode === 'boat') {
         return Object.keys(this.onList).length > 0;
       }
       /* Should never be reached */
@@ -126,20 +140,50 @@ export default {
       }
       return res;
     },
+    editList () {
+      if (this.editListKey === null) {
+        return null;
+      }
+      for (let bl of this.boatlists) {
+        if (bl.boatlistKey === this.editListKey) {
+          return bl;
+        }
+      }
+      /* Should never be reached */
+      return null;
+    },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
     }),
+    ...mapState({
+      boatlists: state => state.ui.boatlists.boatlists,
+    }),
+  },
+  created () {
+    if (this.editList !== null) {
+      this.listname = this.editList.name;
+      if (this.editList.filter.boats !== null) {
+        this.onList = this.editList.filter.boats.reduce((arr, boat) => {
+            arr[boat] = true;
+            return arr;
+        }, {});
+      }
+      if (this.editList.filter.distance !== null) {
+        this.distance = this.editList.filter.distance;
+      }
+    }
   },
   methods: {
     createList () {
       if (!this.canCreate) {
         return;
       }
-      this.$store.commit('ui/boatlists/add', {
+      this.$store.commit('ui/boatlists/addOrEdit', {
+        editListKey: this.editListKey,
         name: this.listname,
         filter: {
-          boats: (this.editorType === 'boat') ? Object.keys(this.onList) : null,
-          distance: (this.editorType === 'distance') ? parseFloat(this.distance) : null,
+          boats: (this.editorMode === 'boat') ? Object.keys(this.onList) : null,
+          distance: (this.editorMode === 'distance') ? parseFloat(this.distance) : null,
         },
       });
       this.$emit('close');

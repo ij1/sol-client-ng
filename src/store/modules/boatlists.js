@@ -22,10 +22,26 @@ export default {
   },
 
   mutations: {
-    add (state, boatlist) {
-      Vue.set(state.boatlists, state.boatlists.length, {
+    addOrEdit (state, boatlist) {
+      let idx = state.boatlists.length;
+      let key;
+
+      if (boatlist.editListKey !== null) {
+        for (let i = 0; i < state.boatlists.length; i++) {
+          if (state.boatlists[i].boatlistKey === boatlist.editListKey) {
+            idx = i;
+            key = boatlist.editListKey;
+            break;
+          }
+        }
+      }
+      if (idx === state.boatlists.length) {
+        key = state.boatlistKey;
+        state.boatlistKey++;
+      }
+      Vue.set(state.boatlists, idx, {
         name: boatlist.name,
-        boatlistKey: state.boatlistKey,
+        boatlistKey: key,
         filter: {
           boats: boatlist.filter.boats,
           distance: boatlist.filter.distance,
@@ -33,9 +49,7 @@ export default {
         deletable: true,
         showOblyListBoats: false,
       });
-      state.activeList = state.boatlistKey;
-
-      state.boatlistKey++;
+      state.activeList = key;
     },
     delete (state, boatlistKey) {
       if (state.activeList === boatlistKey) {
