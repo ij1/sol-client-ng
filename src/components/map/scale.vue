@@ -41,7 +41,7 @@ export default {
       if (this.rawNmWidth < 1) {
         return this.rawNmWidth.toFixed(- Math.floor(Math.log10(this.rawNmWidth)))
       } else {
-	return this.rawNmWidth.toPrecision(1);
+	return Number(this.rawNmWidth.toPrecision(1)).toFixed(0);
       }
     },
     pxWidth () {
