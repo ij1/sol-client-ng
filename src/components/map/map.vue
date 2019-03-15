@@ -26,7 +26,6 @@
       <canvas-overlay v-if = "this.map !== null" :map = "this.map"/>
       <fleet-traces v-if = "this.map !== null"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
-      <fleet-hover v-if = "this.map !== null" :map = "this.map"/>
       <player-boat v-if = "this.map !== null && this.boatPosition !== null" :course = "this.boatCourse" :twa = "this.boatTwa"/>
       <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
@@ -39,7 +38,9 @@
 
       <dc-bar v-if = "this.map !== null"/>
       <wind-info v-if = "this.map !== null"/>
+
       <map-scale v-if = "this.map !== null" :map = "this.map"/>
+      <fleet-hover v-if = "this.map !== null" :map = "this.map"/>
     </l-map>
   </div>
 </template>
