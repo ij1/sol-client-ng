@@ -39,7 +39,7 @@ export default {
     },
     alignedNmWidth () {
       if (this.rawNmWidth < 1) {
-        return this.rawNmWidth.toFixed(- Math.floor(Math.log10(this.rawNmWidth)))
+        return this.rawNmWidth.toPrecision(1);
       } else {
 	return Number(this.rawNmWidth.toPrecision(1)).toFixed(0);
       }
