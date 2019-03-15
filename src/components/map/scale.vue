@@ -31,6 +31,9 @@ export default {
   },
   computed: {
     rawNmWidth () {
+      this.center.lat;
+      this.zoom;
+
       const mid = this.mapSize.y / 2;
       return this.map.distance(
         this.map.containerPointToLatLng(L.point(this.mapSize.x, mid)),
@@ -49,6 +52,7 @@ export default {
     },
     ...mapState({
       center: state => state.map.center,
+      zoom: state => state.map.zoom,
       mapSize: state => state.map.size,
     }),
   },
