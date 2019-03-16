@@ -44,7 +44,7 @@ export default {
       /* Dummy access to dependency */
       this.$parent.zoom;
 
-      return this.latLngToTilePoint(this.bounds.getSouthEast()).floor().add(L.point(1, 1));
+      return this.latLngToTilePoint(this.bounds.getSouthEast());
     },
 
     tileGridSize () {
@@ -84,7 +84,7 @@ export default {
     },
     projectedOrigo() {
       this.$parent.zoom;
-      return this.$parent.map.project(this.bounds.getNorthWest());
+      return this.$parent.map.project(this.bounds.getNorthWest()).round();
     },
 
     needsUpdate() {
@@ -106,7 +106,7 @@ export default {
 
   methods: {
     latLngToTilePoint(latLng) {
-      return this.$parent.map.project(latLng).subtract(this.projectedOrigo);
+      return this.$parent.map.project(latLng).round().subtract(this.projectedOrigo);
     },
     tileToLayerPoint() {
       const nw = this.bounds.getNorthWest();
@@ -117,7 +117,7 @@ export default {
 
     resetCanvasPlacement() {
       // FIXME, refing canvas element
-      L.DomUtil.setPosition(this.$el, this.tileToLayerPoint().floor());
+      L.DomUtil.setPosition(this.$el, this.tileToLayerPoint());
       this.$el.width = this.tilesize.x;
       this.$el.height = this.tilesize.y;
     },
@@ -147,8 +147,7 @@ export default {
           let first = true;
           ctx.beginPath();
           for (let pt of poly) {
-            // CHECKME: round the pixel coordinate or not?
-            const drawCoords = this.latLngToTilePoint(pt).round();
+            const drawCoords = this.latLngToTilePoint(pt);
             if (first) {
               ctx.moveTo(drawCoords.x, drawCoords.y);
               first = false;
@@ -168,10 +167,8 @@ export default {
           let firstAtBorder;
           ctx.beginPath();
           for (let pt of poly) {
-            // CHECKME: round the pixel coordinate or not?
             const atBorder = this.pointAtBorder(pt);
-            // CHECKME: round the pixel coordinate or not?
-            const drawCoords = this.latLngToTilePoint(pt).round();
+            const drawCoords = this.latLngToTilePoint(pt);
             /* If the outline goes along a border line, don't draw but move */
             if (first || (atBorder & prevAtBorder) !== 0) {
               ctx.moveTo(drawCoords.x, drawCoords.y);
@@ -186,8 +183,7 @@ export default {
           }
           /* Complete the poly but only conditionally */
           if ((firstAtBorder & prevAtBorder) === 0) {
-            // CHECKME: round the pixel coordinate or not?
-            const drawCoords = this.latLngToTilePoint(poly[0]).round();
+            const drawCoords = this.latLngToTilePoint(poly[0]);
             ctx.lineTo(drawCoords.x, drawCoords.y);
           }
           ctx.stroke();
