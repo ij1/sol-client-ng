@@ -92,7 +92,6 @@ export default {
       this.bounds;
       /* this.geoms is frozen, so check loaded state flag instead */
       this.loaded;
-      // CHECKME: Is this reactive?
       this.$parent.zoom;
       // Return dummy value
       return Date.now();
