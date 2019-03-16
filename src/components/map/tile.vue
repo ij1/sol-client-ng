@@ -44,7 +44,7 @@ export default {
       /* Dummy access to dependency */
       this.$parent.zoom;
 
-      return this.latLngToTilePoint(this.bounds.getSouthEast()).floor();
+      return this.latLngToTilePoint(this.bounds.getSouthEast()).floor().add(L.point(1, 1));
     },
 
     tileGridSize () {
