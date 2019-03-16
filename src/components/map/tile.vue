@@ -116,7 +116,6 @@ export default {
     },
 
     resetCanvasPlacement() {
-      // FIXME, refing canvas element
       L.DomUtil.setPosition(this.$el, this.tileToLayerPoint());
       this.$el.width = this.tilesize.x;
       this.$el.height = this.tilesize.y;
