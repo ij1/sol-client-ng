@@ -135,7 +135,10 @@ export default {
         }
       })
       .catch(err => {
-        commit('logError', err);
+        commit('logError', {
+          apiCall: 'POSTgeneric',
+          error: err,
+        });
         throw err;
       });
 
