@@ -291,8 +291,19 @@ export default {
             }
           }
 
+          /*
+           * Right after registering, own boat might not be included into
+           * the most recent fleet update just yet by the server...
+           */
+          let myBoatLatLng;
+          if (myBoatNew === null) {
+            /* ...Thus, use the starting point as the alternative. */
+            myBoatLatLng = this.$store.race.route[0].latLng;
+          } else {
+            myBoatLatLng = myBoatNew.latLng;
+          }
           for (let boat of boatList) {
-            boat.distance = gcCalc(myBoatNew.latLng, boat.latLng).distance *
+            boat.distance = gcCalc(myBoatLatLng, boat.latLng).distance *
                               EARTH_R / 1852;
           }
 
