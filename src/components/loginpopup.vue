@@ -131,7 +131,7 @@ export default {
       if (!this.canSend) {
         return;
       }
-      this.$store.dispatch('auth/login', this.authParams)
+      this.$store.dispatch('auth/login', this.authParams);
     }
   }
 }
