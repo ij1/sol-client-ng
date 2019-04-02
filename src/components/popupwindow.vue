@@ -75,7 +75,6 @@ export default {
   border-color: #808080;
   background: #fff;
   text-align: left;
-  overflow: hidden;
 }
 .popup-titlebar {
   background-color: #808080;
