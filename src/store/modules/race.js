@@ -80,6 +80,7 @@ export default {
         course.route[idx] = waypoint;
       }
 
+      /* Finish line endpoint calculations */
       const angularDist = degToRad(parseFloat(raceInfo.course.goal_radius) / 60);
       const center = course.route[course.route.length - 1].latLng;
       const centerProj = PROJECTION.project(center);
