@@ -51,9 +51,14 @@ export default {
         finish: [],
       };
 
+      raceInfo.course.waypoint.sort((a, b) => {
+        const aa = parseInt(a.order);
+        const bb = parseInt(b.order);
+        return aa - bb;
+      });
+      let idx = 0;
       for (let i = 0; i < raceInfo.course.waypoint.length; i++) {
         let waypoint = raceInfo.course.waypoint[i];
-        const idx = parseInt(waypoint.order) - 1;
         waypoint.lat = parseFloat(waypoint.lat);
         waypoint.lon = parseFloat(waypoint.lon);
         if (waypoint.lon < parseFloat(raceInfo.minlon)) {
@@ -78,6 +83,7 @@ export default {
           }
         }
         course.route[idx] = waypoint;
+        idx++;
       }
 
       /* Finish line endpoint calculations */
