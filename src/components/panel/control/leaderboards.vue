@@ -2,9 +2,9 @@
   <div id="leaderboards-container">
     <div id="leaderboards">
       <control-leaderboard
-        v-for = "(leaderboard, index) in this.boatlists"
-        :key = "leaderboard.boatlistKey"
-        :boatlist-index = "index"
+        v-for = "boatlistKey in this.sortedBoatlists"
+        :key = "boatlistKey"
+        :boatlist-key = "boatlistKey"
         @editlist = "doEditList"
       />
       <div id = "leaderboard-createbuttons">
@@ -41,6 +41,11 @@ export default {
     }
   },
   computed: {
+    sortedBoatlists () {
+      return Object.keys(this.boatlists).sort((a, b) => {
+        return a - b;
+      });
+    },
     ...mapState({
       boatlists: state => state.ui.boatlists.boatlists,
     }),

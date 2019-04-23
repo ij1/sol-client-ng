@@ -82,7 +82,7 @@ export default {
       type: String,
     },
     editListKey: {
-      type: Number,
+      type: String,
     },
   },
   data () {
@@ -109,9 +109,9 @@ export default {
       if (this.listname.length === 0) {
         return false;
       }
-      for (const existing of this.$store.state.ui.boatlists.boatlists) {
-        if (this.listname === existing.name) {
-          if (this.editList.boatlistKey !== existing.boatlistKey) {
+      for (const existingKey of Object.keys(this.boatlists)) {
+        if (this.listname === this.boatlists[existingKey].name) {
+          if (this.editListKey !== existingKey) {
             return false;
           }
         }
@@ -144,10 +144,8 @@ export default {
       if (this.editListKey === null) {
         return null;
       }
-      for (let bl of this.boatlists) {
-        if (bl.boatlistKey === this.editListKey) {
-          return bl;
-        }
+      if (typeof this.boatlists[this.editListKey] !== 'undefined') {
+        return this.boatlists[this.editListKey];
       }
       /* Should never be reached */
       return null;

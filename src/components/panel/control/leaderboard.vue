@@ -50,8 +50,8 @@ export default {
     'boat-list': BoatList,
   },
   props: {
-    boatlistIndex: {
-      type: Number,
+    boatlistKey: {
+      type: String,
       required: true,
     },
   },
@@ -62,10 +62,10 @@ export default {
   },
   computed: {
     listEditable () {
-      return this.boatlistInfo.boatlistKey >= 0;
+      return this.boatlistInfo.editable;
     },
     active () {
-      return this.boatlistInfo.boatlistKey === this.activeBoatlist;
+      return this.boatlistKey === this.activeBoatlist;
     },
     boatList () {
       let res = this.$store.state.race.fleet.boat;
@@ -81,7 +81,7 @@ export default {
       return this.boatlistInfo.name;
     },
     boatlistInfo () {
-      return this.$store.state.ui.boatlists.boatlists[this.boatlistIndex];
+      return this.$store.state.ui.boatlists.boatlists[this.boatlistKey];
     },
     ...mapState({
       activeBoatlist: state => state.ui.boatlists.activeList,
@@ -105,14 +105,14 @@ export default {
     },
     onActivate () {
       this.$store.commit('ui/boatlists/setActive',
-                         this.boatlistInfo.boatlistKey);
+                         this.boatlistKey);
     },
     onDelete () {
       this.$store.commit('ui/boatlists/delete',
-                         this.boatlistInfo.boatlistKey);
+                         this.boatlistKey);
     },
     onEdit () {
-      this.$emit('editlist', this.boatlistInfo.boatlistKey);
+      this.$emit('editlist', this.boatlistKey);
     },
   },
 }
