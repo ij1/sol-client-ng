@@ -40,6 +40,16 @@ export default {
     loaded: false,
     time: 0,
     fetchTime: 0,
+    fetchPeriod: {
+      hot: {
+        minWait: 30,
+        variation: 60,
+      },
+      cold: {
+        minWait: 3 * 60,
+        variation: 10 * 60,
+      },
+    },
     updateTimes: [4*60 + 30, 10*60 + 30, 16*60 + 30, 22*60 + 30],
     data: {
       url: null,
@@ -220,11 +230,11 @@ export default {
 
     nextTimeToFetch: (state, getters, rootState, rootGetters) => {
       const now = rootGetters['time/now']();
-      let hotPeriod = false;
+      let fetchPeriod = state.fetchPeriod.cold;
 
       /* First fetch(es) failed so far, retry soon enough */
       if (state.data.updated === null) {
-        hotPeriod = true;
+        fetchPeriod = state.fetchPeriod.hot;
 
       /* No hot periods within 1h from last wx update */
       } else if (state.data.updated + hToMsec(1) < now) {
@@ -239,20 +249,14 @@ export default {
            * timer expires (see the values below).
            */
           if (Math.abs(delta) < 25) {
-            hotPeriod = true;
+            fetchPeriod = state.fetchPeriod.hot;
             break;
           }
         }
       }
 
-      let minWait = 3 * 60;
-      let variation = 10 * 60;
-      if (hotPeriod) {
-        minWait = 30;
-        variation = 60;
-      }
-      return state.fetchTime + secToMsec(minWait) +
-             secToMsec(variation) * Math.random();
+      return state.fetchTime + secToMsec(fetchPeriod.minWait) +
+             secToMsec(fetchPeriod.variation) * Math.random();
     },
   },
 
