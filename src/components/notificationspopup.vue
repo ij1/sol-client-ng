@@ -1,5 +1,11 @@
 <template>
-  <div id="notifications-popup" v-if="this.notifications.length > 0">
+  <popup-window
+    title = ""
+    :z-index = "1010"
+    close-button-label = "OK"
+    @close = "doOk"
+    v-if="this.notifications.length > 0"
+  >
     <div id="notifications-content">
       <div
         v-for = "notification in this.notifications"
@@ -12,17 +18,18 @@
         />
       </div>
     </div>
-    <div>
-      <button v-on:click = "doOk">OK</button>
-    </div>
-  </div>
+  </popup-window>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import PopupWindow from './popupwindow.vue';
 
 export default {
   name: 'NotificationsPopup',
+  components: {
+    'popup-window': PopupWindow,
+  },
   data () {
     return {}
   },
