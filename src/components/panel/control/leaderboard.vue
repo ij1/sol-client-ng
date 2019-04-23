@@ -70,7 +70,9 @@ export default {
     boatList () {
       let res = this.$store.state.race.fleet.boat;
       if (this.boatlistInfo.filter.boats !== null) {
-        res = res.filter(i => this.boatlistInfo.filter.boats.includes(i.id));
+        res = res.filter(i => {
+          return typeof this.boatlistInfo.filter.boats[i.id] !== 'undefined'
+        });
       }
       if (this.boatlistInfo.filter.distance !== null) {
         res = res.filter(i => i.distance <= this.boatlistInfo.filter.distance);

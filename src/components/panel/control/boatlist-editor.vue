@@ -161,10 +161,7 @@ export default {
     if (this.editList !== null) {
       this.listname = this.editList.name;
       if (this.editList.filter.boats !== null) {
-        this.onList = this.editList.filter.boats.reduce((arr, boat) => {
-            arr[boat] = true;
-            return arr;
-        }, {});
+        this.onList = Object.assign({}, this.editList.filter.boats);
       }
       if (this.editList.filter.distance !== null) {
         this.distance = this.editList.filter.distance;
@@ -180,7 +177,7 @@ export default {
         editListKey: this.editListKey,
         name: this.listname,
         filter: {
-          boats: (this.editorMode === 'boat') ? Object.keys(this.onList) : null,
+          boats: (this.editorMode === 'boat') ? this.onList : null,
           distance: (this.editorMode === 'distance') ? parseFloat(this.distance) : null,
         },
       });
