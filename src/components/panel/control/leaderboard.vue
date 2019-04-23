@@ -81,9 +81,10 @@ export default {
       return this.boatlistInfo.name;
     },
     boatlistInfo () {
-      return this.$store.state.ui.boatlists.boatlists[this.boatlistKey];
+      return this.boatlists[this.boatlistKey];
     },
     ...mapState({
+      boatlists: state => state.ui.boatlists.boatlists,
       activeBoatlist: state => state.ui.boatlists.activeList,
       selectedList: state => state.race.fleet.selected,
       hoverList: state => state.race.fleet.hover,
