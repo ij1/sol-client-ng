@@ -68,9 +68,10 @@ export default {
              (this.leaderId !== this.playerId);
     },
     otherTraces () {
-      return this.$store.state.race.fleet.selected.concat(
-        this.$store.state.race.fleet.hover
-      ).sort().filter((item, pos, arr) => {
+      return Object.keys({
+        ...this.$store.state.race.fleet.selected,
+        ...this.$store.state.race.fleet.hover
+      }).sort().filter((item, pos, arr) => {
         return !pos || (item !== arr[pos - 1] && item !== this.leaderId)
       });
     },

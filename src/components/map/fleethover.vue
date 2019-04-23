@@ -90,6 +90,12 @@ export default {
     hoverListIds () {
       return this.hoverListIdsAll.slice(0, this.maxExpandedBoats);
     },
+    hoverIdsObject () {
+      return this.hoverListIds.reduce((obj, i) => {
+        obj['' + i] = true;
+        return obj;
+      }, {});
+    },
     hoverBoatList () {
       let self = this;
       return this.hoverListIds.map(id => self.fleetBoatFromId(id));
@@ -108,20 +114,7 @@ export default {
     }),
   },
   watch: {
-    hoverListIds (newValue, oldValue) {
-      if (newValue.length === oldValue.length) {
-        let i = 0;
-        while (i < newValue.length) {
-          if (newValue !== oldValue[i]) {
-            break;
-          }
-          i++;
-        }
-        /* Arrays equal? Nothing to do */
-        if (i === newValue.length) {
-          return;
-        }
-      }
+    hoverIdsObject (newValue) {
       this.$store.commit('race/fleet/setHover', newValue);
     }
   },

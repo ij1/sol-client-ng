@@ -22,8 +22,8 @@ export default {
     leader: null,
     boatTypes: new Set(),    /* Sets are not not reactive! */
     boatTypesCount: 0,       /* works around lack of reactivity */
-    selected: [],
-    hover: [],
+    selected: {},
+    hover: {},
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
     playerBoatIdx: 0,
   },

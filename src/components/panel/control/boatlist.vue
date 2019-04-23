@@ -14,8 +14,8 @@
       :key = "boat.id"
       class = "boatlist-row"
       :class = "{
-        'boatlist-active': selected.includes(boat.id),
-        'boatlist-hover': hoverList.includes(boat.id)
+        'boatlist-active': typeof selected[boat.id] !== 'undefined',
+        'boatlist-hover': typeof hoverList[boat.id] !== 'undefined'
       }"
       @click.exact = "selectBoat(boat.id, false)"
       @click.alt.exact = "selectBoat(boat.id, true)"
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import ScrollableTable from './scrollabletable.vue';
 import CountryFlag from '../../countryflag.vue';
@@ -67,12 +68,12 @@ export default {
       required: true,
     },
     initialSelected: {
-      type: Array,
-      default: () => [],
+      type: Object,
+      default: () => ({}),
     },
     hoverList: {
-      type: Array,
-      default: () => [],
+      type: Object,
+      default: () => ({}),
     },
   },
   data () {
@@ -173,10 +174,10 @@ export default {
       this.localeSort = localeSort;
     },
     selectBoat (id, altModifier) {
-      if (this.selected.includes(id)) {
-        this.selected = [];
+      if (typeof this.selected[id] !== 'undefined') {
+        Vue.delete(this.selected, id);
       } else {
-        this.selected = [id];
+        Vue.set(this.selected, id, true);
         this.$emit('select', {
           boatId: id,
           altModifier: altModifier,

@@ -36,7 +36,7 @@
       <div class = "center">
         <div>
           <button
-            :disabled = "this.offSelected.length === 0"
+            :disabled = "Object.getOwnPropertyNames(this.offSelected).length === 0"
             @click.prevent = "onAdd"
             @keydown.enter.prevent = "onAdd"
           >
@@ -45,7 +45,7 @@
         </div>
         <div>
           <button
-            :disabled = "this.onSelected.length === 0"
+            :disabled = "Object.getOwnPropertyNames(this.onSelected).length === 0"
             @click.prevent = "onDel"
             @keydown.enter.prevent = "onDel"
           >
@@ -91,8 +91,8 @@ export default {
       distance: '',
       search: '',
       onList: {},
-      onSelected: [],
-      offSelected: [],
+      onSelected: {},
+      offSelected: {},
     }
   },
   computed: {
@@ -187,16 +187,16 @@ export default {
       this.$emit('close');
     },
     onAdd () {
-      for (let id of this.offSelected) {
+      for (let id of Object.keys(this.offSelected)) {
         Vue.set(this.onList, id, true);
       }
-      this.offSelected = [];
+      this.offSelected = {};
     },
     onDel () {
-      for (let id of this.onSelected) {
+      for (let id of Object.keys(this.onSelected)) {
         Vue.delete(this.onList, id);
       }
-      this.onSelected = [];
+      this.onSelected = {};
     },
   },
 }
