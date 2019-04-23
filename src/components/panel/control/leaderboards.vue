@@ -2,7 +2,7 @@
   <div id="leaderboards-container">
     <div id="leaderboards">
       <control-leaderboard
-        v-for = "boatlistKey in this.sortedBoatlists"
+        v-for = "boatlistKey in this.sortedBoatlistKeys"
         :key = "boatlistKey"
         :boatlist-key = "boatlistKey"
         @editlist = "doEditList"
@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    sortedBoatlists () {
+    sortedBoatlistKeys () {
       return Object.keys(this.boatlists).sort((a, b) => {
         return a - b;
       });
