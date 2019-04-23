@@ -72,9 +72,10 @@ export default {
       /* wx begins only after our current timestamp, fix the wx time index
        * to avoid issues
        */
-      if (state.time < state.data.timeSeries[0]) {
-        console.log("time before wx, fixing: " + state.time + " < " + state.data.timeSeries[0]);
-        state.time = state.data.timeSeries[0];
+      const boundedTime = boundTime(state, state.time);
+      if (boundedTime !== null) {
+        console.log("time outside wx, fixing: " + state.time + " vs " + state.data.timeSeries[0] + "-" + state.data.timeSeries[state.data.timeSeries.length - 1]);
+        state.time = boundedTime;
       }
     },
     minTime(state, minTime) {
