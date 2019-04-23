@@ -8,47 +8,47 @@
       @submit = "doLogin"
       :can-submit = "this.canSend"
     >
-        <div>
-          <select v-model = "authParams.race_id">
-            <option disabled value = "">
-              {{ raceSelectorInfo }}
-            </option>
-            <option
-              v-for = "race in raceData"
-              v-bind:value = "race.id"
-              v-bind:key = "race.id"
-            >
-              {{ race.name }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label
-            for = "username"
-            @click = "$refs.username.focus()"
+      <div>
+        <select v-model = "authParams.race_id">
+          <option disabled value = "">
+            {{ raceSelectorInfo }}
+          </option>
+          <option
+            v-for = "race in raceData"
+            v-bind:value = "race.id"
+            v-bind:key = "race.id"
           >
-            Username:
-          </label>
-          <input
-            id = "username"
-            ref = "username"
-            v-model = "authParams.username"
-          >
-        </div>
-        <div>
-          <label
-            for = "password"
-            @click = "$refs.password.focus()"
-          >
-            Password:
-          </label>
-          <input
-            id = "password"
-            ref = "password"
-            v-model = "authParams.password"
-            type = "password"
-          >
-        </div>
+            {{ race.name }}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label
+          for = "username"
+          @click = "$refs.username.focus()"
+        >
+          Username:
+        </label>
+        <input
+          id = "username"
+          ref = "username"
+          v-model = "authParams.username"
+        >
+      </div>
+      <div>
+        <label
+          for = "password"
+          @click = "$refs.password.focus()"
+        >
+          Password:
+        </label>
+        <input
+          id = "password"
+          ref = "password"
+          v-model = "authParams.password"
+          type = "password"
+        >
+      </div>
       <div v-if="this.$store.state.auth.status !== 'Unauthenticated'">
         {{ this.$store.state.auth.status }}
       </div>
