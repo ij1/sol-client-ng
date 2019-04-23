@@ -7,7 +7,6 @@ export default {
     boatlists: {
       '-1': {
         name: 'Main Fleet',
-        boatlistKey: -1,
         filter: {
           boats: null,
           distance: null,
@@ -35,7 +34,6 @@ export default {
 
       Vue.set(state.boatlists, key, {
         name: boatlist.name,
-        boatlistKey: key,
         filter: {
           boats: boatlist.filter.boats,
           distance: boatlist.filter.distance,
