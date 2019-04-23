@@ -83,9 +83,9 @@ export default {
         if (boundedMinTime !== null) {
           minTime = boundedMinTime;
         }
-        if (state.time < minTime) {
-          state.time = minTime;
-        }
+      }
+      if (state.time < minTime) {
+        state.time = minTime;
       }
     },
     setTime(state, time) {
