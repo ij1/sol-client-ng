@@ -1,7 +1,13 @@
 <template>
   <div id="popup-block" v-if="this.$store.state.auth.status !== 'Authenticated'">
-    <div id="login-popup">
-      <form @submit.prevent = "doLogin">
+    <popup-window
+      title = "Login"
+      :z-index = "1020"
+      :close-button-label = "null"
+      submit-button-label = "Login"
+      @submit = "doLogin"
+      :can-submit = "this.canSend"
+    >
         <div>
           <select v-model = "authParams.race_id">
             <option disabled value = "">
@@ -43,25 +49,21 @@
             type = "password"
           >
         </div>
-        <div>
-          <button
-            type = "submit"
-            :disabled = "!canSend"
-          >
-            Login
-          </button>
-        </div>
-      </form>
       <div v-if="this.$store.state.auth.status !== 'Unauthenticated'">
         {{ this.$store.state.auth.status }}
       </div>
-    </div>
+    </popup-window>
   </div>
 </template>
 
 <script>
+import PopupWindow from './popupwindow.vue';
+
 export default {
   name: 'Login',
+  components: {
+    'popup-window': PopupWindow,
+  },
   data () {
     return {
       authParams: {
@@ -145,20 +147,4 @@ export default {
   background: #e0e0e0c0;
   z-index: 100;
 }
-#login-popup {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-right: -50%;
-  min-width: 500px;
-  transform: translate(-50%, -50%);
-  padding: 10px;
-  border: solid 3px;
-  border-radius: 10px;
-  border-color: #808080;
-  background: #fff;
-  text-align: left;
-  z-index: 1002;
-}
-
 </style>

@@ -14,6 +14,7 @@
       </div>
       <div style="margin-top: 10px">
         <button
+          v-if = "closeButtonLabel !== null"
           type = "close"
           @click.prevent = "$emit('close')"
           @keydown.enter.prevent = "$emit('close')"
