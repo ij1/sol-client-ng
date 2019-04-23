@@ -26,10 +26,6 @@ export default {
     'chat-channel': ControlChat,
   },
 
-  data () {
-    return {}
-  },
-
   computed: {
     roomCount () {
       return this.$store.state.chatrooms.activeRooms.length;

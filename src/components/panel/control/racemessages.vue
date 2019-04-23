@@ -16,9 +16,6 @@ export default {
   components: {
     'race-message': RaceMessage,
   },
-  data () {
-    return {}
-  },
 }
 </script>
 
