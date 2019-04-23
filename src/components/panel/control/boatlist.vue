@@ -17,8 +17,7 @@
         'boatlist-active': typeof selected[boat.id] !== 'undefined',
         'boatlist-hover': typeof hoverList[boat.id] !== 'undefined'
       }"
-      @click.exact = "selectBoat(boat.id, false)"
-      @click.alt.exact = "selectBoat(boat.id, true)"
+      @click = "selectBoat(boat.id, $event)"
     >
       <td
         v-for = "column in visibleColumnsWithSort"
@@ -173,14 +172,14 @@ export default {
       }
       this.localeSort = localeSort;
     },
-    selectBoat (id, altModifier) {
+    selectBoat (id, ev) {
       if (typeof this.selected[id] !== 'undefined') {
         Vue.delete(this.selected, id);
       } else {
         Vue.set(this.selected, id, true);
         this.$emit('select', {
           boatId: id,
-          altModifier: altModifier,
+          altModifier: ev.altKey,
         });
       }
       this.$emit('input', this.selected);
