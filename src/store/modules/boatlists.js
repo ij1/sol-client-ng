@@ -18,7 +18,7 @@ export default {
     },
     defaultList: '-1',
     activeList: '-1',
-    boatlistKey: 0,       /* Used to produce unique keys for the lists */
+    nextBoatlistKey: 0,       /* Used to produce unique keys for the lists */
   },
 
   mutations: {
@@ -29,8 +29,8 @@ export default {
           (typeof state.boatlists[boatlist.editListKey] !== 'undefined')) {
         key = boatlist.editListKey;
       } else {
-        key = '' + state.boatlistKey;
-        state.boatlistKey++;
+        key = '' + state.nextBoatlistKey;
+        state.nextBoatlistKey++;
       }
 
       Vue.set(state.boatlists, key, {
