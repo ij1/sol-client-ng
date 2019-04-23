@@ -45,21 +45,6 @@ export default {
 </script>
 
 <style scoped>
-#notifications-popup {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-right: -50%;
-  min-width: 500px;
-  transform: translate(-50%, -50%);
-  padding: 10px;
-  border: solid 3px;
-  border-radius: 10px;
-  border-color: #808080;
-  background: #fff;
-  text-align: left;
-  z-index: 1001;
-}
 #notifications-content {
   overflow-y: auto;
 }
