@@ -15,9 +15,11 @@
       class = "boatlist-row"
       :class = "{
         'boatlist-active': typeof selected[boat.id] !== 'undefined',
-        'boatlist-hover': typeof hoverList[boat.id] !== 'undefined'
+        'boatlist-hover': typeof hoverList[boat.id] !== 'undefined',
+        'boatlist-last': boat.id === lastClicked
       }"
-      @click = "selectBoat(boat.id, $event)"
+      @mousedown.prevent
+      @click.prevent = "selectBoat(boat.id, $event)"
     >
       <td
         v-for = "column in visibleColumnsWithSort"
@@ -78,6 +80,7 @@ export default {
   data () {
     return {
       selected: this.initialSelected,
+      lastClicked: null,
       sortKey: 'ranking',
       sortDir: 'asc',
       localeSort: false,
@@ -183,6 +186,7 @@ export default {
         });
       }
       this.$emit('input', this.selected);
+      this.lastClicked = id;
     },
   },
 }
@@ -202,6 +206,9 @@ export default {
 }
 .boatlist-hover {
   background: #e0e0ff;
+}
+.boatlist-last {
+  background: #a0a0ff;
 }
 
 .boatlist-left {
