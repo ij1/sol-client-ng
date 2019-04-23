@@ -30,9 +30,6 @@ export default {
   components: {
     'popup-window': PopupWindow,
   },
-  data () {
-    return {}
-  },
   computed: {
     ...mapState({
       notifications: state => state.notifications.notifications,
