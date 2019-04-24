@@ -12,6 +12,9 @@ function addToName2id (state, name, id) {
     arr.sort((a, b) => {
       return state.id2idx[a].ranking - state.id2idx[b].ranking;
     });
+    /* Not strictly needed now (only in-place array operations above),
+     * but may be necessary once Vue3 makes Maps reactive
+     */
     state.name2id.set(name, arr);
   } else {
     state.name2id.set(name, [id]);
