@@ -10,7 +10,7 @@
       </th>
     </template>
     <tr
-      v-for = "boat in sortedBoatList"
+      v-for = "(boat, index) in sortedBoatList"
       :key = "boat.id"
       class = "boatlist-row"
       :class = "{
@@ -19,7 +19,7 @@
         'boatlist-last': boat.id === lastClicked
       }"
       @mousedown.prevent
-      @click.prevent = "selectBoat(boat.id, $event)"
+      @click.prevent = "selectBoat(index, $event)"
     >
       <td
         v-for = "column in visibleColumnsWithSort"
@@ -175,10 +175,36 @@ export default {
       }
       this.localeSort = localeSort;
     },
-    selectBoat (id, ev) {
-      if (typeof this.selected[id] !== 'undefined') {
+    selectBoat (index, ev) {
+      let id = this.sortedBoatList[index].id;
+      let select = true;
+
+      if (!ev.ctrlKey) {
+        if (typeof this.selected[id] !== 'undefined') {
+          select = false;
+        }
+        this.selected = {};
+      }
+
+      if (ev.shiftKey) {
+        let i;
+        for (i = 0; i < this.sortedBoatList.length; i++) {
+          if (this.sortedBoatList[i].id === this.lastClicked) {
+            break;
+          }
+        }
+        if ((i < this.sortedBoatList.length) &&
+            (this.sortedBoatList[i].id === this.lastClicked)) {
+          while (i !== index) {
+            Vue.set(this.selected, this.sortedBoatList[i].id, true);
+            i += Math.sign(index - i);
+          }
+          Vue.set(this.selected, id, true);
+        }
+
+      } else if (typeof this.selected[id] !== 'undefined') {
         Vue.delete(this.selected, id);
-      } else {
+      } else if (select) {
         Vue.set(this.selected, id, true);
         this.$emit('select', {
           boatId: id,
