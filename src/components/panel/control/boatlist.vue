@@ -208,7 +208,8 @@ export default {
   background: #e0e0ff;
 }
 .boatlist-last {
-  background: #a0a0ff;
+  outline: 1px dotted #333;
+  outline-offset: -1px;
 }
 
 .boatlist-left {
