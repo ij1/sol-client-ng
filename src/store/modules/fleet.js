@@ -5,6 +5,20 @@ import { minToMsec, secToMsec } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
 import { PROJECTION, EARTH_R } from '../../lib/sol.js';
 
+function addToName2id (state, name, id) {
+  if (state.name2id.has(name)) {
+    let arr = state.name2id.get(name);
+    arr.push(id);
+    arr.sort((a, b) => {
+      return state.id2idx[a].ranking - state.id2idx[b].ranking;
+    });
+    state.name2id.set(name, arr);
+  } else {
+    state.name2id.set(name, [id]);
+  }
+  state.name2idStamp++;
+}
+
 export default {
   namespaced: true,
 
@@ -19,6 +33,8 @@ export default {
     tracesFetchInterval: minToMsec(3),
     boat: [],
     id2idx: {},
+    name2id: new Map(),      /* Maps are not reactice! */
+    name2idStamp: 0,         /* works aournd lack of reactivity */
     leader: null,
     boatTypes: new Set(),    /* Sets are not reactive! */
     boatTypesCount: 0,       /* works around lack of reactivity */
@@ -60,6 +76,7 @@ export default {
         country: null,
         trace: [boatData.wrappedLatLng],
       });
+      addToName2id(state, boatData.name, boatData.id);
     },
     updateFleet (state, update) {
       state.fleetTime = update.timestamp;
@@ -69,7 +86,10 @@ export default {
 
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
-          state.boat[idx].name = boat.name;
+          if (state.boat[idx].name !== boat.name) {
+            state.boat[idx].name = boat.name;
+            addToName2id(state, boat.name, id);
+          }
 
           state.boat[idx].latLng = boat.latLng;
           /* Store position to trace if moved. */
@@ -113,6 +133,8 @@ export default {
           });
 
           state.newBoatId = id;
+
+          addToName2id(state, boat.name, id);
         }
       }
 
@@ -191,6 +213,15 @@ export default {
     boatFromId: (state) => (id) => {
       const idx = state.id2idx[id];
       return state.boat[idx];
+    },
+    boatFromName: (state) => (name) => {
+      const id = state.name2id.get(name);
+      if (typeof id !== 'undefined') {
+        const idx = state.id2idx[id];
+        return state.boat[idx];
+      } else {
+        return null;
+      }
     },
     /* Does not use state, just to use common code for boat colors */
     boatColor: () => (boat) => {
