@@ -20,7 +20,7 @@ export default {
     boat: [],
     id2idx: {},
     leader: null,
-    boatTypes: new Set(),    /* Sets are not not reactive! */
+    boatTypes: new Set(),    /* Sets are not reactive! */
     boatTypesCount: 0,       /* works around lack of reactivity */
     selected: {},
     hover: {},
