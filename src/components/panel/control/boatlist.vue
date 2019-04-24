@@ -9,6 +9,14 @@
         {{column.thWithSort}}
       </th>
     </template>
+    <template slot = "dummydata">
+      <th
+        v-for = "column in visibleColumnsWithSort"
+        :key = "'d' + column.dataField"
+      >
+        <span v-html="column.dummyData"/>
+      </th>
+    </template>
     <tr
       v-for = "(boat, index) in sortedBoatList"
       :key = "boat.id"
@@ -100,26 +108,32 @@ export default {
         {
           dataField: 'ranking', th: '#',
           align: 'r', visible: true, localeSort: false,
+          dummyData: '9999',
         },
         {
           dataField: 'country', th: '',
           align: 'l', visible: true, localeSort: false,
+          dummyData: 'SE',
         },
         {
           dataField: 'syc', th: '',
           align: 'l', visible: true, localeSort: false,
+          dummyData: 'y',
         },
         {
           dataField: 'name', th: 'Name',
           align: 'l', visible: true, localeSort: true,
+          dummyData: 'Practice_Mark_5',
         },
         {
           dataField: 'dtg', th: 'DTF',
           align: 'r', visible: true, localeSort: false,
+          dummyData: '19999.99',
         },
         {
           dataField: 'type', th: 'Boat Type',
           align: 'l', visible: this.multiClassRace, localSort: false,
+          dummyData: 'class',
         },
       ];
     },

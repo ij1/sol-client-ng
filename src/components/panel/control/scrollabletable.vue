@@ -10,7 +10,8 @@
     <div class = "scrollable-table">
       <table cellspacing = "0" cellpadding = "1px">
         <thead class = "fakehead" ref = "fakehead">
-          <slot name = "headers"></slot>
+          <tr><slot name = "headers"></slot></tr>
+          <tr><slot name = "dummydata"></slot></tr>
         </thead>
         <tbody class = "scrollable-table-content">
           <slot></slot>
@@ -26,7 +27,7 @@ export default {
   methods: {
     setTableHeaderWidth () {
       let dstArr = this.$refs.visualhead.children;
-      let srcArr = this.$refs.fakehead.children;
+      let srcArr = this.$refs.fakehead.children[0].children;
 
       for (let i = 0; i < dstArr.length; i++) {
         dstArr[i].style.width = srcArr[i].offsetWidth + 'px';

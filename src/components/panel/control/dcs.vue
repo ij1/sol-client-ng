@@ -21,6 +21,11 @@
         <th>Type</th>
         <th>&deg;</th>
       </template>
+      <template slot = "dummydata">
+        <th>2000-01-01 00:00:00</th>
+        <th>cog</th>
+        <th>000.000</th>
+      </template>
       <tr
         v-for = "command in this.$store.state.boat.steering.dcs.list"
         v-bind:key = "command.id"
