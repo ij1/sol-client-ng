@@ -5,6 +5,10 @@
         v-for = "column in visibleColumnsWithSort"
         :key = "column.dataField"
         @click="selectSort(column.dataField, column.localeSort)"
+        :class = "{
+          'boatlist-left': column.align === 'l',
+          'boatlist-right': column.align === 'r'
+        }"
       >
         {{column.thWithSort}}
       </th>
