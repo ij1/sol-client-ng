@@ -21,6 +21,11 @@ export default {
       mult: 1,
       decimals: 3,
       format: defaultFormat,
+      enabled: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'LAT',
+      },
     },
     lon: {
       value: null,
@@ -30,6 +35,11 @@ export default {
       mult: 1,
       decimals: 3,
       format: defaultFormat,
+      enabled: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'LON',
+      },
     },
     speed: {
       value: null,
@@ -103,6 +113,11 @@ export default {
       },
       decimals: 2,
       format: defaultFormat,
+      enabled: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'VMC',
+      },
     },
     perf: {
       value: null,
@@ -141,6 +156,11 @@ export default {
         const d = new Date(instrument.value);
         return ("0" + (d.getUTCMonth() + 1)).slice(-2) + '/' +
                ("0" + d.getUTCDate()).slice(-2);
+      },
+      enabled: {
+        value: true,
+        type: 'boolean',
+        cfgText: 'DATE',
       },
     },
 

@@ -10,6 +10,7 @@ export default {
   state: {
     activeTab: 0,
     alert: [false, false, false, false, false, false],
+    configEditor: false,
   },
 
   mutations: {
@@ -21,6 +22,12 @@ export default {
       if (state.activeTab !== alertTab) {
         state.alert[alertTab] = true;
       }
+    },
+    openConfigEditor(state) {
+      state.configEditor = true;
+    },
+    closeConfigEditor(state) {
+      state.configEditor = false;
     },
   },
 }

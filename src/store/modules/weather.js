@@ -60,6 +60,40 @@ export default {
       increment: [],
       windMap: [],      /* format: [time][lon][lat][u,v] */
     },
+    cfg: {
+      barbs: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Wind arrows / barbs',
+      },
+      sound: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'New weather sound',
+      },
+      start24h: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Start with 24h weather',
+      },
+      gridInterval: {
+        value: 48,
+        type: 'range',
+        low: 24,
+        high: 128,
+        cfgText: 'Wind grid density',
+      },
+      twstxt: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Show wind speeds',
+      },
+      twdtxt: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Show wind directions',
+      },
+    },
   },
 
   mutations: {

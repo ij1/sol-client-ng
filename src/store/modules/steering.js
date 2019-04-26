@@ -28,6 +28,14 @@ export default {
       showPolar: false,
       twa: null,
     },
+
+    cfg: {
+      alwaysShowPolar: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Always show polar when steering visually',
+      },
+    }
   },
 
   mutations: {
