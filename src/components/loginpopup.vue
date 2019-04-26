@@ -127,6 +127,7 @@ export default {
           apiCall: 'races',
           error: err,
         }, {root: true});
+        setTimeout(() => {this.fetchRaces()}, 2000);
       });
     },
     doLogin: function() {
