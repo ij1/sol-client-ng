@@ -7,7 +7,7 @@
     submit-button-label = "Change"
     @submit = "onSubmit"
     :can-submit = "this.canSubmit"
-    v-if = "$store.state.ui.config.showEditor === true"
+    v-if = "$store.state.ui.config.showEditor"
   >
     <div
       v-for = "(cfggroup, gindex) in this.configTree"
