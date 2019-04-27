@@ -7,7 +7,7 @@
     submit-button-label = "Change"
     @submit = "onSubmit"
     :can-submit = "this.canSubmit"
-    v-if = "$store.state.ui.configEditor"
+    v-if = "$store.state.ui.config.showEditor === true"
   >
     <div
       v-for = "(cfggroup, gindex) in this.configTree"
@@ -114,6 +114,7 @@ export default {
         });
         // ADDME: store to localstore
       }
+      this.onClose();
     },
     resetToDefaults () {
       for (const cfg of this.configList) {
