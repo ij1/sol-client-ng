@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import PopupWindow from '../popupwindow.vue';
 
 export function cfgSetValue(state, cfg) {
@@ -96,9 +97,9 @@ export default {
   created () {
     this.createConfigTree();
     for (const cfg of this.configList) {
-      this.default[cfg.idx] = this.getStoreObj(cfg.base, cfg.path).value;
+      Vue.set(this.default, cfg.idx, this.getStoreObj(cfg.base, cfg.path).value);
       // ADDME: fetch from localstore, if available
-      this.config[cfg.idx] = this.default[cfg.idx];
+      Vue.set(this.config,cfg.idx, this.default[cfg.idx]);
     }
   },
   methods: {
