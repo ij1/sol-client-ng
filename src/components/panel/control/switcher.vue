@@ -33,6 +33,9 @@
           <control-race-messages/>
         </keep-alive>
       </div>
+      <div v-if="activeTab === 6" class="control-panel-content">
+        <control-misc/>
+      </div>
       <div v-if="activeTab === 7" class="control-panel-content">
         <control-diagnostics/>
       </div>
@@ -46,6 +49,7 @@ import ControlDCs from './dcs.vue';
 import ControlLeaderboards from './leaderboards.vue';
 import ControlChats from './chats.vue';
 import ControlRaceMessages from './racemessages.vue';
+import ControlMisc from './misc.vue';
 import ControlDiagnostics from './diagnostics.vue';
 
 export default {
@@ -56,6 +60,7 @@ export default {
     'control-leaderboards': ControlLeaderboards,
     'control-chats': ControlChats,
     'control-race-messages': ControlRaceMessages,
+    'control-misc': ControlMisc,
     'control-diagnostics': ControlDiagnostics,
   },
   computed: {
