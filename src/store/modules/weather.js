@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
 import { UVToWind } from '../../lib/sol.js';
+import { configSetValue } from '../../components/config/configstore.js';
 
 function wxLinearInterpolate(factor, startData, endData) {
   return [
@@ -138,6 +139,7 @@ export default {
     updateFetchTime(state, fetchTime) {
       state.fetchTime = fetchTime;
     },
+    configSetValue,
   },
 
   getters: {

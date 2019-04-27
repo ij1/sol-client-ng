@@ -1,6 +1,6 @@
 import { orderBy } from 'lodash';
 import { UTCToMsec } from '../../lib/utils.js';
-
+import { configSetValue } from '../../components/config/configstore.js';
 
 export default {
   namespaced: true,
@@ -96,6 +96,7 @@ export default {
     visualSteeringSetTwa (state, twa) {
       state.visualSteering.twa = twa;
     },
+    configSetValue,
   },
 
   actions: {

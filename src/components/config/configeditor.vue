@@ -33,14 +33,6 @@
 import Vue from 'vue';
 import PopupWindow from '../popupwindow.vue';
 
-export function cfgSetValue(state, cfg) {
-  let obj = state;
-  for (const i of cfg.path) {
-    obj = obj[i];
-  }
-  obj.value = cfg.value;
-}
-
 export default {
   name: 'ConfigEditor',
   components: {
@@ -108,7 +100,7 @@ export default {
     },
     onSubmit () {
       for (const cfg of this.configList) {
-        this.$store.commit(cfg.base + '/cfgSetValue', {
+        this.$store.commit(cfg.base + '/configSetValue', {
           path: this.getRelativePath(cfg.path),
           value: this.config[cfg.idx],
         });

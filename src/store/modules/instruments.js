@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import { speedTowardsBearing, gcCalc, twaTextPrefix } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
+import { configSetValue } from '../../components/config/configstore.js';
 
 function defaultFormat (instrument) {
   return (instrument.value * instrument.mult).toFixed(instrument.decimals);
@@ -180,6 +181,7 @@ export default {
         state[i].value = updateList[i].value;
       }
     },
+    configSetValue,
   },
   actions: {
     updateInstruments ({state, rootGetters, commit}, data) {
