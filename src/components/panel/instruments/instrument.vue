@@ -1,5 +1,8 @@
 <template>
-  <div class="boat-instrument">
+  <div
+    class = "boat-instrument"
+    v-if = "this.enabled"
+  >
     <div class="boat-instrument-label">
       {{ instrument.name }} [{{ instrument.unit }}]
     </div>
@@ -21,6 +24,10 @@ export default {
   computed: {
     instrument () {
       return this.$store.state.boat.instruments[this.id];
+    },
+    enabled () {
+      return (typeof this.instrument.enabled === 'undefined') ||
+             this.instrument.enabled.value;
     }
   },
   filters: {
