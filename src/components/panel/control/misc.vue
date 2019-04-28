@@ -7,7 +7,7 @@
       <button
         @click="$store.commit('ui/showConfigEditor')"
       >
-        Configure Options
+        Settings
       </button>
     </div>
     <div>
