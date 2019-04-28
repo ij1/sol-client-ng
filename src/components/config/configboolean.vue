@@ -2,7 +2,6 @@
   <div>
     <label>{{cfg.cfgText}}</label>
     <input
-      v-if = "cfg.type === 'boolean'"
       type = "checkbox"
       :checked = "value"
       @input = "$emit('update:value', $event.target.checked)"
