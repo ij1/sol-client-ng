@@ -3,7 +3,7 @@
     title = "Edit Configuration"
     :z-index = 1015
     close-button-label = "Cancel"
-    @close = "onClose"
+    @close = "onCancel"
     submit-button-label = "Change"
     @submit = "onSubmit"
     :can-submit = "this.canSubmit"
@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import PopupWindow from '../popupwindow.vue';
 import ConfigBoolean from './configboolean.vue';
 import ConfigRange from './configrange.vue';
@@ -59,6 +58,7 @@ export default {
       configTree: [],
       default: [],
       config: [],
+      committed: [],
     }
   },
   computed: {
@@ -104,30 +104,47 @@ export default {
 
   created () {
     this.createConfigTree();
+    let def = [];
+    let config = [];
+    let committed = [];
+
     for (const cfg of this.configList) {
-      Vue.set(this.default, cfg.idx, this.getStoreObj(cfg.base, cfg.path).value);
+      def[cfg.idx] = this.getStoreObj(cfg.base, cfg.path).value
+      config[cfg.idx] = def[cfg.idx];
       // ADDME: fetch from localstore, if available
-      Vue.set(this.config,cfg.idx, this.default[cfg.idx]);
+      committed[cfg.idx] = config[cfg.idx];
     }
+    this.default = def;
+    this.config = config;
+    this.committed = committed;
   },
   methods: {
     onClose () {
       this.$store.commit('ui/closeConfigEditor');
     },
+    onCancel () {
+      this.copyConfig('committed', 'config');
+      this.onClose();
+    },
     onSubmit () {
-      for (const cfg of this.configList) {
-        this.$store.commit(cfg.base + '/configSetValue', {
-          path: this.getRelativePath(cfg.path),
-          value: this.config[cfg.idx],
-        });
-        // ADDME: store to localstore
-      }
+      this.copyConfig('config', 'committed');
+      this.updateLocalstorage();
       this.onClose();
     },
     resetToDefaults () {
+      this.copyConfig('default', 'config');
+    },
+    copyConfig (from, to) {
+      let arr = [].concat(this[to]);
       for (const cfg of this.configList) {
-        this.config[cfg.idx] = this.default[cfg.idx];
+        arr[cfg.idx] = this[from][cfg.idx];
       }
+      this[to] = arr;
+    },
+    updateLocalstorage () {
+      /*for (const cfg of this.configList) {
+        // ADDME: store to localstore
+      }*/
     },
     getRelativePath (path) {
       return path.split('.');
@@ -173,6 +190,16 @@ export default {
         groups.push({ title: cfggroup.title, cfgs: cfgs });
       }
       this.configTree = groups;
+    },
+  },
+  watch: {
+    config () {
+      for (const cfg of this.configList) {
+        this.$store.commit(cfg.base + '/configSetValue', {
+          path: this.getRelativePath(cfg.path),
+          value: this.config[cfg.idx],
+        });
+      }
     },
   },
 }
