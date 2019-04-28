@@ -9,6 +9,14 @@
     :can-submit = "this.canSubmit"
     v-if = "$store.state.ui.config.showEditor"
   >
+    <template slot = "extrabuttons">
+      <button
+        type = "reset"
+        @click.prevent = "resetToDefaults"
+      >
+        Reset to defaults
+      </button>
+    </template>
     <div
       v-for = "(cfggroup, gindex) in this.configTree"
       :key = "'g' + gindex"
