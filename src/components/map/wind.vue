@@ -71,6 +71,7 @@ export default {
                 ctx.stroke();
               } else {
                 let fiveScale = Math.round(wind.knots / 5);
+                const hemi = windPoint.lat > 0 ? 1 : -1;
                 ctx.beginPath();
                 ctx.lineWidth = 1;
                 if (fiveScale > 0) {
@@ -84,11 +85,11 @@ export default {
                     ctx.moveTo(0, -18);
                     if (fiveScale >= 20) {
                       ctx.lineTo(0, -30);
-                      ctx.lineTo(7, -29);
+                      ctx.lineTo(7 * hemi, -29);
                       fiveScale -= 10;
                     }
                     ctx.lineTo(0, -24);
-                    ctx.lineTo(7, -23);
+                    ctx.lineTo(7 * hemi, -23);
                     ctx.lineTo(0, -18);
                     ctx.fill();
                     fiveScale -= 10;
@@ -99,7 +100,7 @@ export default {
                   while (fiveScale >= 2) {
                     ctx.beginPath();
                     ctx.moveTo(0, y);
-                    ctx.lineTo(7, y-3);
+                    ctx.lineTo(7 * hemi, y-3);
                     ctx.stroke();
                     y += 3;
                     fiveScale -= 2;
@@ -110,7 +111,7 @@ export default {
                     }
                     ctx.beginPath();
                     ctx.moveTo(0, y);
-                    ctx.lineTo(4, y-2);
+                    ctx.lineTo(4 * hemi, y-2);
                     ctx.stroke();
                   }
                 } else {
