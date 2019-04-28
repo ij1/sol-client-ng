@@ -62,7 +62,7 @@ export default {
       windMap: [],      /* format: [time][lon][lat][u,v] */
     },
     cfg: {
-      barbs: {
+      arrowsBarbs: {
         value: 'arrows',
         type: 'values',
         values: ['arrows', 'barbs'],
