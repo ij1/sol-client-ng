@@ -5,11 +5,6 @@ import { windToColor } from '../../lib/sol.js';
 
 export default {
   name: 'WindMap',
-  data () {
-    return {
-      gridInterval: 48,
-    }
-  },
   computed: {
     gridOrigo () {
       const centerPoint = this.$parent.map.latLngToContainerPoint(this.center);
@@ -21,12 +16,14 @@ export default {
       /* Dummy access for the dependencies */
       this.wxLoaded;
       this.wxTime;
+      this.gridInterval;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       center: state => state.map.center,
+      gridInterval: state => state.weather.cfg.gridInterval.value,
     }),
     ...mapGetters({
       wxTime: 'weather/time',

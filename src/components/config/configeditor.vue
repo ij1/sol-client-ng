@@ -24,6 +24,11 @@
           :cfg = "cfg.cfgObj"
           :value.sync = "config[cfg.idx]"
         />
+        <config-range
+          v-if = "cfg.cfgObj.type === 'range'"
+          :cfg = "cfg.cfgObj"
+          :value.sync = "config[cfg.idx]"
+        />
       </div>
     </div>
   </popup-window>
@@ -33,12 +38,14 @@
 import Vue from 'vue';
 import PopupWindow from '../popupwindow.vue';
 import ConfigBoolean from './configboolean.vue';
+import ConfigRange from './configrange.vue';
 
 export default {
   name: 'ConfigEditor',
   components: {
     'popup-window': PopupWindow,
     'config-boolean': ConfigBoolean,
+    'config-range': ConfigRange,
   },
   data () {
     return {
