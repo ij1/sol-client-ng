@@ -12,8 +12,9 @@
     <div
       v-for = "(cfggroup, gindex) in this.configTree"
       :key = "'g' + gindex"
+      id = "config-content"
     >
-      <div>{{cfggroup.title}}</div>
+      <div class = "config-header">{{cfggroup.title}}</div>
       <div
         v-for = "cfg in cfggroup.cfgs"
         :key = "cfg.idx"
@@ -161,3 +162,14 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#config-content {
+  font-size: 10px;
+  text-align: left;
+}
+.config-header {
+  font-size: 11px;
+  font-weight: bold;
+}
+</style>
