@@ -35,6 +35,10 @@ export default {
           license: 'BSD-2-Clause',
         },
         {
+          name: 'pako',
+          license: 'MIT',
+        },
+        {
           name: 'rbush',
           license: 'MIT',
         },
