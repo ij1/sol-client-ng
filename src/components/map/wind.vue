@@ -115,11 +115,17 @@ export default {
                     ctx.stroke();
                   }
                 } else {
-                  ctx.arc(0, 0, 4, 0, 2 * Math.PI);
+                  ctx.arc(0, 0, 3, 0, 2 * Math.PI);
                   ctx.stroke();
                   ctx.beginPath();
-                  ctx.arc(0, 0, 1, 0, 2 * Math.PI);
-                  ctx.fill();
+                  if (wind.knots < 0.5) {
+                    ctx.arc(0, 0, 1, 0, 2 * Math.PI);
+                    ctx.fill();
+                  } else {
+                    ctx.moveTo(0, -4);
+                    ctx.lineTo(0, -10);
+                    ctx.stroke();
+                  }
                 }
               }
 
