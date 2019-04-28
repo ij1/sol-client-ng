@@ -19,11 +19,10 @@
         v-for = "cfg in cfggroup.cfgs"
         :key = "cfg.idx"
       >
-        <label>{{cfg.cfgObj.cfgText}}</label>
-        <input
+        <config-boolean
           v-if = "cfg.cfgObj.type === 'boolean'"
-          type = "checkbox"
-          v-model = "config[cfg.idx]"
+          :cfg = "cfg"
+          :value.sync = "config[cfg.idx]"
         />
       </div>
     </div>
@@ -33,11 +32,13 @@
 <script>
 import Vue from 'vue';
 import PopupWindow from '../popupwindow.vue';
+import ConfigBoolean from './configboolean.vue';
 
 export default {
   name: 'ConfigEditor',
   components: {
     'popup-window': PopupWindow,
+    'config-boolean': ConfigBoolean,
   },
   data () {
     return {
