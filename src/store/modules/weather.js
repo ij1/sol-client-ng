@@ -63,8 +63,9 @@ export default {
     },
     cfg: {
       barbs: {
-        value: false,
-        type: 'boolean',
+        value: 'arrows',
+        type: 'values',
+        values: ['arrows', 'barbs'],
         cfgText: 'Wind arrows / barbs',
       },
       sound: {
