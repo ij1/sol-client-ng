@@ -21,7 +21,7 @@
       >
         <config-boolean
           v-if = "cfg.cfgObj.type === 'boolean'"
-          :cfg = "cfg"
+          :cfg = "cfg.cfgObj"
           :value.sync = "config[cfg.idx]"
         />
       </div>
