@@ -88,12 +88,12 @@ export default {
       twstxt: {
         value: false,
         type: 'boolean',
-        cfgText: 'Show wind speeds',
+        cfgText: 'Show wind speed',
       },
       twdtxt: {
         value: false,
         type: 'boolean',
-        cfgText: 'Show wind directions',
+        cfgText: 'Show wind direction',
       },
     },
   },
