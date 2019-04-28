@@ -20,6 +20,7 @@ export default {
   },
   computed: {
     ...mapState({
+      alwaysShowPolar: state => state.boat.steering.cfg.alwaysShowPolar.value,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       showPolar: state => state.boat.steering.visualSteering.showPolar,
       boatPosition: state => state.boat.position,
@@ -28,8 +29,7 @@ export default {
   methods: {
     onClick () {
       if (this.boatPosition) {
-        // FIXME: add config to always enable polar
-        let showPolar = false;
+        let showPolar = this.alwaysShowPolar;
         if (this.visualSteeringEnabled) {
           if (this.showPolar) {
              this.$store.commit('boat/steering/visualSteeringOff');
