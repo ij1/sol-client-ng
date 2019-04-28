@@ -4,7 +4,7 @@
     <input
       type = "checkbox"
       :checked = "value"
-      @input = "$emit('update:value', $event.target.checked)"
+      @change = "$emit('update:value', $event.target.checked)"
     />
   </div>
 </template>
