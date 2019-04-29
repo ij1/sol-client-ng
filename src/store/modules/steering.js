@@ -35,6 +35,12 @@ export default {
         type: 'boolean',
         cfgText: 'Always show polar when steering visually',
       },
+      predictors: {
+        value: 'current',
+        type: 'values',
+        values: ['current', 'both', 'none'],
+        cfgText: 'Show predictor(s):',
+      }
     }
   },
 

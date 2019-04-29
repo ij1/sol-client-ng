@@ -132,6 +132,7 @@ export default {
       this.twa;
       this.wxUpdated;
       this.plottedDcDelay;
+      this.cfgPredictors;
 
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
@@ -145,9 +146,16 @@ export default {
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
+      cfgPredictors: state => state.boat.steering.cfg.predictors.value,
     }),
   },
   methods: {
+    isEnabled (predictor) {
+      if (this.currentSteering === predictor) {
+        return this.cfgPredictors !== 'none';
+      }
+      return this.cfgPredictors === 'both';
+    },
     predictorColor (predictor) {
       return this.currentSteering === predictor ? '#ff00ff' : 'rgb(170, 0, 170, 0.5)';
     },
@@ -157,12 +165,19 @@ export default {
       // ADDME: add mixing to do all world copies and loop then here
       ctx.translate(this.boatOrigo.x - this.viewOrigo.x,
                     this.boatOrigo.y - this.viewOrigo.y);
-      ctx.strokeStyle = this.predictorColor('cc');
-      ctx.stroke(this.cogPath);
-      ctx.strokeStyle = this.predictorColor('twa');
-      ctx.stroke(this.twaPath);
+      if (this.isEnabled('cc')) {
+        ctx.strokeStyle = this.predictorColor('cc');
+        ctx.stroke(this.cogPath);
+      }
+      if (this.isEnabled('twa')) {
+        ctx.strokeStyle = this.predictorColor('twa');
+        ctx.stroke(this.twaPath);
+      }
 
       for (let pt of this.hoursMarkers) {
+        if (!this.isEnabled(pt.type)) {
+          continue;
+        }
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.strokeStyle = this.predictorColor(pt.type);
         ctx.beginPath();
@@ -171,6 +186,9 @@ export default {
       }
 
       for (let pt of this.quarterMarkers) {
+        if (!this.isEnabled(pt.type)) {
+          continue;
+        }
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.fillStyle = this.predictorColor(pt.type);
         ctx.beginPath();
@@ -178,6 +196,9 @@ export default {
         ctx.fill();
       }
       for (let pt of this.predictorMarkers) {
+        if (!this.isEnabled(pt.type)) {
+          continue;
+        }
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.fillStyle = 'orange';
         ctx.beginPath();
