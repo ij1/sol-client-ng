@@ -2,6 +2,7 @@
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { windToColor } from '../../lib/sol.js';
+import { radToDeg } from '../../lib/utils.js';
 
 export default {
   name: 'WindMap',
@@ -21,6 +22,8 @@ export default {
       this.wxTime;
       this.gridInterval;
       this.useArrows;
+      this.cfgTwsTxt;
+      this.cfgTwdTxt;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
@@ -29,6 +32,8 @@ export default {
       center: state => state.map.center,
       gridInterval: state => state.weather.cfg.gridInterval.value,
       cfgArrowsBarbs: state => state.weather.cfg.arrowsBarbs.value,
+      cfgTwsTxt: state => state.weather.cfg.twsTxt.value,
+      cfgTwdTxt: state => state.weather.cfg.twdTxt.value,
     }),
     ...mapGetters({
       wxTime: 'weather/time',
@@ -36,6 +41,7 @@ export default {
   },
   methods: {
     redraw (ctx) {
+      ctx.font = "9px Arial";
       ctx.translate(this.gridOrigo.x, this.gridOrigo.y);
       for (let y = this.gridOrigo.y; y <= this.$parent.size.y; y += this.gridInterval) {
         let xUndo = 0;
@@ -130,6 +136,20 @@ export default {
               }
 
               ctx.rotate(-wind.twd);
+
+              ctx.fillStyle = '#000';
+              let twdDeg = radToDeg(wind.twd);
+              let y = 7;
+              if (90 <= twdDeg && twdDeg <= 180) {
+                y = this.cfgTwsTxt && this.cfgTwdTxt ? -11 : -2;
+              }
+              if (this.cfgTwsTxt) {
+                ctx.fillText(wind.knots.toFixed(2), 3, y);
+                y += 9;
+              }
+              if (this.cfgTwdTxt) {
+                ctx.fillText(twdDeg.toFixed(2) + '\xb0', 3, y);
+              }
             }
           }
           ctx.translate(this.gridInterval, 0);

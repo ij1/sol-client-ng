@@ -80,12 +80,12 @@ export default {
         high: 128,
         cfgText: 'Wind grid density',
       },
-      twstxt: {
+      twsTxt: {
         value: false,
         type: 'boolean',
         cfgText: 'Show wind speed',
       },
-      twdtxt: {
+      twdTxt: {
         value: false,
         type: 'boolean',
         cfgText: 'Show wind direction',
