@@ -53,7 +53,7 @@ export default {
     hourIndexes () {
       let res = [];
       for (let i = 0; i <= this.predictorLen; i++) {
-        res.push(Number((hToMsec(i) / this.timeDelta).toFixed(0)));
+        res.push(Math.floor(hToMsec(i) / this.timeDelta));
       }
       return res;
     },
@@ -63,7 +63,7 @@ export default {
         if ((i % 4) === 0) {
           continue;
         }
-        res.push(Number((minToMsec(15) * i / this.timeDelta).toFixed(0)));
+        res.push(Math.floor(minToMsec(15) * i / this.timeDelta));
       }
       return res;
     },
