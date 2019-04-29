@@ -130,6 +130,8 @@ export default {
     this.default = def;
     this.config = config;
     this.committed = committed;
+    this.updateStore();
+    this.$store.commit('ui/configLoaded');
   },
   methods: {
     onClose () {
@@ -161,6 +163,14 @@ export default {
         } else {
           localStorage.removeItem(this.localStorageKey(cfg));
         }
+      }
+    },
+    updateStore () {
+      for (const cfg of this.configList) {
+        this.$store.commit(cfg.base + '/configSetValue', {
+          path: this.getRelativePath(cfg.path),
+          value: this.config[cfg.idx],
+        });
       }
     },
     getRelativePath (path) {
@@ -214,12 +224,7 @@ export default {
   },
   watch: {
     config () {
-      for (const cfg of this.configList) {
-        this.$store.commit(cfg.base + '/configSetValue', {
-          path: this.getRelativePath(cfg.path),
-          value: this.config[cfg.idx],
-        });
-      }
+      this.updateStore();
     },
   },
 }

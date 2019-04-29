@@ -66,7 +66,8 @@ export default {
   name: 'WeatherPanel',
   data () {
     return {
-      selectedTimescale: 3,  /* this.weatherTimescales.length - 1 */
+      /* 24h / max (this.weatherTimescales.length - 1) */
+      selectedTimescale: this.$store.state.weather.cfg.start24h.value ? 1 : 3,
       selectedStep: hToMsec(3),
       playTimer: null,
       tickInterval: 100,

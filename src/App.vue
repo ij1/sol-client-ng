@@ -7,7 +7,10 @@
     <portal-target name="boatlist-editor-dest"/>
     <div id = "left-div">
       <map-view/>
-      <weather-panel/>
+      <!-- config for 24h wx needs to be loaded prior panel -->
+      <weather-panel
+        v-if = "$store.state.ui.config.loaded"
+      />
       <boat-instruments/>
     </div>
     <div id = "right-div">

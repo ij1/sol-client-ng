@@ -11,6 +11,7 @@ export default {
     activeTab: 0,
     alert: [false, false, false, false, false, false],
     config: {
+      loaded: false,
       showEditor: false,
     },
   },
@@ -30,6 +31,9 @@ export default {
     },
     closeConfigEditor(state) {
       state.config.showEditor = false;
+    },
+    configLoaded(state) {
+      state.config.loaded = true;
     },
   },
 }
