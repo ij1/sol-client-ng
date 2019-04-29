@@ -9,6 +9,7 @@
 
 <script>
 import { LControl } from 'vue2-leaflet';
+import { roundToFixed } from '../lib/utils.js';
 
 export default {
   name: 'StatusBar',
@@ -25,7 +26,7 @@ export default {
         return txt + ' has finished the race.';
       }
       return txt + ' ranked #' + this.$store.state.boat.ranking +
-             ' with ' + this.$store.state.boat.dtg.toFixed(1) + 'nm to go.'
+             ' with ' + roundToFixed(this.$store.state.boat.dtg, 1) + 'nm to go.'
     },
   },
 }

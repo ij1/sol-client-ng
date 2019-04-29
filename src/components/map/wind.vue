@@ -2,7 +2,7 @@
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { windToColor } from '../../lib/sol.js';
-import { radToDeg } from '../../lib/utils.js';
+import { radToDeg, roundToFixed } from '../../lib/utils.js';
 
 export default {
   name: 'WindMap',
@@ -144,11 +144,11 @@ export default {
                 y = this.cfgTwsTxt && this.cfgTwdTxt ? -11 : -2;
               }
               if (this.cfgTwsTxt) {
-                ctx.fillText(wind.knots.toFixed(2), 3, y);
+                ctx.fillText(roundToFixed(wind.knots, 2), 3, y);
                 y += 9;
               }
               if (this.cfgTwdTxt) {
-                ctx.fillText(twdDeg.toFixed(2) + '\xb0', 3, y);
+                ctx.fillText(roundToFixed(twdDeg, 2) + '\xb0', 3, y);
               }
             }
           }

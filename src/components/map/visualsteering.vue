@@ -36,7 +36,7 @@
 <script>
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
-import { radToDeg, degToRad } from '../../lib/utils.js';
+import { radToDeg, degToRad, roundToFixed } from '../../lib/utils.js';
 import { speedTowardsBearing, cogTwdToTwa, atan2Bearing } from '../../lib/nav.js';
 import PlayerBoat from './playerboat';
 
@@ -57,10 +57,10 @@ export default {
   },
   filters: {
     formatAngle (value) {
-      return radToDeg(value).toFixed(3);
+      return roundToFixed(radToDeg(value), 3);
     },
     formatValue (value) {
-      return value.toFixed(3);
+      return roundToFixed(value, 3);
     },
   },
   computed: {
@@ -108,7 +108,7 @@ export default {
       }
       this.$store.commit('boat/steering/setSteering', {
         type: 'cc',
-        value: radToDeg(res.bearing).toFixed(3),
+        value: roundToFixed(radToDeg(res.bearing), 3),
       });
       this.map.off('click', this.onClick, this);
       this.$store.commit('boat/steering/visualSteeringOff');

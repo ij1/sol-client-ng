@@ -53,7 +53,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import Datepicker from 'vuejs-datepicker';
-import { radToDeg, degToRad, msecToH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
+import { radToDeg, degToRad, roundToFixed, msecToH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
 import { isCcValid, isTwaValid, dcTwaTextPrefix } from '../../../lib/nav.js';
 import PopupWindow from '../../popupwindow.vue';
 
@@ -74,7 +74,7 @@ export default {
       hours: msecToUTCTimeString(this.dcToEdit.time),
       type: this.dcToEdit.type,
       value: dcTwaTextPrefix(this.dcToEdit) +
-             radToDeg(this.dcToEdit.value).toFixed(3),
+             roundToFixed(radToDeg(this.dcToEdit.value), 3),
       origDc: Object.assign({}, this.dcToEdit),
     }
   },
@@ -101,7 +101,7 @@ export default {
       return (this.origDc.time !== this.newTime) ||
              (this.origDc.type !== this.type) ||
              ((dcTwaTextPrefix(this.origDc) +
-               radToDeg(this.origDc.value).toFixed(3)) !== this.value);
+               roundToFixed(radToDeg(this.origDc.value), 3)) !== this.value);
     },
     valid () {
       if (this.newTime === null) {

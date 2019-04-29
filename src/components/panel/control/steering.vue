@@ -73,7 +73,7 @@
 <script>
 import { mapState } from 'vuex';
 import PolarContainer from './polarcontainer.vue';
-import { radToDeg, degToRad } from '../../../lib/utils.js';
+import { radToDeg, degToRad, roundToFixed } from '../../../lib/utils.js';
 import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
 
 const dayHourMinSecRegex = /^([1-9][0-9]?d)?([012]?[0-9]h)?([0-5]?[0-9]m)?([0-5]?[0-9]s)?$/;
@@ -176,7 +176,7 @@ export default {
       if (twd === null) {
         return 0;
       }
-      return Number(radToDeg(twd).toFixed(this.copyDecimals));
+      return Number(roundToFixed(radToDeg(twd), this.copyDecimals));
     },
     oldTwa () {
       let twa = this.$store.state.boat.instruments.twa.value;
@@ -277,7 +277,7 @@ export default {
         }
       }
 
-      return diff.toFixed(this.copyDecimals);
+      return roundToFixed(diff, this.copyDecimals);
     },
     toCc () {
       if (!this.isTwaValid) {
@@ -290,7 +290,7 @@ export default {
       } else if (diff >= 360.0) {
         diff -= 360.0;
       }
-      return diff.toFixed(this.copyDecimals);
+      return roundToFixed(diff, this.copyDecimals);
     },
 
     /* If user inputs 3 decimals, we copy with precision of 3 decimal but
@@ -402,7 +402,7 @@ export default {
     },
 
     onSetCourse (e) {
-      this.cc = radToDeg(e.course).toFixed(3);
+      this.cc = roundToFixed(radToDeg(e.course), 3);
       this.type = 'cc';
     },
 
@@ -410,10 +410,10 @@ export default {
       const currentType = this.$store.state.boat.currentSteering;
       this.type = currentType;
       if (currentType === 'cc') {
-        this.cc = radToDeg(this.$store.state.boat.instruments.course.value).toFixed(3);
+        this.cc = roundToFixed(radToDeg(this.$store.state.boat.instruments.course.value), 3);
       } else if (currentType === 'twa') {
         const twaVal = this.$store.state.boat.instruments.twa.value;
-        this.twa = twaTextPrefix(twaVal) + radToDeg(twaVal).toFixed(3);
+        this.twa = twaTextPrefix(twaVal) + roundToFixed(radToDeg(twaVal), 3);
       }
     },
   },

@@ -63,6 +63,7 @@ import { mapGetters } from 'vuex';
 import ScrollableTable from './scrollabletable.vue';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
+import { roundToFixed } from '../../../lib/utils.js';
 
 export default {
   name: 'BoatList',
@@ -101,7 +102,7 @@ export default {
   filters: {
     prettyPrint (value, column) {
       if (column.dataField === 'dtg') {
-        return value.toFixed(2);
+        return roundToFixed(value, 2);
       }
       return value;
     }

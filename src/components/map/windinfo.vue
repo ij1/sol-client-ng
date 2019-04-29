@@ -19,7 +19,7 @@
 <script>
 import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet';
-import { radToDeg } from '../../lib/utils.js';
+import { radToDeg, roundToFixed } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
 import { EARTH_R } from '../../lib/sol.js';
 
@@ -33,7 +33,7 @@ export default {
       if (value === undefined) {
         return '';
       }
-      return value === null ? '' : value.lat.toFixed(6) + ',' + value.lng.toFixed(6);
+      return value === null ? '' : roundToFixed(value.lat, 6) + ',' + roundToFixed(value.lng, 6);
     },
   },
   computed: {
@@ -45,7 +45,8 @@ export default {
       if (wind === undefined) {
         return '';
       }
-      return wind.knots.toFixed(2) + 'kn @' + radToDeg(wind.twd).toFixed(2) + '\xb0';
+      return roundToFixed(wind.knots, 2) + 'kn @' +
+             roundToFixed(radToDeg(wind.twd), 2) + '\xb0';
     },
     bearing () {
       if (this.hoverLatLng === null) {
@@ -56,8 +57,8 @@ export default {
       }
       const gcPath = gcCalc(this.boatPosition, this.hoverLatLng);
 
-      return (gcPath.distance * EARTH_R / 1852).toFixed(3) + 'nm @' +
-             radToDeg(gcPath.startBearing).toFixed(2) + '\xb0 GC';
+      return roundToFixed(gcPath.distance * EARTH_R / 1852, 3) + 'nm @' +
+             roundToFixed(radToDeg(gcPath.startBearing), 2) + '\xb0 GC';
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,

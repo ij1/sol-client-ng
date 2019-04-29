@@ -1,10 +1,11 @@
 import L from 'leaflet';
 import { speedTowardsBearing, gcCalc, twaTextPrefix } from '../../lib/nav.js';
+import { roundToFixed } from '../../lib/utils.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
 function defaultFormat (instrument) {
-  return (instrument.value * instrument.mult).toFixed(instrument.decimals);
+  return roundToFixed(instrument.value * instrument.mult, instrument.decimals);
 }
 
 function twaFormat (instrument) {

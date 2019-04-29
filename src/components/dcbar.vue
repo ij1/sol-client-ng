@@ -10,7 +10,7 @@
 
 <script>
 import { LControl } from 'vue2-leaflet';
-import { radToDeg, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
+import { radToDeg, roundToFixed, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
 import { dcTwaTextPrefix } from '../lib/nav.js';
 
 export default {
@@ -27,7 +27,7 @@ export default {
   filters: {
     prettyDegrees (dc) {
       return dcTwaTextPrefix(dc) +
-             radToDeg(dc.value).toFixed(3).replace(/\.*0*$/, '');
+             roundToFixed(radToDeg(dc.value), 3).replace(/\.*0*$/, '');
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;

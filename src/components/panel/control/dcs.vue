@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
+import { radToDeg, roundToFixed, msecToUTCString } from '../../../lib/utils.js';
 import { dcTwaTextPrefix } from '../../../lib/nav.js';
 import ScrollableTable from './scrollabletable.vue';
 import DcEditor from './dceditor.vue';
@@ -71,7 +71,7 @@ export default {
       return msecToUTCString(msec);
     },
     formatValue (dc) {
-      return dcTwaTextPrefix(dc) + radToDeg(dc.value).toFixed(3);
+      return dcTwaTextPrefix(dc) + roundToFixed(radToDeg(dc.value), 3);
     },
     cctocog (type) {
       return type === 'cc' ? 'cog' : type;

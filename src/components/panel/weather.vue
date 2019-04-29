@@ -59,7 +59,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../../lib/utils.js';
+import { roundToFixed, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../../lib/utils.js';
 import L from 'leaflet';
 
 export default {
@@ -150,7 +150,7 @@ export default {
         divider = hToMsec(1);
         unit = 'h';
       }
-      return (value / divider).toFixed(1).replace(/\.0$/, '') + ' ' + unit;
+      return roundToFixed(value / divider, 1).replace(/\.0$/, '') + ' ' + unit;
     },
     formatStep (value) {
       if (value < minToMsec(60)) {
@@ -169,7 +169,7 @@ export default {
       const h = msecToH(value);
       const d = msecToDays(value);
       return (d < 1 ? '' : (Math.floor(d) + 'd')) +
-             (h - Math.floor(d) * 24).toFixed(1) + 'h';
+             roundToFixed(h - Math.floor(d) * 24, 1) + 'h';
     }
   },
 

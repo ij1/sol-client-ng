@@ -13,9 +13,9 @@
       <wind-key/>
     </div>
     <div v-if = "this.hover.sog !== null">
-      SOG: {{ this.hover.sog.toFixed(2) }}
-      VMG: {{ this.hover.vmg.toFixed(2) }}
-      TWA: {{ this.hover.twa.toFixed(1) }}
+      SOG: {{ roundToFixed(this.hover.sog, 2) }}
+      VMG: {{ roundToFixed(this.hover.vmg, 2) }}
+      TWA: {{ roundToFixed(this.hover.twa, 1) }}
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@
 <script>
 import L from 'leaflet';
 import { mapGetters } from 'vuex';
-import { degToRad, radToDeg } from '../../../lib/utils.js';
+import { degToRad, radToDeg, roundToFixed } from '../../../lib/utils.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
 import { atan2Bearing } from '../../../lib/nav.js';
 import WindKey from './windkey.vue';
@@ -276,7 +276,8 @@ export default {
     },
     onMouseOut () {
       this.clearHoverInfo();
-    }
+    },
+    roundToFixed,
   },
   watch: {
     overlayNeedRedraw () {
