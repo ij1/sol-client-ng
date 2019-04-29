@@ -28,7 +28,7 @@
     </div>
     <div class="chat-block-list">
       <div class="chat-block"
-        v-for = "(msg, index) in this.$store.state.chatrooms.rooms[roomId].msgs"
+        v-for = "(msg, index) in this.msgs"
         v-bind:key = "index"
       >
         <div class="chat-block-header">
@@ -94,6 +94,9 @@ export default {
   },
 
   computed: {
+    msgs () {
+      return this.$store.state.chatrooms.rooms[this.roomId].msgs;
+    },
     canSend () {
       return (this.myMessage.trim().length > 0);
     },
