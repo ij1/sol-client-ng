@@ -109,7 +109,7 @@ export default {
 
   computed: {
     fullTimescale () {
-      return this.wxDataTimescale.toFixed(0);
+      return this.wxDataTimescale;
     },
     offsetMax () {
       const range = this.weatherTimescales[this.selectedTimescale].range;
@@ -117,7 +117,7 @@ export default {
         return this.fullTimescale;
       }
       /* Safeguard against truncated wx, normally range < this.fullTimescale */
-      return Math.min(range, this.fullTimescale).toFixed(0);
+      return Math.min(range, this.fullTimescale);
     },
     timeOffset () {
       return this.wxTime - this.boatTime;
