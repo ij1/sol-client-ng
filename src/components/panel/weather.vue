@@ -116,7 +116,8 @@ export default {
       if (range === -1) {
         return this.fullTimescale;
       }
-      return range.toFixed(0);
+      /* Safeguard against truncated wx, normally range < this.fullTimescale */
+      return Math.min(range, this.fullTimescale).toFixed(0);
     },
     timeOffset () {
       return this.wxTime - this.boatTime;
