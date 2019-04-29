@@ -117,9 +117,14 @@ export default {
     let committed = [];
 
     for (const cfg of this.configList) {
-      def[cfg.idx] = this.getStoreObj(cfg.base, cfg.path).value
+      let origValue = this.getStoreObj(cfg.base, cfg.path).value;
+      def[cfg.idx] = origValue;
       config[cfg.idx] = def[cfg.idx];
-      // ADDME: fetch from localstore, if available
+      const storedValue = localStorage.getItem(this.localStorageKey(cfg));
+      if (storedValue !== null) {
+        /* Matches type to target's */
+        config[cfg.idx] = (origValue.constructor)(storedValue);
+      }
       committed[cfg.idx] = config[cfg.idx];
     }
     this.default = def;
@@ -150,9 +155,13 @@ export default {
       this[to] = arr;
     },
     updateLocalstorage () {
-      /*for (const cfg of this.configList) {
-        // ADDME: store to localstore
-      }*/
+      for (const cfg of this.configList) {
+        if (this.config[cfg.idx] !== this.default[cfg.idx]) {
+          localStorage.setItem(this.localStorageKey(cfg), this.config[cfg.idx]);
+        } else {
+          localStorage.removeItem(this.localStorageKey(cfg));
+        }
+      }
     },
     getRelativePath (path) {
       return path.split('.');
@@ -198,6 +207,9 @@ export default {
         groups.push({ title: cfggroup.title, cfgs: cfgs });
       }
       this.configTree = groups;
+    },
+    localStorageKey(cfg) {
+      return 'sol-cfg:' + cfg.base + ':' + cfg.path
     },
   },
   watch: {
