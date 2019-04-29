@@ -460,8 +460,7 @@ export default {
           return;
         }
         time -= 10000;
-        const wxMinutes = Number(Math.floor(time / 100).toFixed(0)) * 60 +
-                          (time % 100);
+        const wxMinutes = Math.floor(time / 100) * 60 + (time % 100);
         times.push(wxMinutes);
       }
       commit('setUpdateTimes', times);
