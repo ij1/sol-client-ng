@@ -68,11 +68,6 @@ export default {
         values: ['arrows', 'barbs'],
         cfgText: 'Wind arrows / barbs',
       },
-      sound: {
-        value: false,
-        type: 'boolean',
-        cfgText: 'New weather sound',
-      },
       start24h: {
         value: false,
         type: 'boolean',
