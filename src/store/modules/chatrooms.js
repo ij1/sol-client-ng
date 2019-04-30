@@ -22,11 +22,12 @@ export default {
       for (let i = 0; i < chatroomsInfo.length; i++) {
         // FIXME: should probably just merge attributes in solapi call
         const chatroom = chatroomsInfo[i].$;
-        Vue.set(state.rooms, chatroom.id, {
+          Vue.set(state.rooms, chatroom.id, {
           id: chatroom.id,
           name: chatroom.name,
           msgs: [],
           timestamp: 0,
+          boatIdsMapped: true,
         });
       }
       state.activeRooms = [{
@@ -42,6 +43,30 @@ export default {
       newMsgs = orderBy(newMsgs.concat(state.rooms[data.id].msgs), 't', 'desc');
       state.rooms[data.id].msgs = newMsgs;
       state.rooms[data.id].timestamp = data.timestamp;
+      state.rooms[data.id].boatIdsMapped = false;
+    },
+
+    mapBoatIds (state, name2boatId) {
+      for (let c of Object.keys(state.rooms)) {
+        if (state.rooms[c].boatIdsMapped) {
+          continue;
+        }
+        let allMapped = true;
+        for (let i = 0; i < state.rooms[c].msgs.length; i++) {
+          let msg = state.rooms[c].msgs[i];
+          if (typeof msg.boatId === 'undefined') {
+            let idList = name2boatId.get(msg.name);
+            if (typeof idList !== 'undefined') {
+              // FIXME: make boatId present when rewriting msg parsing code
+              // to avoid need to use Vue.set here
+              Vue.set(state.rooms[c].msgs[i], 'boatId', idList[0]);
+            } else {
+              allMapped = false;
+            }
+          }
+        }
+        state.rooms[c].boatIdsMapped = allMapped;
+      }
     },
 
     nextRoom(state) {

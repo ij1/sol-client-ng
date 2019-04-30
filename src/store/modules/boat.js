@@ -97,6 +97,7 @@ export default {
             chatData.chat = [chatData.chat];
           }
           commit('chatrooms/updateRoom', chatData, {root: true});
+          commit('chatrooms/mapBoatIds', rootState.race.fleet.name2id, {root: true});
         }
         commit('chatrooms/nextRoom', null, {root: true});
 

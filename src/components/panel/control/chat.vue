@@ -32,10 +32,8 @@
         v-bind:key = "index"
       >
         <div class="chat-block-header">
-          <span class="chat-flag">
-          </span>
-          <span class="chat-bundee">
-          </span>
+          <country-flag :country = "msg.boat.country"/>
+          <syc-flag :syc = "msg.boat.syc"/>
           <span class="chat-name">
             <span v-html="msg.name"/>
           </span>
@@ -73,9 +71,15 @@
 <script>
 import { mapGetters } from 'vuex';
 import { msecToUTCDateString } from '../../../lib/utils.js';
+import CountryFlag from '../../countryflag.vue';
+import SycFlag from '../../sycflag.vue';
 
 export default {
   name: 'ControlChat',
+  components: {
+    'country-flag': CountryFlag,
+    'syc-flag': SycFlag,
+  },
   props: {
     roomKey: {
       type: Number,
@@ -90,12 +94,27 @@ export default {
   data () {
     return {
       myMessage: "",
+      dummyBoat: {
+        syc: false,
+        country: null,
+      }
     }
   },
 
   computed: {
     msgs () {
-      return this.$store.state.chatrooms.rooms[this.roomId].msgs;
+      let res = [];
+      /* Dummy dep */
+      for (let msg of this.$store.state.chatrooms.rooms[this.roomId].msgs) {
+        let msgcopy = Object.assign({}, msg);
+        if (typeof msg.boatId !== 'undefined') {
+          msgcopy.boat = this.$store.getters['race/fleet/boatFromId'](msg.boatId);
+        } else {
+          msgcopy.boat = this.dummyBoat;
+        }
+        res.push(msgcopy);
+      }
+      return res;
     },
     canSend () {
       return (this.myMessage.trim().length > 0);

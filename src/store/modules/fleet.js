@@ -348,6 +348,7 @@ export default {
             boatTypes: boatTypes,
             searchData: searchData,
           });
+          commit('chatrooms/mapBoatIds', state.name2id, {root: true});
 
           if (state.newBoatId !== null) {
             dispatch('fetchMetainfo');
