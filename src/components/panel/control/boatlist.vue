@@ -63,7 +63,7 @@ import { mapGetters } from 'vuex';
 import ScrollableTable from './scrollabletable.vue';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
-import { roundToFixed } from '../../../lib/utils.js';
+import { roundToFixed } from '../../../lib/hacks.js';
 
 export default {
   name: 'BoatList',

@@ -75,10 +75,6 @@ export function degToRad(deg) {
   return deg * Math.PI / 180;
 }
 
-export function roundToFixed(val, precision) {
-  return (+(Math.round(+(val + 'e' + precision)) + 'e' + -precision)).toFixed(precision);
-}
-
 export function latLngAddOffset(latLng, offset) {
   return L.latLng(latLng.lat, latLng.lng + offset);
 }

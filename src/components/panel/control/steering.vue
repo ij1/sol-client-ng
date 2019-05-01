@@ -73,7 +73,8 @@
 <script>
 import { mapState } from 'vuex';
 import PolarContainer from './polarcontainer.vue';
-import { radToDeg, degToRad, roundToFixed } from '../../../lib/utils.js';
+import { radToDeg, degToRad } from '../../../lib/utils.js';
+import { roundToFixed } from '../../../lib/hacks.js';
 import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
 
 const dayHourMinSecRegex = /^([1-9][0-9]?d)?([012]?[0-9]h)?([0-5]?[0-9]m)?([0-5]?[0-9]s)?$/;

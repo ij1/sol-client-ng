@@ -19,7 +19,8 @@
 <script>
 import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet';
-import { radToDeg, roundToFixed } from '../../lib/utils.js';
+import { radToDeg } from '../../lib/utils.js';
+import { roundToFixed } from '../../lib/hacks.js';
 import { gcCalc } from '../../lib/nav.js';
 import { EARTH_R } from '../../lib/sol.js';
 

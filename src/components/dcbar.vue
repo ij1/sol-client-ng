@@ -10,7 +10,8 @@
 
 <script>
 import { LControl } from 'vue2-leaflet';
-import { radToDeg, roundToFixed, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
+import { radToDeg, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
+import { roundToFixed } from '../lib/hacks.js';
 import { dcTwaTextPrefix } from '../lib/nav.js';
 
 export default {

@@ -2,7 +2,8 @@
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { windToColor } from '../../lib/sol.js';
-import { radToDeg, roundToFixed } from '../../lib/utils.js';
+import { radToDeg } from '../../lib/utils.js';
+import { roundToFixed } from '../../lib/hacks.js';
 
 export default {
   name: 'WindMap',

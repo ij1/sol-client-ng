@@ -23,7 +23,8 @@
 <script>
 import L from 'leaflet';
 import { mapGetters } from 'vuex';
-import { degToRad, radToDeg, roundToFixed } from '../../../lib/utils.js'
+import { degToRad, radToDeg } from '../../../lib/utils.js';
+import { roundToFixed } from '../../../lib/hacks.js';
 import { canvasAlignToPixelCenter } from '../../../lib/hacks.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
 import { atan2Bearing } from '../../../lib/nav.js';
