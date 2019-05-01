@@ -24,8 +24,7 @@
 import L from 'leaflet';
 import { mapGetters } from 'vuex';
 import { degToRad, radToDeg } from '../../../lib/utils.js';
-import { roundToFixed } from '../../../lib/quirks.js';
-import { canvasAlignToPixelCenter } from '../../../lib/quirks.js';
+import { roundToFixed, canvasAlignToPixelCenter } from '../../../lib/quirks.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
 import { atan2Bearing } from '../../../lib/nav.js';
 import WindKey from './windkey.vue';
