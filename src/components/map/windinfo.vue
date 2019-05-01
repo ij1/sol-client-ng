@@ -20,7 +20,7 @@
 import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
-import { roundToFixed } from '../../lib/hacks.js';
+import { roundToFixed } from '../../lib/quirks.js';
 import { gcCalc } from '../../lib/nav.js';
 import { EARTH_R } from '../../lib/sol.js';
 

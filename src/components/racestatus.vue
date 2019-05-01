@@ -9,7 +9,7 @@
 
 <script>
 import { LControl } from 'vue2-leaflet';
-import { roundToFixed } from '../lib/hacks.js';
+import { roundToFixed } from '../lib/quirks.js';
 
 export default {
   name: 'StatusBar',

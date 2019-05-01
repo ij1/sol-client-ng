@@ -37,7 +37,7 @@
 import { mapState } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, degToRad } from '../../lib/utils.js';
-import { roundToFixed } from '../../lib/hacks.js';
+import { roundToFixed } from '../../lib/quirks.js';
 import { speedTowardsBearing, cogTwdToTwa, atan2Bearing } from '../../lib/nav.js';
 import PlayerBoat from './playerboat';
 

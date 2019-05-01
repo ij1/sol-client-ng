@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { speedTowardsBearing, gcCalc, twaTextPrefix } from '../../lib/nav.js';
-import { roundToFixed } from '../../lib/hacks.js';
+import { roundToFixed } from '../../lib/quirks.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
 

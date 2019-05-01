@@ -54,7 +54,7 @@
 import { mapGetters } from 'vuex';
 import Datepicker from 'vuejs-datepicker';
 import { radToDeg, degToRad, msecToH, msecToUTCDateString, msecToUTCTimeString, UTCToMsec } from '../../../lib/utils.js';
-import { roundToFixed } from '../../../lib/hacks.js';
+import { roundToFixed } from '../../../lib/quirks.js';
 import { isCcValid, isTwaValid, dcTwaTextPrefix } from '../../../lib/nav.js';
 import PopupWindow from '../../popupwindow.vue';
 

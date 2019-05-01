@@ -60,7 +60,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../../lib/utils.js';
-import { roundToFixed } from '../../lib/hacks.js';
+import { roundToFixed } from '../../lib/quirks.js';
 import L from 'leaflet';
 
 export default {

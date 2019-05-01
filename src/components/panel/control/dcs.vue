@@ -48,7 +48,7 @@
 
 <script>
 import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
-import { roundToFixed } from '../../../lib/hacks.js';
+import { roundToFixed } from '../../../lib/quirks.js';
 import { dcTwaTextPrefix } from '../../../lib/nav.js';
 import ScrollableTable from './scrollabletable.vue';
 import DcEditor from './dceditor.vue';
