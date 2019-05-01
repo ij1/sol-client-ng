@@ -23,7 +23,8 @@
 <script>
 import L from 'leaflet';
 import { mapGetters } from 'vuex';
-import { degToRad, radToDeg, roundToFixed } from '../../../lib/utils.js';
+import { degToRad, radToDeg, roundToFixed } from '../../../lib/utils.js'
+import { canvasAlignToPixelCenter } from '../../../lib/hacks.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
 import { atan2Bearing } from '../../../lib/nav.js';
 import WindKey from './windkey.vue';
@@ -81,8 +82,8 @@ export default {
     },
     gridSize () {
       return {
-        x: this.gridMaxKnots * this.gridScale,
-        y: this.gridOrigoY + this.gridMaxKnots * this.gridScale,
+        x: this.gridMaxKnots * this.gridScale + 1,
+        y: this.gridOrigoY + this.gridMaxKnots * this.gridScale + 1,
       };
     },
     topBorderWidth () {
@@ -136,6 +137,8 @@ export default {
       let labelctx = this.$refs.labels.getContext('2d');
       ctx.save();
       labelctx.save();
+      canvasAlignToPixelCenter(ctx);
+      canvasAlignToPixelCenter(labelctx);
 
       this.drawGrid(ctx, labelctx);
       for (let curve of this.bgCurves) {
@@ -157,6 +160,7 @@ export default {
       let ctx = this.$refs.polarfg.getContext('2d');
       ctx.clearRect(0, 0, this.$refs.polarfg.width, this.$refs.polarfg.height);
       ctx.save();
+      canvasAlignToPixelCenter(ctx);
       ctx.translate(0, this.gridOrigoY);
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 2;
