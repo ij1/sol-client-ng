@@ -133,6 +133,9 @@ export default {
       let ctx = this.$el.getContext('2d');
       this.drawPolys(ctx);
       this.drawGraticules(ctx);
+
+      this.drawnZoom = this.$parent.zoom;
+      this.animFrame = null;
     },
     drawPolys (ctx) {
       ctx.save();
@@ -201,9 +204,6 @@ export default {
       ctx.lineTo(this.tilesize.x, 0);
       ctx.moveTo(0, 0);
       ctx.stroke();
-   
-      this.drawnZoom = this.$parent.zoom;
-      this.animFrame = null;
     },
     pointAtBorder(pt) {
       let atBorder = 0;
