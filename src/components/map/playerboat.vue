@@ -1,26 +1,27 @@
 <template>
   <l-layer-group v-if = "this.$store.state.boat.id !== null">
-    <l-marker
+    <sail-boat
       :lat-lng="this.$store.state.boat.position"
-      :icon="myBoatIcon"
+      :course = "course"
+      :twa = "twa"
+      :color = "color"
+      :scale = "scale"
+      :strokeWidth = "strokeWidth"
     />
     <boat-trace :id = "this.$store.state.boat.id"/>
   </l-layer-group>
 </template>
 
 <script>
-import L from 'leaflet';
-import { LLayerGroup, LMarker, LPolyline } from 'vue2-leaflet';
-import { radToDeg } from '../../lib/utils.js';
-import { boatPath, sailPath, sailAngle, sailOffset } from '../../lib/boatshape.js';
+import { LLayerGroup } from 'vue2-leaflet';
+import SailBoat from './sailboat.vue';
 import BoatTrace from './trace.vue';
 
 export default {
   name: 'PlayerBoat',
   components: {
     'l-layer-group': LLayerGroup,
-    'l-marker': LMarker,
-    'l-polyline': LPolyline,
+    'sail-boat': SailBoat,
     'boat-trace': BoatTrace,
   },
   props: {
@@ -43,50 +44,6 @@ export default {
     strokeWidth: {
       type: Number,
       default: 2,
-    },
-  },
-  computed: {
-    boatCourse () {
-      return radToDeg(this.course);
-    },
-    boatTwa () {
-      return radToDeg(this.twa);
-    },
-    iconCenter () {
-      return 20 * this.scale;
-    },
-    iconSize () {
-      return this.iconCenter * 2 + 1;
-    },
-    boatPath () {
-      return boatPath(this.scale);
-    },
-    sailAngle () {
-      return sailAngle(this.boatTwa);
-    },
-    sailPath () {
-      return sailPath(this.sailAngle, this.scale);
-    },
-    style () {
-      return "fill='none' stroke-opacity='1' stroke-width='" +
-             this.strokeWidth + "' stroke='" + this.color + "'";
-    },
-    myBoatIcon() {
-      const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
-                  this.iconSize + "px' height='" +
-                  this.iconSize + "px'>" +
-        "<g transform='translate(" + this.iconCenter + "," + this.iconCenter +
-                      ") rotate(" + this.boatCourse +
-                      ")' " + this.style + ">" +
-        "<path d='" + this.boatPath + "'/>" +
-          "<g transform='translate(0, " + (sailOffset * this.scale) + ") rotate(" + this.sailAngle +
-          ")'><path d='" + this.sailPath + "'/>" +
-        "</g></g></svg>";
-      const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
-      return L.icon({
-        iconUrl: iconUrl,
-        iconAnchor: [this.iconCenter, this.iconCenter],
-      });
     },
   },
 }
