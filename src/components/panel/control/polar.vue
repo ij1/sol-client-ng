@@ -25,7 +25,7 @@ import L from 'leaflet';
 import { mapGetters } from 'vuex';
 import { degToRad, radToDeg } from '../../../lib/utils.js';
 import { roundToFixed, canvasAlignToPixelCenter } from '../../../lib/quirks.js';
-import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
+import { windToColor } from '../../../lib/sol.js';
 import { atan2Bearing } from '../../../lib/nav.js';
 import { polarMixin } from '../../mixins/polar.js';
 import WindKey from './windkey.vue';
@@ -58,10 +58,6 @@ export default {
   computed: {
     bgCurves () {
       return this.$store.getters['boat/polar/staticCurves'];
-    },
-    fgCurve () {
-      const knots = this.$store.state.boat.instruments.tws.value * MS_TO_KNT;
-      return this.$store.getters['boat/polar/curve'](knots, this.$store.state.boat.polar.twaInterval);
     },
     maxSpeed () {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 1) * this.polarHeadroom;
@@ -122,6 +118,7 @@ export default {
     },
     ...mapGetters({
       boatTime: 'boat/time',
+      fgCurve: 'boat/polar/currentCurve',
     }),
   },
   methods: {
