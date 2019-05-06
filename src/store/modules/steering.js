@@ -97,6 +97,7 @@ export default {
     },
     visualSteeringOff (state) {
       state.visualSteering.enabled = false;
+      state.visualSteering.showPolar = false;
       state.visualSteering.twa = null;
     },
     visualSteeringSetTwa (state, twa) {
