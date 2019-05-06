@@ -1,6 +1,7 @@
 <template>
   <l-layer-group>
-    <player-boat
+    <sail-boat
+      :lat-lng = "boatPosition"
       :scale = "3"
       :color = "this.color"
       :course = "this.cog"
@@ -39,7 +40,7 @@ import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { speedTowardsBearing, cogTwdToTwa, atan2Bearing } from '../../lib/nav.js';
-import PlayerBoat from './playerboat';
+import SailBoat from './sailboat';
 
 export default {
   name: 'VisualSteering', 
@@ -48,7 +49,7 @@ export default {
     'l-circle': LCircle,
     'l-polyline': LPolyline,
     'l-tooltip': LTooltip,
-    'player-boat': PlayerBoat,
+    'sail-boat': SailBoat,
   },
   props: {
     map: {
