@@ -31,6 +31,7 @@ export default {
 
   data () {
     return {
+      maxPolarSize: 400,
       polarHeadroom: 1.05,
     }
   },
@@ -38,12 +39,18 @@ export default {
   computed: {
     polarSize () {
       /* Up to half of the visual map area or 400 px */
-      let size = Math.min(Math.min(this.mapSize.x, this.mapSize.y) * 0.5, 400);
+      let size = Math.min(Math.min(this.mapSize.x, this.mapSize.y) * 0.5,
+                          this.maxPolarSize);
 
       return Math.ceil(size / 2);
     },
+    /* Return constant values here to avoid resizing / recentering the
+     * marker icon which causes DOM rewrite to take place (a new canvas
+     * gets created).
+     */
     polarCenter () {
-      return [this.polarSize, this.polarSize];
+      const size = Math.ceil(this.maxPolarSize / 2);
+      return [size, size];
     },
     polarScale () {
       return this.polarSize / this.polarHeadroom / this.polarCurve.maxspeed.speed;
@@ -51,6 +58,7 @@ export default {
     needsRedraw () {
       if (this.showPolar) {
         this.polarCurve;
+        this.polarScale;
         this.twd;
       }
       return Date.now();
