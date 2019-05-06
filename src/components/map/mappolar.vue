@@ -38,7 +38,7 @@ export default {
   computed: {
     polarSize () {
       /* Up to half of the visual map area or 400 px */
-      let size = Math.min(Math.max(this.mapSize.x, this.mapSize.y) * 0.5, 400);
+      let size = Math.min(Math.min(this.mapSize.x, this.mapSize.y) * 0.5, 400);
 
       return Math.ceil(size / 2);
     },
