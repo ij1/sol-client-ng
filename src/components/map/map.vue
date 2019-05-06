@@ -26,7 +26,7 @@
       <canvas-overlay v-if = "this.map !== null" :map = "this.map"/>
       <fleet-traces v-if = "this.map !== null"/>
       <fleet-map v-if = "this.map !== null" :map = "this.map"/>
-      <player-boat v-if = "this.map !== null && this.boatPosition !== null" :course = "this.boatCourse" :twa = "this.boatTwa"/>
+      <player-boat v-if = "this.map !== null"/>
       <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map"/>
       <map-highlight v-if = "this.map !== null" :map = "this.map"/>
 
@@ -117,9 +117,6 @@ export default {
     ...mapState({
       raceLoaded: state => state.race.loaded,
       raceBoundary: state => state.race.boundary,
-      boatPosition: state => state.boat.position,
-      boatCourse: state => state.boat.instruments.course.value,
-      boatTwa: state => state.boat.instruments.twa.value,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
     }),
   },

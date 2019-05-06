@@ -1,7 +1,7 @@
 <template>
   <l-layer-group v-if = "this.$store.state.boat.id !== null">
     <sail-boat
-      :lat-lng="this.$store.state.boat.position"
+      :lat-lng="boatPosition"
       :course = "course"
       :twa = "twa"
       :color = "color"
@@ -9,7 +9,7 @@
       :strokeWidth = "strokeWidth"
     />
     <map-polar
-      :lat-lng="this.$store.state.boat.position"
+      :lat-lng="boatPosition"
       :twd = "twd"
     />
     <boat-trace :id = "this.$store.state.boat.id"/>
@@ -32,14 +32,6 @@ export default {
     'boat-trace': BoatTrace,
   },
   props: {
-    course: {
-      type: Number,
-      required: true,
-    },
-    twa: {
-      type: Number,
-      required: true,
-    },
     color: {
       type: String,
       default: '#ff00ff',
@@ -56,6 +48,9 @@ export default {
 
   computed: {
     ...mapState({
+      boatPosition: state => state.boat.position,
+      course: state => state.boat.instruments.course.value,
+      twa: state => state.boat.instruments.twa.value,
       twd: state => state.boat.instruments.twd.value,
     }),
   },
