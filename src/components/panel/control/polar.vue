@@ -137,6 +137,9 @@ export default {
       canvasAlignToPixelCenter(ctx);
       canvasAlignToPixelCenter(labelctx);
 
+      ctx.translate(0, this.gridOrigoY);
+      labelctx.translate(this.margin, this.gridOrigoY + this.margin);
+
       this.drawGrid(ctx, labelctx);
       for (let curve of this.bgCurves) {
         ctx.strokeStyle = windToColor(curve.knots);
@@ -194,7 +197,6 @@ export default {
       ctx.stroke();
       ctx.restore();
     },
-    /* WARNING side-effect: translates context to polar origo */
     drawGrid (ctx, labelctx) {
       ctx.strokeStyle = '#aaa';
       ctx.lineWidth = 1;
@@ -202,13 +204,10 @@ export default {
       labelctx.font = '10px sans-serif';
 
       ctx.beginPath();
-      ctx.moveTo(0, this.gridSize.y);
-      ctx.lineTo(0, 0);
-      ctx.lineTo(this.topBorderWidth, 0);
+      ctx.moveTo(0, this.gridSize.y - this.gridOrigoY);
+      ctx.lineTo(0, -this.gridOrigoY);
+      ctx.lineTo(this.topBorderWidth, -this.gridOrigoY);
       ctx.stroke();
-
-      ctx.translate(0, this.gridOrigoY);
-      labelctx.translate(this.margin, this.gridOrigoY + this.margin);
 
       ctx.beginPath();
       const firstTwad = this.gridOrigoY / this.gridSize.y < 0.75 ? 20 : 10;
