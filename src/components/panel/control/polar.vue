@@ -144,7 +144,7 @@ export default {
       for (let curve of this.bgCurves) {
         ctx.strokeStyle = windToColor(curve.knots);
         ctx.lineWidth = 2;
-        this.drawCurve(ctx, curve);
+        this.drawPolarCurve(ctx, curve);
       }
       ctx.restore();
       labelctx.restore();
@@ -164,7 +164,7 @@ export default {
       ctx.translate(0, this.gridOrigoY);
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 2;
-      this.drawCurve(ctx, this.fgCurve);
+      this.drawPolarCurve(ctx, this.fgCurve);
 
       const twa = Math.abs(this.$store.state.boat.instruments.twa.value);
       const speed = this.$store.state.boat.instruments.speed.value;
@@ -250,7 +250,7 @@ export default {
       }
       ctx.stroke();
     },
-    drawCurve(ctx, curve) {
+    drawPolarCurve(ctx, curve) {
       ctx.beginPath();
       let first = true;
       for (let pt of curve.values) {
