@@ -8,13 +8,19 @@
       :scale = "scale"
       :strokeWidth = "strokeWidth"
     />
+    <map-polar
+      :lat-lng="this.$store.state.boat.position"
+      :twd = "twd"
+    />
     <boat-trace :id = "this.$store.state.boat.id"/>
   </l-layer-group>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { LLayerGroup } from 'vue2-leaflet';
 import SailBoat from './sailboat.vue';
+import MapPolar from './mappolar.vue';
 import BoatTrace from './trace.vue';
 
 export default {
@@ -22,6 +28,7 @@ export default {
   components: {
     'l-layer-group': LLayerGroup,
     'sail-boat': SailBoat,
+    'map-polar': MapPolar,
     'boat-trace': BoatTrace,
   },
   props: {
@@ -45,6 +52,12 @@ export default {
       type: Number,
       default: 2,
     },
+  },
+
+  computed: {
+    ...mapState({
+      twd: state => state.boat.instruments.twd.value,
+    }),
   },
 }
 </script>
