@@ -56,9 +56,6 @@ export default {
     }
   },
   computed: {
-    bgCurves () {
-      return this.$store.getters['boat/polar/staticCurves'];
-    },
     maxSpeed () {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 1) * this.polarHeadroom;
     },
@@ -118,6 +115,7 @@ export default {
     },
     ...mapGetters({
       boatTime: 'boat/time',
+      bgCurves: 'boat/polar/staticCurves',
       fgCurve: 'boat/polar/currentCurve',
     }),
   },
