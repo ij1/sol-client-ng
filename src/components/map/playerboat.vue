@@ -4,9 +4,9 @@
       :lat-lng="boatPosition"
       :course = "course"
       :twa = "twa"
-      :color = "color"
-      :scale = "scale"
-      :strokeWidth = "strokeWidth"
+      :color = "'#ff00ff'"
+      :scale = "1"
+      :strokeWidth = "2"
     />
     <map-polar
       :lat-lng="boatPosition"
@@ -31,21 +31,6 @@ export default {
     'map-polar': MapPolar,
     'boat-trace': BoatTrace,
   },
-  props: {
-    color: {
-      type: String,
-      default: '#ff00ff',
-    },
-    scale: {
-      type: Number,
-      default: 1,
-    },
-    strokeWidth: {
-      type: Number,
-      default: 2,
-    },
-  },
-
   computed: {
     ...mapState({
       boatId: state => state.boat.id,
