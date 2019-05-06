@@ -1,5 +1,5 @@
 <template>
-  <l-layer-group v-if = "this.$store.state.boat.id !== null">
+  <l-layer-group v-if = "boatId !== null">
     <sail-boat
       :lat-lng="boatPosition"
       :course = "course"
@@ -12,7 +12,7 @@
       :lat-lng="boatPosition"
       :twd = "twd"
     />
-    <boat-trace :id = "this.$store.state.boat.id"/>
+    <boat-trace :id = "boatId"/>
   </l-layer-group>
 </template>
 
@@ -48,6 +48,7 @@ export default {
 
   computed: {
     ...mapState({
+      boatId: state => state.boat.id,
       boatPosition: state => state.boat.position,
       course: state => state.boat.instruments.course.value,
       twa: state => state.boat.instruments.twa.value,
