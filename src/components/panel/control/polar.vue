@@ -27,6 +27,7 @@ import { degToRad, radToDeg } from '../../../lib/utils.js';
 import { roundToFixed, canvasAlignToPixelCenter } from '../../../lib/quirks.js';
 import {MS_TO_KNT, windToColor} from '../../../lib/sol.js';
 import { atan2Bearing } from '../../../lib/nav.js';
+import { polarMixin } from '../../mixins/polar.js';
 import WindKey from './windkey.vue';
 
 export default {
@@ -34,6 +35,7 @@ export default {
   components: {
     'wind-key': WindKey,
   },
+  mixins: [polarMixin],
   data () {
     return {
       margin: 20,
@@ -123,12 +125,6 @@ export default {
     }),
   },
   methods: {
-    polarCoords (twa, speed, gridScale, extraPixels = 0) {
-      return {
-        x: Math.sin(twa) * (speed * gridScale + extraPixels),
-        y: -Math.cos(twa) * (speed * gridScale + extraPixels),
-      };
-    },
     draw () {
       this.$refs.polarbg.width = this.gridSize.x;
       this.$refs.polarbg.height = this.gridSize.y;
@@ -250,16 +246,6 @@ export default {
         ctx.arc(0, 0, r, 1.5 * Math.PI, 0.5 * Math.PI);
         labelctx.fillText('' + (i * this.gridIntervalKnots), -5, r);
         i++;
-      }
-      ctx.stroke();
-    },
-    drawPolarCurve(ctx, curve, gridScale) {
-      ctx.beginPath();
-      let first = true;
-      for (let pt of curve.values) {
-        const polarPos = this.polarCoords(pt.twa, pt.speed, gridScale);
-        first ? ctx.moveTo(polarPos.x, polarPos.y) : ctx.lineTo(polarPos.x, polarPos.y);
-        first = false;
       }
       ctx.stroke();
     },
