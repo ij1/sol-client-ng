@@ -56,15 +56,17 @@ export default {
 
   },
   methods: {
+    initCanvas () {
+      let ctx = this.canvas.getContext('2d');
+      ctx.translate(this.iconCenter[0] + 0.5, this.iconCenter[1] + 0.5);
+
+      this.$emit('draw', ctx);
+    },
     doReady (mapObject) {
       this.$nextTick(() => {
         this.canvas = mapObject.getElement().firstChild;
         this.canvasReady = true;
-
-        let ctx = this.canvas.getContext('2d');
-        ctx.translate(this.iconCenter[0] + 0.5, this.iconCenter[1] + 0.5);
-
-        this.$emit('draw', ctx);
+        this.initCanvas();
       });
     },
   },
