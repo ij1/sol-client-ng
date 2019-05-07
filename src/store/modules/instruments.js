@@ -185,7 +185,7 @@ export default {
       visualizePolar: {
         value: false,
         type: 'boolean',
-        cfgText: 'Always show current polar curve visually',
+        cfgText: 'Always show current polar butterfly visually',
       }
     },
   },
