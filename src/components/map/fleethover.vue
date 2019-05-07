@@ -3,13 +3,34 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'FleetHover',
+  data () {
+    return {
+      hoverList: [],
+    }
+  },
   computed: {
-    hoverList () {
-      /* Dummy dep */
-      this.$store.state.race.fleet.fleetTime;
-
+    hoverIdsObject () {
+      return this.hoverList.reduce((obj, i) => {
+        obj['' + i] = true;
+        return obj;
+      }, {});
+    },
+    ...mapState({
+      hoverLatLng: state => state.map.hoverLatLng,
+      fleetTime: state => state.race.fleet.fleetTime,
+      zoom: state => state.map.zoom,
+    }),
+  },
+  mounted () {
+    this.updateHover();
+  },
+  methods: {
+    updateHover () {
       if (this.hoverLatLng === null) {
-        return [];
+        if (this.hoverList.length > 0) {
+          this.hoverList = [];
+        }
+        return;
       }
 
       let res;
@@ -20,23 +41,26 @@ export default {
         }
       }
 
-      return res.map(i => i.id);
+      if (res.length === 0) {
+        if (this.hoverList.length > 0) {
+          this.hoverList = [];
+        }
+        return;
+      }
+
+      this.hoverList = res.map(i => i.id);
     },
-    hoverIdsObject () {
-      return this.hoverList.reduce((obj, i) => {
-        obj['' + i] = true;
-        return obj;
-      }, {});
-    },
-    ...mapState({
-      hoverLatLng: state => state.map.hoverLatLng,
-      zoom: state => state.map.zoom,
-    }),
   },
   watch: {
     hoverIdsObject (newValue) {
       this.$store.commit('race/fleet/setHover', newValue);
-    }
+    },
+    hoverLatLng () {
+      this.updateHover();
+    },
+    fleetTime () {
+      this.updateHover();
+    },
   },
   render () {
     return null;
