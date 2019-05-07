@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     ...mapState({
-      visualShowPolar: state => state.boat.steering.cfg.alwaysShowPolar.value,
+      visualShowPolar: state => state.boat.steering.cfg.showPolarImmediately.value,
       alwaysShowPolar: state => state.boat.instruments.cfg.visualizePolar.value,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       showPolar: state => state.boat.steering.visualSteering.showPolar,

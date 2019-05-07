@@ -30,10 +30,10 @@ export default {
     },
 
     cfg: {
-      alwaysShowPolar: {
+      showPolarImmediately: {
         value: false,
         type: 'boolean',
-        cfgText: 'Always show polar when steering visually',
+        cfgText: 'Show polar butterfly always with visual steering',
       },
       predictors: {
         value: 'current',
