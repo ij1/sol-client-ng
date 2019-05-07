@@ -88,6 +88,12 @@ export default {
           },
         },
         {
+          title: 'Instruments',
+          cfgs: {
+            base: 'boat/instruments',
+          },
+        },
+        {
           title: 'Enable Instruments',
           cfgs: {
             base: 'boat/instruments',

@@ -7,7 +7,7 @@
       {{ instrument.name }} [{{ instrument.unit }}]
     </div>
     <div class="boat-instrument-value">
-      {{ instrument | format() }}
+      {{ instrument | format($store.state) }}
     </div>
   </div>
 </template>
@@ -31,12 +31,12 @@ export default {
     }
   },
   filters: {
-    format (instrument) {
+    format (instrument, state) {
       if (instrument.value === null) {
         return '--.--';
       }
       if (typeof instrument.format !== 'undefined') {
-        return instrument.format(instrument);
+        return instrument.format(instrument, state);
       }
       return instrument.value;
     }

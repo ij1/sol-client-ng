@@ -4,12 +4,14 @@ import { roundToFixed } from '../../lib/quirks.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
-function defaultFormat (instrument) {
-  return roundToFixed(instrument.value * instrument.mult, instrument.decimals);
+function defaultFormat (instrument, state) {
+  const decimals = Math.max(instrument.minDecimals,
+                            state.boat.instruments.cfg.instrumentDecimals.value);
+  return roundToFixed(instrument.value * instrument.mult, decimals);
 }
 
-function twaFormat (instrument) {
-  return twaTextPrefix(instrument.value) + defaultFormat(instrument);
+function twaFormat (instrument, state) {
+  return twaTextPrefix(instrument.value) + defaultFormat(instrument, state);
 }
 
 export default {
@@ -21,7 +23,7 @@ export default {
       unit: "\xb0",
       datafield: "lat",
       mult: 1,
-      decimals: 3,
+      minDecimals: 3,
       format: defaultFormat,
       enabled: {
         value: false,
@@ -35,7 +37,7 @@ export default {
       unit: "\xb0",
       datafield: "lon",
       mult: 1,
-      decimals: 3,
+      minDecimals: 3,
       format: defaultFormat,
       enabled: {
         value: false,
@@ -49,7 +51,7 @@ export default {
       unit: "kn",
       datafield: "sog",
       mult: 1,
-      decimals: 2,
+      minDecimals: 1,
       format: defaultFormat,
     },
     course: {
@@ -58,7 +60,7 @@ export default {
       unit: "\xb0",
       datafield: "cog",
       mult: 180 / Math.PI,
-      decimals: 2,
+      minDecimals: 1,
       format: defaultFormat,
     },
     twa: {
@@ -67,7 +69,7 @@ export default {
       unit: "\xb0",
       datafield: "twa",
       mult: 180 / Math.PI,
-      decimals: 2,
+      minDecimals: 1,
       format: twaFormat,
     },
     twd: {
@@ -76,7 +78,7 @@ export default {
       unit: "\xb0",
       datafield: "twd",
       mult: 180 / Math.PI,
-      decimals: 2,
+      minDecimals: 1,
       format: defaultFormat,
     },
     tws: {
@@ -85,7 +87,7 @@ export default {
       unit: "kn",
       datafield: "tws",
       mult: MS_TO_KNT,
-      decimals: 2,
+      minDecimals: 1,
       format: defaultFormat,
     },
     vmg: {
@@ -98,7 +100,7 @@ export default {
                                    data.course.value,
                                    data.twd.value);
       },
-      decimals: 2,
+      minDecimals: 1,
       format: defaultFormat,
     },
     vmc: {
@@ -113,7 +115,7 @@ export default {
                                    data.course.value,
                                    gcPath.startBearing);
       },
-      decimals: 2,
+      minDecimals: 1,
       format: defaultFormat,
       enabled: {
         value: false,
@@ -127,7 +129,7 @@ export default {
       unit: "%",
       datafield: "efficiency",
       mult: 100,
-      decimals: 2,
+      minDecimals: 1,
       format: defaultFormat,
     },
     // DATE
@@ -171,6 +173,16 @@ export default {
       'perf',
       'date', 'time',
     ],
+
+    cfg: {
+      instrumentDecimals: {
+        value: 2,
+        type: 'range',
+        low: 1,
+        high: 3,
+        cfgText: 'Maximum number of decimals in instrument',
+      },
+    },
   },
   mutations: {
     initTime (state, time) {
