@@ -46,7 +46,7 @@ export default {
   },
   data () {
     return {
-      maxSelectedBoats: 10,
+      maxSelectedBoats: 5,
       maxHoverBoats: 3,
     }
   },
