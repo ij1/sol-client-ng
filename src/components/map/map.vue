@@ -41,6 +41,7 @@
 
       <map-scale v-if = "this.map !== null" :map = "this.map"/>
       <fleet-hover v-if = "this.map !== null" :map = "this.map"/>
+      <fleet-legend v-if = "this.map !== null"/>
     </l-map>
   </div>
 </template>
@@ -70,6 +71,7 @@ import TowbackFlag from '../towbackflag';
 import DcBar from '../dcbar.vue';
 import WindInfo from './windinfo';
 import MapScale from './scale.vue';
+import FleetLegend from './fleetlegend.vue';
 
 export default {
   name: 'Map',
@@ -100,6 +102,7 @@ export default {
     'dc-bar': DcBar,
     'wind-info': WindInfo,
     'map-scale': MapScale,
+    'fleet-legend': FleetLegend,
   },
 
   data () {
