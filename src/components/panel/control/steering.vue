@@ -14,6 +14,7 @@
           ref = "cc"
           id = "cc"
           @click="type = 'cc'"
+          @input = "type = 'cc'"
           v-model.trim = "cc"
           maxlength = 7
           size = 7
@@ -33,6 +34,7 @@
           ref = "twa"
           id = "twa"
           @click = "type = 'twa'"
+          @input = "type = 'twa'"
           v-model.trim = "twa"
           maxlength = 8
           size = 8
