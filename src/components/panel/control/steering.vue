@@ -4,7 +4,6 @@
       <div class = "steering-input">
         <input
           type = "radio"
-          id = "type"
           value = "cc"
           v-model = "type"
           @click = "$refs.cc.focus()"
@@ -23,7 +22,6 @@
       <div class = "steering-input">
         <input
           type = "radio"
-          id = "type"
           value = "twa"
           v-model = "type"
           @click = "$refs.twa.focus()"
