@@ -182,6 +182,11 @@ export default {
         high: 3,
         cfgText: 'Maximum number of decimals in instrument',
       },
+      visualizePolar: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Always show current polar curve visually',
+      }
     },
   },
   mutations: {

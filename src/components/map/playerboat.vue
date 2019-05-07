@@ -11,6 +11,7 @@
     <map-polar
       :lat-lng="boatPosition"
       :twd = "twd"
+      :show-polar = "showPolar"
     />
     <boat-trace :id = "boatId"/>
   </l-layer-group>
@@ -32,12 +33,17 @@ export default {
     'boat-trace': BoatTrace,
   },
   computed: {
+    showPolar () {
+      return this.alwaysShowPolar || this.steeringPolar;
+    },
     ...mapState({
       boatId: state => state.boat.id,
       boatPosition: state => state.boat.position,
       course: state => state.boat.instruments.course.value,
       twa: state => state.boat.instruments.twa.value,
       twd: state => state.boat.instruments.twd.value,
+      steeringPolar: state => state.boat.steering.visualSteering.showPolar,
+      alwaysShowPolar: state => state.boat.instruments.cfg.visualizePolar.value,
     }),
   },
 }

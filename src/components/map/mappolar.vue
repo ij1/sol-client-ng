@@ -27,6 +27,10 @@ export default {
       type: Number,
       required: true,
     },
+    showPolar: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data () {
@@ -65,7 +69,6 @@ export default {
     },
     ...mapState({
       mapSize: state => state.map.size,
-      showPolar: state => state.boat.steering.visualSteering.showPolar,
     }),
     ...mapGetters({
       polarCurve: 'boat/polar/currentCurve',
