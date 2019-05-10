@@ -1,5 +1,5 @@
 <template>
-  <div id="polar">
+  <div id="polar" ref="polar-container">
     <canvas id="labels" ref="labels"/>
     <canvas id="polarbg" ref="polarbg"/>
     <canvas id="polarfg" ref="polarfg"/>
@@ -38,7 +38,7 @@ export default {
   mixins: [polarMixin],
   data () {
     return {
-      margin: 20,
+      margin: 22,
       /* 105% of the real max speed to give a small breathing room for the curves */
       polarHeadroom: 1.05,
       gridMinSpacing: 20,
@@ -123,6 +123,7 @@ export default {
     draw () {
       this.$refs.polarbg.width = this.gridSize.x;
       this.$refs.polarbg.height = this.gridSize.y;
+      this.$refs.labels.width = this.gridSize.x + this.margin * 2;
       this.$refs.labels.height = this.gridSize.y + this.margin * 2;
 
       let ctx = this.$refs.polarbg.getContext('2d');
@@ -264,8 +265,14 @@ export default {
     onMouseOut () {
       this.clearHoverInfo();
     },
-    calculateMaxWidth () {
-      this.maxWidth = this.$refs.labels.width - this.margin * 2;
+    recalculateMaxWidth () {
+      this.maxWidth = this.$refs['polar-container'].clientWidth - this.margin * 2;
+      this.draw();
+    },
+    onResize () {
+      this.$nextTick(() => {
+        this.recalculateMaxWidth();
+      });
     },
     roundToFixed,
   },
@@ -281,15 +288,23 @@ export default {
     },
   },
   mounted () {
-    this.calculateMaxWidth();
-    this.draw();
-  }
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+      this.recalculateMaxWidth();
+    });
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize);
+  },
 }
 </script>
 
 <style scoped>
 #polar, #labels {
   position: relative;
+}
+#polar-container {
+  width: 100%;
 }
 #polarbg, #polarfg, #polaroverlay {
   position: absolute;
