@@ -22,6 +22,23 @@ function addToName2id (state, name, id) {
   state.name2idStamp++;
 }
 
+/* Besides sorting, this filters duplicates from the list */
+function sortedIdList (boatIdsObj, getters) {
+  return boatIdsObj.sort((a, b) => {
+    const boatA = getters.boatFromId(a);
+    const boatB = getters.boatFromId(b);
+    const aa = boatA.ranking;
+    const bb = boatB.ranking;
+    const diff = aa - bb;
+    if (diff !== 0) {
+      return diff;
+    }
+    return boatA.id - boatB.id;
+  }).filter(function(item, idx, arr) {
+    return (idx === arr.length - 1) || (arr[idx + 1] !== item);
+  });
+}
+
 export default {
   namespaced: true,
 
@@ -43,6 +60,8 @@ export default {
     boatTypesCount: 0,       /* works around lack of reactivity */
     selected: {},
     hover: {},
+    maxSelectedBoats: 5,
+    maxHoverBoats: 3,
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
     playerBoatIdx: 0,
   },
@@ -240,7 +259,23 @@ export default {
     },
     nextTimeToFetchTraces: (state) => {
       return state.tracesTime + state.tracesFetchInterval;
-    }
+    },
+
+    selectedSorted: (state, getters) => {
+      return sortedIdList(Object.keys(state.selected), getters);
+    },
+    hoverSorted: (state, getters) => {
+      return sortedIdList(Object.keys(state.hover), getters);
+    },
+    showIds: (state, getters) => {
+      let selected = getters.selectedSorted.slice(0, state.maxSelectedBoats);
+      let hover = getters.hoverSorted.slice(0 , state.maxHoverBoats);
+      return sortedIdList(selected.concat(hover), getters);
+    },
+    combinedIds: (state, getters) => {
+      return sortedIdList(getters.selectedSorted.concat(getters.hoverSorted),
+                          getters);
+    },
   },
 
   actions: {

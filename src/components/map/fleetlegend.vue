@@ -4,7 +4,7 @@
     :position = "'bottomleft'"
   >
     <div
-      v-if = "this.allIds.length > 0"
+      v-if = "this.combinedIds.length > 0"
       id = "fleet-info"
     >
       <div
@@ -51,54 +51,23 @@ export default {
     }
   },
   computed: {
-    selectedSorted () {
-      return this.sortedIdList(Object.keys(this.selectedObj));
-    },
-    hoverSorted () {
-      return this.sortedIdList(Object.keys(this.hoverObj));
-    },
-    showIds () {
-      let selected = this.selectedSorted.slice(0, this.maxSelectedBoats);
-      let hover = this.hoverSorted.slice(0 , this.maxHoverBoats);
-      return this.sortedIdList(selected.concat(hover));
-    },
-    allIds () {
-      return this.sortedIdList(this.selectedSorted.concat(this.hoverSorted));
-    },
     legendBoats () {
       return this.showIds.map(id => this.fleetBoatFromId(id));
     },
     countNonExpandedBoats () {
-      return this.allIds.length - this.legendBoats.length;
+      return this.combinedIds.length - this.legendBoats.length;
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
       boatColor: 'race/fleet/boatColor',
       multiClassRace: 'race/fleet/multiClassRace',
+      showIds: 'race/fleet/showIds',
+      combinedIds: 'race/fleet/combinedIds',
     }),
     ...mapState({
       selectedObj: state => state.race.fleet.selected,
       hoverObj: state => state.race.fleet.hover,
     }),
-  },
-  methods: {
-    /* Besides sorting, this filters duplicates from the list */
-    sortedIdList (boatIdsObj) {
-      let self = this;
-      return boatIdsObj.sort((a, b) => {
-        const boatA = self.fleetBoatFromId(a);
-        const boatB = self.fleetBoatFromId(b);
-        const aa = boatA.ranking;
-        const bb = boatB.ranking;
-        const diff = aa - bb;
-        if (diff !== 0) {
-          return diff;
-        }
-        return boatA.id - boatB.id;
-      }).filter(function(item, idx, arr) {
-        return (idx === arr.length - 1) || (arr[idx + 1] !== item);
-      });
-    },
   },
 }
 </script>
