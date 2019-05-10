@@ -174,7 +174,9 @@ export default {
         return;
       }
       if (newValue && !oldValue) {
-        this.map.flyToBounds(this.raceBoundary);
+        this.$nextTick(() => {
+          this.map.flyToBounds(this.raceBoundary);
+        });
       }
     }
   },
