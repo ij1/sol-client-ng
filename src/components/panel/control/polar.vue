@@ -264,6 +264,9 @@ export default {
     onMouseOut () {
       this.clearHoverInfo();
     },
+    calculateMaxWidth () {
+      this.maxWidth = this.$refs.labels.width - this.margin * 2;
+    },
     roundToFixed,
   },
   watch: {
@@ -278,7 +281,7 @@ export default {
     },
   },
   mounted () {
-    this.maxWidth = this.$refs.labels.width - this.margin * 2;
+    this.calculateMaxWidth();
     this.draw();
   }
 }
