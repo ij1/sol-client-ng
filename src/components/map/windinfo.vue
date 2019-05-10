@@ -2,16 +2,16 @@
   <l-control
     id = "wind-info"
     :position = "'topright'"
-    v-if = 'this.wxLoaded'
+    v-if = 'wxLoaded'
   >
     <div>
       {{ wrappedHoverLatLng | positionFormat }}
     </div>
     <div>
-      {{ this.wind }}
+      {{ wind }}
     </div>
     <div>
-      {{ this.bearing }}
+      {{ bearing }}
     </div>
   </l-control>
 </template>

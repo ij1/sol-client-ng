@@ -4,12 +4,12 @@
     :position = "'bottomleft'"
   >
     <div
-      v-if = "this.combinedIds.length > 0"
+      v-if = "combinedIds.length > 0"
       id = "fleet-info"
     >
       <div
         class = "fleet-row"
-        v-for = "boat in this.legendBoats"
+        v-for = "boat in legendBoats"
         :key = "boat.id"
       >
         <div
@@ -24,8 +24,8 @@
           ({{ boat.type}})
         </span>
       </div>
-      <div v-if = "this.countNonExpandedBoats > 0">
-        +{{this.countNonExpandedBoats}} boats
+      <div v-if = "countNonExpandedBoats > 0">
+        +{{countNonExpandedBoats}} boats
       </div>
     </div>
   </l-control>

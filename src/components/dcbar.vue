@@ -1,9 +1,9 @@
 <template>
   <l-control :position = "'topright'">
-    <div id = "dc-bar" v-if = "this.nextDC !== null">
+    <div id = "dc-bar" v-if = "nextDC !== null">
       Next DC:
-      {{ this.nextDC.type | cctocog }}={{ this.nextDC | prettyDegrees }}
-      in {{ this.toNextDCTime | formatNextDCTime }}
+      {{ nextDC.type | cctocog }}={{ nextDC | prettyDegrees }}
+      in {{ toNextDCTime | formatNextDCTime }}
     </div>
   </l-control>
 </template>

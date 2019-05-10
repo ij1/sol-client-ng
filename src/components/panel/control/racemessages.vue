@@ -1,7 +1,7 @@
 <template>
   <div class="race-message-list">
     <race-message
-      v-for = "racemsg in this.$store.state.race.messages.racemsgs"
+      v-for = "racemsg in $store.state.race.messages.racemsgs"
       :key = "racemsg.id"
       :racemsg = "racemsg"
     />

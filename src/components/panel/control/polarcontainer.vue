@@ -1,9 +1,9 @@
 <template>
   <div id="polar-container">
     <div id="boat-type">
-      <span v-html="this.boatType"/>
+      <span v-html="boatType"/>
     </div>
-    <polar-graph v-if = "this.polarLoaded"/>
+    <polar-graph v-if = "polarLoaded"/>
   </div>
 </template>
 

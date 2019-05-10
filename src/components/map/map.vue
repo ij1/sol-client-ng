@@ -17,31 +17,31 @@
         attributionControl: false,
       }"
     >
-      <map-tiles v-if = "this.map !== null" :map = "this.map"/>
-      <race-info v-if = "this.map !== null" :map = "this.map"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :lng-offset = "-720"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :lng-offset = "-360"/>
-      <race-info v-if = "this.map !== null" :map = "this.map" :lng-offset = "360"/>
+      <map-tiles v-if = "map !== null" :map = "map"/>
+      <race-info v-if = "map !== null" :map = "map"/>
+      <race-info v-if = "map !== null" :map = "map" :lng-offset = "-720"/>
+      <race-info v-if = "map !== null" :map = "map" :lng-offset = "-360"/>
+      <race-info v-if = "map !== null" :map = "map" :lng-offset = "360"/>
 
-      <canvas-overlay v-if = "this.map !== null" :map = "this.map"/>
-      <fleet-traces v-if = "this.map !== null"/>
-      <fleet-map v-if = "this.map !== null" :map = "this.map"/>
-      <player-boat v-if = "this.map !== null"/>
-      <visual-steering v-if = "this.map !== null && this.visualSteeringEnabled" :map = "this.map"/>
-      <map-highlight v-if = "this.map !== null" :map = "this.map"/>
+      <canvas-overlay v-if = "map !== null" :map = "map"/>
+      <fleet-traces v-if = "map !== null"/>
+      <fleet-map v-if = "map !== null" :map = "map"/>
+      <player-boat v-if = "map !== null"/>
+      <visual-steering v-if = "map !== null && visualSteeringEnabled" :map = "map"/>
+      <map-highlight v-if = "map !== null" :map = "map"/>
 
-      <race-status v-if = "this.map !== null"/>
-      <l-control-zoom v-if = "this.map !== null" :position = "'topleft'" />
-      <center-boat-button v-if = "this.map !== null"/>
-      <steer-button v-if = "this.map !== null"/>
-      <towback-flag v-if = "this.map !== null"/>
+      <race-status v-if = "map !== null"/>
+      <l-control-zoom v-if = "map !== null" :position = "'topleft'" />
+      <center-boat-button v-if = "map !== null"/>
+      <steer-button v-if = "map !== null"/>
+      <towback-flag v-if = "map !== null"/>
 
-      <dc-bar v-if = "this.map !== null"/>
-      <wind-info v-if = "this.map !== null"/>
+      <dc-bar v-if = "map !== null"/>
+      <wind-info v-if = "map !== null"/>
 
-      <map-scale v-if = "this.map !== null" :map = "this.map"/>
-      <fleet-hover v-if = "this.map !== null" :map = "this.map"/>
-      <fleet-legend v-if = "this.map !== null"/>
+      <map-scale v-if = "map !== null" :map = "map"/>
+      <fleet-hover v-if = "map !== null" :map = "map"/>
+      <fleet-legend v-if = "map !== null"/>
     </l-map>
   </div>
 </template>

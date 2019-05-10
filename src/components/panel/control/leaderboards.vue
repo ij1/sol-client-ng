@@ -2,7 +2,7 @@
   <div id="leaderboards-container">
     <div id="leaderboards">
       <control-leaderboard
-        v-for = "boatlistKey in this.sortedBoatlistKeys"
+        v-for = "boatlistKey in sortedBoatlistKeys"
         :key = "boatlistKey"
         :boatlist-key = "boatlistKey"
         @editlist = "doEditList"
@@ -13,7 +13,7 @@
         <button @click = "editorType = 'distance'">Distance</button>
       </div>
     </div>
-    <portal to = "boatlist-editor-dest" v-if = "this.editorType !== null">
+    <portal to = "boatlist-editor-dest" v-if = "editorType !== null">
       <boatlist-editor
         :editor-type = "editorType"
         :edit-list-key = "editListKey"

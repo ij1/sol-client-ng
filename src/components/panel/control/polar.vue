@@ -12,10 +12,10 @@
     <div id = "wind-key-container" :style="{top: windKeyY + 'px'}">
       <wind-key/>
     </div>
-    <div v-if = "this.hover.sog !== null">
-      SOG: {{ roundToFixed(this.hover.sog, 2) }}
-      VMG: {{ roundToFixed(this.hover.vmg, 2) }}
-      TWA: {{ roundToFixed(this.hover.twa, 1) }}
+    <div v-if = "hover.sog !== null">
+      SOG: {{ roundToFixed(hover.sog, 2) }}
+      VMG: {{ roundToFixed(hover.vmg, 2) }}
+      TWA: {{ roundToFixed(hover.twa, 1) }}
     </div>
   </div>
 </template>

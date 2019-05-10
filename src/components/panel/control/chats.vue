@@ -1,8 +1,8 @@
 <template>
-  <div id="chat-channels" v-if="this.$store.state.race.loaded">
+  <div id="chat-channels" v-if="$store.state.race.loaded">
     <div
       class = "chat-channel"
-      v-for = "channel in this.$store.state.chatrooms.activeRooms"
+      v-for = "channel in $store.state.chatrooms.activeRooms"
       v-bind:key = "channel.key"
       v-bind:style = "{ height: 'calc((100% - ' + (allowAdd ? 32 : 0) + 'px) / ' + roomCount + ')' }"
     >
@@ -11,7 +11,7 @@
         :room-id = "channel.id"
       />
     </div>
-    <div v-if="this.allowAdd">
+    <div v-if="allowAdd">
       <button @click="addChannel">+</button>
     </div>
   </div>

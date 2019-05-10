@@ -1,8 +1,8 @@
 <template>
   <div class="flag-container">
     <img
-      v-if = "this.valid"
-      :src="'flags/' + this.flagImage + '.png'"
+      v-if = "valid"
+      :src="'flags/' + flagImage + '.png'"
     />
   </div>
 </template>

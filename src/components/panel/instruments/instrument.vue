@@ -1,7 +1,7 @@
 <template>
   <div
     class = "boat-instrument"
-    v-if = "this.enabled"
+    v-if = "enabled"
   >
     <div class="boat-instrument-label">
       {{ instrument.name }} [{{ instrument.unit }}]

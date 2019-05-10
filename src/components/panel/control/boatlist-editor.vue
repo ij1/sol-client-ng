@@ -5,9 +5,9 @@
     :z-index = "1001"
     close-button-label = "Cancel"
     @close = "$emit('close')"
-    :submit-button-label = "this.submitLabel"
+    :submit-button-label = "submitLabel"
     @submit = "createList"
-    :can-submit = "this.canCreate"
+    :can-submit = "canCreate"
   >
     <div class="listname">
       <label for="name">List name:</label>
@@ -28,15 +28,15 @@
       </div>
       <div class = "offlist">
         <boat-list
-          :search = "this.search"
-          :boat-list = "this.boatLists.offList"
+          :search = "search"
+          :boat-list = "boatLists.offList"
           @input = "offSelected = $event"
         />
       </div>
       <div class = "center">
         <div>
           <button
-            :disabled = "Object.getOwnPropertyNames(this.offSelected).length === 0"
+            :disabled = "Object.getOwnPropertyNames(offSelected).length === 0"
             @click.prevent = "onAdd"
             @keydown.enter.prevent = "onAdd"
           >
@@ -45,7 +45,7 @@
         </div>
         <div>
           <button
-            :disabled = "Object.getOwnPropertyNames(this.onSelected).length === 0"
+            :disabled = "Object.getOwnPropertyNames(onSelected).length === 0"
             @click.prevent = "onDel"
             @keydown.enter.prevent = "onDel"
           >
@@ -56,8 +56,8 @@
       <div class = "onlist-header">Included boats</div>
       <div class = "onlist">
         <boat-list
-          :search = "this.search"
-          :boat-list = "this.boatLists.onList"
+          :search = "search"
+          :boat-list = "boatLists.onList"
           @input = "onSelected = $event"
         />
       </div>

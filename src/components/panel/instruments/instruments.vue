@@ -1,7 +1,7 @@
 <template>
   <div id="boat-instruments">
      <boat-instrument
-       v-for = "instrument in this.$store.state.boat.instruments.list"
+       v-for = "instrument in $store.state.boat.instruments.list"
        v-bind:key = "instrument"
        v-bind:id = "instrument"
      />

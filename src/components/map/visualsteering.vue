@@ -3,31 +3,31 @@
     <sail-boat
       :lat-lng = "boatPosition"
       :scale = "3"
-      :color = "this.color"
-      :course = "this.cog"
-      :twa = "this.twa"
+      :color = "color"
+      :course = "cog"
+      :twa = "twa"
       :stroke-width = "1"
     />
     <l-polyline
-      :lat-lngs = "this.steerLine"
-      :color = "this.color"
+      :lat-lngs = "steerLine"
+      :color = "color"
       :weight = "1"
       :fill = "false"
     />
     <l-circle
-      v-if = "this.hoverLatLng !== null"
-      :lat-lng = "this.target"
-      :color = "this.color"
+      v-if = "hoverLatLng !== null"
+      :lat-lng = "target"
+      :color = "color"
       :radius = "0"
       :weight = "1"
       :fill = "false"
     >
-      <l-tooltip :options = "this.tooltipOptions">
+      <l-tooltip :options = "tooltipOptions">
         <div>
-          <div>COG: {{this.cog | formatAngle }}</div>
-          <div>TWA: {{this.twa | formatAngle }}</div>
-          <div>SOG: {{this.sog | formatValue }}</div>
-          <div>VMG: {{this.vmg | formatValue }}</div>
+          <div>COG: {{cog | formatAngle }}</div>
+          <div>TWA: {{twa | formatAngle }}</div>
+          <div>SOG: {{sog | formatValue }}</div>
+          <div>VMG: {{vmg | formatValue }}</div>
         </div>
       </l-tooltip>
     </l-circle>

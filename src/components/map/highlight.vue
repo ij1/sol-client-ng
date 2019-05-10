@@ -1,7 +1,7 @@
 <template>
   <l-layer-group>
     <l-circle-marker
-      v-if = "this.latLng !== null && this.radius > 0"
+      v-if = "latLng !== null && radius > 0"
       :lat-lng = "latLng"
       :radius = "radius"
       color = "#c000c0"

@@ -2,7 +2,7 @@
   <div
     class = "popup-window"
     :style = "{
-      'z-index': this.zIndex
+      'z-index': zIndex
     }"
   >
     <div class = "popup-titlebar">

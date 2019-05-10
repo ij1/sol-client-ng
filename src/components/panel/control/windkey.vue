@@ -1,7 +1,7 @@
 <template>
   <div id="wind-key">
     <div
-      v-for = "wind in this.$store.state.boat.polar.windKeys"
+      v-for = "wind in $store.state.boat.polar.windKeys"
       v-bind:key = "wind"
     >
       <span

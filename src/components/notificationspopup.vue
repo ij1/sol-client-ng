@@ -4,11 +4,11 @@
     :z-index = "1010"
     close-button-label = "OK"
     @close = "doOk"
-    v-if="this.notifications.length > 0"
+    v-if="notifications.length > 0"
   >
     <div id="notifications-content">
       <div
-        v-for = "notification in this.notifications"
+        v-for = "notification in notifications"
         :key = "notification.id"
         class = "notification-line"
       >

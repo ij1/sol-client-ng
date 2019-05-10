@@ -6,7 +6,7 @@
     @close = "onCancel"
     submit-button-label = "Change"
     @submit = "onSubmit"
-    :can-submit = "this.canSubmit"
+    :can-submit = "canSubmit"
     v-if = "$store.state.ui.config.showEditor"
   >
     <template slot = "extrabuttons">
@@ -18,7 +18,7 @@
       </button>
     </template>
     <div
-      v-for = "(cfggroup, gindex) in this.configTree"
+      v-for = "(cfggroup, gindex) in configTree"
       :key = "'g' + gindex"
       id = "config-content"
     >

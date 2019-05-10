@@ -1,14 +1,14 @@
 <template>
   <l-layer-group>
     <l-polyline
-      :lat-lngs = "this.boatTrace"
-      :color = "this.color"
+      :lat-lngs = "boatTrace"
+      :color = "color"
       :weight = "1"
       :fill = "false"
     />
     <l-polyline
-      :lat-lngs = "this.lastMileTrace"
-      :color = "this.color"
+      :lat-lngs = "lastMileTrace"
+      :color = "color"
       :weight = "1"
       :fill = "false"
     />

@@ -6,7 +6,7 @@
     @close = "$emit('close')"
     submit-button-label = "Change"
     @submit = "onChange"
-    :can-submit = "this.canSend"
+    :can-submit = "canSend"
   >
     <div>
       <label class="dc-editor-label">Date</label>
@@ -40,7 +40,7 @@
     <div>
       <label for="value" class="dc-editor-label">Value</label>
       <input
-        :style = "{'background-color': this.twaColor}"
+        :style = "{'background-color': twaColor}"
         id = "value"
         v-model.trim = "value"
         size = 8

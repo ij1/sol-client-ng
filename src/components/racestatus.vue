@@ -1,8 +1,8 @@
 <template>
   <l-control :position = "'topleft'">
-    <div id = "race-status" v-if="this.$store.state.race.loaded">
-      <span v-html="this.$store.state.race.info['message']"/>
-      {{ this.boatInfo }}
+    <div id = "race-status" v-if="$store.state.race.loaded">
+      <span v-html="$store.state.race.info['message']"/>
+      {{ boatInfo }}
     </div>
   </l-control>
 </template>

@@ -2,7 +2,7 @@
   <l-control
     id = "towback-flag"
     :position = "'topleft'"
-    v-if = 'this.raceLoaded && this.isTowbackPeriod'
+    v-if = 'raceLoaded && isTowbackPeriod'
   >
     <div id = "towback-flag-outer">
       <div id = "towback-flag-inner"/>

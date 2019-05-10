@@ -8,14 +8,14 @@
       >
         <div
           id = "weather-slider-fg"
-          :style = "{width: 'calc((100% - ' + this.sliderZeroPx + 'px) * ' + this.timeFrac + ' + ' + this.sliderZeroPx + 'px)'}"
+          :style = "{width: 'calc((100% - ' + sliderZeroPx + 'px) * ' + timeFrac + ' + ' + sliderZeroPx + 'px)'}"
         />
       </div>
     </div>
-    <div id="weather-panel-placeholder" v-if="!this.wxLoaded">
+    <div id="weather-panel-placeholder" v-if="!wxLoaded">
       Waiting for the weather information to load...
     </div>
-    <div id="weather-panel-control" v-if="this.wxLoaded">
+    <div id="weather-panel-control" v-if="wxLoaded">
       <button @click="setTime(0)">&#124;&#9664;</button>
       <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
       <span>Weather forecasted for</span>
@@ -32,12 +32,12 @@
         </option>
       </select>
       <span>(Issued
-        {{ this.wxUpdatedTime | formatTime }}):
-        {{ this.wxTime | formatTime }}
-        (+{{ this.timeOffset | formatOffset }})
+        {{ wxUpdatedTime | formatTime }}):
+        {{ wxTime | formatTime }}
+        (+{{ timeOffset | formatOffset }})
       </span>
-      <button v-if = "this.playTimer === null" @click="onPlay">&#9654;</button>
-      <button v-if = "this.playTimer !== null" @click="cancelPlay">&#9642;</button>
+      <button v-if = "playTimer === null" @click="onPlay">&#9654;</button>
+      <button v-if = "playTimer !== null" @click="cancelPlay">&#9642;</button>
       <span>Use</span>
       <select
         v-model="selectedStep"

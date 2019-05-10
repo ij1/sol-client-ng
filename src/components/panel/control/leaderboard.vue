@@ -1,5 +1,5 @@
 <template>
-  <div id="leaderboard" :style="{flex: this.active ? 'auto' : 'none'}">
+  <div id="leaderboard" :style="{flex: active ? 'auto' : 'none'}">
     <div
       class = "leaderboard-header"
       @click = "onActivate"
@@ -9,9 +9,9 @@
     <div
       class = "leaderboard-boatlist-container"
       :style = "{
-        height: 'calc(100% - 68px - ' + (this.listEditable ? 18 : 0) + 'px)'
+        height: 'calc(100% - 68px - ' + (listEditable ? 18 : 0) + 'px)'
       }"
-      v-if = "this.active"
+      v-if = "active"
     >
       <div class="leaderboard-search">
         <label for="search">Search</label>
@@ -23,15 +23,15 @@
       </div>
       <div id = "leaderboard-boatlist">
         <boat-list
-          :search = "this.search"
-          :boat-list = "this.boatList"
-          :initial-selected = "this.selectedList"
-          :hover-list = "this.hoverList"
-          @select = "this.selectBoat"
-          @input = "this.updateSelection"
+          :search = "search"
+          :boat-list = "boatList"
+          :initial-selected = "selectedList"
+          :hover-list = "hoverList"
+          @select = "selectBoat"
+          @input = "updateSelection"
         />
       </div>
-      <div class = "leaderboard-buttons" v-if = "this.listEditable">
+      <div class = "leaderboard-buttons" v-if = "listEditable">
         <button @click = "onEdit">Edit list</button>
         <button @click = "onDelete">Delete list</button>
       </div>

@@ -11,7 +11,7 @@
           Please select channel
         </option>
         <option
-          v-for = "channel in this.$store.state.chatrooms.rooms"
+          v-for = "channel in $store.state.chatrooms.rooms"
           v-bind:value = "channel.id"
           v-bind:key = "channel.name"
         >
@@ -28,7 +28,7 @@
     </div>
     <div class="chat-block-list">
       <div class="chat-block"
-        v-for = "(msg, index) in this.msgs"
+        v-for = "(msg, index) in msgs"
         v-bind:key = "index"
       >
         <div class="chat-block-header">

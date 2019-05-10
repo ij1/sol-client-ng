@@ -3,13 +3,13 @@
     <div id="dc-header">
       <button
         @click="doEdit"
-        :disabled = "!this.canEdit"
+        :disabled = "!canEdit"
       >
         Edit
       </button>
       <button
         @click="doDelete"
-        :disabled = "!this.canDelete"
+        :disabled = "!canDelete"
       >
         Delete
       </button>
@@ -27,7 +27,7 @@
         <th>000.000</th>
       </template>
       <tr
-        v-for = "command in this.$store.state.boat.steering.dcs.list"
+        v-for = "command in $store.state.boat.steering.dcs.list"
         v-bind:key = "command.id"
         :class = "{'active': command.id === selected }"
         @click = "selectDC(command.id)"
@@ -37,9 +37,9 @@
         <td>{{ command | formatValue }}</td>
       </tr>
     </scrollable-table>
-    <portal to="dc-editor-dest" v-if="this.dcToEdit !== null">
+    <portal to="dc-editor-dest" v-if="dcToEdit !== null">
       <dc-editor
-        :dc-to-edit = "this.dcToEdit"
+        :dc-to-edit = "dcToEdit"
         @close = "dcToEdit = null"
       />
     </portal>

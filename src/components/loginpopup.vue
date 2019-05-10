@@ -1,12 +1,12 @@
 <template>
-  <div id="popup-block" v-if="this.$store.state.auth.status !== 'Authenticated'">
+  <div id="popup-block" v-if="$store.state.auth.status !== 'Authenticated'">
     <popup-window
       title = "Login"
       :z-index = "1020"
       :close-button-label = "null"
       submit-button-label = "Login"
       @submit = "doLogin"
-      :can-submit = "this.canSend"
+      :can-submit = "canSend"
     >
       <div>
         <select v-model = "authParams.race_id">
@@ -49,8 +49,8 @@
           type = "password"
         >
       </div>
-      <div v-if="this.$store.state.auth.status !== 'Unauthenticated'">
-        {{ this.$store.state.auth.status }}
+      <div v-if="$store.state.auth.status !== 'Unauthenticated'">
+        {{ $store.state.auth.status }}
       </div>
     </popup-window>
   </div>

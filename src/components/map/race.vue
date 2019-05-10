@@ -1,13 +1,13 @@
 <template>
-  <l-layer-group v-if="this.race.loaded">
+  <l-layer-group v-if="race.loaded">
     <l-rectangle
-       :bounds="this.raceBoundary"
+       :bounds="raceBoundary"
        :fill="false"
        :weight="2"
        color="magenta"
     />
     <l-marker
-      v-for="(waypoint, index) in this.raceRoute"
+      v-for="(waypoint, index) in raceRoute"
       :key="index"
       :lat-lng="waypoint.latLng"
       :icon="waypoint.icon"
@@ -20,7 +20,7 @@
       </l-tooltip>
     </l-marker>
     <l-circle-marker
-      v-for="(endpoint, index) in this.finishLine"
+      v-for="(endpoint, index) in finishLine"
       :key="'f' + index"
       :lat-lng="endpoint"
       :fill-color="wpColor"
@@ -35,7 +35,7 @@
       :weight="1"
     />
     <l-polyline
-      v-for="(line, index) in this.routeLine"
+      v-for="(line, index) in routeLine"
       :key="'ls' + index"
       :lat-lngs="line"
       :fill="false"
@@ -43,7 +43,7 @@
       :weight="1"
     />
     <l-polyline
-      v-for="(line, index) in this.wpArcs"
+      v-for="(line, index) in wpArcs"
       :key="'la' + index"
       :lat-lngs="line.arc"
       :fill="false"

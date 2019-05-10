@@ -2,8 +2,8 @@
   <l-control
     :position = "'bottomleft'"
   >
-    <div id = "map-scale" :style = "{'min-width': (this.pxWidth - 2) + 'px'}">
-      {{this.alignedNmWidth}}nm
+    <div id = "map-scale" :style = "{'min-width': (pxWidth - 2) + 'px'}">
+      {{alignedNmWidth}}nm
     </div>
   </l-control>
 </template>

@@ -30,7 +30,7 @@
         <label for = "twa" @click = "type = 'twa'">TWA</label>
         <input
           class = "steering-input-box"
-          :style = "{'background-color': this.twaColor}"
+          :style = "{'background-color': twaColor}"
           ref = "twa"
           id = "twa"
           @click = "type = 'twa'"
