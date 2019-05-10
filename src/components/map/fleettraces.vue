@@ -5,7 +5,7 @@
       :id = "this.leaderId"
     />
     <boat-trace
-      v-for = "trace in this.otherTraces"
+      v-for = "trace in this.showIds"
       :key = "trace"
       :id = "trace"
     />
@@ -15,7 +15,7 @@
       :lng-offset = "-360"
     />
     <boat-trace
-      v-for = "trace in this.otherTraces"
+      v-for = "trace in this.showIds"
       :key = "'w' + trace"
       :id = "trace"
       :lng-offset = "-360"
@@ -26,7 +26,7 @@
       :lng-offset = "-720"
     />
     <boat-trace
-      v-for = "trace in this.otherTraces"
+      v-for = "trace in this.showIds"
       :key = "'ww' + trace"
       :id = "trace"
       :lng-offset = "-720"
@@ -37,7 +37,7 @@
       :lng-offset = "360"
     />
     <boat-trace
-      v-for = "trace in this.otherTraces"
+      v-for = "trace in this.showIds"
       :key = "'e' + trace"
       :id = "trace"
       :lng-offset = "360"
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { LLayerGroup } from 'vue2-leaflet';
 import BoatTrace from './trace.vue';
 
@@ -65,16 +66,12 @@ export default {
     },
     showLeaderTrace () {
       return (this.leaderId !== null) &&
-             (this.leaderId !== this.playerId);
+             (this.leaderId !== this.playerId) &&
+             !this.showIds.includes(this.leaderId);
     },
-    otherTraces () {
-      return Object.keys({
-        ...this.$store.state.race.fleet.selected,
-        ...this.$store.state.race.fleet.hover
-      }).sort().filter((item, pos, arr) => {
-        return !pos || (item !== arr[pos - 1] && item !== this.leaderId)
-      });
-    },
+    ...mapGetters({
+      'showIds': 'race/fleet/showIds',
+    }),
   },
 }
 </script>
