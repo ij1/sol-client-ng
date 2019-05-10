@@ -5,7 +5,7 @@
     v-if = 'this.wxLoaded'
   >
     <div>
-      {{ hoverLatLng | positionFormat }}
+      {{ wrappedHoverLatLng | positionFormat }}
     </div>
     <div>
       {{ this.wind }}
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
@@ -39,10 +39,10 @@ export default {
   },
   computed: {
     wind () {
-      if (this.hoverLatLng === null) {
+      if (this.wrappedHoverLatLng === null) {
         return '';
       }
-      const wind = this.$store.getters['weather/latLngWind'](this.hoverLatLng);
+      const wind = this.$store.getters['weather/latLngWind'](this.wrappedHoverLatLng);
       if (wind === undefined) {
         return '';
       }
@@ -50,13 +50,13 @@ export default {
              roundToFixed(radToDeg(wind.twd), 2) + '\xb0';
     },
     bearing () {
-      if (this.hoverLatLng === null) {
+      if (this.wrappedHoverLatLng === null) {
         return '';
       }
-      if (this.boatPosition.equals(this.hoverLatLng)) {
+      if (this.boatPosition.equals(this.wrappedHoverLatLng)) {
         return '0nm';
       }
-      const gcPath = gcCalc(this.boatPosition, this.hoverLatLng);
+      const gcPath = gcCalc(this.boatPosition, this.wrappedHoverLatLng);
 
       return roundToFixed(gcPath.distance * EARTH_R / 1852, 3) + 'nm @' +
              roundToFixed(radToDeg(gcPath.startBearing), 2) + '\xb0 GC';
@@ -64,7 +64,9 @@ export default {
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       boatPosition: state => state.boat.position,
-      hoverLatLng: state => state.map.hoverLatLng,
+    }),
+    ...mapGetters({
+      wrappedHoverLatLng: 'map/wrappedHoverLatLng',
     }),
   },
 }

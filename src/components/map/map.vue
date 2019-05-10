@@ -157,7 +157,7 @@ export default {
     },
     setHoverPos (e) {
       /* For some reason it's not camel-cased in the event! */
-      this.$store.commit('map/setHover', e.latlng.wrap());
+      this.$store.commit('map/setHover', e.latlng);
     },
     clearHoverPos () {
       this.$store.commit('map/setHover', null);

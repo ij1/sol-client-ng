@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'FleetHover',
@@ -16,9 +16,11 @@ export default {
       }, {});
     },
     ...mapState({
-      hoverLatLng: state => state.map.hoverLatLng,
       fleetTime: state => state.race.fleet.fleetTime,
       zoom: state => state.map.zoom,
+    }),
+    ...mapGetters({
+      wrappedHoverLatLng: 'map/wrappedHoverLatLng',
     }),
   },
   mounted () {
@@ -26,7 +28,7 @@ export default {
   },
   methods: {
     updateHover () {
-      if (this.hoverLatLng === null) {
+      if (this.wrappedHoverLatLng === null) {
         if (this.hoverList.length > 0) {
           this.hoverList = [];
         }
@@ -35,7 +37,7 @@ export default {
 
       let res;
       for (let distance = 3; distance < 7; distance++) {
-        res = this.$store.getters['race/fleet/searchAt'](this.hoverLatLng, this.zoom, distance);
+        res = this.$store.getters['race/fleet/searchAt'](this.wrappedHoverLatLng, this.zoom, distance);
         if (res.length > 0) {
           break;
         }
@@ -55,7 +57,7 @@ export default {
     hoverIdsObject (newValue) {
       this.$store.commit('race/fleet/setHover', newValue);
     },
-    hoverLatLng () {
+    wrappedHoverLatLng () {
       this.updateHover();
     },
     fleetTime () {

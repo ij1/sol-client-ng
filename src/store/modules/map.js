@@ -27,4 +27,9 @@ export default {
       state.hoverLatLng = latLng;
     },
   },
+  getters: {
+    wrappedHoverLatLng: (state) => {
+      return (state.hoverLatLng !== null) ? state.hoverLatLng.wrap() : null;
+    },
+  },
 }
