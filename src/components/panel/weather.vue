@@ -24,9 +24,9 @@
         @change = "onSelectTimescale($event.target.value)"
       >
         <option
-          v-for = "(timescale, index) in weatherTimescales"
-          :value = "index"
-          :key = "index"
+          v-for = "timescale in activeTimescales"
+          :value = "timescale.idx"
+          :key = "timescale.idx"
         >
           {{ timescale.range | formatTimescale(fullTimescale) }}
         </option>
@@ -109,6 +109,19 @@ export default {
   },
 
   computed: {
+    activeTimescales () {
+      let res = [];
+      for (let i = 0; i < this.weatherTimescales.length; i++) {
+        if (this.weatherTimescales[i].range > this.fullTimescale) {
+          continue;
+        }
+        res.push({
+          idx: i,
+          ...this.weatherTimescales[i],
+        });
+      }
+      return res;
+    },
     fullTimescale () {
       return this.wxDataTimescale;
     },
