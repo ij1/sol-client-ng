@@ -130,8 +130,6 @@ export default {
     fetchAuthRaceinfo ({state, rootState, getters, rootGetters, commit, dispatch}) {
       /* Initialize time before boat/wx is fetched to avoid issues */
       const now = rootGetters['time/now']();
-      commit('boat/instruments/initTime', now, {root: true});
-      commit('weather/initTime', now, {root: true});
 
       const getDef = {
         url: "/webclient/auth_raceinfo_" + rootState.auth.raceId + ".xml",
@@ -145,6 +143,10 @@ export default {
         return;
       }
       commit('solapi/lock', 'raceinfo', {root: true});
+      if (!state.loaded) {
+        commit('boat/instruments/initTime', now, {root: true});
+        commit('weather/initTime', now, {root: true});
+      }
 
       dispatch('solapi/get', getDef, {root: true})
       .then(raceInfo => {
