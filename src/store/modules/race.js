@@ -2,7 +2,7 @@ import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
-import { degToRad, radToDeg, hToMsec, UTCToMsec } from '../../lib/utils.js';
+import { degToRad, radToDeg, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
 import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
 import { PROJECTION} from '../../lib/sol.js';
 
@@ -103,6 +103,42 @@ export default {
 
       return course;
     },
+    compareRaceInfo: (state) => (dispatch, raceInfo) => {
+      let changed = false;
+      if (state.startTime !== raceInfo.startTime) {
+        dispatch('notifications/add', {
+          text: 'Start time changed from ' +
+                msecToUTCString(state.startTime) + ' UTC to ' +
+                msecToUTCString(raceInfo.startTime) + ' UTC',
+        }, {root: true});
+        changed = true;
+      }
+      let sameCourse = true;
+      if (state.route.length !== raceInfo.course.route) {
+        sameCourse = false;
+      } else {
+        for (let i = 0; i < raceInfo.course.route.length; i++) {
+          const oldWp = state.route[i];
+          const newWp = raceInfo.course.route[i];
+          if (!oldWp.latLng.equalsTo(newWp.latLng) ||
+              (oldWp.side !== newWp.side)) {
+            sameCourse = false;
+            break;
+          }
+        }
+      }
+      if (!state.finish[0].equalsTo(raceInfo.course.finish[0]) ||
+          !state.finish[1].equalsTo(raceInfo.course.finish[1])) {
+        sameCourse = false;
+      }
+      if (!sameCourse) {
+        dispatch('notifications/add', {
+          text: 'Race course has changed!',
+        }, {root: true});
+        changed = true;
+      }
+      return changed;
+    },
     nextWaypoint: (state, getters, rootState) => {
       return state.route[rootState.boat.lastRoundedMark+1];
     },
@@ -153,6 +189,7 @@ export default {
         const boatType = raceInfo.boat.type;
         const polarRawData = raceInfo.boat.vpp;
         const chatroomsData = raceInfo.chatrooms.chatroom;
+        let changed = true;
         delete raceInfo.boat;
         delete raceInfo.chatrooms;
 
@@ -164,8 +201,12 @@ export default {
           commit('boat/setType', boatType, {root: true});
           commit('chatrooms/init', chatroomsData, {root: true});
           commit('boat/polar/set', polarRawData, {root: true});
+        } else {
+          changed = getters['compareRaceInfo'](dispatch, raceInfo);
         }
-        commit('init', raceInfo);
+        if (changed) {
+          commit('init', raceInfo);
+        }
 
         /* Start race API fetching */
         dispatch('boat/fetch', null, {root: true});
