@@ -127,7 +127,7 @@ export default {
   },
 
   actions: {
-    fetchAuthRaceinfo ({rootState, getters, rootGetters, commit, dispatch}) {
+    fetchAuthRaceinfo ({state, rootState, getters, rootGetters, commit, dispatch}) {
       /* Initialize time before boat/wx is fetched to avoid issues */
       const now = rootGetters['time/now']();
       commit('boat/instruments/initTime', now, {root: true});
@@ -148,20 +148,22 @@ export default {
 
       dispatch('solapi/get', getDef, {root: true})
       .then(raceInfo => {
+        const boatType = raceInfo.boat.type;
         const polarRawData = raceInfo.boat.vpp;
         const chatroomsData = raceInfo.chatrooms.chatroom;
-
-        commit('boat/setType', raceInfo.boat.type, {root: true});
-        commit('chatrooms/init', chatroomsData, {root: true});
-
         delete raceInfo.boat;
         delete raceInfo.chatrooms;
+
         raceInfo.startTime = UTCToMsec(raceInfo.start_time);
         delete raceInfo.start_time;
         raceInfo.course = getters['parseCourse'](raceInfo);
-        commit('init', raceInfo);
 
-        commit('boat/polar/set', polarRawData, {root: true});
+        if (!state.loaded) {
+          commit('boat/setType', boatType, {root: true});
+          commit('chatrooms/init', chatroomsData, {root: true});
+          commit('boat/polar/set', polarRawData, {root: true});
+        }
+        commit('init', raceInfo);
 
         /* Start race API fetching */
         dispatch('boat/fetch', null, {root: true});
