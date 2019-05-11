@@ -141,6 +141,10 @@ export default {
         useArrays: false,
         dataField: 'race',
       };
+      if (rootGetters['solapi/isLocked']('raceinfo')) {
+        return;
+      }
+      commit('solapi/lock', 'raceinfo', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
       .then(raceInfo => {
@@ -172,6 +176,9 @@ export default {
         }, {root: true});
         solapiRetryDispatch(dispatch, 'fetchAuthRaceinfo');
       })
+      .finally(() => {
+        commit('solapi/unlock', 'raceinfo', {root: true});
+      });
     },
     fetchRaceComponents({dispatch, getters, rootGetters}) {
       const now = rootGetters['time/now']();
