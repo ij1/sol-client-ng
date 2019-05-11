@@ -186,6 +186,7 @@ export default {
 
       dispatch('solapi/get', getDef, {root: true})
       .then(raceInfo => {
+        const loaded = state.loaded;
         const boatType = raceInfo.boat.type;
         const polarRawData = raceInfo.boat.vpp;
         const chatroomsData = raceInfo.chatrooms.chatroom;
@@ -197,7 +198,7 @@ export default {
         delete raceInfo.start_time;
         raceInfo.course = getters['parseCourse'](raceInfo);
 
-        if (!state.loaded) {
+        if (!loaded) {
           commit('boat/setType', boatType, {root: true});
           commit('chatrooms/init', chatroomsData, {root: true});
           commit('boat/polar/set', polarRawData, {root: true});
@@ -208,11 +209,13 @@ export default {
           commit('init', raceInfo);
         }
 
-        /* Start race API fetching */
-        dispatch('boat/fetch', null, {root: true});
-        dispatch('boat/steering/fetchDCs', null, {root: true});
         dispatch('weather/parseUpdateTimes', raceInfo.description, {root: true});
-        dispatch('weather/fetchInfo', null, {root: true});
+        /* Start race API fetching */
+        if (!loaded) {
+          dispatch('boat/fetch', null, {root: true});
+          dispatch('boat/steering/fetchDCs', null, {root: true});
+          dispatch('weather/fetchInfo', null, {root: true});
+        }
       })
       .catch(err => {
         commit('solapi/logError', {
