@@ -22,7 +22,7 @@
 
 <script>
 import L from 'leaflet';
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { degToRad, radToDeg } from '../../../lib/utils.js';
 import { roundToFixed, canvasAlignToPixelCenter } from '../../../lib/quirks.js';
 import { windToColor } from '../../../lib/sol.js';
@@ -114,10 +114,15 @@ export default {
       return Date.now();
     },
     overlayNeedRedraw () {
-      this.$store.state.boat.steering.visualSteering.twa;
+      this.visualSteeringTwa;
 
       return Date.now();
     },
+    ...mapState({
+      boatSpeed: state => state.boat.instruments.speed.value,
+      boatTwa: state => state.boat.instruments.twa.value,
+      visualSteeringTwa: state => state.boat.steering.visualSteering.twa,
+    }),
     ...mapGetters({
       boatTime: 'boat/time',
       bgCurves: 'boat/polar/staticCurves',
@@ -172,8 +177,8 @@ export default {
       ctx.lineWidth = 2;
       this.drawPolarCurve(ctx, this.fgCurve, this.gridScale);
 
-      const twa = Math.abs(this.$store.state.boat.instruments.twa.value);
-      const speed = this.$store.state.boat.instruments.speed.value;
+      const twa = Math.abs(this.boatTwa);
+      const speed = this.boatSpeed;
       const polarPos = this.polarCoords(twa, speed, this.gridScale);
 
       ctx.beginPath();
@@ -185,7 +190,7 @@ export default {
       this.drawOverlay();
     },
     drawOverlay () {
-      let twa = this.$store.state.boat.steering.visualSteering.twa;
+      let twa = this.visualSteeringTwa;
       let ctx = this.$refs.polaroverlay.getContext('2d');
       ctx.clearRect(0, 0, this.$refs.polaroverlay.width, this.$refs.polaroverlay.height);
       if (twa === null) {
