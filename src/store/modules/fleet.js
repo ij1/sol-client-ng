@@ -94,6 +94,7 @@ export default {
 
         latLng: boatData.latLng,
         wrappedLatLng: boatData.wrappedLatLng,
+        buddy: false,
         syc: false,
         country: null,
         trace: [boatData.wrappedLatLng],
@@ -111,6 +112,7 @@ export default {
           if (state.boat[idx].name !== boat.name) {
             state.boat[idx].name = boat.name;
             addToName2id(state, boat.name, id);
+            state.boat[idx].buddy = boat.buddy;
           }
 
           state.boat[idx].latLng = boat.latLng;
@@ -149,6 +151,7 @@ export default {
             distance: boat.distance,
             lastRoundedMark: boat.lastRoundedMark,
             log: boat.log,
+            buddy: boat.buddy,
             syc: false,
             country: null,
             trace: [boat.wrappedLatLng],
@@ -336,6 +339,7 @@ export default {
             boat.dtg = parseFloat(boat.dtg);
             boat.dbl = parseFloat(boat.dbl);
             boat.log = parseFloat(boat.log);
+            boat.buddy = (boat.name.charAt(0) === '@');
 
             boat.lastRoundedMark = parseInt(boat.current_leg);
             delete boat.current_leg;
@@ -348,7 +352,9 @@ export default {
             delete boat.color_R;
             delete boat.color_G;
             delete boat.color_B;
-            if (boat.ranking === 1) {
+            if (boat.buddy) {
+              boat.color = { r: 255, g: 204, b: 0 };
+            } else if (boat.ranking === 1) {
               boat.color = { r: 204, g: 0, b: 204 };
               leaderId = boat.id;
             }
