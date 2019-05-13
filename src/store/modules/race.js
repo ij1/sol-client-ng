@@ -2,7 +2,7 @@ import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
-import { degToRad, radToDeg, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
+import { degToRad, radToDeg, minToMsec, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
 import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
 import { PROJECTION} from '../../lib/sol.js';
 
@@ -15,6 +15,7 @@ export default {
 
   state: {
     loaded: false,
+    loadTime: 0,
     info: {},
     boundary: [],
     route: [],
@@ -29,6 +30,7 @@ export default {
       delete raceInfo.course;
       state.info = raceInfo;
       state.loaded = true;
+      state.loadTime = raceInfo.loadTime;
     },
     updateMessage (state, msg) {
       state.info.message = msg;
@@ -160,6 +162,27 @@ export default {
     isRaceStarted: (state, getters, rootState, rootGetters) => {
       return rootGetters['boat/time'] >= getters.towbackPeriod.end;
     },
+
+    nextTimeToFetch: (state) => {
+      if (state.loadTime >= state.info.startTime) {
+        return state.loadTime + hToMsec(6);
+      }
+
+      let delta = state.info.startTime - state.loadTime;
+      /* T-24h cross-over fetch at T-23h58min */
+      if ((delta > hToMsec(23)) && (delta - hToMsec(6) < hToMsec(24))) {
+        return state.info.startTime - hToMsec(23) - minToMsec(58);
+      }
+      if (delta > hToMsec(7)) {
+        return state.loadTime + hToMsec(6);
+      }
+      /* T-58min */
+      if (delta > minToMsec(58)) {
+        return state.info.startTime - minToMsec(58);
+      }
+      /* 15mins after the start */
+      return state.info.startTime + minToMsec(15);
+    }
   },
 
   actions: {
@@ -197,6 +220,7 @@ export default {
         raceInfo.startTime = UTCToMsec(raceInfo.start_time);
         delete raceInfo.start_time;
         raceInfo.course = getters['parseCourse'](raceInfo);
+        raceInfo.loadTime = now;
 
         if (!loaded) {
           commit('boat/setType', boatType, {root: true});
@@ -242,6 +266,9 @@ export default {
       }
       if (rootGetters['weather/nextTimeToFetch'] <= now) {
         dispatch('weather/fetchInfo', null, {root: true});
+      }
+      if (getters['nextTimeToFetch'] <= now) {
+        dispatch('fetchAuthRaceinfo');
       }
     },
   },
