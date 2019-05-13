@@ -81,6 +81,9 @@ export default {
         y: this.gridOrigoY + this.gridMaxKnots * this.gridScale + 1,
       };
     },
+    firstTwaDeg () {
+      return this.gridOrigoY / this.gridSize.y < 0.75 ? 20 : 10;
+    },
     topBorderWidth () {
       return Math.sqrt(Math.pow(this.gridMaxKnots * this.gridScale, 2) -
                        Math.pow(this.gridOrigoY, 2));
@@ -136,7 +139,8 @@ export default {
       ctx.translate(0, this.gridOrigoY);
       labelctx.translate(this.margin, this.gridOrigoY + this.margin);
 
-      this.drawGrid(ctx, labelctx);
+      this.drawGrid(ctx);
+      this.drawLabels(labelctx);
       for (let curve of this.bgCurves) {
         ctx.strokeStyle = windToColor(curve.knots);
         ctx.lineWidth = 2;
@@ -193,25 +197,65 @@ export default {
       ctx.stroke();
       ctx.restore();
     },
-    drawGrid (ctx, labelctx) {
-      ctx.strokeStyle = '#aaa';
-      ctx.lineWidth = 1;
-      labelctx.strokeStyle = '#000';
-      labelctx.font = '10px sans-serif';
 
+    drawGrid (ctx) {
+      ctx.lineWidth = 1;
+
+      ctx.strokeStyle = '#aaa';
       ctx.beginPath();
       ctx.moveTo(0, this.gridSize.y - this.gridOrigoY);
       ctx.lineTo(0, -this.gridOrigoY);
       ctx.lineTo(this.topBorderWidth, -this.gridOrigoY);
       ctx.stroke();
 
-      ctx.beginPath();
-      const firstTwad = this.gridOrigoY / this.gridSize.y < 0.75 ? 20 : 10;
-      for (let twad = firstTwad; twad <= 170; twad += 10) {
+      /* Apply gradient to the inner-most part of the line to keep a (near)
+       * constant intensity look to eye, otherwise the contracting lines
+       * look much darker than the rest of the grid.
+       */
+      let grad = ctx.createRadialGradient(0, 0, 0, 0, 0,
+                           this.gridIntervalKnots * this.gridScale);
+      grad.addColorStop(0, '#eee');
+      grad.addColorStop(1, '#aaa');
+      ctx.strokeStyle = grad;
+      for (let twad = this.firstTwaDeg; twad <= 170; twad += 10) {
         const twa = degToRad(twad);
-        const polarPos = this.polarCoords(twa, this.gridMaxKnots, this.gridScale);
+        const innerPolarPos = this.polarCoords(twa, this.gridIntervalKnots,
+                                               this.gridScale);
+        ctx.beginPath();
         ctx.moveTo(0, 0);
-        ctx.lineTo(polarPos.x, polarPos.y);
+        ctx.lineTo(innerPolarPos.x, innerPolarPos.y);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = '#aaa';
+      ctx.beginPath();
+      for (let twad = this.firstTwaDeg; twad <= 170; twad += 10) {
+        const twa = degToRad(twad);
+        const innerPolarPos = this.polarCoords(twa, this.gridIntervalKnots,
+                                               this.gridScale);
+        const outerPolarPos = this.polarCoords(twa, this.gridMaxKnots,
+                                               this.gridScale);
+        ctx.moveTo(innerPolarPos.x, innerPolarPos.y);
+        ctx.lineTo(outerPolarPos.x, outerPolarPos.y);
+      }
+      ctx.stroke();
+
+      let i = 1;
+      while (i * this.gridIntervalKnots <= this.gridMaxKnots) {
+        const r = i * this.gridIntervalKnots * this.gridScale;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 1.5 * Math.PI, 0.5 * Math.PI);
+        ctx.stroke();
+        i++;
+      }
+    },
+
+    drawLabels (labelctx) {
+      labelctx.strokeStyle = '#000';
+      labelctx.font = '10px sans-serif';
+
+      for (let twad = this.firstTwaDeg; twad <= 170; twad += 10) {
+        const twa = degToRad(twad);
         if (twa < this.topBorderTwa) {
           labelctx.textAlign = 'center';
           labelctx.textBaseline = 'bottom';
@@ -229,21 +273,18 @@ export default {
                             labelPos.y);
         }
       }
-      ctx.stroke();
 
       labelctx.textAlign = 'end';
       labelctx.textBaseline = 'middle';
       labelctx.fillText('kn', -5, 0);
-      ctx.beginPath();
       let i = 1;
       while (i * this.gridIntervalKnots <= this.gridMaxKnots) {
         const r = i * this.gridIntervalKnots * this.gridScale;
-        ctx.arc(0, 0, r, 1.5 * Math.PI, 0.5 * Math.PI);
         labelctx.fillText('' + (i * this.gridIntervalKnots), -5, r);
         i++;
       }
-      ctx.stroke();
     },
+
     clearHoverInfo () {
       this.hover.sog = null;
       this.hover.vmg = null;
