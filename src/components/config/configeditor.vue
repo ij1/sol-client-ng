@@ -9,7 +9,7 @@
     :can-submit = "canSubmit"
     v-if = "$store.state.ui.config.showEditor"
   >
-    <template slot = "extrabuttons">
+    <template v-slot:extrabuttons>
       <button
         type = "reset"
         @click.prevent = "resetToDefaults"

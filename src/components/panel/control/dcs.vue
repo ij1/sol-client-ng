@@ -16,12 +16,12 @@
       <button @click="doRefresh">Refresh</button>
     </div>
     <scrollable-table id = "dc-table">
-      <template slot = "headers">
+      <template v-slot:headers>
         <th>Time</th>
         <th>Type</th>
         <th>&deg;</th>
       </template>
-      <template slot = "dummydata">
+      <template v-slot:dummydata>
         <th>2000-01-01 00:00:00</th>
         <th>cog</th>
         <th>000.000</th>

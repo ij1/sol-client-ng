@@ -1,6 +1,6 @@
 <template>
   <scrollable-table id = "boatlist-table">
-    <template slot = "headers">
+    <template v-slot:headers>
       <th
         v-for = "column in visibleColumnsWithSort"
         :key = "column.dataField"
@@ -13,7 +13,7 @@
         {{column.thWithSort}}
       </th>
     </template>
-    <template slot = "dummydata">
+    <template v-slot:dummydata>
       <th
         v-for = "column in visibleColumnsWithSort"
         :key = "'d' + column.dataField"
