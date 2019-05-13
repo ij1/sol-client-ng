@@ -11,6 +11,7 @@
         class = "fleet-row"
         v-for = "boat in legendBoats"
         :key = "boat.id"
+        :class = "{ 'legend-hover': typeof hoverObj[boat.id] !== 'undefined' }"
       >
         <div
           class = "color-block"
@@ -84,6 +85,9 @@ export default {
 }
 .fleet-row {
   margin: 1px;
+}
+.legend-hover {
+  background-color: rgba(60, 60, 255, 0.25);
 }
 .color-block {
   display: inline-block;
