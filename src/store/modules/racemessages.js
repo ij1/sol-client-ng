@@ -63,6 +63,11 @@ export default {
         }
         commit('add', raceMessages.racemessage);
         commit('ui/setActiveTab', 4, {root: true});
+        /*
+         * This causes one unnecessary raceinfo fetch in start sequence
+         * when a race message is picked up but it should be harmless
+         */
+        dispatch('race/fetchRaceinfo', null, {root: true});
       })
       .catch(err => {
         commit('solapi/logError', {
