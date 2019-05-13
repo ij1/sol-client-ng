@@ -228,10 +228,16 @@ export default {
         commit('solapi/unlock', 'raceinfo', {root: true});
       });
     },
-    fetchRaceComponents({dispatch, getters, rootGetters}) {
+    fetchRaceComponents({state, dispatch, getters, rootGetters}) {
       const now = rootGetters['time/now']();
 
-      if (getters['fleet/nextTimeToFetch'] <= now) {
+      if ((getters['fleet/nextTimeToFetch'] <= now) ||
+          /*
+           * Fetch fleet immediately after the start of the tow-back period
+           * to avoid other boats lingering on sea.
+           */
+          (getters['isTowBackPeriod'] &&
+           state.fleet.fleetTime <= getters['towBackPeriod'][0])) {
         dispatch('fleet/fetchRace');
       }
       if (rootGetters['weather/nextTimeToFetch'] <= now) {
