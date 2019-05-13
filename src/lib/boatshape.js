@@ -1,22 +1,29 @@
-export const sailOffset = -6;
+const sailOffset = -6;
+const boatPath = new Path2D('M -3 11 C -5 7,-6 -1,0 -13 C 6 -1,5 7,3 11 Z');
+const sailPath = new Path2D('M 0 0 C -3 5,-3 12,0 17');
+const sailTwa0Path = new Path2D('M 0 0 L 0 17');
 
-function boatPathPos(x, y, scale) {
-  return (x * scale) + " " + (y * scale);
-}
+export function drawBoat(ctx, course, twa) {
+  const sangle = sailAngle(twa);
 
-export function boatPath (scale) {
-  return 'M ' + boatPathPos(-3, 11, scale) +
-    'C ' + boatPathPos(-5, 7, scale) + ',' + boatPathPos(-6, -1, scale) + ',' + boatPathPos(0, -13, scale) +
-    'C ' + boatPathPos(6, -1, scale) + ',' + boatPathPos(5, 7, scale) + ',' + boatPathPos(3, 11, scale) +
-    'Z';
-}
-
-export function sailPath (sailAngle, scale) {
-  const curvePar = Math.sign(sailAngle) * -3 * scale;
-  return 'M 0 0 ' +
-    'C ' + curvePar + ' ' + (5 * scale) +
-    ', ' + curvePar + ' ' + (12 * scale) +
-    ', 0 ' + (17 * scale);
+  ctx.rotate(course);
+  ctx.stroke(boatPath);
+  ctx.translate(0, sailOffset);
+  ctx.rotate(sangle);
+  if (twa < 0) {
+    ctx.scale(-1, 1);
+  }
+  if (twa === 0) {
+    ctx.stroke(sailTwa0Path);
+  } else {
+    ctx.stroke(sailPath);
+  }
+  if (sangle < 0) {
+    ctx.scale(-1, 1);
+  }
+  ctx.rotate(-sangle);
+  ctx.translate(0, -sailOffset);
+  ctx.rotate(-course);
 }
 
 /* FIXME:

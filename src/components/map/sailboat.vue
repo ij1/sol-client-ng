@@ -8,8 +8,7 @@
 </template>
 
 <script>
-import { radToDeg } from '../../lib/utils.js';
-import { boatPath, sailPath, sailAngle, sailOffset } from '../../lib/boatshape.js';
+import { drawBoat } from '../../lib/boatshape.js';
 import MarkerCanvas from './markercanvas.vue';
 
 export default {
@@ -50,12 +49,6 @@ export default {
       const size = 20 * this.scale;
       return [size, size];
     },
-    boatPath () {
-      return new Path2D(boatPath(this.scale));
-    },
-    sailPath () {
-      return new Path2D(sailPath(radToDeg(this.twa), this.scale));
-    },
     needsRedraw () {
       this.course;
       this.twa;
@@ -66,19 +59,10 @@ export default {
   methods: {
     draw (ctx) {
       ctx.strokeStyle = this.color;
-      ctx.lineWidth = this.strokeWidth;
-
-      ctx.rotate(this.course);
-      ctx.stroke(this.boatPath);
-
-      const sangle = sailAngle(this.twa);
-      ctx.translate(0, sailOffset);
-      ctx.rotate(sangle);
-      ctx.stroke(this.sailPath);
-      ctx.rotate(-sangle);
-      ctx.translate(0, -sailOffset);
-
-      ctx.rotate(-this.course);
+      ctx.lineWidth = this.strokeWidth / this.scale;
+      ctx.scale(this.scale, this.scale);
+      drawBoat(ctx, this.course, this.twa);
+      ctx.scale(1/this.scale, 1/this.scale);
     },
   },
 }

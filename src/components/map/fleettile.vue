@@ -3,7 +3,7 @@ import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { degToRad } from '../../lib/utils.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
-import { sailPath, sailAngle, sailOffset } from '../../lib/boatshape.js';
+import { drawBoat } from '../../lib/boatshape.js';
 
 export default {
   name: 'FleetTile',
@@ -39,7 +39,6 @@ export default {
     },
     _redraw (ctx) {
       let map = this.$parent.$parent.map;
-      const boatPath = this.$parent.$parent.boatPath;
       /* Anything > 1/2 boat size is fine */
       const halfsize = 40 / 2;
 
@@ -67,7 +66,6 @@ export default {
           if (Math.abs(twa) < degToRad(0.5)) {
             twa = 0;
           }
-          const sangle = sailAngle(twa);
 
           /* Practice marks */
           if ((boat.ranking === 9999) && boat.name.startsWith('Practice_Mark')) {
@@ -75,16 +73,8 @@ export default {
             ctx.fillStyle = 'rgb(255, 0, 255)';
             ctx.fill();
           } else {
-            ctx.rotate(boat.cog);
             ctx.strokeStyle = color;
-            ctx.stroke(boatPath);
-
-            ctx.translate(0, sailOffset);
-            ctx.rotate(sangle);
-            ctx.stroke(new Path2D(sailPath(sangle, 1)));
-            ctx.rotate(-sangle);
-            ctx.translate(0, -sailOffset);
-            ctx.rotate(-boat.cog);
+            drawBoat(ctx, boat.cog, twa);
           }
         } else {
           ctx.arc(0, 0, 2, 0, Math.PI * 2);
