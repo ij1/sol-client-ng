@@ -87,7 +87,7 @@ export default {
         if (typeof boatData.lmi !== 'undefined') {
           let lmi = parseInt(boatData.lmi);
           if (Number.isFinite(lmi)) {
-            commit('race/messages/updateExpected', lmi, {root: true});
+            dispatch('race/messages/updateExpected', lmi, {root: true});
           }
         }
 

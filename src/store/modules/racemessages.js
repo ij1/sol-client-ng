@@ -31,14 +31,11 @@ export default {
       }
       state.racemsgs = orderBy(state.racemsgs, 'lastUpdated', 'desc');
     },
-    updateExpected(state, expectedId) {
-      if (expectedId > state.expectedId) {
-        if (state.expectedId === state.lastId) {
-          this.dispatch('race/messages/fetch');
-        }
+    setExpected(state, expectedId) {
+      if (expectedId < state.expectedId) {
+        state.expectedId = expectedId;
       }
-      state.expectedId = expectedId;
-    }    
+    },
   },
 
   actions: {
@@ -81,6 +78,14 @@ export default {
           solapiRetryDispatch(dispatch, 'fetch', undefined, 1000);
         }
       });
+    },
+    updateExpected({state, commit, dispatch}, expectedId) {
+      if (expectedId > state.expectedId) {
+        if (state.expectedId === state.lastId) {
+          dispatch('fetch');
+        }
+      }
+      commit('setExpected', expectedId);
     },
   },
 }
