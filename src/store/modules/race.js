@@ -107,30 +107,30 @@ export default {
     },
     compareRaceInfo: (state) => (dispatch, raceInfo) => {
       let changed = false;
-      if (state.startTime !== raceInfo.startTime) {
+      if (state.info.startTime !== raceInfo.startTime) {
         dispatch('notifications/add', {
           text: 'Start time changed from ' +
-                msecToUTCString(state.startTime) + ' UTC to ' +
+                msecToUTCString(state.info.startTime) + ' UTC to ' +
                 msecToUTCString(raceInfo.startTime) + ' UTC',
         }, {root: true});
         changed = true;
       }
       let sameCourse = true;
-      if (state.route.length !== raceInfo.course.route) {
+      if (state.route.length !== raceInfo.course.route.length) {
         sameCourse = false;
       } else {
         for (let i = 0; i < raceInfo.course.route.length; i++) {
           const oldWp = state.route[i];
           const newWp = raceInfo.course.route[i];
-          if (!oldWp.latLng.equalsTo(newWp.latLng) ||
+          if (!oldWp.latLng.equals(newWp.latLng) ||
               (oldWp.side !== newWp.side)) {
             sameCourse = false;
             break;
           }
         }
       }
-      if (!state.finish[0].equalsTo(raceInfo.course.finish[0]) ||
-          !state.finish[1].equalsTo(raceInfo.course.finish[1])) {
+      if (!state.finish[0].equals(raceInfo.course.finish[0]) ||
+          !state.finish[1].equals(raceInfo.course.finish[1])) {
         sameCourse = false;
       }
       if (!sameCourse) {
