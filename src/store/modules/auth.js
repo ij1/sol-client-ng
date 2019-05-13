@@ -35,7 +35,7 @@ export default {
         }
         authParams.token = response.token
         commit('loggedIn', authParams);
-        dispatch('race/fetchAuthRaceinfo', null, {root: true});
+        dispatch('race/fetchRaceinfo', null, {root: true});
       })
       .catch(err => {
         commit('solapi/logError', {

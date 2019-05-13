@@ -186,7 +186,7 @@ export default {
   },
 
   actions: {
-    fetchAuthRaceinfo ({state, rootState, getters, rootGetters, commit, dispatch}) {
+    fetchRaceinfo ({state, rootState, getters, rootGetters, commit, dispatch}) {
       /* Initialize time before boat/wx is fetched to avoid issues */
       const now = rootGetters['time/now']();
 
@@ -246,7 +246,7 @@ export default {
           apiCall: 'raceinfo',
           error: err,
         }, {root: true});
-        solapiRetryDispatch(dispatch, 'fetchAuthRaceinfo');
+        solapiRetryDispatch(dispatch, 'fetchRaceinfo');
       })
       .finally(() => {
         commit('solapi/unlock', 'raceinfo', {root: true});
@@ -268,7 +268,7 @@ export default {
         dispatch('weather/fetchInfo', null, {root: true});
       }
       if (getters['nextTimeToFetch'] <= now) {
-        dispatch('fetchAuthRaceinfo');
+        dispatch('fetchRaceinfo');
       }
     },
   },
