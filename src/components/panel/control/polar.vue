@@ -307,7 +307,9 @@ export default {
       this.clearHoverInfo();
     },
     recalculateMaxWidth () {
-      this.maxWidth = this.$refs['polar-container'].clientWidth - this.margin * 2;
+      this.maxWidth = Math.max(this.$refs['polar-container'].clientWidth -
+                               this.margin * 2,
+                               180);
       this.draw();
     },
     onResize () {
