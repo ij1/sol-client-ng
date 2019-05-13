@@ -1,14 +1,14 @@
 <template>
   <l-control
-    id = "fleet-info-ctrl"
+    id = "legend-info-ctrl"
     :position = "'bottomleft'"
   >
     <div
       v-if = "combinedIds.length > 0"
-      id = "fleet-info"
+      id = "legend-info"
     >
       <div
-        class = "fleet-row"
+        class = "legend-row"
         v-for = "boat in legendBoats"
         :key = "boat.id"
         :class = "{ 'legend-hover': typeof hoverObj[boat.id] !== 'undefined' }"
@@ -74,16 +74,16 @@ export default {
 </script>
 
 <style scoped>
-#fleet-info-ctrl {
+#legend-info-ctrl {
   pointer-events: none;
   margin: 2px;
 }
-#fleet-info {
+#legend-info {
   text-align: left;
   margin: 2px;
   font-size: 10px;
 }
-.fleet-row {
+.legend-row {
   margin: 1px;
 }
 .legend-hover {
