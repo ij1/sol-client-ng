@@ -53,6 +53,8 @@ export default {
         vmg: null,
         twa: null,
       },
+
+      animFrame: null,
     }
   },
   computed: {
@@ -154,9 +156,13 @@ export default {
       this.$refs.polaroverlay.width = this.gridSize.x;
       this.$refs.polaroverlay.height = this.gridSize.y;
 
-      this.drawFg();
+      this._drawFg();
     },
     drawFg () {
+      this.animFrame = null;
+      this._drawFg();
+    },
+    _drawFg () {
       let ctx = this.$refs.polarfg.getContext('2d');
       ctx.clearRect(0, 0, this.$refs.polarfg.width, this.$refs.polarfg.height);
       ctx.save();
@@ -324,7 +330,9 @@ export default {
       this.drawOverlay();
     },
     fgNeedRedraw () {
-      this.drawFg();
+      if (this.animFrame === null) {
+        this.animFrame = L.Util.requestAnimFrame(this.drawFg, this);
+      }
     },
     bgNeedRedraw () {
       this.draw();
@@ -338,6 +346,9 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.onResize);
+    if (this.animFrame != null) {
+      L.Util.cancelAnimFrame(this.animFrame);
+    }
   },
 }
 </script>
