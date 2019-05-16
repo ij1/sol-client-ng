@@ -25,6 +25,11 @@ export default {
     lastRoundedMark: 0,
     finishTime: null,
     currentSteering: 'twa',
+    /*
+     * Stores the visual offset (multiple of 360) that brings the boat
+     * closest to the map center.
+     */
+    visualLngOffset: 0,
   },
 
   mutations: {
@@ -48,6 +53,21 @@ export default {
     setType (state, type) {
       state.type = type;
     },
+    updateLngOffset (state, centerLng) {
+      let newOffset = 0;
+      if (state.position !== null) {
+        const minTurn = minTurnAngle(degToRad(centerLng),
+                                     degToRad(state.position.lng));
+        const endLng = centerLng + radToDeg(minTurn);
+        /* CHECKME: What about centerLng exactly at 180? */
+        if (Math.abs(endLng) >= 180) {
+          newOffset = Math.sign(endLng) * 360;
+        }
+      }
+      if (state.visualLngOffset != newOffset) {
+        state.visualLngOffset = newOffset;
+      }
+    },
   },
 
   getters: {
@@ -60,10 +80,8 @@ export default {
       if (state.position === null) {
         return null;
       }
-      const minTurn = minTurnAngle(degToRad(rootState.map.center.lng),
-                                   degToRad(state.position.lng));
       return L.latLng(state.position.lat,
-                      rootState.map.center.lng + radToDeg(minTurn));
+                      state.position.lng + state.visualLngOffset);
     },
   },
 
@@ -92,6 +110,7 @@ export default {
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
         commit('race/fleet/initMyBoat', boatData.boat, {root: true});
         commit('updateBoat', boatData.boat);
+        commit('updateLngOffset', rootState.map.center.lng);
         dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
         commit('weather/minTime', state.instruments.time.value, {root: true});
 

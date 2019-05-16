@@ -143,11 +143,13 @@ export default {
   methods: {
     updateView() {
       this.touched = true;
+      const center = this.map.getCenter();
       this.$store.commit('map/setView', {
-        center: this.map.getCenter(),
+        center: center,
         zoom: this.map.getZoom(),
         bounds: this.map.getBounds(),
       });
+      this.$store.commit('boat/updateLngOffset', center.lng);
     },
     setSize () {
       this.$store.commit('map/setSize', {
