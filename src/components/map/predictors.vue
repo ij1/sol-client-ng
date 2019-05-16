@@ -138,6 +138,11 @@ export default {
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
+    boatDataUpdated () {
+      this.boatTime;
+      this.visualPosition;
+      return Date.now();
+    },
     ...mapGetters({
       boatTime: 'boat/time',
       visualPosition: 'boat/visualPosition',
@@ -330,7 +335,7 @@ export default {
     },
   },
   watch: {
-    boatTime () {
+    boatDataUpdated () {
       this.recalc();
     },
     wxUpdated () {
