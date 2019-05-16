@@ -133,7 +133,6 @@ export default {
       this.wxUpdated;
       this.plottedDcDelay;
       this.cfgPredictors;
-      this.visualPosition;
 
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
