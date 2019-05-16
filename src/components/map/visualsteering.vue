@@ -1,7 +1,7 @@
 <template>
   <l-layer-group>
     <sail-boat
-      :lat-lng = "boatPosition"
+      :lat-lng = "visualPosition"
       :scale = "3"
       :color = "color"
       :course = "cog"
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
@@ -67,10 +67,10 @@ export default {
   },
   computed: {
     target () {
-      return (this.hoverLatLng !== null) ? this.hoverLatLng : this.boatPosition;
+      return (this.hoverLatLng !== null) ? this.hoverLatLng : this.visualPosition;
     },
     steerLine () {
-      return [this.boatPosition, this.target];
+      return [this.visualPosition, this.target];
     },
     cog () {
       return this.calcBearing(this.target).bearing;
@@ -95,11 +95,13 @@ export default {
       }
     },
     ...mapState({
-      boatPosition: state => state.boat.position,
       twd: state => state.boat.instruments.twd.value,
       tws: state => state.boat.instruments.tws.value,
       showPolar: state => state.boat.steering.visualSteering.showPolar,
       hoverLatLng: state => state.map.hoverLatLng,
+    }),
+    ...mapGetters({
+      visualPosition: 'boat/visualPosition',
     }),
   },
   methods: {
@@ -119,7 +121,7 @@ export default {
       const z = this.map.getZoom();
 
       const targetProj = this.map.project(target, z).round();
-      const boatProj = this.map.project(this.boatPosition, z).round();
+      const boatProj = this.map.project(this.visualPosition, z).round();
       const dx = targetProj.x - boatProj.x;
       const dy = targetProj.y - boatProj.y;
       return {

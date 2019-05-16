@@ -42,10 +42,10 @@ export default {
     boatOrigo () {
       const z = this.zoom;
 
-      if (this.$store.state.boat.position === null) {
+      if (this.visualPosition === null) {
         return this.viewOrigo;
       }
-      return this.$parent.map.project(this.$store.state.boat.position, z).round();
+      return this.$parent.map.project(this.visualPosition, z).round();
     },
     currentSteering () {
       return this.$store.state.boat.currentSteering;
@@ -133,12 +133,14 @@ export default {
       this.wxUpdated;
       this.plottedDcDelay;
       this.cfgPredictors;
+      this.visualPosition;
 
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
     ...mapGetters({
       boatTime: 'boat/time',
+      visualPosition: 'boat/visualPosition',
     }),
     ...mapState({
       wxLoaded: state => state.weather.loaded,
@@ -227,7 +229,7 @@ export default {
     cogCalc () {
       let t = this.boatTime;
       const endTime = t + hToMsec(this.predictorLen);
-      let lastLatLng = this.$store.state.boat.position;
+      let lastLatLng = this.visualPosition;
 
       let cogPred = {
         time: t,
@@ -264,7 +266,7 @@ export default {
     twaCalc () {
       let t = this.boatTime;
       const endTime = t + hToMsec(this.predictorLen);
-      let lastLatLng = this.$store.state.boat.position;
+      let lastLatLng = this.visualPosition;
 
       let twaPred = {
         time: t,

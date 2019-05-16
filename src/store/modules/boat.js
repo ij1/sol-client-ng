@@ -1,5 +1,6 @@
 import L from 'leaflet';
-import { UTCToMsec } from '../../lib/utils.js';
+import { radToDeg, degToRad, UTCToMsec } from '../../lib/utils.js';
+import { minTurnAngle } from '../../lib/nav.js';
 import polarModule from './polar';
 import steeringModule from './steering';
 import instrumentModule from './instruments';
@@ -53,6 +54,16 @@ export default {
     time: (state) => {
       // CHECKME: is it ok to access submodule state like this (it works)
       return state.instruments.time.value;
+    },
+    /* FIXME: This fires too often during pan causing unnecessary processing */
+    visualPosition: (state, getters, rootState) => {
+      if (state.position === null) {
+        return null;
+      }
+      const minTurn = minTurnAngle(degToRad(rootState.map.center.lng),
+                                   degToRad(state.position.lng));
+      return L.latLng(state.position.lat,
+                      rootState.map.center.lng + radToDeg(minTurn));
     },
   },
 

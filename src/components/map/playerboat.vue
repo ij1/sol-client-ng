@@ -1,7 +1,7 @@
 <template>
   <l-layer-group v-if = "boatId !== null">
     <sail-boat
-      :lat-lng="boatPosition"
+      :lat-lng="visualPosition"
       :course = "course"
       :twa = "twa"
       :color = "'#ff00ff'"
@@ -9,7 +9,7 @@
       :strokeWidth = "2"
     />
     <map-polar
-      :lat-lng="boatPosition"
+      :lat-lng="visualPosition"
       :twd = "twd"
       :show-polar = "showPolar"
     />
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup } from 'vue2-leaflet';
 import SailBoat from './sailboat.vue';
 import MapPolar from './mappolar.vue';
@@ -38,12 +38,14 @@ export default {
     },
     ...mapState({
       boatId: state => state.boat.id,
-      boatPosition: state => state.boat.position,
       course: state => state.boat.instruments.course.value,
       twa: state => state.boat.instruments.twa.value,
       twd: state => state.boat.instruments.twd.value,
       steeringPolar: state => state.boat.steering.visualSteering.showPolar,
       alwaysShowPolar: state => state.boat.instruments.cfg.visualizePolar.value,
+    }),
+    ...mapGetters({
+      visualPosition: 'boat/visualPosition',
     }),
   },
 }
