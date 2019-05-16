@@ -75,8 +75,7 @@ export default {
       // CHECKME: is it ok to access submodule state like this (it works)
       return state.instruments.time.value;
     },
-    /* FIXME: This fires too often during pan causing unnecessary processing */
-    visualPosition: (state, getters, rootState) => {
+    visualPosition: (state) => {
       if (state.position === null) {
         return null;
       }
