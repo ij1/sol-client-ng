@@ -27,6 +27,7 @@
           :boat-list = "boatList"
           :initial-selected = "selectedList"
           :hover-list = "hoverList"
+          :enable-hover = "true"
           @select = "selectBoat"
           @input = "updateSelection"
         />

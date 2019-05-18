@@ -32,6 +32,8 @@
       }"
       @mousedown.prevent
       @click.prevent = "selectBoat(index, $event)"
+      @mouseover = "hoverBoat(index, $event)"
+      @mouseout = "clearHover()"
     >
       <td
         v-for = "column in visibleColumnsWithSort"
@@ -88,6 +90,10 @@ export default {
     hoverList: {
       type: Object,
       default: () => ({}),
+    },
+    enableHover: {
+      type: Boolean,
+      default: false,
     },
   },
   data () {
@@ -232,6 +238,21 @@ export default {
       }
       this.$emit('input', this.selected);
       this.lastClicked = id;
+    },
+    hoverBoat (index) {
+      if (!this.enableHover) {
+        return;
+      }
+      const id = this.sortedBoatList[index].id;
+      let obj = {};
+      obj['' + id] = true;
+      this.$store.commit('race/fleet/setHover', obj);
+    },
+    clearHover () {
+      if (!this.enableHover) {
+        return;
+      }
+      this.$store.commit('race/fleet/setHover', {});
     },
   },
 }
