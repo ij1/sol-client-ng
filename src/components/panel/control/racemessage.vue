@@ -60,5 +60,6 @@ export default {
   padding-bottom: 5px;
   border-bottom: 1px;
   font-size: 11px;
+  overflow-wrap: break-word;
 }
 </style>
