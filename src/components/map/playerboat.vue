@@ -14,6 +14,7 @@
       :show-polar = "showPolar"
     />
     <boat-trace :id = "boatId"/>
+    <boat-trace :id = "boatId" :lng-offset = "-360"/>
   </l-layer-group>
 </template>
 
