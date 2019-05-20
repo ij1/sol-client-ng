@@ -45,7 +45,7 @@ export default {
       const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
       const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
       const ne = map.project(latLngBounds.getNorthEast(), this.coords.z);
-      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.coords.z, halfsize);
+      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.zoom, halfsize);
 
       ctx.save();
       let prev = L.point(0, 0);
