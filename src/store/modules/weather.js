@@ -189,25 +189,24 @@ export default {
       if (state.data.boundary === null) {
         return undefined;
       }
+      const wxLat = latLng.lat;
       /* De-wrap if longitude < origo because the wx boundary of the source
        * data is not-wrapped when crossing the anti-meridian
        */
-      const wxLatLng = L.latLng(latLng.lat,
-                                latLng.lng +
-                                (latLng.lng < state.data.origo[1] ? 360 : 0));
+      const wxLng = latLng.lng + (latLng.lng < state.data.origo[1] ? 360 : 0);
       /*
        * .contains() doesn't prevent access to undefined item at race boundary
        * so we have to do the checks manually. Lng is linearized above, thus
        * only >= check is needed for it.
        */
-      if ((wxLatLng.lng >= state.data.boundary.getNorthEast().lng) ||
-          (wxLatLng.lat < state.data.boundary.getSouthWest().lat) ||
-          (wxLatLng.lat >= state.data.boundary.getNorthEast().lat)) {
+      if ((wxLng >= state.data.boundary.getNorthEast().lng) ||
+          (wxLat < state.data.boundary.getSouthWest().lat) ||
+          (wxLat >= state.data.boundary.getNorthEast().lat)) {
         return undefined;
       }
 
-      const lonIdx = Math.floor((wxLatLng.lng - state.data.origo[1]) / state.data.increment[1]);
-      const latIdx = Math.floor((wxLatLng.lat - state.data.origo[0]) / state.data.increment[0]);
+      const lonIdx = Math.floor((wxLng - state.data.origo[1]) / state.data.increment[1]);
+      const latIdx = Math.floor((wxLat - state.data.origo[0]) / state.data.increment[0]);
       let timeIdx = getters.timeIndex;
       let timeVal = state.time;
 
@@ -220,7 +219,7 @@ export default {
       let firstRes = [[], []];
       const firstFactor = interpolateFactor(
         latIdx * state.data.increment[0] + state.data.origo[0],
-        wxLatLng.lat,
+        wxLat,
         (latIdx + 1) * state.data.increment[0] + state.data.origo[0]
       );
       for (let t = 0; t <= 1; t++) {
@@ -237,7 +236,7 @@ export default {
       let secondRes = [];
       const secondFactor = interpolateFactor(
         lonIdx * state.data.increment[1] + state.data.origo[1],
-        wxLatLng.lng,
+        wxLng,
         (lonIdx + 1) * state.data.increment[1] + state.data.origo[1]
       );
       for (let t = 0; t <= 1; t++) {
