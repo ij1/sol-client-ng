@@ -327,7 +327,6 @@ export default {
                   lat: boat.latLng.lat,
                   id: boat.id,
                 };
-                searchItem.latLng = L.latLng(searchItem.lat, searchItem.lng);
                 Object.freeze(searchItem);
                 searchData.push(searchItem);
               }
