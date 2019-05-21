@@ -137,6 +137,9 @@ export default {
           apiCall: 'boat',
           error: err,
         }, {root: true});
+
+        /* Backup fetch if boat API is down, still try the others */
+        dispatch('race/fetchRaceComponents', null, {root: true});
       })
       .finally(() => {
         solapiRetryDispatch(dispatch, 'fetch', undefined, 10000);
