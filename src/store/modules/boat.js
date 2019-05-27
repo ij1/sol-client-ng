@@ -104,6 +104,7 @@ export default {
         boatData.boat.time = now;
         let chatData = boatData.chats;
         chatData.id = nextChatroom;
+        chatData.fetchTimestamp = now;
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
@@ -127,6 +128,8 @@ export default {
           }
           commit('chatrooms/updateRoom', chatData, {root: true});
           commit('chatrooms/mapBoatIds', rootState.race.fleet.name2id, {root: true});
+        } else {
+          commit('chatrooms/markFetch', chatData, {root: true});
         }
         commit('chatrooms/nextRoom', null, {root: true});
 

@@ -27,6 +27,7 @@ export default {
           name: chatroom.name,
           msgs: [],
           timestamp: 0,
+          lastFetched: 0,
           boatIdsMapped: true,
         });
       }
@@ -43,7 +44,11 @@ export default {
       newMsgs = orderBy(newMsgs.concat(state.rooms[data.id].msgs), 't', 'desc');
       state.rooms[data.id].msgs = newMsgs;
       state.rooms[data.id].timestamp = data.timestamp;
+      state.rooms[data.id].lastFetched = data.fetchTimestamp;
       state.rooms[data.id].boatIdsMapped = false;
+    },
+    markFetch (state, data) {
+      state.rooms[data.id].lastFetched = data.fetchTimestamp;
     },
 
     mapBoatIds (state, name2boatId) {
