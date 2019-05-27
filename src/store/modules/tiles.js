@@ -2,6 +2,7 @@ import Vue from 'vue';
 import L from 'leaflet';
 import { secToMsec } from '../../lib/utils.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
+import { lowPrioTask } from '../../lib/lowprio.js';
 
 function tileIdToKey(id) {
   return id.l + ':' + id.x + ':' + id.y;
@@ -120,7 +121,7 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .then(data => {
+      .then(async (data) => {
         let geoms = {};
 
         if (typeof data.cell[0].poly !== 'undefined') {
@@ -143,6 +144,7 @@ export default {
           key: key,
           geoms: geoms,
         });
+        await lowPrioTask.idle();
       })
       .catch(err => {
         commit('solapi/logError', {
