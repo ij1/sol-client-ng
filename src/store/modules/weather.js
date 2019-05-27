@@ -2,6 +2,7 @@ import L from 'leaflet';
 import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
 import { UVToWind } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
+import { lowPrioTask } from '../../lib/lowprio.js';
 
 function wxLinearInterpolate(factor, startData, endData) {
   return [
@@ -339,7 +340,7 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .then(weatherData => {
+      .then(async (weatherData) => {
         const firstWeather = (state.data.updated === null);
 
         let boundary = L.latLngBounds(
@@ -398,6 +399,7 @@ export default {
             windFrame.push(Object.freeze(windRow));
           }
           windMap.push(Object.freeze(windFrame));
+          await lowPrioTask.idle();
         }
         windMap = Object.freeze(windMap);
 
