@@ -50,7 +50,7 @@
       <form @submit.prevent="sendChatMessage">
         <div>
           <textarea
-            v-model="myMessage"
+            v-model="messageDraft"
             class="chat-channel-input-box"
             @keydown.enter.exact.prevent = "sendChatMessage"
           ></textarea>
@@ -93,7 +93,6 @@ export default {
 
   data () {
     return {
-      myMessage: "",
       dummyBoat: {
         syc: false,
         country: null,
@@ -102,6 +101,23 @@ export default {
   },
 
   computed: {
+    messageDraft: {
+      get () {
+        for (let room of this.$store.state.chatrooms.activeRooms) {
+          if (room.roomKey === this.roomKey) {
+            return room.messageDraft;
+          }
+        }
+        /* Should never be reached */
+        return '';
+      },
+      set (value) {
+        this.$store.commit('chatrooms/setMessageDraft', {
+          roomKey: this.roomKey,
+          message: value,
+        });
+      },
+    },
     msgs () {
       let res = [];
       /* Dummy dep */
@@ -117,14 +133,14 @@ export default {
       return res;
     },
     canSend () {
-      return (this.myMessage.trim().length > 0);
+      return (this.messageDraft.trim().length > 0);
     },
     canClose () {
       return this.$store.state.chatrooms.activeRooms.length > 1;
     },
     /* Trim, force all consecutive newline chars into singular '\n' */
     myStringClean () {
-      return this.myMessage.trim().replace(/[\n\r][\n\r]*/g, '\n');
+      return this.messageDraft.trim().replace(/[\n\r][\n\r]*/g, '\n');
     },
     boatTimeString () {
       return msecToUTCDateString(this.boatTime);
@@ -157,7 +173,7 @@ export default {
         room_id: this.roomId,
         text: this.myStringClean,
       });
-      this.myMessage = '';
+      this.messageDraft = '';
     },
     onClose () {
       if (this.canClose) {

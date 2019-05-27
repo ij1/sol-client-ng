@@ -33,6 +33,7 @@ export default {
       state.activeRooms = [{
         roomKey: state.roomKey++,
         id: '1',
+        messageDraft: '',
       }];
     },
 
@@ -76,6 +77,7 @@ export default {
       state.activeRooms.push({
         roomKey: state.roomKey++,
         id: room,
+        messageDraft: '',
       });
     },
     closeRoom(state, roomKey) {
@@ -90,6 +92,14 @@ export default {
       for (let i = 0; i < state.activeRooms.length; i++) {
         if (state.activeRooms[i].roomKey === roomInfo.roomKey) {
           state.activeRooms[i].id = roomInfo.newRoom;
+          return;
+        }
+      }
+    },
+    setMessageDraft(state, msgInfo) {
+      for (let i = 0; i < state.activeRooms.length; i++) {
+        if (state.activeRooms[i].roomKey === msgInfo.roomKey) {
+          state.activeRooms[i].messageDraft = msgInfo.message;
           return;
         }
       }
