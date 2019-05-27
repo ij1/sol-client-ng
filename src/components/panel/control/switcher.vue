@@ -24,9 +24,7 @@
         </keep-alive>
       </div>
       <div v-if="activeTab === 3" class="control-panel-content">
-        <keep-alive>
-          <control-chats/>
-        </keep-alive>
+        <control-chats/>
       </div>
       <div v-if="activeTab === 4" class="control-panel-content">
         <keep-alive>
