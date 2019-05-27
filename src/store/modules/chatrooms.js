@@ -11,7 +11,6 @@ export default {
     rooms: {},
     activeRooms: [],
     roomKey: 0,
-    nextRoomIndex: -1,
     pendingMessages: [],
     lastSentStamp: 0,
     retryTimer: 1000,
@@ -35,7 +34,6 @@ export default {
         roomKey: state.roomKey++,
         id: '1',
       }];
-      state.nextRoomIndex = 0;
     },
 
     updateRoom (state, data) {
@@ -74,14 +72,6 @@ export default {
       }
     },
 
-    nextRoom(state) {
-      /* Update round-robin room fetch index */
-      state.nextRoomIndex++;
-      if (state.nextRoomIndex === state.activeRooms.length) {
-        state.nextRoomIndex = 0;
-      }
-    },
-
     addRoom(state, room) {
       state.activeRooms.push({
         roomKey: state.roomKey++,
@@ -92,15 +82,6 @@ export default {
       for (let i = 0; i < state.activeRooms.length; i++) {
         if (state.activeRooms[i].roomKey === roomKey) {
           state.activeRooms.splice(i, 1);
-
-          /* Fix index as element was removed */
-          if (i > state.nextRoomIndex) {
-            state.nextRoomIndex--;
-          }
-          /* At the last element (that got removed) handling */
-          if (state.nextRoomIndex >= state.activeRooms.length) {
-            state.nextRoomIndex = 0;
-          }
           return;
         }
       }
@@ -131,7 +112,15 @@ export default {
      * boat API call
      */
     nextRoomToFetch(state) {
-      return state.activeRooms[state.nextRoomIndex].id;
+      let fetchId = '1';
+      let minTime = Number.MAX_VALUE;
+      for (let active of state.activeRooms) {
+        if (state.rooms[active.id].lastFetched < minTime) {
+          fetchId = active.id;
+          minTime = state.rooms[active.id].lastFetched;
+        }
+      }
+      return fetchId;
     },
   },
 

@@ -131,7 +131,6 @@ export default {
         } else {
           commit('chatrooms/markFetch', chatData, {root: true});
         }
-        commit('chatrooms/nextRoom', null, {root: true});
 
         dispatch('race/fetchRaceComponents', null, {root: true});
       })
