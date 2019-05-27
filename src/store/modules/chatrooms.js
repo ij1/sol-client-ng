@@ -21,7 +21,7 @@ export default {
       for (let i = 0; i < chatroomsInfo.length; i++) {
         // FIXME: should probably just merge attributes in solapi call
         const chatroom = chatroomsInfo[i].$;
-          Vue.set(state.rooms, chatroom.id, {
+        Vue.set(state.rooms, chatroom.id, {
           id: chatroom.id,
           name: chatroom.name,
           msgs: [],
