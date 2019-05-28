@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import L from 'leaflet';
 import { windToColor } from '../../lib/sol.js';
 import { radToDeg } from '../../lib/utils.js';
@@ -30,14 +30,12 @@ export default {
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
+      wxTime: state => state.weather.time,
       center: state => state.map.center,
       gridInterval: state => state.weather.cfg.gridInterval.value,
       cfgArrowsBarbs: state => state.weather.cfg.arrowsBarbs.value,
       cfgTwsTxt: state => state.weather.cfg.twsTxt.value,
       cfgTwdTxt: state => state.weather.cfg.twdTxt.value,
-    }),
-    ...mapGetters({
-      wxTime: 'weather/time',
     }),
   },
   methods: {

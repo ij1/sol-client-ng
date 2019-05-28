@@ -144,11 +144,11 @@ export default {
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
+      wxTime: state => state.weather.time,
       wxUpdatedTime: state => state.weather.data.updated,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
-      wxTime: 'weather/time',
       wxDataTimescale: 'weather/dataTimescale',
     }),
   },

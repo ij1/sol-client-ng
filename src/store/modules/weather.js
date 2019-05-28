@@ -140,9 +140,6 @@ export default {
   },
 
   getters: {
-    time: (state) => {
-      return state.time;
-    },
     lastTimestamp: (state) => {
       return state.data.timeSeries[state.data.timeSeries.length - 1];
     },
