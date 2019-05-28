@@ -32,7 +32,7 @@
         </option>
       </select>
       <span>(Issued
-        {{ wxUpdatedTime | formatTime }}):
+        {{ wxUpdated | formatTime }}):
         {{ wxTime | formatTime }}
         (+{{ timeOffset | formatOffset }})
       </span>
@@ -145,7 +145,7 @@ export default {
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       wxTime: state => state.weather.time,
-      wxUpdatedTime: state => state.weather.data.updated,
+      wxUpdated: state => state.weather.data.updated,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
