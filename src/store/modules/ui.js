@@ -1,4 +1,5 @@
 import boatlistsModule from './boatlists.js';
+import { configSetValue } from '../../components/config/configstore.js';
 
 export default {
   namespaced: true,
@@ -13,6 +14,13 @@ export default {
     config: {
       loaded: false,
       showEditor: false,
+    },
+    cfg: {
+      gcMode: {
+        value: true,
+        type: 'boolean',
+        cfgText: 'Use great-circle distance',
+      },
     },
   },
 
@@ -35,5 +43,6 @@ export default {
     configLoaded(state) {
       state.config.loaded = true;
     },
+    configSetValue,
   },
 }

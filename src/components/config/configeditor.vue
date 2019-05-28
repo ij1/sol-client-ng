@@ -76,6 +76,12 @@ export default {
     configDef () {
       return [
         {
+          title: 'General',
+          cfgs: {
+            base: 'ui',
+          },
+        },
+        {
           title: 'Weather',
           cfgs: {
             base: 'weather',

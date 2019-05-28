@@ -20,7 +20,7 @@ import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
-import { gcCalc } from '../../lib/nav.js';
+import { gcCalc, loxoCalc } from '../../lib/nav.js';
 import { EARTH_R } from '../../lib/sol.js';
 
 export default {
@@ -56,14 +56,19 @@ export default {
       if (this.boatPosition.equals(this.wrappedHoverLatLng)) {
         return '0nm';
       }
-      const gcPath = gcCalc(this.boatPosition, this.wrappedHoverLatLng);
+      const path = this.cfgGcMode ?
+                   gcCalc(this.boatPosition, this.wrappedHoverLatLng) :
+                   loxoCalc(this.boatPosition, this.hoverLatLng);
 
-      return roundToFixed(gcPath.distance * EARTH_R / 1852, 3) + 'nm @' +
-             roundToFixed(radToDeg(gcPath.startBearing), 2) + '\xb0 GC';
+      return roundToFixed(path.distance * EARTH_R / 1852, 3) + 'nm @' +
+             roundToFixed(radToDeg(path.startBearing), 2) + '\xb0' +
+             (this.cfgGcMode ? ' GC' : '');
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       boatPosition: state => state.boat.position,
+      cfgGcMode: state => state.ui.cfg.gcMode.value,
+      hoverLatLng: state => state.map.hoverLatLng,
     }),
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',

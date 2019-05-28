@@ -1,4 +1,5 @@
 import { degToRad } from './utils.js';
+import { PROJECTION } from './sol.js';
 
 /* Returns the minimum angle (signed) from currentAngle to nextAngle
  * The angles are in radians.
@@ -110,4 +111,18 @@ export function gcCalc(from, to) {
                    Math.PI * 2) % (Math.PI * 2),
     distance: Math.atan2(Math.sqrt(distDividend), distDivisor),
   };
+}
+
+export function loxoCalc(from, to) {
+  const projFrom = PROJECTION.project(from);
+  const projTo = PROJECTION.project(to);
+  const bearing = atan2Bearing(projTo.x - projFrom.x, -(projTo.y - projFrom.y));
+  const cos = Math.cos(bearing);
+
+  return {
+    startBearing: bearing,
+    distance: Math.abs(cos) < 1e-9 ?
+              Math.abs((degToRad(to.lng) - degToRad(from.lng)) * Math.cos(from.lat)) :
+              Math.abs((degToRad(to.lat) - degToRad(from.lat)) / Math.cos(bearing)),
+  }
 }
