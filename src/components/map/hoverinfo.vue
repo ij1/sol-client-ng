@@ -6,11 +6,11 @@
     <div>
       {{ wrappedHoverLatLng | positionFormat }}
     </div>
-    <div v-if = 'wxLoaded'>
-      {{ wind }}
-    </div>
     <div v-if = 'boatPosition !== null'>
       {{ bearing }}
+    </div>
+    <div v-if = 'wxLoaded'>
+      {{ wind }}
     </div>
   </l-control>
 </template>
