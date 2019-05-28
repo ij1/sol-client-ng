@@ -2,12 +2,11 @@
   <l-control
     id = "wind-info"
     :position = "'topright'"
-    v-if = 'wxLoaded'
   >
     <div>
       {{ wrappedHoverLatLng | positionFormat }}
     </div>
-    <div>
+    <div v-if = 'wxLoaded'>
       {{ wind }}
     </div>
     <div>
