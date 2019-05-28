@@ -9,7 +9,7 @@
     <div v-if = 'wxLoaded'>
       {{ wind }}
     </div>
-    <div>
+    <div v-if = 'boatPosition !== null'>
       {{ bearing }}
     </div>
   </l-control>
@@ -49,7 +49,8 @@ export default {
              roundToFixed(radToDeg(wind.twd), 2) + '\xb0';
     },
     bearing () {
-      if (this.wrappedHoverLatLng === null) {
+      if ((this.wrappedHoverLatLng === null) ||
+          (this.boatPosition === null)) {
         return '';
       }
       if (this.boatPosition.equals(this.wrappedHoverLatLng)) {
