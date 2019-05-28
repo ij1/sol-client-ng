@@ -1,6 +1,6 @@
 <template>
   <l-control
-    id = "wind-info"
+    id = "hover-info"
     :position = "'topright'"
   >
     <div>
@@ -24,7 +24,7 @@ import { gcCalc } from '../../lib/nav.js';
 import { EARTH_R } from '../../lib/sol.js';
 
 export default {
-  name: 'WindInfo',
+  name: 'HoverInfo',
   components: {
     'l-control': LControl,
   },
@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style scoped>
-#wind-info {
+#hover-info {
   pointer-events: none;
   text-align: right;
 }

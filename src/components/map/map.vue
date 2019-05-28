@@ -37,7 +37,7 @@
       <towback-flag v-if = "map !== null"/>
 
       <dc-bar v-if = "map !== null"/>
-      <wind-info v-if = "map !== null"/>
+      <hover-info v-if = "map !== null"/>
 
       <map-scale v-if = "map !== null" :map = "map"/>
       <fleet-hover v-if = "map !== null" :map = "map"/>
@@ -69,7 +69,7 @@ import SteerButton from './steerbutton';
 import TowbackFlag from '../towbackflag';
 
 import DcBar from '../dcbar.vue';
-import WindInfo from './windinfo';
+import HoverInfo from './hoverinfo';
 import MapScale from './scale.vue';
 import FleetLegend from './fleetlegend.vue';
 
@@ -100,7 +100,7 @@ export default {
     'towback-flag': TowbackFlag,
 
     'dc-bar': DcBar,
-    'wind-info': WindInfo,
+    'hover-info': HoverInfo,
     'map-scale': MapScale,
     'fleet-legend': FleetLegend,
   },
