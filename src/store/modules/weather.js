@@ -426,7 +426,7 @@ export default {
         const now = rootGetters['time/now']();
         commit('updateFetchTime', now);
         if (!firstWeather) {
-          const d = state.data.updated;
+          const d = new Date(state.data.updated);
           const time = d.getUTCHours() + ':' + d.getUTCMinutes();
           dispatch('notifications/add', {
             text: 'Weather updated at ' + time,
