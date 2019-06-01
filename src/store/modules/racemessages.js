@@ -32,7 +32,7 @@ export default {
       state.racemsgs = orderBy(state.racemsgs, 'lastUpdated', 'desc');
     },
     setExpected(state, expectedId) {
-      if (expectedId < state.expectedId) {
+      if (expectedId > state.expectedId) {
         state.expectedId = expectedId;
       }
     },
@@ -81,11 +81,12 @@ export default {
     },
     updateExpected({state, commit, dispatch}, expectedId) {
       if (expectedId > state.expectedId) {
-        if (state.expectedId === state.lastId) {
+        const oldExpectedId = state.expectedId;
+        commit('setExpected', expectedId);
+        if (oldExpectedId === state.lastId) {
           dispatch('fetch');
         }
       }
-      commit('setExpected', expectedId);
     },
   },
 }
