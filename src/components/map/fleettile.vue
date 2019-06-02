@@ -16,9 +16,9 @@ export default {
   },
   computed: {
     needsRedraw () {
-      // ADDME: zoom change requires recalculation due to bounds in pixels
       this.fleetTime;
       this.wxUpdated;
+      this.zoom;
 
       return Date.now();
     },
@@ -27,6 +27,7 @@ export default {
       boatColor: 'race/fleet/boatColor',
     }),
     ...mapState({
+      zoom: state => state.map.zoom,
       fleetTime: state => state.race.fleet.fleetTime,
       wxUpdated: state => state.weather.data.updated,
     }),
