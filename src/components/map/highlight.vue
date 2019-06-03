@@ -1,19 +1,15 @@
 <template>
-  <l-layer-group>
-    <l-circle-marker
-      v-if = "latLng !== null && radius > 0"
-      :lat-lng = "latLng"
-      :radius = "radius"
-      color = "#c000c0"
-      :weight = "1"
-      :fill = "false"
-    />
-  </l-layer-group>
+  <marker-canvas
+    @draw = "draw"
+    :lat-lng = "latLng"
+    :icon-center = "highlightCenter"
+    :needs-redraw = "radius"
+  />
 </template>
 
 <script>
 import { EventBus } from '../../lib/event-bus.js';
-import { LLayerGroup, LCircleMarker } from 'vue2-leaflet';
+import MarkerCanvas from './markercanvas.vue';
 import L from 'leaflet';
 import { degToRad, radToDeg } from '../../lib/utils.js';
 import { minTurnAngle } from '../../lib/nav.js';
@@ -21,8 +17,7 @@ import { minTurnAngle } from '../../lib/nav.js';
 export default {
   name: 'MapHighlight',
   components: {
-    'l-layer-group': LLayerGroup,
-    'l-circle-marker': LCircleMarker,
+    'marker-canvas': MarkerCanvas,
   },
   props: {
     map: {
@@ -34,7 +29,7 @@ export default {
     return {
       initialRadius: 100,
       interval: 10,
-      latLng: null,
+      latLng: L.latLng(0, 0),
       startTimestamp: -1000,		/* -(100 * 10) */
       nowTimestamp: 0,
       timer: null,
@@ -42,6 +37,9 @@ export default {
   },
 
   computed: {
+    highlightCenter () {
+      return [this.initialRadius, this.initialRadius];
+    },
     radius () {
       let r = this.initialRadius - (this.nowTimestamp - this.startTimestamp) / this.interval;
       r = Math.round(r);
@@ -50,6 +48,15 @@ export default {
   },
 
   methods: {
+    draw (ctx) {
+      if (this.radius === 0) {
+        return;
+      }
+      ctx.strokeStyle = "#c000c0";
+      ctx.beginPath();
+      ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+      ctx.stroke();
+    },
     updateNow () {
       this.nowTimestamp = Date.now();
       if (this.radius <= 0) {
