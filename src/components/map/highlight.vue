@@ -78,15 +78,16 @@ export default {
       this.cancelHighlight();
       this.latLng = highlightInfo.latLng;
       this.$nextTick(() => {
-        this.startTimestamp = Date.now();
-        this.nowTimestamp = this.startTimestamp;
-        this.timer = setInterval(this.updateNow.bind(this), this.interval);
-
         const currentLatLng = this.map.getCenter();
         const minTurn = minTurnAngle(degToRad(currentLatLng.lng),
                                      degToRad(this.latLng.lng));
         const targetLatLng = L.latLng(this.latLng.lat,
                                       currentLatLng.lng + radToDeg(minTurn));
+
+        this.startTimestamp = Date.now();
+        this.nowTimestamp = this.startTimestamp;
+        this.timer = setInterval(this.updateNow.bind(this), this.interval);
+
         if (!highlightInfo.keepMapPosition) {
           this.map.flyTo(targetLatLng);
         }
