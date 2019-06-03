@@ -188,10 +188,14 @@ export default {
         return undefined;
       }
       const wxLat = latLng.lat;
-      /* De-wrap if longitude < origo because the wx boundary of the source
-       * data is not-wrapped when crossing the anti-meridian
-       */
-      const wxLng = latLng.lng + (latLng.lng < state.data.origo[1] ? 360 : 0);
+      let wxLng = latLng.lng;
+      /* Try to dewrap into wx coordinate area */
+      while (wxLng >= state.data.boundary.getNorthEast().lng) {
+        wxLng -= 360;
+      }
+      while (wxLng < state.data.origo[1]) {
+        wxLng += 360;
+      }
       /*
        * .contains() doesn't prevent access to undefined item at race boundary
        * so we have to do the checks manually. Lng is linearized above, thus
