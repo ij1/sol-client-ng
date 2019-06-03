@@ -28,9 +28,9 @@ export default {
   data () {
     return {
       initialRadius: 100,
-      interval: 10,
+      interval: 20,
       latLng: L.latLng(0, 0),
-      startTimestamp: -1000,		/* -(100 * 10) */
+      startTimestamp: -2000,		/* -(100 * 20) */
       nowTimestamp: 0,
       timer: null,
     }
