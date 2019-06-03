@@ -76,14 +76,15 @@ export default {
        * displaying at the wrong position.
        */
       this.cancelHighlight();
-      this.latLng = highlightInfo.latLng;
-      this.$nextTick(() => {
-        const currentLatLng = this.map.getCenter();
-        const minTurn = minTurnAngle(degToRad(currentLatLng.lng),
-                                     degToRad(this.latLng.lng));
-        const targetLatLng = L.latLng(this.latLng.lat,
-                                      currentLatLng.lng + radToDeg(minTurn));
 
+      const currentLatLng = this.map.getCenter();
+      const minTurn = minTurnAngle(degToRad(currentLatLng.lng),
+                                   degToRad(highlightInfo.latLng.lng));
+      const targetLatLng = L.latLng(highlightInfo.latLng.lat,
+                                    currentLatLng.lng + radToDeg(minTurn));
+      this.latLng = targetLatLng;
+
+      this.$nextTick(() => {
         this.startTimestamp = Date.now();
         this.nowTimestamp = this.startTimestamp;
         this.timer = setInterval(this.updateNow.bind(this), this.interval);
