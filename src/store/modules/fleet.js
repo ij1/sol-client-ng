@@ -373,7 +373,7 @@ export default {
           let myBoatLatLng;
           if (myBoatNew === null) {
             /* ...Thus, use the starting point as the alternative. */
-            myBoatLatLng = this.$store.race.route[0].latLng;
+            myBoatLatLng = rootState.race.route[0].latLng;
           } else {
             myBoatLatLng = myBoatNew.latLng;
           }
