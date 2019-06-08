@@ -34,6 +34,7 @@
       <l-control-zoom v-if = "map !== null" :position = "'topleft'" />
       <center-boat-button v-if = "map !== null"/>
       <steer-button v-if = "map !== null"/>
+      <ruler-button v-if = "map !== null"/>
       <towback-flag v-if = "map !== null"/>
 
       <dc-bar v-if = "map !== null"/>
@@ -66,6 +67,7 @@ import MapHighlight from './highlight';
 import RaceStatus from '../racestatus.vue';
 import CenterBoatButton from './centerboatbutton';
 import SteerButton from './steerbutton';
+import RulerButton from './rulerbutton';
 import TowbackFlag from '../towbackflag';
 
 import DcBar from '../dcbar.vue';
@@ -97,6 +99,7 @@ export default {
     'race-status': RaceStatus,
     'center-boat-button': CenterBoatButton,
     'steer-button': SteerButton,
+    'ruler-button': RulerButton,
     'towback-flag': TowbackFlag,
 
     'dc-bar': DcBar,

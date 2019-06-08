@@ -1,4 +1,5 @@
 import boatlistsModule from './boatlists.js';
+import rulerModule from './ruler.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
 export default {
@@ -6,6 +7,7 @@ export default {
 
   modules: {
     boatlists: boatlistsModule,
+    ruler: rulerModule,
   },
 
   state: {
