@@ -66,5 +66,11 @@ export default {
       }
       commit(uiMode.newMode, uiMode.param, {root: true});
     },
+    cancelUiMode({state, commit}) {
+      if (state.uiModeCancel !== null) {
+        commit(state.uiModeCancel, null, {root: true});
+      }
+      commit('setUiModeCancel', null);
+    }
   },
 }

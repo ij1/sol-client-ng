@@ -115,7 +115,7 @@ export default {
         value: roundToFixed(radToDeg(res.bearing), 3),
       });
       this.map.off('click', this.onClick, this);
-      this.$store.commit('boat/steering/visualSteeringOff');
+      this.$store.dispatch('ui/cancelUiMode');
     },
     calcBearing (target) {
       const z = this.map.getZoom();
