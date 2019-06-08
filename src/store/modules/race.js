@@ -3,7 +3,7 @@ import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
 import { degToRad, radToDeg, minToMsec, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
-import { minTurnAngle, atan2Bearing } from '../../lib/nav.js';
+import { minTurnAngle, loxoCalc } from '../../lib/nav.js';
 import { PROJECTION} from '../../lib/sol.js';
 
 export default {
@@ -72,9 +72,8 @@ export default {
 
         /* Calculate bearing from prev WP to this WP ... */
         if (i > 0) {
-          const prevwp = PROJECTION.project(course.route[i - 1].latLng);
-          const thiswp = PROJECTION.project(waypoint.latLng);
-          const bearing = atan2Bearing(thiswp.x - prevwp.x, -(thiswp.y - prevwp.y));
+          const bearing = loxoCalc(course.route[i - 1].latLng,
+                                   waypoint.latLng).startBearing;
           course.route[i - 1].nextWpBearing = bearing;
 
           /* ...and which side to pass the prev WP */
