@@ -29,19 +29,28 @@ export default {
   },
   methods: {
     onClick () {
-      if (this.boatPosition) {
-        let showPolar = this.alwaysShowPolar || this.visualShowPolar;
-        if (this.visualSteeringEnabled) {
-          if (this.showPolar) {
-             this.$store.commit('boat/steering/visualSteeringOff');
-             return;
-          }
-          showPolar = true;
-        } else {
-          this.$store.commit('ui/setActiveTab', 0);
-        }
-        this.$store.commit('boat/steering/visualSteering', showPolar);
+      if (this.boatPosition === null) {
+        return;
       }
+
+      let newMode = 'boat/steering/visualSteering';
+      let showPolar = this.alwaysShowPolar || this.visualShowPolar;
+      if (this.visualSteeringEnabled) {
+        if (this.showPolar) {
+           newMode = 'boat/steering/visualSteeringOff';
+           showPolar = null;
+        } else {
+          showPolar = true;
+        }
+      } else {
+        this.$store.commit('ui/setActiveTab', 0);
+      }
+
+      this.$store.dispatch('ui/setUiMode', {
+        cancel: 'boat/steering/visualSteeringOff',
+        newMode: newMode,
+        param: showPolar,
+      });
     },
   },
   mounted () {
