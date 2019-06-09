@@ -218,7 +218,34 @@ export default {
 @import '../../../node_modules/leaflet/dist/leaflet.css'
 </style>
 
+/* For now, put Leaflet global CSS defs here to avoid breaking CSS
+ * Putting it to childs causes them to have no effect. Perhaps the
+ * loading order w.r.t. leaflet.css is not correct if put to elsewhere
+ * than here?
+ */
 <style>
+.wp-tooltip {
+  background: transparent;
+  border: 0px;
+  color: red;
+  padding: 0px;
+  padding-left: 5px;
+  box-shadow: unset;
+  text-align: left;
+  line-height: 1.05;
+}
+
+.wp-tooltip::before {
+  all: unset;
+}
+
+.steering-tooltip {
+  text-align: left;
+}
+.steering-tooltip::before {
+  all: unset;
+}
+
 .leaflet-container {
   background: #fff;
 }
