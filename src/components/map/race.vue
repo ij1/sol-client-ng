@@ -261,3 +261,20 @@ export default {
   },
 }
 </script>
+
+<style>
+.wp-tooltip {
+  background: transparent;
+  border: 0px;
+  color: red;
+  padding: 0px;
+  padding-left: 5px;
+  box-shadow: unset;
+  text-align: left;
+  line-height: 1.05;
+}
+
+.wp-tooltip::before {
+  all: unset;
+}
+</style>

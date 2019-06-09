@@ -147,3 +147,12 @@ export default {
   },
 }
 </script>
+
+<style>
+.steering-tooltip {
+  text-align: left;
+}
+.steering-tooltip::before {
+  all: unset;
+}
+</style>
