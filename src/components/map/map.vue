@@ -27,7 +27,10 @@
       <fleet-traces v-if = "map !== null"/>
       <fleet-map v-if = "map !== null" :map = "map"/>
       <player-boat v-if = "map !== null"/>
+
       <visual-steering v-if = "map !== null && visualSteeringEnabled" :map = "map"/>
+      <map-ruler v-if = "map !== null && rulerEnabled" :map = "map"/>
+
       <map-highlight v-if = "map !== null" :map = "map"/>
 
       <race-status v-if = "map !== null"/>
@@ -61,7 +64,10 @@ import FleetTraces from './fleettraces';
 import FleetMap from './fleetmap';
 import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
+
 import VisualSteering from './visualsteering';
+import MapRuler from './ruler';
+
 import MapHighlight from './highlight';
 
 import RaceStatus from '../racestatus.vue';
@@ -93,7 +99,10 @@ export default {
     'fleet-map': FleetMap,
     'fleet-hover': FleetHover,
     'player-boat': PlayerBoat,
+
     'visual-steering': VisualSteering,
+    'map-ruler': MapRuler,
+
     'map-highlight': MapHighlight,
 
     'race-status': RaceStatus,
@@ -124,6 +133,7 @@ export default {
       raceLoaded: state => state.race.loaded,
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
+      rulerEnabled: state => state.ui.ruler.enabled,
     }),
   },
 
