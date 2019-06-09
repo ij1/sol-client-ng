@@ -67,28 +67,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.ruler-line-tooltip {
-  background: transparent;
-  border: 0px;
-  color: black;
-  padding: 0px;
-  box-shadow: unset;
-  line-height: 1.05;
-}
-
-.ruler-line-tooltip::before {
-  all: unset;
-}
-
-.ruler-line-tooltip-right {
-  padding-left: 5px;
-  text-align: left;
-}
-
-.ruler-line-tooltip-bottom {
-  padding-top: 5px;
-  text-align: center;
-}
-</style>
