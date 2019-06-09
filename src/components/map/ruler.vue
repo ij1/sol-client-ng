@@ -6,6 +6,15 @@
       :segment = "segment"
       :color = "'#000'"
     />
+    <!-- HACK: in order to get tooltip to update, put Date.now() to key to
+         force recalculation, it will probably be annoying from GC PoV though
+      -->
+    <ruler-segment
+      v-if = "aimSegment !== null"
+      :key = "Date.now()"
+      :segment = "aimSegment"
+      :color = "'#333'"
+    />
   </l-layer-group>
 </template>
 
@@ -28,11 +37,13 @@ export default {
     },
   },
   computed: {
-    target () {
-      return (this.hoverLatLng !== null) ? this.hoverLatLng : this.visualPosition;
-    },
-    rulerLine () {
-      return [this.lastPosition, this.target];
+    aimSegment () {
+      if ((this.lastPosition === null) || (this.hoverLatLng === null)) {
+        return null;
+      }
+      let segment = loxoCalc(this.lastPosition, this.hoverLatLng);
+      segment.line = [this.lastPosition, this.hoverLatLng];
+      return segment;
     },
     ...mapState({
       lastPosition: state => state.ui.ruler.lastPosition,
