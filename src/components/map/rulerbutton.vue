@@ -2,7 +2,12 @@
   <l-control
     :position = "'topleft'"
   >
-    <div id = "ruler-button" ref = "ruler-button" @click.prevent = "onClick">
+    <div
+      id = "ruler-button"
+      ref = "ruler-button"
+      :style = "{color: rulerEnabled ? 'red' : 'black'}"
+      @click.prevent = "onClick"
+    >
       Ruler
     </div>
   </l-control>

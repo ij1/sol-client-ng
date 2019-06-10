@@ -2,7 +2,12 @@
   <l-control
     :position = "'topleft'"
   >
-    <div id = "steer-button" ref = "steer-button" @click.prevent = "onClick">
+    <div
+      id = "steer-button"
+      ref = "steer-button"
+      :style = "{color: visualSteeringEnabled ? 'red' : 'black'}"
+      @click.prevent = "onClick"
+    >
       Steer
     </div>
   </l-control>
