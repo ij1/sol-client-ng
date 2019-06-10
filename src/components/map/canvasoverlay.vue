@@ -127,5 +127,6 @@ export default {
   top: 0px;
   left: 0px;
   z-index: 550;
+  mix-blend-mode: multiply;
 }
 </style>
