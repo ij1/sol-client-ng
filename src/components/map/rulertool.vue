@@ -42,8 +42,15 @@ export default {
       segment.line = [this.lastPosition, this.hoverLatLng];
       return segment;
     },
+    lastFixedSegment () {
+      if (this.rulerSegments.length === 0) {
+        return null;
+      }
+      return this.rulerSegments[this.rulerSegments.length - 1];
+    },
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
+      rulerSegments: state => state.ui.ruler.rulerSegments,
     }),
   },
   methods: {
@@ -80,7 +87,28 @@ export default {
       this.cancelEvents();
       this.$store.dispatch('ui/cancelUiMode');
     },
+    onCancelKey (e) {
+      if (e.which === 27 || e.which === 8) {
+        if (this.dblClickTimer !== null) {
+          clearTimeout(this.dblClickTimer);
+          this.dblClickTimer = null;
+          return;
+        } else if ((this.lastPosition !== null) &&
+            (this.lastFixedSegment !== null)) {
+          if (this.lastPosition.equals(this.lastFixedSegment.line[1])) {
+            this.lastPosition = this.lastFixedSegment.line[0];
+          } else {
+            this.lastPosition = null;
+            return;
+          }
+        } else {
+          this.lastPosition = null;
+        }
+        this.$store.commit('ui/ruler/delSegment');
+      }
+    },
     cancelEvents() {
+      window.removeEventListener('keyup', this.onCancelKey);
       this.map.off('click', this.onClick, this);
       if (this.dblClickTimer !== null) {
         clearTimeout(this.dblClickTimer);
@@ -90,6 +118,7 @@ export default {
   },
   mounted () {
     this.map.on('click', this.onClick, this);
+    window.addEventListener('keyup', this.onCancelKey);
   },
   beforeDestroy () {
     this.cancelEvents();
