@@ -26,6 +26,13 @@ export default {
       required: true,
     },
   },
+  data () {
+    return {
+      lastPosition: null,
+      dblClickTimer: null,
+      dblClickInterval: 200,
+    }
+  },
   computed: {
     aimSegment () {
       if ((this.lastPosition === null) || (this.hoverLatLng === null)) {
@@ -36,33 +43,53 @@ export default {
       return segment;
     },
     ...mapState({
-      lastPosition: state => state.ui.ruler.lastPosition,
       hoverLatLng: state => state.map.hoverLatLng,
     }),
   },
   methods: {
+    addSegment (latLng) {
+      if (this.lastPosition.equals(latLng)) {
+        return;
+      }
+      let newSegment = loxoCalc(this.lastPosition, latLng);
+      newSegment.line = [this.lastPosition, latLng];
+      this.$store.commit('ui/ruler/newSegment', newSegment);
+      this.lastPosition = latLng;
+    },
     onClick (e) {
-      if (this.lastPosition === null) {
-        this.$store.commit('ui/ruler/newPath', e.latlng);
+      if (this.dblClickTimer !== null) {
+        this.onDoubleClick(e.latlng);
       } else {
-        let newSegment = loxoCalc(this.lastPosition, e.latlng);
-        newSegment.line = [this.lastPosition, e.latlng];
-        this.$store.commit('ui/ruler/extendPath', newSegment);
+        this.dblClickTimer = setTimeout(this.onSingleClick,
+                                        this.dblClickInterval,
+                                        e.latlng);
       }
     },
-    onDblClick (e) {
-      this.onClick(e);
+    onSingleClick (latLng) {
+      if (this.lastPosition === null) {
+        this.lastPosition = latLng;
+      } else {
+        this.addSegment(latLng);
+      }
+      this.dblClickTimer = null;
+    },
+    onDoubleClick (latLng) {
+      if (this.lastPosition !== null) {
+        this.addSegment(latLng);
+      }
       this.cancelEvents();
       this.$store.dispatch('ui/cancelUiMode');
     },
     cancelEvents() {
-      this.map.off('dblclick', this.onDblClick, this);
       this.map.off('click', this.onClick, this);
+      if (this.dblClickTimer !== null) {
+        clearTimeout(this.dblClickTimer);
+        this.dblClickTimer = null;
+      }
     },
   },
   mounted () {
     this.map.on('click', this.onClick, this);
-    this.map.on('dblclick', this.onDblClick, this);
   },
   beforeDestroy () {
     this.cancelEvents();
