@@ -15,7 +15,7 @@
       :options="{
         zoomControl: false,
         attributionControl: false,
-        doubleClickZoom: !uiModeUsingDblClick,
+        doubleClickZoom: false,
       }"
     >
       <map-tiles v-if = "map !== null" :map = "map"/>
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import L from 'leaflet';
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip, LControlZoom } from 'vue2-leaflet';
 import { PROJECTION } from '../../lib/sol.js';
@@ -138,9 +138,6 @@ export default {
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
-    }),
-    ...mapGetters({
-      'uiModeUsingDblClick': 'ui/uiModeUsingDblClick',
     }),
   },
 

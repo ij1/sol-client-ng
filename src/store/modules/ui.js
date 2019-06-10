@@ -51,12 +51,6 @@ export default {
     },
     configSetValue,
   },
-  getters: {
-    /* Ruler clobbers dblClick for the path termination */
-    uiModeUsingDblClick: (state) => {
-      return state.ruler.enabled;
-    },
-  },
   actions: {
     setUiMode({state, commit}, uiMode) {
       /* Change the mode, clear the previous mode before setting new */
