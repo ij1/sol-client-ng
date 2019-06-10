@@ -29,7 +29,8 @@
       <player-boat v-if = "map !== null"/>
 
       <visual-steering v-if = "map !== null && visualSteeringEnabled" :map = "map"/>
-      <map-ruler v-if = "map !== null && rulerEnabled" :map = "map"/>
+      <ruler-paths v-if = "map !== null"/>
+      <ruler-tool v-if = "map !== null && rulerEnabled" :map = "map"/>
 
       <map-highlight v-if = "map !== null" :map = "map"/>
 
@@ -66,7 +67,8 @@ import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
 
 import VisualSteering from './visualsteering';
-import MapRuler from './ruler';
+import RulerPaths from './rulerpaths';
+import RulerTool from './rulertool';
 
 import MapHighlight from './highlight';
 
@@ -101,7 +103,8 @@ export default {
     'player-boat': PlayerBoat,
 
     'visual-steering': VisualSteering,
-    'map-ruler': MapRuler,
+    'ruler-paths': RulerPaths,
+    'ruler-tool': RulerTool,
 
     'map-highlight': MapHighlight,
 

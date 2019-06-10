@@ -1,33 +1,23 @@
 <template>
-  <l-layer-group>
-    <ruler-segment
-      v-for = "segment in rulerSegments"
-      :key = "segment.id"
-      :segment = "segment"
-      :color = "'#000'"
-    />
-    <!-- HACK: in order to get tooltip to update, put Date.now() to key to
-         force recalculation, it will probably be annoying from GC PoV though
-      -->
-    <ruler-segment
-      v-if = "aimSegment !== null"
-      :key = "Date.now()"
-      :segment = "aimSegment"
-      :color = "'#333'"
-    />
-  </l-layer-group>
+  <!-- HACK: in order to get tooltip to update, put Date.now() to key to
+       force recalculation, it will probably be annoying from GC PoV though
+    -->
+  <ruler-segment
+    v-if = "aimSegment !== null"
+    :key = "Date.now()"
+    :segment = "aimSegment"
+    :color = "'#333'"
+  />
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import { LLayerGroup } from 'vue2-leaflet';
 import { loxoCalc } from '../../lib/nav.js';
 import RulerSegment from './rulersegment.vue';
 
 export default {
-  name: 'MapRuler', 
+  name: 'RulerTool',
   components: {
-    'l-layer-group': LLayerGroup,
     'ruler-segment': RulerSegment,
   },
   props: {
@@ -47,7 +37,6 @@ export default {
     },
     ...mapState({
       lastPosition: state => state.ui.ruler.lastPosition,
-      rulerSegments: state => state.ui.ruler.rulerSegments,
       hoverLatLng: state => state.map.hoverLatLng,
     }),
   },
