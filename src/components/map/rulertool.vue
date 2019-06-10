@@ -35,7 +35,9 @@ export default {
   },
   computed: {
     aimSegment () {
-      if ((this.lastPosition === null) || (this.hoverLatLng === null)) {
+      if ((this.lastPosition === null) ||
+          (this.hoverLatLng === null) ||
+          this.lastPosition.equals(this.hoverLatLng)) {
         return null;
       }
       let segment = loxoCalc(this.lastPosition, this.hoverLatLng);
