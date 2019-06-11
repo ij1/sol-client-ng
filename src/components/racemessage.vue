@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import { msecToUTCString } from '../../../lib/utils.js';
-import LimaFlag from '../../limaflag.vue';
+import { msecToUTCString } from '../lib/utils.js';
+import LimaFlag from './limaflag.vue';
 
 export default {
   name: 'RaceMessage',

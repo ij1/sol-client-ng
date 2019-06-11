@@ -20,7 +20,7 @@
 <script>
 import { mapState } from 'vuex';
 import PopupWindow from './popupwindow.vue';
-import RaceMessage from './panel/control/racemessage.vue';
+import RaceMessage from './racemessage.vue';
 
 export default {
   name: 'RaceMessagesPopup',

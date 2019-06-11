@@ -10,7 +10,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import RaceMessage from './racemessage.vue';
+import RaceMessage from '../../racemessage.vue';
 
 export default {
   name: 'ControlRaceMessages',
