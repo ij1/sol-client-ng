@@ -20,15 +20,6 @@ export default {
 </script>
 
 <style scoped>
-.race-messages {
-  font-size: 12px;
-  height: 100%;
-  max-height: 100%;
-  font-size: 9px;
-  padding: 2px;
-  border: 1px;
-}
-
 .race-message-list {
   float: down;
   height: 100%;
