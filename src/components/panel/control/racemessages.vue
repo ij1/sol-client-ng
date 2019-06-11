@@ -1,7 +1,7 @@
 <template>
   <div class="race-message-list">
     <race-message
-      v-for = "racemsg in $store.state.race.messages.racemsgs"
+      v-for = "racemsg in racemsgs"
       :key = "racemsg.id"
       :racemsg = "racemsg"
     />
@@ -9,12 +9,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import RaceMessage from './racemessage.vue';
 
 export default {
   name: 'ControlRaceMessages',
   components: {
     'race-message': RaceMessage,
+  },
+  computed: {
+    ...mapState({
+      racemsgs: state => state.race.messages.racemsgs,
+    }),
   },
 }
 </script>
