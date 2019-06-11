@@ -8,8 +8,8 @@
     <div class = "popup-titlebar">
       <span>{{title}}</span>
     </div>
-    <form @submit.prevent="$emit('submit')">
-      <div>
+    <form @submit.prevent="$emit('submit')" class = "popup-window-full">
+      <div class = "popup-window-mid">
         <slot></slot>
       </div>
       <div style="margin-top: 10px">
@@ -76,6 +76,15 @@ export default {
   border-color: #808080;
   background: #fff;
   text-align: left;
+}
+.popup-window-full {
+  padding: 10px;
+  height: calc(100% - 20px - 30px);
+  width: calc(100% - 20px);
+}
+.popup-window-mid {
+  height: calc(100% - 30px);
+  width: 100%;
 }
 .popup-titlebar {
   background-color: #808080;

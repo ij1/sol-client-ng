@@ -48,9 +48,11 @@ export default {
 <style scoped>
 #race-messages-popup {
   width: 30%;
+  height: 70%;
+  overflow: hidden;
 }
 .race-message-list {
-  border-color: #a0a0a0;
-  overflow-y: scroll;
+  height: 100%;
+  overflow-y: auto;
 }
 </style>
