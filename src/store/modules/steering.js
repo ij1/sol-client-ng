@@ -1,5 +1,5 @@
 import { orderBy } from 'lodash';
-import { UTCToMsec } from '../../lib/utils.js';
+import { minToMsec, UTCToMsec } from '../../lib/utils.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
 export default {
@@ -21,6 +21,7 @@ export default {
       list: [],
       fetching: false,
       fetchTime: 0,
+      dcFetchInterval: minToMsec(20),
       needReload: true,
     },
 
@@ -106,6 +107,11 @@ export default {
       state.visualSteering.twa = twa;
     },
     configSetValue,
+  },
+  getters: {
+    nextTimeToFetchDCs: (state) => {
+      return state.dcs.fetchTime + state.dcs.dcFetchInterval;
+    },
   },
 
   actions: {

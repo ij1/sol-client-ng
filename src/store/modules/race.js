@@ -236,7 +236,6 @@ export default {
         /* Start race API fetching */
         if (!loaded) {
           dispatch('boat/fetch', null, {root: true});
-          dispatch('boat/steering/fetchDCs', null, {root: true});
           dispatch('weather/fetchInfo', null, {root: true});
         }
       })

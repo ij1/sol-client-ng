@@ -133,6 +133,9 @@ export default {
         }
 
         dispatch('race/fetchRaceComponents', null, {root: true});
+        if (rootGetters['boat/steering/nextTimeToFetchDCs'] <= now) {
+          dispatch('steering/fetchDCs');
+        }
       })
       .catch(err => {
         commit('solapi/logError', {
