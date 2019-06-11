@@ -20,6 +20,7 @@ export default {
     dcs: {
       list: [],
       fetching: false,
+      fetchTime: 0,
       needReload: true,
     },
 
@@ -75,8 +76,9 @@ export default {
       state.plottedSteering.prevCopyDecimals = prevCopyDecimals;
     },
 
-    updateDCs (state, dcList) {
-      state.dcs.list = orderBy(dcList, 'time', 'asc')
+    updateDCs (state, dcData) {
+      state.dcs.list = orderBy(dcData.dcList, 'time', 'asc')
+      state.dcs.fetchTime = dcData.fetchTime;
     },
 
     setFetching (state, newState) {
@@ -107,7 +109,7 @@ export default {
   },
 
   actions: {
-    fetchDCs({state, rootState, commit, dispatch}) {
+    fetchDCs({state, rootState, rootGetters, commit, dispatch}) {
       if (state.dcs.fetching) {
         return;
       }
@@ -124,6 +126,7 @@ export default {
       commit('setFetching', true);
       dispatch('solapi/get', getDef, {root: true})
       .then(dcData => {
+        const now = rootGetters['time/now']();
         let dcList;
         if (typeof dcData.cmd !== 'undefined') {
           dcList = dcData.cmd
@@ -137,7 +140,10 @@ export default {
         for (let dc of dcList) {
           dc.time = UTCToMsec(dc.time);
         }
-        commit('updateDCs', dcList);
+        commit('updateDCs', {
+          dcList: dcList,
+          fetchTime: now,
+        });
         commit('setFetching', false);
 
         if (state.dcs.needReload) {
