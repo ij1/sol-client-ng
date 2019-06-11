@@ -9,6 +9,7 @@ export default {
     racemsgs: [],
     lastId: 0,
     expectedId: 0,
+    uiPendingId: 0,
   },
 
   mutations: {
@@ -35,6 +36,9 @@ export default {
       if (expectedId > state.expectedId) {
         state.expectedId = expectedId;
       }
+    },
+    clearPending (state) {
+      state.uiPendingId = state.lastId;
     },
   },
 

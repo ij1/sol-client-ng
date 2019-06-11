@@ -3,6 +3,7 @@
     <login-popup/>
     <notifications-popup/>
     <config-editor/>
+    <race-messages-popup/>
     <portal-target name="dc-editor-dest"/>
     <portal-target name="boatlist-editor-dest"/>
     <div id = "left-div">
@@ -23,6 +24,7 @@
 import LoginPopup from './components/loginpopup.vue';
 import NotificationsPopup from './components/notificationspopup.vue';
 import ConfigEditor from './components/config/configeditor.vue';
+import RaceMessagesPopup from './components/racemessagespopup.vue';
 import Map from './components/map/map.vue';
 import BoatInstruments from './components/panel/instruments/instruments.vue';
 import WeatherPanel from './components/panel/weather.vue';
@@ -34,6 +36,7 @@ export default {
     'login-popup': LoginPopup,
     'notifications-popup': NotificationsPopup,
     'config-editor': ConfigEditor,
+    'race-messages-popup': RaceMessagesPopup,
     'map-view': Map,
     'boat-instruments': BoatInstruments,
     'weather-panel': WeatherPanel,
