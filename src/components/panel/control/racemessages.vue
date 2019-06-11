@@ -30,7 +30,6 @@ export default {
   float: down;
   height: 100%;
   width: 100%;
-  border-color: #a0a0a0;
   overflow-y: scroll;
 }
 </style>
