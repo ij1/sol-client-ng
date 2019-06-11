@@ -1,6 +1,7 @@
 <template>
   <div id="polar" ref="polar-container">
     <canvas id="labels" ref="labels"/>
+    <canvas id="polargrid" ref="polargrid"/>
     <canvas id="polarbg" ref="polarbg"/>
     <canvas id="polarfg" ref="polarfg"/>
     <canvas
@@ -131,29 +132,36 @@ export default {
   },
   methods: {
     draw () {
+      this.$refs.polargrid.width = this.gridSize.x;
+      this.$refs.polargrid.height = this.gridSize.y;
       this.$refs.polarbg.width = this.gridSize.x;
       this.$refs.polarbg.height = this.gridSize.y;
       this.$refs.labels.width = this.gridSize.x + this.margin * 2;
       this.$refs.labels.height = this.gridSize.y + this.margin * 2;
 
-      let ctx = this.$refs.polarbg.getContext('2d');
+      let gridctx = this.$refs.polargrid.getContext('2d');
+      let curvectx = this.$refs.polarbg.getContext('2d');
       let labelctx = this.$refs.labels.getContext('2d');
-      ctx.save();
+      gridctx.save();
+      curvectx.save();
       labelctx.save();
-      canvasAlignToPixelCenter(ctx);
+      canvasAlignToPixelCenter(gridctx);
+      canvasAlignToPixelCenter(curvectx);
       canvasAlignToPixelCenter(labelctx);
 
-      ctx.translate(0, this.gridOrigoY);
+      gridctx.translate(0, this.gridOrigoY);
+      curvectx.translate(0, this.gridOrigoY);
       labelctx.translate(this.margin, this.gridOrigoY + this.margin);
 
-      this.drawGrid(ctx);
+      this.drawGrid(gridctx);
       this.drawLabels(labelctx);
       for (let curve of this.bgCurves) {
-        ctx.strokeStyle = windToColor(curve.knots);
-        ctx.lineWidth = 2;
-        this.drawPolarCurve(ctx, curve, this.gridScale);
+        curvectx.strokeStyle = windToColor(curve.knots);
+        curvectx.lineWidth = 2;
+        this.drawPolarCurve(curvectx, curve, this.gridScale);
       }
-      ctx.restore();
+      gridctx.restore();
+      curvectx.restore();
       labelctx.restore();
 
       this.$refs.polarfg.width = this.gridSize.x;
@@ -365,10 +373,13 @@ export default {
 #polar-container {
   width: 100%;
 }
-#polarbg, #polarfg, #polaroverlay {
+#polargrid, #polarbg, #polarfg, #polaroverlay {
   position: absolute;
   top: 20px;
   left: 20px;
+}
+#polarbg {
+  mix-blend-mode: multiply;
 }
 #wind-key-container {
   position: absolute;
