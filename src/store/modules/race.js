@@ -108,8 +108,7 @@ export default {
       let changed = false;
       if (state.info.startTime !== raceInfo.startTime) {
         dispatch('notifications/add', {
-          text: 'Start time changed from ' +
-                msecToUTCString(state.info.startTime) + ' UTC to ' +
+          text: 'Start time changed to ' +
                 msecToUTCString(raceInfo.startTime) + ' UTC',
         }, {root: true});
         changed = true;
