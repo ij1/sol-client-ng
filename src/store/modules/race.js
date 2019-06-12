@@ -232,7 +232,7 @@ export default {
           commit('init', raceInfo);
         }
 
-        dispatch('weather/parseUpdateTimes', raceInfo.description, {root: true});
+        await dispatch('weather/parseUpdateTimes', raceInfo.description, {root: true});
         /* Start race API fetching */
         if (!loaded) {
           /* boat API call may trigger race message fetching, the stored
