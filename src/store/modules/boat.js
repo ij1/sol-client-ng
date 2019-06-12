@@ -99,7 +99,7 @@ export default {
       };
 
       dispatch('solapi/get', getDef, {root: true})
-      .then(boatData => {
+      .then(async (boatData) => {
         const now = rootGetters['time/now']();
         boatData.boat.time = now;
         let chatData = boatData.chats;
@@ -111,7 +111,7 @@ export default {
         commit('race/fleet/initMyBoat', boatData.boat, {root: true});
         commit('updateBoat', boatData.boat);
         commit('updateLngOffset', rootState.map.center.lng);
-        dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
+        await dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
         commit('weather/minTime', state.instruments.time.value, {root: true});
 
         if (typeof boatData.lmi !== 'undefined') {
