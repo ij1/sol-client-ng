@@ -29,16 +29,16 @@ export default {
   },
   computed: {
     pendingRacemsgs () {
-      return this.racemsgs.filter(i => i.id > this.pendingId);
+      return this.racemsgs.filter(i => i.id > this.shownId);
     },
     ...mapState({
-      pendingId: state => state.race.messages.uiPendingId,
+      shownId: state => state.race.messages.uiShownId,
       racemsgs: state => state.race.messages.racemsgs,
     }),
   },
   methods: {
     doOk: function() {
-      this.$store.commit('race/messages/clearPending');
+      this.$store.dispatch('race/messages/updateShownId');
     }
   },
 }

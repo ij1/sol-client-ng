@@ -9,7 +9,7 @@ export default {
     racemsgs: [],
     lastId: 0,
     expectedId: 0,
-    uiPendingId: 0,
+    uiShownId: 0,
   },
 
   mutations: {
@@ -37,8 +37,17 @@ export default {
         state.expectedId = expectedId;
       }
     },
-    clearPending (state) {
-      state.uiPendingId = state.lastId;
+    setShownId (state, newId) {
+      if (newId === null) {
+        state.uiShownId = state.lastId;
+      } else {
+        state.uiShownId = newId;
+      }
+    },
+  },
+  getters: {
+    localStorageKey: (state, getters, rootState) => {
+      return 'sol-race-messages-shown-id:' + rootState.race.info.id;
     },
   },
 
@@ -91,6 +100,19 @@ export default {
           dispatch('fetch');
         }
       }
+    },
+    loadShownId({getters, commit}) {
+      const val = localStorage.getItem(getters['localStorageKey']);
+      if (val !== null) {
+        const num = parseInt(val, 10);
+        if (!isNaN(num)) {
+          commit('setShownId', num);
+        }
+      }
+    },
+    updateShownId({state, getters, commit}) {
+      commit('setShownId', null);
+      localStorage.setItem(getters['localStorageKey'], state.uiShownId);
     },
   },
 }

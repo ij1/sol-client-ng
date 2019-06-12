@@ -207,7 +207,7 @@ export default {
       }
 
       dispatch('solapi/get', getDef, {root: true})
-      .then(raceInfo => {
+      .then(async (raceInfo) => {
         const loaded = state.loaded;
         const boatType = raceInfo.boat.type;
         const polarRawData = raceInfo.boat.vpp;
@@ -235,6 +235,10 @@ export default {
         dispatch('weather/parseUpdateTimes', raceInfo.description, {root: true});
         /* Start race API fetching */
         if (!loaded) {
+          /* boat API call may trigger race message fetching, the stored
+           * shown ID must be loaded first, thus await here.
+           */
+          await dispatch('messages/loadShownId');
           dispatch('boat/fetch', null, {root: true});
           dispatch('weather/fetchInfo', null, {root: true});
         }
