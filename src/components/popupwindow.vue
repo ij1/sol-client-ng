@@ -8,11 +8,11 @@
     <div class = "popup-titlebar">
       <span>{{title}}</span>
     </div>
-    <form @submit.prevent="$emit('submit')" class = "popup-window-full">
-      <div class = "popup-window-mid">
+    <form @submit.prevent="$emit('submit')" >
+      <div class = "popup-content">
         <slot></slot>
       </div>
-      <div style="margin-top: 10px">
+      <div class = "popup-buttons">
         <button
           v-if = "closeButtonLabel !== null"
           type = "close"
@@ -68,23 +68,12 @@ export default {
   left: 50%;
   top: 50%;
   margin-right: -50%;
-  max-height: 80%;
-  max-width: 80%;
   transform: translate(-50%, -50%);
   border: solid 3px;
   border-radius: 10px;
   border-color: #808080;
   background: #fff;
   text-align: left;
-}
-.popup-window-full {
-  padding: 10px;
-  height: calc(100% - 20px - 30px);
-  width: calc(100% - 20px);
-}
-.popup-window-mid {
-  height: calc(100% - 30px);
-  width: 100%;
 }
 .popup-titlebar {
   background-color: #808080;
@@ -94,6 +83,19 @@ export default {
   margin: 10px;
 }
 .popup-window form {
+  min-height: 50px;
+  max-height: 80vh;
+  max-width: 70vh;
+  display: flex;
+  flex-direction: column;
   padding: 10px;
+}
+.popup-content {
+  min-height: 0px;
+  flex: auto;
+}
+.popup-buttons {
+ margin-top: 10px;
+ flex: none;
 }
 </style>

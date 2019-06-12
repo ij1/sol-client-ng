@@ -1,6 +1,5 @@
 <template>
   <popup-window
-    id = "race-messages-popup"
     title = "Notice"
     :z-index = "1011"
     close-button-label = "OK"
@@ -46,11 +45,6 @@ export default {
 </script>
 
 <style scoped>
-#race-messages-popup {
-  width: 30%;
-  height: 70%;
-  overflow: hidden;
-}
 .race-message-list {
   height: 100%;
   overflow-y: auto;

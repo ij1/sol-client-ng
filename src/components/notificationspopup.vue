@@ -1,6 +1,5 @@
 <template>
   <popup-window
-    id = "notifications-popup"
     title = ""
     :z-index = "1010"
     close-button-label = "OK"
@@ -46,11 +45,6 @@ export default {
 </script>
 
 <style scoped>
-#notifications-popup {
-  width: 30%;
-  height: 30%;
-  overflow: hidden;
-}
 #notifications-content {
   height: 100%;
   overflow-y: auto;
