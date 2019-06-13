@@ -22,6 +22,7 @@
       }"
     >
       <map-tiles v-if = "map !== null" :map = "map"/>
+      <time-of-day v-if = "map !== null"/>
       <race-info v-if = "map !== null" :map = "map"/>
       <race-info v-if = "map !== null" :map = "map" :lng-offset = "-720"/>
       <race-info v-if = "map !== null" :map = "map" :lng-offset = "-360"/>
@@ -62,6 +63,7 @@ import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip, LControlZoom } from
 import { PROJECTION } from '../../lib/sol.js';
 
 import MapTiles from './tiles';
+import TimeOfDay from './timeofday.vue'
 import RaceInfo from './race';
 import CanvasOverlay from './canvasoverlay';
 
@@ -98,6 +100,7 @@ export default {
     'l-control-zoom': LControlZoom,
 
     'map-tiles': MapTiles,
+    'time-of-day': TimeOfDay,
     'race-info': RaceInfo,
     'canvas-overlay': CanvasOverlay,
 
