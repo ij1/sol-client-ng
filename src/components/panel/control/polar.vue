@@ -1,11 +1,11 @@
 <template>
   <div id="polar" ref="polar-container">
     <canvas id="labels" ref="labels"/>
-    <canvas id="polargrid" ref="polargrid"/>
-    <canvas id="polarbg" ref="polarbg"/>
-    <canvas id="polarfg" ref="polarfg"/>
+    <canvas class = "polar-draw-area" ref="polargrid"/>
+    <canvas class = "polar-draw-area" id = "polarbg" ref = "polarbg"/>
+    <canvas class = "polar-draw-area" ref="polarfg"/>
     <canvas
-      id = "polaroverlay"
+      class = "polar-draw-area"
       ref = "polaroverlay"
       @mousemove = "onMouseMove"
       @mouseout = "onMouseOut"
@@ -373,7 +373,7 @@ export default {
 #polar-container {
   width: 100%;
 }
-#polargrid, #polarbg, #polarfg, #polaroverlay {
+.polar-draw-area {
   position: absolute;
   top: 20px;
   left: 20px;
