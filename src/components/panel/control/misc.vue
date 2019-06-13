@@ -35,6 +35,10 @@ export default {
           license: 'BSD-2-Clause',
         },
         {
+          name: 'Leaflet.Terminator',
+          license: 'MIT',
+        },
+        {
           name: 'pako',
           license: 'MIT',
         },
