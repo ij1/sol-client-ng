@@ -5,6 +5,7 @@
       :fill-color = "'#000'"
       :fill-opacity = "0.1"
       :time = "boatTime"
+      pane = "timeofdayPane"
     />
   </l-layer-group>
 </template>

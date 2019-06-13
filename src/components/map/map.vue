@@ -150,6 +150,8 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject;
+      this.map.createPane('timeofdayPane');
+      this.map.getPane('timeofdayPane').style.zIndex = 300;
       this.map.on('mousemove', this.setHoverPos, this);
       this.map.on('mouseout', this.clearHoverPos, this);
       this.updateView();
