@@ -377,6 +377,7 @@ export default {
   position: absolute;
   top: 20px;
   left: 20px;
+  cursor: crosshair;
 }
 #polarbg {
   mix-blend-mode: multiply;

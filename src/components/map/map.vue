@@ -275,5 +275,6 @@ export default {
 
 .leaflet-container {
   background: #fff;
+  cursor: crosshair;
 }
 </style>

@@ -128,5 +128,6 @@ export default {
   left: 0px;
   z-index: 550;
   mix-blend-mode: multiply;
+  cursor: crosshair;
 }
 </style>
