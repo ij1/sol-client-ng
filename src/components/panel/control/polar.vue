@@ -16,7 +16,10 @@
     <div v-if = "hover.sog !== null">
       SOG: {{ roundToFixed(hover.sog, 2) }}
       VMG: {{ roundToFixed(hover.vmg, 2) }}
-      TWA: {{ roundToFixed(hover.twa, 1) }}
+      <!-- hover.twa is text-formatted already as sign is different for
+           polar hover & visual steer information
+      -->
+      TWA: {{ hover.twa }}
     </div>
   </div>
 </template>
@@ -27,7 +30,7 @@ import { mapState, mapGetters } from 'vuex';
 import { degToRad, radToDeg } from '../../../lib/utils.js';
 import { roundToFixed, canvasAlignToPixelCenter } from '../../../lib/quirks.js';
 import { windToColor } from '../../../lib/sol.js';
-import { atan2Bearing } from '../../../lib/nav.js';
+import { speedTowardsBearing, atan2Bearing, twaTextPrefix } from '../../../lib/nav.js';
 import { polarMixin } from '../../mixins/polar.js';
 import WindKey from './windkey.vue';
 
@@ -122,6 +125,7 @@ export default {
     ...mapState({
       boatSpeed: state => state.boat.instruments.speed.value,
       boatTwa: state => state.boat.instruments.twa.value,
+      boatTws: state => state.boat.instruments.tws.value,
       visualSteeringTwa: state => state.boat.steering.visualSteering.twa,
     }),
     ...mapGetters({
@@ -320,7 +324,8 @@ export default {
       }
       this.hover.sog = sog;
       this.hover.vmg = -y / this.gridScale;
-      this.hover.twa = radToDeg(atan2Bearing(x, y));
+      const twa = atan2Bearing(x, y);
+      this.hover.twa = roundToFixed(radToDeg(twa), 1);
     },
     onMouseOut () {
       this.clearHoverInfo();
@@ -350,6 +355,17 @@ export default {
     bgNeedRedraw () {
       this.draw();
     },
+    visualSteeringTwa (twaVal, oldVal) {
+      if (twaVal !== null) {
+        this.hover.twa = twaTextPrefix(twaVal) + roundToFixed(radToDeg(twaVal), 1);
+        this.hover.sog = this.$store.getters['boat/polar/getSpeed'](this.boatTws,
+                                                                    twaVal);
+        this.hover.vmg = speedTowardsBearing(this.hover.sog, twaVal, 0);
+      } else if (oldVal !== null) {
+        this.clearHoverInfo();
+      }
+    },
+    twaTextPrefix,
   },
   mounted () {
     this.$nextTick(() => {
