@@ -6,21 +6,29 @@
     <race-messages-popup/>
     <portal-target name="dc-editor-dest"/>
     <portal-target name="boatlist-editor-dest"/>
-    <div id = "left-div">
-      <map-view/>
-      <!-- config for 24h wx needs to be loaded prior panel -->
-      <weather-panel
-        v-if = "$store.state.ui.config.loaded"
-      />
-      <boat-instruments/>
-    </div>
-    <div id = "right-div">
-      <control-panel-switcher/>
-    </div>
+    <splitpanes
+      class = "default-theme"
+      @resize = "doResize"
+      @resized = "doResize"
+    >
+      <div id = "left-div" splitpanes-size = "80">
+        <map-view ref="map"/>
+        <!-- config for 24h wx needs to be loaded prior panel -->
+        <weather-panel
+          v-if = "$store.state.ui.config.loaded"
+        />
+        <boat-instruments/>
+      </div>
+      <div id = "right-div" splitpanes-size = "20">
+        <control-panel-switcher/>
+      </div>
+    </splitpanes>
   </div>
 </template>
 
 <script>
+import Splitpanes from 'splitpanes';
+import 'splitpanes/dist/splitpanes.css';
 import LoginPopup from './components/loginpopup.vue';
 import NotificationsPopup from './components/notificationspopup.vue';
 import ConfigEditor from './components/config/configeditor.vue';
@@ -33,6 +41,7 @@ import ControlPanelSwitcher from './components/panel/control/switcher.vue';
 export default {
   name: 'app',
   components: {
+    'splitpanes': Splitpanes,
     'login-popup': LoginPopup,
     'notifications-popup': NotificationsPopup,
     'config-editor': ConfigEditor,
@@ -41,6 +50,13 @@ export default {
     'boat-instruments': BoatInstruments,
     'weather-panel': WeatherPanel,
     'control-panel-switcher': ControlPanelSwitcher,
+  },
+  methods: {
+    doResize () {
+      if (this.$refs['map'].map !== null) {
+        this.$refs['map'].map.invalidateSize(true);
+      }
+    }
   }
 }
 </script>
@@ -75,17 +91,17 @@ html, body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 80%;
-  height: 100%;
+  width: inherit;
+  height: inherit;
   overflow: hidden;
 }
 #right-div {
   position: absolute;
   top: 0;
   right: 0;
-  width: 20%;
-  height: 100%;
-  max-height: 100%;
+  width: inherit;
+  height: inherit;
   overflow: hidden;
+  background-color: #fff;
 }
 </style>
