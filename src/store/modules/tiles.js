@@ -103,25 +103,25 @@ export default {
         }
       } while (typeof key !== 'undefined');
     },
-    loadTile ({state, getters, commit, dispatch}, loadInfo) {
+    async loadTile ({state, getters, commit, dispatch}, loadInfo) {
       const key = loadInfo.key;
-      if (state.tiles[key].loaded) {
-        return;
-      }
-
       let failTimer = 0;
 
-      commit('addActiveFetches', 1);
-      const getDef = {
-        url: getters.tileIdToUrl(state.tiles[key].id),
-        params: {},
-        useArrays: true,
-        dataField: 'data',
-        compressedPayload: true,
-      };
+      try {
+        if (state.tiles[key].loaded) {
+          return;
+        }
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(async (data) => {
+        commit('addActiveFetches', 1);
+        const getDef = {
+          url: getters.tileIdToUrl(state.tiles[key].id),
+          params: {},
+          useArrays: true,
+          dataField: 'data',
+          compressedPayload: true,
+        };
+
+        let data = await dispatch('solapi/get', getDef, {root: true});
         let geoms = {};
 
         if (typeof data.cell[0].poly !== 'undefined') {
@@ -145,8 +145,7 @@ export default {
           geoms: geoms,
         });
         await lowPrioTask.idle();
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           apiCall: 'tiles',
           error: err,
@@ -156,11 +155,10 @@ export default {
         failTimer = Math.min((loadInfo.failTimer + 100) * 2, secToMsec(60));
         /* 50% - 100% of time timer to avoid synchronization bursts */
         failTimer = Math.random() * failTimer / 2 + failTimer / 2;
-      })
-      .finally(() => {
+      } finally {
         commit('addActiveFetches', -1);
         solapiRetryDispatch(dispatch, 'loadTiles', failTimer, failTimer);
-      });
+      }
     },
 
     //

@@ -184,29 +184,29 @@ export default {
   },
 
   actions: {
-    fetchRaceinfo ({state, rootState, getters, rootGetters, commit, dispatch}) {
-      /* Initialize time before boat/wx is fetched to avoid issues */
-      const now = rootGetters['time/now']();
+    async fetchRaceinfo ({state, rootState, getters, rootGetters, commit, dispatch}) {
+      try {
+        /* Initialize time before boat/wx is fetched to avoid issues */
+        const now = rootGetters['time/now']();
 
-      const getDef = {
-        url: "/webclient/auth_raceinfo_" + rootState.auth.raceId + ".xml",
-        params: {
-          token: rootState.auth.token,
-        },
-        useArrays: false,
-        dataField: 'race',
-      };
-      if (rootGetters['solapi/isLocked']('raceinfo')) {
-        return;
-      }
-      commit('solapi/lock', 'raceinfo', {root: true});
-      if (!state.loaded) {
-        commit('boat/instruments/initTime', now, {root: true});
-        commit('weather/initTime', now, {root: true});
-      }
+        const getDef = {
+          url: "/webclient/auth_raceinfo_" + rootState.auth.raceId + ".xml",
+          params: {
+            token: rootState.auth.token,
+          },
+          useArrays: false,
+          dataField: 'race',
+        };
+        if (rootGetters['solapi/isLocked']('raceinfo')) {
+          return;
+        }
+        commit('solapi/lock', 'raceinfo', {root: true});
+        if (!state.loaded) {
+          commit('boat/instruments/initTime', now, {root: true});
+          commit('weather/initTime', now, {root: true});
+        }
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(async (raceInfo) => {
+        let raceInfo = await dispatch('solapi/get', getDef, {root: true});
         const loaded = state.loaded;
         const boatType = raceInfo.boat.type;
         const polarRawData = raceInfo.boat.vpp;
@@ -241,17 +241,15 @@ export default {
           dispatch('boat/fetch', null, {root: true});
           dispatch('weather/fetchInfo', null, {root: true});
         }
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           apiCall: 'raceinfo',
           error: err,
         }, {root: true});
         solapiRetryDispatch(dispatch, 'fetchRaceinfo');
-      })
-      .finally(() => {
+      } finally {
         commit('solapi/unlock', 'raceinfo', {root: true});
-      });
+      }
     },
     fetchRaceComponents({state, dispatch, getters, rootGetters}) {
       const now = rootGetters['time/now']();

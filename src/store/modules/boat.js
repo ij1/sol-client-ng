@@ -85,21 +85,21 @@ export default {
   },
 
   actions: {
-    fetch ({state, rootState, rootGetters, commit, dispatch}) {
-      const nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
-      const getDef = {
-        url: rootState.race.info.boaturl,
-        params: {
-          token: rootState.auth.token,
-          room_id: nextChatroom,
-          timestamp: rootState.chatrooms.rooms[nextChatroom].timestamp,
-        },
-        useArrays: false,
-        dataField: 'data',
-      };
+    async fetch ({state, rootState, rootGetters, commit, dispatch}) {
+      try {
+        const nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
+        const getDef = {
+          url: rootState.race.info.boaturl,
+          params: {
+            token: rootState.auth.token,
+            room_id: nextChatroom,
+            timestamp: rootState.chatrooms.rooms[nextChatroom].timestamp,
+          },
+          useArrays: false,
+          dataField: 'data',
+        };
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(async (boatData) => {
+        let boatData = await dispatch('solapi/get', getDef, {root: true});
         const now = rootGetters['time/now']();
         boatData.boat.time = now;
         let chatData = boatData.chats;
@@ -136,8 +136,7 @@ export default {
         if (rootGetters['boat/steering/nextTimeToFetchDCs'] <= now) {
           dispatch('steering/fetchDCs');
         }
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           apiCall: 'boat',
           error: err,
@@ -145,10 +144,9 @@ export default {
 
         /* Backup fetch if boat API is down, still try the others */
         dispatch('race/fetchRaceComponents', null, {root: true});
-      })
-      .finally(() => {
+      } finally {
         solapiRetryDispatch(dispatch, 'fetch', undefined, 10000);
-      });
+      }
     },
   },
 }

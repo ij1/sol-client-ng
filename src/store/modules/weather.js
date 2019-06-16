@@ -330,18 +330,18 @@ export default {
       });
     },
 
-    fetchData ({state, rootState, rootGetters, commit, dispatch}, dataUrl) {
-      const getDef = {
-        url: dataUrl,
-        params: {
-          token: rootState.auth.token,
-        },
-        useArrays: false,
-        dataField: 'weathersystem',
-      };
+    async fetchData ({state, rootState, rootGetters, commit, dispatch}, dataUrl) {
+      try {
+        const getDef = {
+          url: dataUrl,
+          params: {
+            token: rootState.auth.token,
+          },
+          useArrays: false,
+          dataField: 'weathersystem',
+        };
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(async (weatherData) => {
+        let weatherData = await dispatch('solapi/get', getDef, {root: true});
         const firstWeather = (state.data.updated === null);
 
         let boundary = L.latLngBounds(
@@ -436,16 +436,14 @@ export default {
             text: 'Weather updated at ' + time,
           }, {root: true});
         }
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           apiCall: 'weather',
           error: err,
         }, {root: true});
-      })
-      .finally(() => {
+      } finally {
         commit('solapi/unlock', 'weather', {root: true});
-      });
+      }
     },
     parseUpdateTimes({commit}, description) {
       const regex = /WX [Uu]pdates: *<br> *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9])\.* *<br>/;
