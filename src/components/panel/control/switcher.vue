@@ -84,15 +84,16 @@ export default {
 }
 
 .tabs {
-  margin-left: 10px;
-  margin-bottom: -2px;
+  display: inline-flex;
+  margin-left: 6px;
+  margin-bottom: -6px;
   overflow: hidden;
   font-size: 11px;
 }
 
 .tabs a {
-  float: left;
-  padding: 5px 5px;
+  padding: 5px;
+  padding-bottom: 2px;
   border: 1px solid #c0c0c0;
   border-right: none;
   border-radius: 10px 10px 0 0;
