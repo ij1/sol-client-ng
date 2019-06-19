@@ -87,6 +87,7 @@ export default {
   margin-left: 10px;
   margin-bottom: -2px;
   overflow: hidden;
+  font-size: 11px;
 }
 
 .tabs a {
