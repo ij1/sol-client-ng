@@ -51,7 +51,7 @@ export default {
   methods: {
     doResize () {
       if (this.$refs['map'].map !== null) {
-        this.$refs['map'].map.invalidateSize(true);
+        this.$refs['map'].map.invalidateSize({pan: false});
       }
     }
   }
