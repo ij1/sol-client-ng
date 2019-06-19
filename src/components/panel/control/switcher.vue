@@ -6,7 +6,7 @@
       <a v-on:click="activeTab=2" v-bind:class="activeTab === 2 ? 'active' : ''">LB</a>
       <a v-on:click="activeTab=3" v-bind:class="activeTab === 3 ? 'active' : ''">Chat</a>
       <a v-on:click="activeTab=4" v-bind:class="activeTab === 4 ? 'active' : ''">NOR</a>
-      <a v-on:click="activeTab=6" v-bind:class="activeTab === 6 ? 'active' : ''">Help</a>
+      <a v-on:click="activeTab=6" v-bind:class="activeTab === 6 ? 'active' : ''">Misc</a>
       <a v-on:click="activeTab=7" v-bind:class="activeTab === 7 ? 'active' : ''">Diag</a>
     </div>
     <div>
