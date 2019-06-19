@@ -13,10 +13,7 @@
     >
       <div id = "left-div" splitpanes-size = "80">
         <map-view ref="map"/>
-        <!-- config for 24h wx needs to be loaded prior panel -->
-        <weather-panel
-          v-if = "$store.state.ui.config.loaded"
-        />
+        <weather-panel/>
         <boat-instruments/>
       </div>
       <div id = "right-div" splitpanes-size = "20">
@@ -35,7 +32,7 @@ import ConfigEditor from './components/config/configeditor.vue';
 import RaceMessagesPopup from './components/racemessagespopup.vue';
 import Map from './components/map/map.vue';
 import BoatInstruments from './components/panel/instruments/instruments.vue';
-import WeatherPanel from './components/panel/weather.vue';
+import WeatherPanel from './components/panel/weatherwrapper.vue';
 import ControlPanelSwitcher from './components/panel/control/switcher.vue';
 
 export default {
