@@ -84,9 +84,9 @@ export default {
 }
 
 .tabs {
-  display: inline-flex;
-  margin-left: 6px;
-  margin-bottom: -6px;
+  display: flex;
+  margin-left: 10px;
+  margin-bottom: -1px;
   overflow: hidden;
   font-size: 11px;
 }
