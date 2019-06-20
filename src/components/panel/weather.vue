@@ -252,7 +252,8 @@ export default {
   margin-right: -50%;
   transform: translate(-50%, 0);
   border: 1px solid #f0f0f0;
-  background: #ffffff;
+  background: #ddd;
+  mix-blend-mode: multiply;
 }
 #weather-slider-container {
   position: relative;
