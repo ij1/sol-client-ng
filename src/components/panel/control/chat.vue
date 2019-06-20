@@ -1,23 +1,25 @@
 <template>
   <div class="chat-channel">
     <div class="chat-channel-header">
-      <label for = "chat-channel-selector">Chatroom:</label>
-      <select 
-        id = "chat-channel-selector"
-        :value="roomId"
-        @input="selectRoom"
-      >
-        <option disabled value="">
-          Please select channel
-        </option>
-        <option
-          v-for = "channel in $store.state.chatrooms.rooms"
-          v-bind:value = "channel.id"
-          v-bind:key = "channel.name"
+      <span>
+        <label for = "chat-channel-selector">Chatroom:</label>
+        <select
+          id = "chat-channel-selector"
+          :value="roomId"
+          @input="selectRoom"
         >
-          {{ channel.name }}
-        </option>
-      </select>
+          <option disabled value="">
+            Please select channel
+          </option>
+          <option
+            v-for = "channel in $store.state.chatrooms.rooms"
+            v-bind:value = "channel.id"
+            v-bind:key = "channel.name"
+          >
+            {{ channel.name }}
+          </option>
+        </select>
+      </span>
       <button
         class = "chat-channel-close"
         @click = "onClose"
@@ -193,16 +195,24 @@ export default {
 }
 
 .chat-channel-header {
+  position: relative;
+  display: flex;
   text-align: left;
   padding-bottom: 5px;
+  justify-content: space-between;
 }
 
-.chat-channel-header select {
+.chat-channel-header span {
+  display: flex;
+}
+
+#chat-channel-selector {
   font-size: 9px;
 }
 
 .chat-channel-close {
-  float: right;
+  position: absolute;
+  right: 0px;
 }
 
 .chat-block-list {
