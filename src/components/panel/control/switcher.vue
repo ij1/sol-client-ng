@@ -107,9 +107,11 @@ export default {
 .tabs a.active {
   background-color: #ffffff;
   border-bottom: 2px solid #ffffff;
+  z-index: 1;
 }
 
 .control-panel-content {
+  position: relative;
   overflow: hidden;
   padding: 5px;
   border: 1px solid #c0c0c0;
