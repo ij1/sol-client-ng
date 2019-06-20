@@ -58,7 +58,7 @@ export default {
 }
 
 .boat-instrument-label {
-  font-size: 8px;
+  font-size: 9px;
   text-align: left;
 }
 

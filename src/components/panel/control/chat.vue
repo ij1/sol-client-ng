@@ -188,7 +188,6 @@ export default {
 
 <style scoped>
 .chat-channel {
-  font-size: 10px;
   height: 100%;
   max-height: 100%;
   font-size: 9px;
@@ -198,6 +197,7 @@ export default {
   position: relative;
   display: flex;
   text-align: left;
+  font-size: 10px;
   padding-bottom: 5px;
   justify-content: space-between;
 }
@@ -207,7 +207,7 @@ export default {
 }
 
 #chat-channel-selector {
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .chat-channel-close {
@@ -239,6 +239,7 @@ export default {
 }
 .chat-name {
   float: left;
+  font-size: 9px;
   font-weight: bold;
   padding-right: 10px;
 }

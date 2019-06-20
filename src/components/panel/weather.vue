@@ -273,14 +273,14 @@ export default {
   height: 9px;
 }
 #weather-panel-control span {
-  font-size: 10px;
+  font-size: 11px;
   padding: 1px;
 }
 #weather-panel-control button,select {
   border: none;
   padding: 1px;
   margin: 0px;
-  font-size: 10px;
+  font-size: 11px;
 }
 #weather-panel-control button {
   background: #ffffff;
@@ -289,6 +289,6 @@ export default {
   border: none;
   padding: 0px;
   margin: 0px;
-  font-size: 10px;
+  font-size: 11px;
 }
 </style>
