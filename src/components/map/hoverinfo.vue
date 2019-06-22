@@ -81,5 +81,6 @@ export default {
 #hover-info {
   pointer-events: none;
   text-align: right;
+  font-size: 12px;
 }
 </style>

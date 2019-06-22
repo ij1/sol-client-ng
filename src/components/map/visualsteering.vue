@@ -23,7 +23,7 @@
       :fill = "false"
     >
       <l-tooltip :options = "tooltipOptions">
-        <div>
+        <div id = "visual-steering-info">
           <div>COG: {{cog | formatAngle }}</div>
           <div>TWA: {{twa | formatAngle }}</div>
           <div>SOG: {{sog | formatValue }}</div>
@@ -147,3 +147,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#visual-steering-info {
+  font-size: 12px;
+}
+</style>
