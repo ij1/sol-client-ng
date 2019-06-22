@@ -13,7 +13,7 @@
     <div id = "wind-key-container" :style="{top: windKeyY + 'px'}">
       <wind-key/>
     </div>
-    <div v-if = "hover.sog !== null">
+    <div class = "polar-details" v-if = "hover.sog !== null">
       SOG: {{ roundToFixed(hover.sog, 2) }}
       VMG: {{ roundToFixed(hover.vmg, 2) }}
       <!-- hover.twa is text-formatted already as sign is different for
@@ -397,6 +397,9 @@ export default {
 }
 #polarbg {
   mix-blend-mode: multiply;
+}
+.polar-details {
+  font-size: 12px;
 }
 #wind-key-container {
   position: absolute;
