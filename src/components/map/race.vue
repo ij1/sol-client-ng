@@ -63,7 +63,7 @@ import { PROJECTION } from '../../lib/sol.js';
 import { degToRad, radToDeg } from '../../lib/utils.js';
 
 export default {
-  name: 'Map',
+  name: 'RaceInfo',
   components: {
     'l-layer-group': LLayerGroup,
     'l-circle-marker': LCircleMarker,
