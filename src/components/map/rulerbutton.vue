@@ -3,7 +3,7 @@
     :position = "'topleft'"
   >
     <div
-      id = "ruler-button"
+      class = "tool-button"
       ref = "ruler-button"
       :style = "{color: rulerEnabled ? 'red' : 'black'}"
       @click.prevent = "onClick"
@@ -43,10 +43,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-#ruler-button {
-  background-color: rgb(240, 240, 240, 0.8);
-  border: 1px;
-}
-</style>

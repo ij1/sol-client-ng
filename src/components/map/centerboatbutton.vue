@@ -3,8 +3,12 @@
     id = "center-boat"
     :position = "'topleft'"
   >
-    <div ref = "center-boat-button" @click = "onClick">
-      CenterBoat
+    <div
+      class = "tool-button"
+      ref = "center-boat-button"
+      @click = "onClick"
+    >
+      Center<br>Boat
     </div>
   </l-control>
 </template>

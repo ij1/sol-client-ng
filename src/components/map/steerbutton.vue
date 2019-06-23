@@ -3,7 +3,7 @@
     :position = "'topleft'"
   >
     <div
-      id = "steer-button"
+      class = "tool-button"
       ref = "steer-button"
       :style = "{color: visualSteeringEnabled ? 'red' : 'black'}"
       @click.prevent = "onClick"
@@ -63,10 +63,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-#steer-button {
-  background-color: rgb(240, 240, 240, 0.8);
-  border: 1px;
-}
-</style>

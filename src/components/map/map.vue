@@ -299,10 +299,9 @@ export default {
 
 .tool-button {
   padding: 5px;
-  border: 1px solid #333;
+  border: 1px solid rgb(48, 48, 48, 0.6);
   border-radius: 3px;
-  background: #fff;
-  font-size: 24px;
+  background-color: rgb(255, 255, 255, 0.6);
   font-weight: bold;
   overflow: hidden;
 }
