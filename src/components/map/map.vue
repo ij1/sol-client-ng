@@ -27,6 +27,7 @@
       <race-info v-if = "map !== null" :map = "map" :lng-offset = "-720"/>
       <race-info v-if = "map !== null" :map = "map" :lng-offset = "-360"/>
       <race-info v-if = "map !== null" :map = "map" :lng-offset = "360"/>
+      <pr-marks v-if = "map !== null"/>
 
       <canvas-overlay v-if = "map !== null" :map = "map"/>
       <fleet-traces v-if = "map !== null"/>
@@ -65,6 +66,7 @@ import { PROJECTION } from '../../lib/sol.js';
 import MapTiles from './tiles';
 import TimeOfDay from './timeofday.vue'
 import RaceInfo from './race';
+import PrMarks from './prmarks';
 import CanvasOverlay from './canvasoverlay';
 
 import FleetTraces from './fleettraces';
@@ -102,6 +104,7 @@ export default {
     'map-tiles': MapTiles,
     'time-of-day': TimeOfDay,
     'race-info': RaceInfo,
+    'pr-marks': PrMarks,
     'canvas-overlay': CanvasOverlay,
 
     'fleet-traces': FleetTraces,
@@ -249,6 +252,10 @@ export default {
 
 .wp-tooltip::before {
   all: unset;
+}
+
+.pr-tooltip {
+  color: #ff00ff;
 }
 
 .steering-tooltip {
