@@ -41,7 +41,8 @@
       <map-highlight v-if = "map !== null" :map = "map"/>
 
       <race-status v-if = "map !== null"/>
-      <l-control-zoom v-if = "map !== null" :position = "'topleft'" />
+      <zoom-out-button v-if = "map !== null" :map = "map"/>
+      <zoom-in-button v-if = "map !== null" :map = "map"/>
       <center-boat-button v-if = "map !== null"/>
       <steer-button v-if = "map !== null"/>
       <ruler-button v-if = "map !== null"/>
@@ -60,7 +61,7 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
-import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip, LControlZoom } from 'vue2-leaflet';
+import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet';
 import { PROJECTION } from '../../lib/sol.js';
 
 import MapTiles from './tiles';
@@ -81,6 +82,8 @@ import RulerTool from './rulertool';
 import MapHighlight from './highlight';
 
 import RaceStatus from '../racestatus.vue';
+import ZoomOutButton from './zoomoutbutton.vue';
+import ZoomInButton from './zoominbutton.vue';
 import CenterBoatButton from './centerboatbutton';
 import SteerButton from './steerbutton';
 import RulerButton from './rulerbutton';
@@ -99,7 +102,6 @@ export default {
     'l-marker': LMarker,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
-    'l-control-zoom': LControlZoom,
 
     'map-tiles': MapTiles,
     'time-of-day': TimeOfDay,
@@ -119,6 +121,8 @@ export default {
     'map-highlight': MapHighlight,
 
     'race-status': RaceStatus,
+    'zoom-out-button': ZoomOutButton,
+    'zoom-in-button': ZoomInButton,
     'center-boat-button': CenterBoatButton,
     'steer-button': SteerButton,
     'ruler-button': RulerButton,
@@ -291,5 +295,15 @@ export default {
 .leaflet-container {
   background: #fff;
   cursor: crosshair;
+}
+
+.tool-button {
+  padding: 5px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  background: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  overflow: hidden;
 }
 </style>

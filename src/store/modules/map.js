@@ -6,6 +6,8 @@ export default {
   state: {
     center: L.latLng(0, 0),
     zoom: 3,
+    minZoom: 1,
+    maxZoom: 18,
     hoverLatLng: null,
     size: L.point(1, 1),
     viewUpdateStamp: 0,
