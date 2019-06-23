@@ -41,8 +41,8 @@
       <map-highlight v-if = "map !== null" :map = "map"/>
 
       <race-status v-if = "map !== null"/>
-      <zoom-out-button v-if = "map !== null" :map = "map"/>
       <zoom-in-button v-if = "map !== null" :map = "map"/>
+      <zoom-out-button v-if = "map !== null" :map = "map"/>
       <center-boat-button v-if = "map !== null"/>
       <steer-button v-if = "map !== null"/>
       <ruler-button v-if = "map !== null"/>
@@ -82,8 +82,8 @@ import RulerTool from './rulertool';
 import MapHighlight from './highlight';
 
 import RaceStatus from '../racestatus.vue';
-import ZoomOutButton from './zoomoutbutton.vue';
 import ZoomInButton from './zoominbutton.vue';
+import ZoomOutButton from './zoomoutbutton.vue';
 import CenterBoatButton from './centerboatbutton';
 import SteerButton from './steerbutton';
 import RulerButton from './rulerbutton';
@@ -121,8 +121,8 @@ export default {
     'map-highlight': MapHighlight,
 
     'race-status': RaceStatus,
-    'zoom-out-button': ZoomOutButton,
     'zoom-in-button': ZoomInButton,
+    'zoom-out-button': ZoomOutButton,
     'center-boat-button': CenterBoatButton,
     'steer-button': SteerButton,
     'ruler-button': RulerButton,
