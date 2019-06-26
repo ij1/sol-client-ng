@@ -160,6 +160,11 @@ export default {
         }
 
         /* Draw outline */
+        const boundN = this.maxBounds.getNorth();
+        const boundS = this.maxBounds.getSouth();
+        const boundE = this.maxBounds.getEast();
+        const boundW = this.maxBounds.getWest();
+
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = '#000';
         for (let poly of this.geoms['l' + l]) {
@@ -168,7 +173,12 @@ export default {
           let firstAtBorder;
           ctx.beginPath();
           for (let pt of poly) {
-            const atBorder = this.pointAtBorder(pt);
+            const atBorder =
+              (pt.lat === boundN ? 1 :
+               (pt.lat === boundS ? 4 : 0)) +
+              (pt.lng === boundE ? 2 :
+               (pt.lng === boundW ? 8 : 0));
+
             const drawCoords = this.latLngToTilePoint(pt);
             /* If the outline goes along a border line, don't draw but move */
             if (first || (atBorder & prevAtBorder) !== 0) {
@@ -204,20 +214,6 @@ export default {
       ctx.lineTo(this.tilesize.x, 0);
       ctx.moveTo(0, 0);
       ctx.stroke();
-    },
-    pointAtBorder(pt) {
-      let atBorder = 0;
-      if (pt.lat === this.maxBounds.getNorth()) {
-        atBorder += 1;
-      } else if (pt.lat === this.maxBounds.getSouth()) {
-        atBorder += 4;
-      }
-      if (pt.lng === this.maxBounds.getEast()) {
-        atBorder += 2;
-      } else if (pt.lng === this.maxBounds.getWest()) {
-        atBorder += 8;
-      }
-      return atBorder;
     },
   },
 
