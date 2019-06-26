@@ -79,6 +79,9 @@ export default {
           title: 'General',
           cfgs: [{
             base: 'ui',
+          },
+          {
+            base: 'map',
           }],
         },
         {

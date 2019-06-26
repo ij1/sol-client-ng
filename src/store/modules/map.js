@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { configSetValue } from '../../components/config/configstore.js';
 
 export default {
   namespaced: true,
@@ -11,6 +12,19 @@ export default {
     hoverLatLng: null,
     size: L.point(1, 1),
     viewUpdateStamp: 0,
+
+    cfg: {
+      tinyIslands: {
+        value: 'default',
+        type: 'values',
+        values: [
+          'default',
+          ['1px', 'at least 1 pixel'],
+          ['3px', '2-3 pixels'],
+        ],
+        cfgText: 'Tiny island drawing',
+      },
+    },
   },
 
   mutations: {
@@ -28,6 +42,7 @@ export default {
     setHover(state, latLng) {
       state.hoverLatLng = latLng;
     },
+    configSetValue,
   },
   getters: {
     wrappedHoverLatLng: (state) => {

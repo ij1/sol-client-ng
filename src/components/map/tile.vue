@@ -93,6 +93,8 @@ export default {
       /* this.geoms is frozen, so check loaded state flag instead */
       this.loaded;
       this.$parent.zoom;
+
+      this.$store.state.map.cfg.tinyIslands.value;
       // Return dummy value
       return Date.now();
     }
@@ -160,6 +162,12 @@ export default {
         }
 
         /* Draw outline */
+        const cfgTinyIslands = this.$store.state.map.cfg.tinyIslands.value;
+        const detectTinyIslands = cfgTinyIslands !== 'default';
+        const tinyIslandSize = cfgTinyIslands === '1px' ? 1 :
+                               (cfgTinyIslands === '3px' ? 3 : 0);
+        ctx.fillStyle = tinyIslandSize <= 1 ? '#000' : '#ffddbb';
+
         const boundN = this.maxBounds.getNorth();
         const boundS = this.maxBounds.getSouth();
         const boundE = this.maxBounds.getEast();
@@ -171,6 +179,11 @@ export default {
           let first = true;
           let prevAtBorder = 0;
           let firstAtBorder;
+          let polyMinX;
+          let polyMinY;
+          let polyMaxX;
+          let polyMaxY;
+          let tinyIsland = detectTinyIslands;
           ctx.beginPath();
           for (let pt of poly) {
             const atBorder =
@@ -180,6 +193,30 @@ export default {
                (pt.lng === boundW ? 8 : 0));
 
             const drawCoords = this.latLngToTilePoint(pt);
+
+            /* Larger than a tiny island (<=1px) detection */
+            if (first) {
+              polyMinX = drawCoords.x;
+              polyMaxX = drawCoords.x;
+              polyMinY = drawCoords.y;
+              polyMaxY = drawCoords.y;
+            } else if (tinyIsland) {
+              if (polyMinX > drawCoords.x) {
+                polyMinX = drawCoords.x;
+              }
+              if (polyMaxX < drawCoords.x) {
+                polyMaxX = drawCoords.x;
+              }
+              if (polyMinY > drawCoords.y) {
+                polyMinY = drawCoords.y;
+              }
+              if (polyMaxY < drawCoords.y) {
+                polyMaxY = drawCoords.y;
+              }
+              tinyIsland = ((polyMaxX - polyMinX) < tinyIslandSize) &&
+                           ((polyMaxY - polyMinY) < tinyIslandSize);
+            }
+
             /* If the outline goes along a border line, don't draw but move */
             if (first || (atBorder & prevAtBorder) !== 0) {
               ctx.moveTo(drawCoords.x, drawCoords.y);
@@ -192,12 +229,24 @@ export default {
             }
             prevAtBorder = atBorder;
           }
-          /* Complete the poly but only conditionally */
-          if ((firstAtBorder & prevAtBorder) === 0) {
-            const drawCoords = this.latLngToTilePoint(poly[0]);
-            ctx.lineTo(drawCoords.x, drawCoords.y);
+
+          if (tinyIsland) {
+            const startX = Math.round((polyMaxX - polyMinX) / 2) + polyMinX;
+            const startY = Math.round((polyMaxY - polyMinY) / 2) + polyMinY;
+            if (cfgTinyIslands === '1px') {
+              ctx.fillRect(startX, startY, 1, 1);
+            } else if (cfgTinyIslands === '3px') {
+              ctx.fillRect(startX, startY, 1, 1);
+              ctx.strokeRect(startX-1, startY-1, 3, 3);
+            }
+          } else {
+            /* Complete the poly but only conditionally */
+            if ((firstAtBorder & prevAtBorder) === 0) {
+              const drawCoords = this.latLngToTilePoint(poly[0]);
+              ctx.lineTo(drawCoords.x, drawCoords.y);
+            }
+            ctx.stroke();
           }
-          ctx.stroke();
         }
 
         l++;
