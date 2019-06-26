@@ -183,7 +183,7 @@ export default {
           let polyMinY;
           let polyMaxX;
           let polyMaxY;
-          let tinyIsland = detectTinyIslands;
+          let tinyIsland = (l % 2 === 1) && detectTinyIslands;
           ctx.beginPath();
           for (let pt of poly) {
             const atBorder =
