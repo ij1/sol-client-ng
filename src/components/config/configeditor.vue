@@ -77,31 +77,31 @@ export default {
       return [
         {
           title: 'General',
-          cfgs: {
+          cfgs: [{
             base: 'ui',
-          },
+          }],
         },
         {
           title: 'Weather',
-          cfgs: {
+          cfgs: [{
             base: 'weather',
-          },
+          }],
         },
         {
           title: 'Steering',
-          cfgs: {
+          cfgs: [{
             base: 'boat/steering',
-          },
+          }],
         },
         {
           title: 'Instruments',
-          cfgs: {
+          cfgs: [{
             base: 'boat/instruments',
-          },
+          }],
         },
         {
           title: 'Enable Instruments',
-          cfgs: {
+          cfgs: [{
             base: 'boat/instruments',
             multi: [
               'lat.enabled',
@@ -109,7 +109,7 @@ export default {
               'vmc.enabled',
               'date.enabled',
             ],
-          },
+          }],
         },
       ];
     },
@@ -204,26 +204,27 @@ export default {
       for (let cfggroup of this.configDef) {
         let cfgs = [];
 
-        const cfg = cfggroup.cfgs;
-        if (typeof cfg.multi !== 'undefined') {
-          for (let key of cfg.multi) {
-            cfgs.push({
-              base: cfg.base,
-              path: key,
-              cfgObj: this.getStoreObj(cfg.base, key),
-              idx: cfgIdx++,
-            });
-          }
-        } else {
-          let storeObj = this.getStoreObj(cfg.base, 'cfg');
-          for (let key of Object.keys(storeObj)) {
-            const relPath = 'cfg.' + key;
-            cfgs.push({
-              base: cfg.base,
-              path: relPath,
-              cfgObj: this.getStoreObj(cfg.base, relPath),
-              idx: cfgIdx++,
-            });
+        for (const cfg of cfggroup.cfgs) {
+          if (typeof cfg.multi !== 'undefined') {
+            for (let key of cfg.multi) {
+              cfgs.push({
+                base: cfg.base,
+                path: key,
+                cfgObj: this.getStoreObj(cfg.base, key),
+                idx: cfgIdx++,
+              });
+            }
+          } else {
+            let storeObj = this.getStoreObj(cfg.base, 'cfg');
+            for (let key of Object.keys(storeObj)) {
+              const relPath = 'cfg.' + key;
+              cfgs.push({
+                base: cfg.base,
+                path: relPath,
+                cfgObj: this.getStoreObj(cfg.base, relPath),
+                idx: cfgIdx++,
+              });
+            }
           }
         }
         groups.push({ title: cfggroup.title, cfgs: cfgs });
