@@ -7,10 +7,10 @@
     >
       <option
         v-for = "v in cfg.values"
-        :value = "v"
-        :key = "v"
+        :value = "!Array.isArray(v) ? v : v[0]"
+        :key = "!Array.isArray(v) ? v : v[0]"
       >
-        {{v}}
+        {{v | format}}
       </option>
     </select>
   </div>
@@ -27,6 +27,11 @@ export default {
     value: {
       type: String,
       required: true,
+    },
+  },
+  filters: {
+    format (value) {
+      return !Array.isArray(value) ? value : value[1];
     },
   },
 }
