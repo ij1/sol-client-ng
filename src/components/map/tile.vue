@@ -140,6 +140,16 @@ export default {
       this.animFrame = null;
     },
     drawPolys (ctx) {
+      const cfgTinyIslands = this.$store.state.map.cfg.tinyIslands.value;
+      const detectTinyIslands = cfgTinyIslands !== 'default';
+      const tinyIslandSize = cfgTinyIslands === '1px' ? 1 :
+                             (cfgTinyIslands === '3px' ? 3 : 0);
+
+      const boundN = this.maxBounds.getNorth();
+      const boundS = this.maxBounds.getSouth();
+      const boundE = this.maxBounds.getEast();
+      const boundW = this.maxBounds.getWest();
+
       ctx.save();
       let l = 1;
       while (typeof this.geoms['l' + l] !== 'undefined') {
@@ -162,19 +172,9 @@ export default {
         }
 
         /* Draw outline */
-        const cfgTinyIslands = this.$store.state.map.cfg.tinyIslands.value;
-        const detectTinyIslands = cfgTinyIslands !== 'default';
-        const tinyIslandSize = cfgTinyIslands === '1px' ? 1 :
-                               (cfgTinyIslands === '3px' ? 3 : 0);
-        ctx.fillStyle = '#000';
-
-        const boundN = this.maxBounds.getNorth();
-        const boundS = this.maxBounds.getSouth();
-        const boundE = this.maxBounds.getEast();
-        const boundW = this.maxBounds.getWest();
-
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = '#000';
+        ctx.fillStyle = '#000';
         for (let poly of this.geoms['l' + l]) {
           let first = true;
           let prevAtBorder = 0;
