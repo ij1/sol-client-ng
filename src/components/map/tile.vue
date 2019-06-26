@@ -166,7 +166,7 @@ export default {
         const detectTinyIslands = cfgTinyIslands !== 'default';
         const tinyIslandSize = cfgTinyIslands === '1px' ? 1 :
                                (cfgTinyIslands === '3px' ? 3 : 0);
-        ctx.fillStyle = tinyIslandSize <= 1 ? '#000' : '#ffddbb';
+        ctx.fillStyle = '#000';
 
         const boundN = this.maxBounds.getNorth();
         const boundS = this.maxBounds.getSouth();
@@ -236,8 +236,7 @@ export default {
             if (cfgTinyIslands === '1px') {
               ctx.fillRect(startX, startY, 1, 1);
             } else if (cfgTinyIslands === '3px') {
-              ctx.fillRect(startX, startY, 1, 1);
-              ctx.strokeRect(startX-1, startY-1, 3, 3);
+              ctx.fillRect(startX-1, startY-1, 3, 3);
             }
           } else {
             /* Complete the poly but only conditionally */
