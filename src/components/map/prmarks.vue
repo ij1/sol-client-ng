@@ -78,6 +78,10 @@ export default {
         res.push({
           name: 'M' + i,
           latLng: markBoat.latLng,
+          /*
+           * Scale radius to match what the old client does, it has 9px
+           * marks.
+           */
           radius: Math.cos(degToRad(markBoat.latLng.lat)) / Math.pow(2, 17 + 8) *
                   4.5 * EARTH_CIRC,
         });
