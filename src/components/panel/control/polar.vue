@@ -58,7 +58,8 @@ export default {
         twa: null,
       },
 
-      animFrame: null,
+      fgAnimFrame: null,
+      overlayAnimFrame: null,
     }
   },
   computed: {
@@ -176,7 +177,7 @@ export default {
       this._drawFg();
     },
     drawFg () {
-      this.animFrame = null;
+      this.fgAnimFrame = null;
       this._drawFg();
     },
     _drawFg () {
@@ -199,9 +200,13 @@ export default {
 
       ctx.restore();
 
-      this.drawOverlay();
+      this._drawOverlay();
     },
     drawOverlay () {
+      this.overlayAnimFrame = null;
+      this._drawOverlay();
+    },
+    _drawOverlay () {
       let twa = this.visualSteeringTwa;
       let ctx = this.$refs.polaroverlay.getContext('2d');
       ctx.clearRect(0, 0, this.$refs.polaroverlay.width, this.$refs.polaroverlay.height);
@@ -345,11 +350,16 @@ export default {
   },
   watch: {
     overlayNeedRedraw () {
-      this.drawOverlay();
+      if ((this.fgAnimFrame === null) && (this.overlayAnimFrame === null)) {
+        this.overlayAnimFrame = L.Util.requestAnimFrame(this.drawOverlay, this);
+      }
     },
     fgNeedRedraw () {
-      if (this.animFrame === null) {
-        this.animFrame = L.Util.requestAnimFrame(this.drawFg, this);
+      if (this.fgAnimFrame === null) {
+        if (this.overlayAnimFrame !== null) {
+          L.Util.cancelAnimFrame(this.overlayAnimFrame);
+        }
+        this.fgAnimFrame = L.Util.requestAnimFrame(this.drawFg, this);
       }
     },
     bgNeedRedraw () {
@@ -375,8 +385,11 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.onResize);
-    if (this.animFrame != null) {
-      L.Util.cancelAnimFrame(this.animFrame);
+    if (this.fgAnimFrame != null) {
+      L.Util.cancelAnimFrame(this.fgAnimFrame);
+    }
+    if (this.overlayAnimFrame != null) {
+      L.Util.cancelAnimFrame(this.overlayAnimFrame);
     }
   },
 }
