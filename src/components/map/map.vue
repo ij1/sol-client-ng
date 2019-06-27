@@ -6,6 +6,7 @@
       :crs="PROJECTION"
       :zoom="initialZoom"
       :center="initialCenter"
+      :max-zoom = "maxZoom"
       @move="updateView"
       @moveend="updateView"
       @zoom="updateView"
@@ -151,6 +152,7 @@ export default {
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
+      maxZoom: state => state.map.maxZoom,
     }),
   },
 
