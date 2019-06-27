@@ -140,7 +140,6 @@ export default {
       initialCenter: Object.assign({}, this.$store.state.map.center),
       initialZoom: this.$store.state.map.zoom,
       map: null,
-      touched: false,
 
       L: L,
       PROJECTION: PROJECTION,
@@ -165,7 +164,6 @@ export default {
       this.map.on('mouseout', this.clearHoverPos, this);
       this.updateView();
       this.setSize();
-      this.touched = false;
     });
   },
   beforeDestroy () {
@@ -176,7 +174,6 @@ export default {
 
   methods: {
     updateView() {
-      this.touched = true;
       const center = this.map.getCenter();
       this.$store.commit('map/setView', {
         center: center,
@@ -202,10 +199,6 @@ export default {
 
   watch: {
     raceLoaded (newValue, oldValue) {
-      /* Don't force zoom when user has interacted with the view already */
-      if (this.touched) {
-        return;
-      }
       if (this.map === null) {
         return;
       }
