@@ -43,13 +43,24 @@ export default {
   },
 
   computed: {
-    prMarks () {
+    maxMark () {
       this.name2idStamp;
 
       let i = 1;
-      let res = [];
       // eslint-disable-next-line
       while (true) {
+        const name = 'Practice_Mark_' + i;
+        const markBoat = this.$store.getters['race/fleet/boatFromName'](name);
+        if (markBoat === null) {
+          break;
+        }
+        i++;
+      }
+      return i - 1;
+    },
+    prMarks () {
+      let res = [];
+      for (let i = 1; i < this.maxMark; i++) {
         const name = 'Practice_Mark_' + i;
         const markBoat = this.$store.getters['race/fleet/boatFromName'](name);
         if (markBoat === null) {
