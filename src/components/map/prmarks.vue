@@ -7,7 +7,7 @@
       :stroke = "false"
       :fill-color = "markColor"
       :fill-opacity = "1"
-      :radius = "markRadius"
+      :radius = "mark.radius"
     >
       <l-tooltip
         :options="markTooltipOptions"
@@ -21,6 +21,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LTooltip } from 'vue2-leaflet';
+import { degToRad } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
 import { EARTH_R } from '../../lib/sol.js';
 
@@ -61,6 +62,7 @@ export default {
       return i - 1;
     },
     prMarks () {
+      const EARTH_CIRC = 2 * Math.PI * EARTH_R;
       let res = [];
       for (let i = 1; i < this.maxMark; i++) {
         const name = 'Practice_Mark_' + i;
@@ -76,6 +78,8 @@ export default {
         res.push({
           name: 'M' + i,
           latLng: markBoat.latLng,
+          radius: Math.cos(degToRad(markBoat.latLng.lat)) / Math.pow(2, 17 + 8) *
+                  4.5 * EARTH_CIRC,
         });
         i++;
       }
