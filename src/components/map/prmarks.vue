@@ -21,6 +21,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LTooltip } from 'vue2-leaflet';
+import { gcCalc } from '../../lib/nav.js';
+import { EARTH_R } from '../../lib/sol.js';
 
 export default {
   name: 'PrMarks',
@@ -66,7 +68,11 @@ export default {
         if (markBoat === null) {
           break;
         }
-        /* ADDME: don't put label when at the start position */
+        const fromStart = gcCalc(this.raceStartPosition, markBoat.latLng);
+        /* Don't draw marks when too close to the start position */
+        if (fromStart.distance * EARTH_R / 1852.0 < 0.1) {
+          continue;
+        }
         res.push({
           name: 'M' + i,
           latLng: markBoat.latLng,
@@ -82,6 +88,7 @@ export default {
     }),
     ...mapGetters({
       isPracticePeriod: 'race/isPracticePeriod',
+      raceStartPosition: 'race/startPosition',
     }),
   },
 }

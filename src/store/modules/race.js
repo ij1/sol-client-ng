@@ -139,6 +139,10 @@ export default {
       }
       return changed;
     },
+
+    startPosition: (state) => {
+      return state.route[0].latLng;
+    },
     nextWaypoint: (state, getters, rootState) => {
       return state.route[rootState.boat.lastRoundedMark+1];
     },
