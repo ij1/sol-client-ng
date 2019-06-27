@@ -107,6 +107,7 @@ export function gcCalc(from, to) {
   const distDivisor = slat1 * slat2 + clat1 * clat2 * cdlng;
 
   return {
+    navMode: 'ortho',
     startBearing: (Math.atan2(bearingDividend, bearingDivisor) +
                    Math.PI * 2) % (Math.PI * 2),
     distance: Math.atan2(Math.sqrt(distDividend), distDivisor),
@@ -120,9 +121,16 @@ export function loxoCalc(from, to) {
   const cos = Math.cos(bearing);
 
   return {
+    navMode: 'loxo',
     startBearing: bearing,
     distance: Math.abs(cos) < 1e-9 ?
               Math.abs((degToRad(to.lng) - degToRad(from.lng)) * Math.cos(from.lat)) :
               Math.abs((degToRad(to.lat) - degToRad(from.lat)) / Math.cos(bearing)),
   }
 }
+
+export const zeroPath = {
+  navMode: 'zero',
+  startBearing: null,
+  distance: 0,
+};

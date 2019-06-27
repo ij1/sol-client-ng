@@ -6,9 +6,7 @@
     <div>
       {{ wrappedHoverLatLng | positionFormat }}
     </div>
-    <div v-if = 'boatPosition !== null'>
-      {{ bearing }}
-    </div>
+    <path-distance v-if = 'path !== null' :path = "path"/>
     <div v-if = 'wxLoaded'>
       {{ wind }}
     </div>
@@ -20,13 +18,14 @@ import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
-import { gcCalc, loxoCalc } from '../../lib/nav.js';
-import { EARTH_R } from '../../lib/sol.js';
+import { gcCalc, loxoCalc, zeroPath } from '../../lib/nav.js';
+import PathDistance from '../distance.vue';
 
 export default {
   name: 'HoverInfo',
   components: {
     'l-control': LControl,
+    'path-distance': PathDistance,
   },
   filters: {
     positionFormat (value) {
@@ -48,21 +47,17 @@ export default {
       return roundToFixed(wind.knots, 2) + 'kn @' +
              roundToFixed(radToDeg(wind.twd), 2) + '\xb0';
     },
-    bearing () {
+    path () {
       if ((this.wrappedHoverLatLng === null) ||
           (this.boatPosition === null)) {
-        return '';
+        return null;
       }
       if (this.boatPosition.equals(this.wrappedHoverLatLng)) {
-        return '0nm';
+        return zeroPath;
       }
-      const path = this.cfgGcMode ?
-                   gcCalc(this.boatPosition, this.wrappedHoverLatLng) :
-                   loxoCalc(this.boatPosition, this.hoverLatLng);
-
-      return roundToFixed(path.distance * EARTH_R / 1852, 3) + 'nm @' +
-             roundToFixed(radToDeg(path.startBearing), 2) + '\xb0' +
-             (this.cfgGcMode ? ' GC' : '');
+      return this.cfgGcMode ?
+        gcCalc(this.boatPosition, this.wrappedHoverLatLng) :
+        loxoCalc(this.boatPosition, this.hoverLatLng);
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,

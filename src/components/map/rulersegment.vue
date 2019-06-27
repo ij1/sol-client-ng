@@ -8,7 +8,7 @@
     <l-tooltip
       :options="lineTooltipOptions"
     >
-      {{info}}
+      <path-distance :path = "segment"/>
     </l-tooltip>
   </l-polyline>
 </template>
@@ -16,14 +16,14 @@
 <script>
 import { LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
-import { roundToFixed } from '../../lib/quirks.js';
-import { EARTH_R } from '../../lib/sol.js';
+import PathDistance from '../distance.vue';
 
 export default {
   name: 'RulerSegment', 
   components: {
     'l-polyline': LPolyline,
     'l-tooltip': LTooltip,
+    'path-distance': PathDistance,
   },
   props: {
     segment: {
@@ -38,10 +38,6 @@ export default {
   computed: {
     line () {
       return this.segment.line;
-    },
-    info () {
-      return roundToFixed(this.segment.distance * EARTH_R / 1852, 3) + 'nm @' +
-             roundToFixed(radToDeg(this.segment.startBearing), 2) + '\xb0';
     },
     lineTooltipOptions () {
       let direction;
