@@ -32,7 +32,7 @@ export default {
 
   data () {
     return {
-      markRadius: 5,
+      markRadius: 3.5,
       markColor: "#ff00ff",
       markTooltipOptions: {
         permanent: true,
