@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
-import { solapiRetryDispatch } from '../../lib/solapi.js';
+import { solapiRetryDispatch, SolapiError } from '../../lib/solapi.js';
 import { degToRad, radToDeg, minToMsec, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
 import { minTurnAngle, loxoCalc } from '../../lib/nav.js';
 import { PROJECTION} from '../../lib/sol.js';
@@ -224,6 +224,16 @@ export default {
         raceInfo.course = getters['parseCourse'](raceInfo);
         raceInfo.loadTime = now;
 
+        /* Sanity check! Make sure there are at least 2 WPs (start+finish) */
+        if (raceInfo.course.route.length < 2) {
+          /* Use the previous one if possible and skip any updates */
+          if (loaded) {
+            return;
+          } else {
+            /* Cannot continue without a course, force retry */
+            throw new SolapiError('data', 'Received an invalid race course!');
+          }
+        }
         if (!loaded) {
           commit('boat/setType', boatType, {root: true});
           commit('chatrooms/init', chatroomsData, {root: true});
