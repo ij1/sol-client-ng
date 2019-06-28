@@ -134,3 +134,12 @@ export const zeroPath = {
   startBearing: null,
   distance: 0,
 };
+
+export function pixelDistanceCalc(from, to, zoom) {
+  const fromProj = PROJECTION.latLngToPoint(from, zoom).round();
+  const toProj = PROJECTION.latLngToPoint(to, zoom).round();
+  return {
+    dx: toProj.x - fromProj.x,
+    dy: toProj.y - fromProj.y,
+  };
+}

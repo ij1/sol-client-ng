@@ -39,7 +39,7 @@ import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
-import { speedTowardsBearing, cogTwdToTwa, atan2Bearing } from '../../lib/nav.js';
+import { speedTowardsBearing, cogTwdToTwa, loxoCalc, pixelDistanceCalc } from '../../lib/nav.js';
 import SailBoat from './sailboat';
 
 export default {
@@ -57,6 +57,11 @@ export default {
       required: true,
     },
   },
+  data () {
+    return {
+      minSteeringDistance: 3,
+    }
+  },
   filters: {
     formatAngle (value) {
       return roundToFixed(radToDeg(value), 3);
@@ -67,13 +72,17 @@ export default {
   },
   computed: {
     target () {
-      return (this.hoverLatLng !== null) ? this.hoverLatLng : this.visualPosition;
+      if ((this.hoverLatLng === null) ||
+          (this.minPixelDistance(this.hoverLatLng) < this.minSteeringDistance)) {
+        return this.visualPosition;
+      }
+      return this.hoverLatLng;
     },
     steerLine () {
       return [this.visualPosition, this.target];
     },
     cog () {
-      return this.calcBearing(this.target).bearing;
+      return loxoCalc(this.visualPosition, this.target).startBearing;
     },
     twa () {
       return cogTwdToTwa(this.cog, this.twd);
@@ -99,6 +108,7 @@ export default {
       tws: state => state.boat.instruments.tws.value,
       showPolar: state => state.boat.steering.visualSteering.showPolar,
       hoverLatLng: state => state.map.hoverLatLng,
+      zoom: state => state.map.zoom,
     }),
     ...mapGetters({
       visualPosition: 'boat/visualPosition',
@@ -106,30 +116,21 @@ export default {
   },
   methods: {
     onClick (e) {
-      const res = this.calcBearing(e.latlng);
-      if (res.dx === 0 && res.dy === 0) {
+      const res = loxoCalc(this.visualPosition, e.latlng);
+      if (this.minPixelDistance(e.latlng) < this.minSteeringDistance) {
         return;
       }
       this.$store.commit('boat/steering/setSteering', {
         type: 'cc',
-        value: roundToFixed(radToDeg(res.bearing), 3),
+        value: roundToFixed(radToDeg(res.startBearing), 3),
       });
       this.map.off('click', this.onClick, this);
       this.$store.dispatch('ui/cancelUiMode');
     },
-    calcBearing (target) {
-      const z = this.map.getZoom();
-
-      const targetProj = this.map.project(target, z).round();
-      const boatProj = this.map.project(this.visualPosition, z).round();
-      const dx = targetProj.x - boatProj.x;
-      const dy = targetProj.y - boatProj.y;
-      return {
-        dx: dx,
-        dy: dy,
-        bearing: atan2Bearing(dx, dy),
-      };
-    }
+    minPixelDistance (latLng) {
+      const pxDst = pixelDistanceCalc(this.visualPosition, latLng, this.zoom);
+      return Math.min(Math.abs(pxDst.dx), Math.abs(pxDst.dy));
+    },
   },
   mounted () {
     this.map.on('click', this.onClick, this);
