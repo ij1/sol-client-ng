@@ -1,8 +1,10 @@
 <template>
   <span>
-    {{path.distance | distance}}nm 
-    @{{path.startBearing | bearing }}&deg;
-    {{path.navMode | navMode}}
+    {{path.distance | distance}}nm
+    <span v-if = "path.startBearing !== null">
+      @{{path.startBearing | bearing }}&deg;
+      {{path.navMode | navMode}}
+    </span>
   </span>
 </template>
 
