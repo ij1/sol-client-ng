@@ -12,7 +12,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import { loxoCalc } from '../../lib/nav.js';
+import { loxoCalc } from '../../../lib/nav.js';
 import RulerSegment from './rulersegment.vue';
 
 export default {

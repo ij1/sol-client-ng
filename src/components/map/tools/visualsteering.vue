@@ -37,10 +37,10 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
-import { radToDeg, degToRad } from '../../lib/utils.js';
-import { roundToFixed } from '../../lib/quirks.js';
-import { speedTowardsBearing, cogTwdToTwa, loxoCalc, pixelDistanceCalc } from '../../lib/nav.js';
-import SailBoat from './sailboat';
+import { radToDeg, degToRad } from '../../../lib/utils.js';
+import { roundToFixed } from '../../../lib/quirks.js';
+import { speedTowardsBearing, cogTwdToTwa, loxoCalc, pixelDistanceCalc } from '../../../lib/nav.js';
+import SailBoat from '../sailboat.vue';
 
 export default {
   name: 'VisualSteering', 

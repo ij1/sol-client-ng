@@ -76,18 +76,18 @@ import FleetMap from './fleetmap';
 import FleetHover from './fleethover';
 import PlayerBoat from './playerboat';
 
-import VisualSteering from './visualsteering';
-import RulerPaths from './rulerpaths';
-import RulerTool from './rulertool';
+import VisualSteering from './tools/visualsteering';
+import RulerPaths from './tools/rulerpaths';
+import RulerTool from './tools/rulertool';
 
 import MapHighlight from './highlight';
 
 import RaceStatus from '../racestatus.vue';
-import ZoomInButton from './zoominbutton.vue';
-import ZoomOutButton from './zoomoutbutton.vue';
-import CenterBoatButton from './centerboatbutton';
-import SteerButton from './steerbutton';
-import RulerButton from './rulerbutton';
+import ZoomInButton from './buttons/zoominbutton.vue';
+import ZoomOutButton from './buttons/zoomoutbutton.vue';
+import CenterBoatButton from './buttons/centerboatbutton';
+import SteerButton from './buttons/steerbutton';
+import RulerButton from './buttons/rulerbutton';
 import TowbackFlag from '../towbackflag';
 
 import DcBar from '../dcbar.vue';

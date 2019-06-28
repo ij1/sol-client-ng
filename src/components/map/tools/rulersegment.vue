@@ -15,8 +15,8 @@
 
 <script>
 import { LPolyline, LTooltip } from 'vue2-leaflet';
-import { radToDeg } from '../../lib/utils.js';
-import PathDistance from '../distance.vue';
+import { radToDeg } from '../../../lib/utils.js';
+import PathDistance from '../../distance.vue';
 
 export default {
   name: 'RulerSegment', 
