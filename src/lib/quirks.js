@@ -1,4 +1,11 @@
 export function roundToFixed(val, precision) {
+  /*
+   * Catch very small, scientific notations the e-based formula below
+   * cannot handle. Just round those numbers directly to zero.
+   */
+  if (Math.abs(val) < Math.pow(10, -precision) / 2) {
+    val = 0.0;
+  }
   return (+(Math.round(+(val + 'e' + precision)) + 'e' + -precision)).toFixed(precision);
 }
 
