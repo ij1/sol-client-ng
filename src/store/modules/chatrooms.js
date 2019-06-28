@@ -9,10 +9,12 @@ export default {
 
   state: {
     rooms: {},
+    roomList: [],
     activeRooms: [],
     roomKey: 0,
     pendingMessages: [],
     lastSentStamp: 0,
+    fetchCounter: 0,
     retryTimer: 1000,
   },
 
@@ -29,6 +31,7 @@ export default {
           lastFetched: 0,
           boatIdsMapped: true,
         });
+        state.roomList.push(chatroom.id);
       }
       state.activeRooms = [{
         roomKey: state.roomKey++,
@@ -45,9 +48,19 @@ export default {
       state.rooms[data.id].timestamp = data.timestamp;
       state.rooms[data.id].lastFetched = data.fetchTimestamp;
       state.rooms[data.id].boatIdsMapped = false;
+      if (state.fetchCounter >= state.activeRooms.length) {
+        state.fetchCounter = 0;
+      } else {
+        state.fetchCounter++;
+      }
     },
     markFetch (state, data) {
       state.rooms[data.id].lastFetched = data.fetchTimestamp;
+      if (state.fetchCounter >= state.activeRooms.length) {
+        state.fetchCounter = 0;
+      } else {
+        state.fetchCounter++;
+      }
     },
 
     mapBoatIds (state, name2boatId) {
@@ -124,10 +137,25 @@ export default {
     nextRoomToFetch(state) {
       let fetchId = '1';
       let minTime = Number.MAX_VALUE;
-      for (let active of state.activeRooms) {
-        if (state.rooms[active.id].lastFetched < minTime) {
-          fetchId = active.id;
-          minTime = state.rooms[active.id].lastFetched;
+
+      if (state.fetchCounter < state.activeRooms.length) {
+        for (let active of state.activeRooms) {
+          if (state.rooms[active.id].lastFetched < minTime) {
+            fetchId = active.id;
+            minTime = state.rooms[active.id].lastFetched;
+          }
+        }
+      } else {
+        /*
+         * Fetch all rooms with low-priority to improve latency
+         * when changing rooms (after each full cycle of the active
+         * rooms).
+         */
+        for (const roomId of state.roomList) {
+          if (state.rooms[roomId].lastFetched < minTime) {
+            fetchId = roomId;
+            minTime = state.rooms[roomId].lastFetched;
+          }
         }
       }
       return fetchId;
