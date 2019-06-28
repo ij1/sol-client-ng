@@ -141,6 +141,8 @@ export default {
       initialZoom: this.$store.state.map.zoom,
       map: null,
 
+      mousePos: null,
+
       L: L,
       PROJECTION: PROJECTION,
     }
@@ -181,6 +183,10 @@ export default {
         bounds: this.map.getBounds(),
       });
       this.$store.commit('boat/updateLngOffset', center.lng);
+      if (this.mousePos !== null) {
+        this.$store.commit('map/setHover',
+                           this.map.containerPointToLatLng(this.mousePos));
+      }
     },
     setSize () {
       this.$store.commit('map/setSize', {
@@ -191,9 +197,11 @@ export default {
     setHoverPos (e) {
       /* For some reason it's not camel-cased in the event! */
       this.$store.commit('map/setHover', e.latlng);
+      this.mousePos = e.containerPoint;
     },
     clearHoverPos () {
       this.$store.commit('map/setHover', null);
+      this.mousePos = null;
     },
   },
 
