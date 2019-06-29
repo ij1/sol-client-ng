@@ -94,6 +94,9 @@ export function latLngArrayAddOffset(latLngArray, offset) {
 }
 
 export function latLngBoundsAddOffset(latLngBounds, offset) {
+  if (offset === 0) {
+    return latLngBounds;
+  }
   return L.latLngBounds(latLngAddOffset(latLngBounds.getSouthWest(), offset),
                         latLngAddOffset(latLngBounds.getNorthEast(), offset));
 
