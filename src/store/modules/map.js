@@ -7,6 +7,7 @@ export default {
   state: {
     center: L.latLng(0, 0),
     zoom: 3,
+    bounds: L.latLngBounds([-1, -1], [1, 1]),      /* dummy initial value */
     minZoom: 1,
     maxZoom: 18,
     hoverLatLng: null,
@@ -47,6 +48,23 @@ export default {
   getters: {
     wrappedHoverLatLng: (state) => {
       return (state.hoverLatLng !== null) ? state.hoverLatLng.wrap() : null;
+    },
+    mapMinWrap: (state) => {
+      state.bounds;
+      const minLat = state.bounds.getWest();
+      return Math.floor((minLat + 180) / 360) * 360;
+    },
+    mapMaxWrap: (state) => {
+      state.bounds;
+      const maxLat = state.bounds.getEast();
+      return Math.ceil((maxLat - 180) / 360) * 360;
+    },
+    mapWrapList: (state, getters) => {
+      let res = [];
+      for (let i = getters.mapMinWrap; i <= getters.mapMaxWrap; i += 360) {
+        res.push(i);
+      }
+      return res;
     },
   },
 }

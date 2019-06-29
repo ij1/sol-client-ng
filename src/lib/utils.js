@@ -79,6 +79,17 @@ export function latLngAddOffset(latLng, offset) {
   return L.latLng(latLng.lat, latLng.lng + offset);
 }
 
+export function latLngArrayAddOffset(latLngArray, offset) {
+  if (offset === 0) {
+    return latLngArray;
+  }
+  let res = [];
+  for (let i = 0; i < latLngArray.length; i++) {
+    res.push(L.latLng(latLngArray[i].lat, latLngArray[i].lng + offset));
+  }
+  return res;
+}
+
 export function latLngBoundsAddOffset(latLngBounds, offset) {
   return L.latLngBounds(latLngAddOffset(latLngBounds.getSouthWest(), offset),
                         latLngAddOffset(latLngBounds.getNorthEast(), offset));

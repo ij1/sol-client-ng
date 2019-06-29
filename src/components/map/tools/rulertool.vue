@@ -7,6 +7,7 @@
     :key = "Date.now()"
     :segment = "aimSegment"
     :color = "'#333'"
+    :world-copy-wrap = "false"
   />
 </template>
 
