@@ -12,6 +12,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import L from 'leaflet';
 import { loxoCalc } from '../../../lib/nav.js';
 import RulerSegment from './rulersegment.vue';
 
@@ -61,7 +62,10 @@ export default {
         return;
       }
       let newSegment = loxoCalc(this.lastPosition, latLng);
-      newSegment.line = [this.lastPosition, latLng];
+      const wrappedPos = this.lastPosition.wrap();
+      const wrappedDst = L.latLng(latLng.lat,
+                                  latLng.lng + (wrappedPos.lng - this.lastPosition.lng));
+      newSegment.line = [wrappedPos, wrappedDst];
       this.$store.commit('ui/ruler/newSegment', newSegment);
       this.lastPosition = latLng;
     },
