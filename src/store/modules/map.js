@@ -61,7 +61,7 @@ export default {
     },
     mapWrapList: (state, getters) => {
       let res = [];
-      for (let i = getters.mapMinWrap; i <= getters.mapMaxWrap; i += 360) {
+      for (let i = getters.mapMinWrap - 360; i <= getters.mapMaxWrap + 360; i += 360) {
         res.push(i);
       }
       return res;
