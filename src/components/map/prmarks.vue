@@ -1,8 +1,8 @@
 <template>
   <l-layer-group v-if = "race.loaded && isPracticePeriod">
     <l-circle
-      v-for = "(mark, index) in prMarks"
-      :key = "index"
+      v-for = "mark in wrappedMarks"
+      :key = "mark.key"
       :lat-lng = "mark.latLng"
       :stroke = "false"
       :fill-color = "markColor"
@@ -21,7 +21,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LTooltip } from 'vue2-leaflet';
-import { degToRad } from '../../lib/utils.js';
+import { degToRad, latLngAddOffset } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
 import { EARTH_R } from '../../lib/sol.js';
 
@@ -89,6 +89,20 @@ export default {
       }
       return res;
     },
+    wrappedMarks () {
+      let res = [];
+      for (const mark of this.prMarks) {
+        for (const offset of this.mapWrapList) {
+          res.push({
+            key: mark.name + '_' + offset,
+            name: mark.name,
+            latLng: latLngAddOffset(mark.latLng, offset),
+            radius: mark.radius,
+          });
+        }
+      }
+      return res;
+    },
     ...mapState({
       race: state => state.race,
       boat: state => state.race.fleet.boat,
@@ -97,6 +111,7 @@ export default {
     ...mapGetters({
       isPracticePeriod: 'race/isPracticePeriod',
       raceStartPosition: 'race/startPosition',
+      mapWrapList: 'map/mapWrapList',
     }),
   },
 }

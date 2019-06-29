@@ -76,6 +76,9 @@ export function degToRad(deg) {
 }
 
 export function latLngAddOffset(latLng, offset) {
+  if (offset === 0) {
+    return latLng;
+  }
   return L.latLng(latLng.lat, latLng.lng + offset);
 }
 
