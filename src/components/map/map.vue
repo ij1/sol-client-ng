@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet';
 import { PROJECTION } from '../../lib/sol.js';
@@ -154,6 +154,11 @@ export default {
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
       maxZoom: state => state.map.maxZoom,
+      mapWrapList: state => state.map.wrapList,
+    }),
+    ...mapGetters({
+      mapMinWrap: 'map/mapMinWrap',
+      mapMaxWrap: 'map/mapMaxWrap',
     }),
   },
 
@@ -183,6 +188,7 @@ export default {
         bounds: this.map.getBounds(),
       });
       this.$store.commit('boat/updateLngOffset', center.lng);
+      this.updateWrapList();
       if (this.mousePos !== null) {
         this.$store.commit('map/setHover',
                            this.map.containerPointToLatLng(this.mousePos));
@@ -193,6 +199,20 @@ export default {
         size: this.map.getSize(),
         bounds: this.map.getBounds(),
       });
+      this.updateWrapList();
+    },
+    /* Sadly a vuex getter fires unnecessarily even if its dependencies
+     * values did not change so workaround it
+     */
+    updateWrapList () {
+      if ((this.mapWrapList[0] !== this.mapMinWrap - 360) ||
+          (this.mapWrapList[this.mapWrapList.length - 1] !== this.mapMaxWrap + 360)) {
+        let wrapList = [];
+        for (let i = this.mapMinWrap - 360; i <= this.mapMaxWrap + 360; i += 360) {
+          wrapList.push(i);
+        }
+        this.$store.commit('map/setWrapList', wrapList);
+      }
     },
     setHoverPos (e) {
       /* For some reason it's not camel-cased in the event! */

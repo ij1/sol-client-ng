@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import { LLayerGroup, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, latLngArrayAddOffset } from '../../../lib/utils.js';
 import PathDistance from '../../distance.vue';
@@ -84,8 +84,8 @@ export default {
         className: 'ruler-line-tooltip ruler-line-tooltip-' + direction,
       }
     },
-    ...mapGetters({
-      mapWrapList: 'map/mapWrapList',
+    ...mapState({
+      mapWrapList: state => state.map.wrapList,
     }),
   },
 }

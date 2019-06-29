@@ -107,11 +107,11 @@ export default {
       race: state => state.race,
       boat: state => state.race.fleet.boat,
       name2idStamp: state => state.race.fleet.name2idStamp,
+      mapWrapList: state => state.map.wrapList,
     }),
     ...mapGetters({
       isPracticePeriod: 'race/isPracticePeriod',
       raceStartPosition: 'race/startPosition',
-      mapWrapList: 'map/mapWrapList',
     }),
   },
 }
