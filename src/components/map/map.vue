@@ -24,7 +24,7 @@
     >
       <map-tiles v-if = "map !== null" :map = "map"/>
       <time-of-day v-if = "map !== null"/>
-      <race-info v-if = "map !== null" :map = "map"/>
+      <race-info v-if = "map !== null"/>
       <pr-marks v-if = "map !== null"/>
 
       <canvas-overlay v-if = "map !== null" :map = "map"/>

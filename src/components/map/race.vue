@@ -76,12 +76,6 @@ export default {
     'route-mark': RouteMark,
   },
 
-  props: {
-    map: {
-      type: Object,
-      required: true,
-    },
-  },
   data () {
     return {
       wpColor: "red",
