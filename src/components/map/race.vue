@@ -124,12 +124,12 @@ export default {
               arc.turnAngle += Math.PI * 2;
             }
           }
+          arc.midAngle = arc.prevAngle + arc.turnAngle / 2;
         }
 
         const iconCenter = this.routeLineGap + 5;
         const iconSize = iconCenter * 2 + 1;
-        const midAngle = !this.isIntermediateMark(i) ? 0 :
-                           radToDeg(arc.prevAngle + arc.turnAngle / 2);
+        const midAngle = !this.isIntermediateMark(i) ? 0 : radToDeg(arc.midAngle);
         const style = "fill='" + this.wpColor + "'";
         const radius = (!this.isFinishMark(i) ? 2 : this.finishPointRadius + 0.5) * 2;
         let arrow = "";
