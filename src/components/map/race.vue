@@ -21,14 +21,11 @@
         {{waypoint.info}}
       </l-tooltip>
     </route-mark>
-    <l-circle-marker
+    <route-mark
       v-for="(endpoint, index) in finishLine"
       :key="'f' + index"
       :lat-lng="endpoint"
-      :fill-color="wpColor"
-      :radius="finishPointRadius"
-      :color="wpColor"
-      :fill-opacity="1"
+      :mark-radius="finishPointRadius"
     />
     <l-polyline
       :lat-lngs="finishLine"
@@ -94,7 +91,7 @@ export default {
         direction: 'right',
         className: 'wp-tooltip',
       },
-      finishPointRadius: 1,
+      finishPointRadius: 3,
       routeLineGap: 10,
       routeLineArcInterval: degToRad(5),
     }
@@ -136,7 +133,7 @@ export default {
           name: this.race.route[i].name,
           info: this.markInfoText(i),
           arc: arc,
-          radius: (!this.isFinishMark(i) ? 2 : this.finishPointRadius + 0.5) * 2,
+          radius: !this.isFinishMark(i) ? 4 : this.finishPointRadius,
         });
       }
       return route;
