@@ -9,39 +9,6 @@
       :key = "trace"
       :id = "trace"
     />
-    <boat-trace
-      v-if = "showLeaderTrace"
-      :id = "leaderId"
-      :lng-offset = "-360"
-    />
-    <boat-trace
-      v-for = "trace in showIds"
-      :key = "'w' + trace"
-      :id = "trace"
-      :lng-offset = "-360"
-    />
-    <boat-trace
-      v-if = "showLeaderTrace"
-      :id = "leaderId"
-      :lng-offset = "-720"
-    />
-    <boat-trace
-      v-for = "trace in showIds"
-      :key = "'ww' + trace"
-      :id = "trace"
-      :lng-offset = "-720"
-    />
-    <boat-trace
-      v-if = "showLeaderTrace"
-      :id = "leaderId"
-      :lng-offset = "360"
-    />
-    <boat-trace
-      v-for = "trace in showIds"
-      :key = "'e' + trace"
-      :id = "trace"
-      :lng-offset = "360"
-    />
   </l-layer-group>
 </template>
 

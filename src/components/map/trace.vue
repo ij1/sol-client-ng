@@ -1,13 +1,17 @@
 <template>
   <l-layer-group>
     <l-polyline
-      :lat-lngs = "boatTrace"
+      v-for = "offset in mapWrapList"
+      :key = "'t' + offset"
+      :lat-lngs = "latLngArrayAddOffset(boatTrace, offset)"
       :color = "color"
       :weight = "1"
       :fill = "false"
     />
     <l-polyline
-      :lat-lngs = "lastMileTrace"
+      v-for = "offset in mapWrapList"
+      :key = "'lt' + offset"
+      :lat-lngs = "latLngArrayAddOffset(lastMileTrace, offset)"
       :color = "color"
       :weight = "1"
       :fill = "false"
@@ -16,9 +20,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LPolyline } from 'vue2-leaflet';
-import { latLngAddOffset } from '../../lib/utils.js';
+import { latLngArrayAddOffset } from '../../lib/utils.js';
 
 export default {
   name: 'BoatTrace',
@@ -32,10 +36,6 @@ export default {
       type: String,
       required: true,
     },
-    lngOffset: {
-      type: Number,
-      default: 0,
-    },
   },
 
   computed: {
@@ -43,11 +43,7 @@ export default {
       return this.fleetBoatFromId(this.id);
     },
     boatTrace () {
-      if (this.lngOffset === 0) {
-        return this.boat.trace;
-      } else {
-        return this.boat.trace.map(i => latLngAddOffset(i, this.lngOffset));
-      }
+      return this.boat.trace;
     },
     isPlayerBoat () {
       return this.id === this.$store.state.boat.id;
@@ -75,16 +71,18 @@ export default {
         ));
       }
 
-      if (this.lngOffset === 0) {
-        return res;
-      } else {
-        return res.map(i => latLngAddOffset(i, this.lngOffset));
-      }
+      return res;
     },
+    ...mapState({
+      mapWrapList: state => state.map.wrapList,
+    }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
       boatColor: 'race/fleet/boatColor',
     }),
+  },
+  methods: {
+    latLngArrayAddOffset,
   },
 }
 </script>
