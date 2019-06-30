@@ -25,9 +25,6 @@
       <map-tiles v-if = "map !== null" :map = "map"/>
       <time-of-day v-if = "map !== null"/>
       <race-info v-if = "map !== null" :map = "map"/>
-      <race-info v-if = "map !== null" :map = "map" :lng-offset = "-720"/>
-      <race-info v-if = "map !== null" :map = "map" :lng-offset = "-360"/>
-      <race-info v-if = "map !== null" :map = "map" :lng-offset = "360"/>
       <pr-marks v-if = "map !== null"/>
 
       <canvas-overlay v-if = "map !== null" :map = "map"/>

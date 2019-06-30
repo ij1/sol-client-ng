@@ -1,15 +1,17 @@
 <template>
   <l-layer-group v-if="race.loaded">
     <l-rectangle
-       :bounds="raceBoundary"
+       v-for = "boundary in wrappedBoundaries"
+       :key = "boundary.key"
+       :bounds = "boundary.boundary"
        :fill="false"
        :weight="2"
        color="magenta"
     />
     <route-mark
-      v-for="(waypoint, index) in raceRoute"
-      :key="index"
-      :lat-lng="waypoint.latLng"
+      v-for = "waypoint in wrappedMarks"
+      :key = "waypoint.key"
+      :lat-lng = "waypoint.latLng"
       :rounding-arrow-angle = "waypoint.arc.midAngle"
       :rounding-side = "waypoint.arc.side"
       :mark-radius = "waypoint.radius"
@@ -22,29 +24,31 @@
       </l-tooltip>
     </route-mark>
     <route-mark
-      v-for="(endpoint, index) in finishLine"
-      :key="'f' + index"
-      :lat-lng="endpoint"
+      v-for = "mark in wrappedFinishLineMarks"
+      :key = "mark.key"
+      :lat-lng = "mark.latLng"
       :mark-radius="finishPointRadius"
     />
     <l-polyline
-      :lat-lngs="finishLine"
+      v-for = "line in wrappedFinishLines"
+      :key = "line.key"
+      :lat-lngs = "line.line"
       :fill="false"
       :color="wpColor"
       :weight="1"
     />
     <l-polyline
-      v-for="(line, index) in routeLine"
-      :key="'ls' + index"
-      :lat-lngs="line"
+      v-for = "line in wrappedLines"
+      :key = "line.key"
+      :lat-lngs = "line.line"
       :fill="false"
       :color="wpColor"
       :weight="1"
     />
     <l-polyline
-      v-for="(line, index) in wpArcs"
-      :key="'la' + index"
-      :lat-lngs="line.arc"
+      v-for = "line in wrappedArcs"
+      :key = "line.key"
+      :lat-lngs = "line.arc"
       :fill="false"
       :color="wpColor"
       :weight="1"
@@ -78,10 +82,6 @@ export default {
       type: Object,
       required: true,
     },
-    lngOffset: {
-      type: Number,
-      default: 0,
-    }
   },
   data () {
     return {
@@ -94,13 +94,21 @@ export default {
       finishPointRadius: 3,
       routeLineGap: 10,
       routeLineArcInterval: degToRad(5),
+      finishWrapList: [-360, 0, 360],  /* No need to wrap more when zoomed away */
     }
   },
 
   computed: {
-    raceBoundary () {
-      return [latLngAddOffset(this.race.boundary[0], this.lngOffset),
-              latLngAddOffset(this.race.boundary[1], this.lngOffset)];
+    wrappedBoundaries () {
+      let res = [];
+      for (const offset of this.mapWrapList) {
+        res.push({
+          key: 'b_' + offset,
+          boundary: [latLngAddOffset(this.race.boundary[0], offset),
+                     latLngAddOffset(this.race.boundary[1], offset)],
+        });
+      }
+      return res;
     },
     raceRoute () {
       let route = [];
@@ -129,7 +137,7 @@ export default {
         }
 
         route.push({
-          latLng: latLngAddOffset(this.race.route[i].latLng, this.lngOffset),
+          latLng: this.race.route[i].latLng,
           name: this.race.route[i].name,
           info: this.markInfoText(i),
           arc: arc,
@@ -138,60 +146,102 @@ export default {
       }
       return route;
     },
-    finishLine () {
-      return this.race.finish.map(pt => latLngAddOffset(pt, this.lngOffset));
+    wrappedMarks () {
+      let res = [];
+      for (const offset of this.mapWrapList) {
+        for (let i = 0; i < this.raceRoute.length; i++) {
+          let copy = Object.assign({}, this.raceRoute[i]);
+          copy.latLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
+          copy.key = 'm_' + offset + '_' + i;
+          res.push(copy);
+        }
+      }
+      return res;
     },
-    routeLine () {
+    wrappedFinishLines () {
+      let res = [];
+      for (const offset of this.finishWrapList) {
+        res.push({
+          key: 'f_' + offset,
+          line: this.race.finish.map(pt => latLngAddOffset(pt, offset)),
+        });
+      }
+      return res;
+    },
+    wrappedFinishLineMarks () {
+      let res = [];
+      for (const offset of this.finishWrapList) {
+        for (let i = 0; i < this.race.finish.length; i++) {
+          res.push({
+            key: 'fm_' + offset + '_' + i,
+            latLng: latLngAddOffset(this.race.finish[i], offset),
+          });
+        }
+      }
+      return res;
+    },
+    wrappedLines () {
       let res = [];
       let line = [];
-      for (let i = 0; i < this.raceRoute.length; i++) {
-        if (this.isStartMark(i)) {
-          line.push(this.raceRoute[i].latLng);
-        } else if (this.isFinishMark(i)) {
-          line.push(this.raceRoute[i].latLng);
-          res.push(line);
-        } else {
-          const wpLatLng = this.raceRoute[i].latLng;
-          const prevAngle = this.raceRoute[i].arc.prevAngle;
-          const turnAngle = this.raceRoute[i].arc.turnAngle;
+      for (const offset of this.mapWrapList) {
+        for (let i = 0; i < this.raceRoute.length; i++) {
+          if (this.isStartMark(i)) {
+            line.push(latLngAddOffset(this.raceRoute[i].latLng, offset));
+          } else if (this.isFinishMark(i)) {
+            line.push(latLngAddOffset(this.raceRoute[i].latLng, offset));
+            res.push({
+              key: 'l_' + offset + '_' + i,
+              line: line,
+            });
+            line = [];
+          } else {
+            const wpLatLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
+            const prevAngle = this.raceRoute[i].arc.prevAngle;
+            const turnAngle = this.raceRoute[i].arc.turnAngle;
 
-          line.push(this.wpArcLatLng(wpLatLng, prevAngle));
-          res.push(line);
-          line = [this.wpArcLatLng(wpLatLng, turnAngle + prevAngle)];
+            line.push(this.wpArcLatLng(wpLatLng, prevAngle));
+            res.push({
+              key: 'l_' + offset + '_' + i,
+              line: line,
+            });
+            line = [this.wpArcLatLng(wpLatLng, turnAngle + prevAngle)];
+          }
         }
       }
 
       return res;
     },
-    wpArcs () {
+    wrappedArcs () {
       let res = [];
-      for (let i = 1; i < this.raceRoute.length - 1; i++) {
-        let arc = [];
-        const wpLatLng = this.raceRoute[i].latLng;
-        const prevAngle = this.raceRoute[i].arc.prevAngle;
-        const turnAngle = this.raceRoute[i].arc.turnAngle;
+      for (const offset of this.mapWrapList) {
+        for (let i = 1; i < this.raceRoute.length - 1; i++) {
+          let arc = [];
+          const wpLatLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
+          const prevAngle = this.raceRoute[i].arc.prevAngle;
+          const turnAngle = this.raceRoute[i].arc.turnAngle;
 
-        let middleDone = false;
-        for (let a = 0; a < Math.abs(turnAngle); a += this.routeLineArcInterval) {
-          const angle = Math.sign(turnAngle) * a;
-          if (!middleDone && (Math.abs(angle) > Math.abs(turnAngle) / 2)) {
-            arc.push(this.wpArcLatLng(wpLatLng, turnAngle / 2 + prevAngle));
-            middleDone = true;
+          let middleDone = false;
+          for (let a = 0; a < Math.abs(turnAngle); a += this.routeLineArcInterval) {
+            const angle = Math.sign(turnAngle) * a;
+            if (!middleDone && (Math.abs(angle) > Math.abs(turnAngle) / 2)) {
+              arc.push(this.wpArcLatLng(wpLatLng, turnAngle / 2 + prevAngle));
+              middleDone = true;
+            }
+            arc.push(this.wpArcLatLng(wpLatLng, angle + prevAngle));
           }
-          arc.push(this.wpArcLatLng(wpLatLng, angle + prevAngle));
-        }
-        if (Math.abs(turnAngle) > 0) {
-          arc.push(this.wpArcLatLng(wpLatLng, turnAngle + prevAngle));
-          res.push({
-            arc: arc,
-            midPoint: {
-              latLng: this.wpArcLatLng(wpLatLng, turnAngle / 2 + prevAngle),
-              angle: turnAngle / 2 + prevAngle,
-            },
-          });
+          if (Math.abs(turnAngle) > 0) {
+            arc.push(this.wpArcLatLng(wpLatLng, turnAngle + prevAngle));
+            res.push({
+              key: 'a_' + offset + '_' + i,
+              arc: arc,
+              midPoint: {
+                latLng: this.wpArcLatLng(wpLatLng, turnAngle / 2 + prevAngle),
+                angle: turnAngle / 2 + prevAngle,
+              },
+            });
+          }
         }
       }
-
       return res;
     },
     ...mapState({
@@ -199,6 +249,7 @@ export default {
       lastRoundedMark: state => state.boat.lastRoundedMark,
       finishTime: state => state.boat.finishTime,
       zoom: state => state.map.zoom,
+      mapWrapList: state => state.map.wrapList,
     }),
   },
 
