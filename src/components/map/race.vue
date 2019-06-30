@@ -60,7 +60,7 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
-import { LLayerGroup, LCircleMarker, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet';
+import { LLayerGroup, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet';
 import RouteMark from './routemark.vue';
 import { latLngAddOffset } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
@@ -70,7 +70,6 @@ export default {
   name: 'RaceInfo',
   components: {
     'l-layer-group': LLayerGroup,
-    'l-circle-marker': LCircleMarker,
     'l-polyline': LPolyline,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
