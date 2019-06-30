@@ -99,6 +99,17 @@ export default {
   },
 
   computed: {
+    extraWrapList () {
+      if (this.race.boundary[1].lng < 180) {
+        return this.mapWrapList;
+      }
+      /*
+       * When the race area east boundary spans across anti-meridian,
+       * the westmost wrapped copy must be extented beyond the normal
+       * range.
+       */
+      return this.mapWrapList.concat(this.mapWrapList[0] - 360);
+    },
     wrappedBoundaries () {
       let res = [];
       for (const offset of this.mapWrapList) {
