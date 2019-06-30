@@ -12,6 +12,21 @@
 </template>
 
 <script>
+export function configParseRange (txtVal, cfgDef) {
+  const regex = /^[-+]?\d\d*(\.\d\d*)?$/;
+  if (!regex.test(txtVal)) {
+    return null;
+  }
+  const val = parseFloat(txtVal);
+  if (!Number.isFinite(val)) {
+    return null;
+  }
+  if (val < cfgDef.low || val > cfgDef.high) {
+    return null;
+  }
+  return val;
+}
+
 export default {
   name: 'ConfigRange',
   props: {

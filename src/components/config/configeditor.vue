@@ -50,8 +50,11 @@
 <script>
 import PopupWindow from '../popupwindow.vue';
 import ConfigBoolean from './configboolean.vue';
+import { configParseBoolean } from './configboolean.vue';
 import ConfigRange from './configrange.vue';
+import { configParseRange } from './configrange.vue';
 import ConfigValues from './configvalues.vue';
+import { configParseValues } from './configvalues.vue';
 
 export default {
   name: 'ConfigEditor',
@@ -67,6 +70,11 @@ export default {
       default: [],
       config: [],
       committed: [],
+      parser: {
+        boolean: configParseBoolean,
+        range: configParseRange,
+        values: configParseValues,
+      }
     }
   },
   computed: {
@@ -137,8 +145,10 @@ export default {
       config[cfg.idx] = def[cfg.idx];
       const storedValue = localStorage.getItem(this.localStorageKey(cfg));
       if (storedValue !== null) {
-        /* Matches type to target's */
-        config[cfg.idx] = (origValue.constructor)(storedValue);
+        const parsedVal = this.parser[cfg.cfgObj.type](storedValue, cfg.cfgObj);
+        if (parsedVal !== null) {
+          config[cfg.idx] = parsedVal;
+        }
       }
       committed[cfg.idx] = config[cfg.idx];
     }

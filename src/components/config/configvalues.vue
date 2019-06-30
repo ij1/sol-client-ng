@@ -17,6 +17,21 @@
 </template>
 
 <script>
+export function configParseValues (txtVal, cfgDef) {
+  for (const option of cfgDef.values) {
+    if (Array.isArray(option)) {
+      if (option[0] === txtVal) {
+        return option[0];
+      }
+    } else {
+      if (option === txtVal) {
+        return option;
+      }
+    }
+  }
+  return null;
+}
+
 export default {
   name: 'ConfigValues',
   props: {

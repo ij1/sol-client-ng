@@ -10,6 +10,16 @@
 </template>
 
 <script>
+export function configParseBoolean (txtVal) {
+  if (txtVal.toLowerCase() === 'true') {
+    return true;
+  }
+  if (txtVal.toLowerCase() === 'false') {
+    return false;
+  }
+  return null;
+}
+
 export default {
   name: 'ConfigBoolean',
   props: {
