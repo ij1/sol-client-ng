@@ -14,6 +14,7 @@
         class = "marker-canvas"
       />
     </l-icon>
+    <slot></slot>
   </l-marker>
 </template>
 

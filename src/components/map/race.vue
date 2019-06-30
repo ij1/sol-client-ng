@@ -6,11 +6,13 @@
        :weight="2"
        color="magenta"
     />
-    <l-marker
+    <route-mark
       v-for="(waypoint, index) in raceRoute"
       :key="index"
       :lat-lng="waypoint.latLng"
-      :icon="waypoint.icon"
+      :rounding-arrow-angle = "waypoint.arc.midAngle"
+      :rounding-side = "waypoint.arc.side"
+      :mark-radius = "waypoint.radius"
     >
       <l-tooltip
         :options="wpTooltipOptions"
@@ -18,7 +20,7 @@
         <span v-html="waypoint.name"/><br>
         {{waypoint.info}}
       </l-tooltip>
-    </l-marker>
+    </route-mark>
     <l-circle-marker
       v-for="(endpoint, index) in finishLine"
       :key="'f' + index"
@@ -57,20 +59,21 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
-import { LLayerGroup, LCircleMarker, LMarker, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet';
+import { LLayerGroup, LCircleMarker, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet';
+import RouteMark from './routemark.vue';
 import { latLngAddOffset } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
-import { degToRad, radToDeg } from '../../lib/utils.js';
+import { degToRad } from '../../lib/utils.js';
 
 export default {
   name: 'RaceInfo',
   components: {
     'l-layer-group': LLayerGroup,
     'l-circle-marker': LCircleMarker,
-    'l-marker': LMarker,
     'l-polyline': LPolyline,
     'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
+    'route-mark': RouteMark,
   },
 
   props: {
@@ -125,40 +128,15 @@ export default {
             }
           }
           arc.midAngle = arc.prevAngle + arc.turnAngle / 2;
+          arc.side = this.race.route[i].side;
         }
-
-        const iconCenter = this.routeLineGap + 5;
-        const iconSize = iconCenter * 2 + 1;
-        const midAngle = !this.isIntermediateMark(i) ? 0 : radToDeg(arc.midAngle);
-        const style = "fill='" + this.wpColor + "'";
-        const radius = (!this.isFinishMark(i) ? 2 : this.finishPointRadius + 0.5) * 2;
-        let arrow = "";
-        if (this.isIntermediateMark(i)) {
-          const arrowDir = (this.race.route[i].side === 'Port') ? -1 : 1;
-          arrow = "<path d='M " + (-4 * arrowDir) + " -5 L" +
-                  (1 * arrowDir) + " -10 L" +
-                  (-4 * arrowDir) + " -15' stroke='" + this.wpColor +
-                  "' stroke-width='1' fill='none'/>"
-        }
-        const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" +
-          iconSize + "px' height='" + iconSize + "px'>" +
-          "<g transform='translate(" + iconCenter + "," + iconCenter +
-                      ") rotate(" + midAngle + ")'>" +
-            "<circle cx='0' cy='0' r='" + radius + "' " + style + "/>" +
-            arrow +
-          "</g></svg>";
-        const iconUrl = 'data:image/svg+xml;base64,' + btoa(svg)
-        const icon = L.icon({
-          iconUrl: iconUrl,
-          iconAnchor: [iconCenter, iconCenter],
-        });
 
         route.push({
           latLng: latLngAddOffset(this.race.route[i].latLng, this.lngOffset),
           name: this.race.route[i].name,
           info: this.markInfoText(i),
           arc: arc,
-          icon: icon,
+          radius: (!this.isFinishMark(i) ? 2 : this.finishPointRadius + 0.5) * 2,
         });
       }
       return route;
