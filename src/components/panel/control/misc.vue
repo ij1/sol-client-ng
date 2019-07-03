@@ -2,6 +2,14 @@
   <div id="misc">
     <div>
       <div class="misc-header">Helpful Links</div>
+      <div
+        v-for = "link in links"
+        :key = "link.name"
+      >
+        <a :href = "link.url" target = "_blank">
+          {{link.name}}
+        </a>
+      </div>
     </div>
     <div>
       <button
@@ -25,6 +33,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'ControlMisc',
   data () {
@@ -64,6 +74,36 @@ export default {
         },        
       ],
     }
+  },
+  computed: {
+    links () {
+      let res = [];
+      res.push({
+        name: 'Sailonline Manual',
+        url: 'http://www.sailonline.org/wiki/show/Manual/'
+      });
+      res.push({
+        name: 'Race Leaderboard',
+        url: this.raceLoaded ?
+             'http://www.sailonline.org/races/' + this.raceId + '/leaderboard' :
+             null,
+      });
+      res.push({
+        name: 'SYC Official Ranking',
+        url: 'http://www.sailonline.org/series/2/',
+      });
+      res.push({
+        name: 'Google Earth Feed',
+        url: this.raceLoaded ?
+             'http://www.sailonline.org/googleearth/race_' + this.raceId + '.kml' :
+             null,
+      });
+      return res;
+    },
+    ...mapState({
+      raceLoaded: state => state.race.loaded,
+      raceId: state => state.race.info.id,
+    }),
   },
 }
 </script>
