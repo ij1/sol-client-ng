@@ -67,12 +67,15 @@
       </div>
     </form>
     <polar-container/>
+    <div class = "flex-space"/>
+    <syc-banner class = "bottom-banner"/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import PolarContainer from './polarcontainer.vue';
+import SycBanner from '../../sycbanner.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
@@ -87,6 +90,7 @@ export default {
   name: 'ControlSteering',
   components: {
     'polar-container': PolarContainer,
+    'syc-banner': SycBanner,
   },
   data () {
     return {
@@ -431,6 +435,9 @@ export default {
 <style scoped>
 #steering {
   font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .steering-input {
   text-align: left;
@@ -438,5 +445,13 @@ export default {
 .steering-input-box {
   font-size: 10px;
   font-weight: bold;
+}
+.flex-space {
+  flex: auto;
+}
+.bottom-banner {
+  position: relative;
+  bottom: 0px;
+  left: 0px;
 }
 </style>

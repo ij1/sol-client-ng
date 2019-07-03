@@ -95,7 +95,7 @@ export default {
         latLng: boatData.latLng,
         wrappedLatLng: boatData.wrappedLatLng,
         buddy: false,
-        syc: false,
+        syc: null,
         country: null,
         trace: [boatData.wrappedLatLng],
       });
