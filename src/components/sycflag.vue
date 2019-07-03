@@ -21,11 +21,10 @@ export default {
   display: inline-block;
   width: 16px;
   height: 13px;
-  margin-left: 1px;
+  margin-left: 3px;
 }
 .syc-flag {
   position: relative;
   top: 1px;
-  left: 1px;
 }
 </style>
