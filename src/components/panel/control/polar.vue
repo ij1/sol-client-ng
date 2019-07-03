@@ -13,13 +13,15 @@
     <div id = "wind-key-container" :style="{top: windKeyY + 'px'}">
       <wind-key/>
     </div>
-    <div class = "polar-details" v-if = "hover.sog !== null">
-      SOG: {{ roundToFixed(hover.sog, 2) }}
-      VMG: {{ roundToFixed(hover.vmg, 2) }}
-      <!-- hover.twa is text-formatted already as sign is different for
-           polar hover & visual steer information
-      -->
-      TWA: {{ hover.twa }}
+    <div class = "polar-details">
+      <div v-if = "hover.sog !== null">
+        SOG: {{ roundToFixed(hover.sog, 2) }}
+        VMG: {{ roundToFixed(hover.vmg, 2) }}
+        <!-- hover.twa is text-formatted already as sign is different for
+             polar hover & visual steer information
+        -->
+        TWA: {{ hover.twa }}
+      </div>
     </div>
   </div>
 </template>
@@ -413,6 +415,7 @@ export default {
 }
 .polar-details {
   font-size: 12px;
+  min-height: 20px;
 }
 #wind-key-container {
   position: absolute;
