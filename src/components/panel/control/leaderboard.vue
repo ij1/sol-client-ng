@@ -78,6 +78,11 @@ export default {
       if (this.boatlistInfo.filter.distance !== null) {
         res = res.filter(i => i.distance <= this.boatlistInfo.filter.distance);
       }
+      if (this.boatlistInfo.filter.country !== null) {
+        res = res.filter(i => {
+          return typeof this.boatlistInfo.filter.country[i.country] !== 'undefined'
+        });
+      }
       return res;
     },
     name () {

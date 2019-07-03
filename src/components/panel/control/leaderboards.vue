@@ -11,6 +11,7 @@
         Create new list by:
         <button @click = "editorType = 'boat'">Boat</button>
         <button @click = "editorType = 'distance'">Distance</button>
+        <button @click = "editorType = 'country'">Country</button>
       </div>
     </div>
     <portal to = "boatlist-editor-dest" v-if = "editorType !== null">

@@ -10,6 +10,7 @@ export default {
         filter: {
           boats: null,
           distance: null,
+          country: null,
         },
         editable: false,
         showOnlyListBoats: null,
@@ -37,6 +38,7 @@ export default {
         filter: {
           boats: boatlist.filter.boats,
           distance: boatlist.filter.distance,
+          country: boatlist.filter.country,
         },
         editable: true,
         showOblyListBoats: false,
@@ -56,6 +58,7 @@ export default {
       state.boatlists.filter = {
         boats: filterData.boats,
         distance: filterData.distance,
+        country: filterData.country,
       };
     },
     setActive (state, boatlistKey) {

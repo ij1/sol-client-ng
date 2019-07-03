@@ -17,7 +17,10 @@
       <label for="name">Distance:</label>
       <input id="name" v-model.trim = "distance">
     </div>
-    <div class = "boatlist-editor-body" v-if = "editorMode === 'boat'">
+    <div v-if = "editorMode === 'country'">
+      
+    </div>
+    <div class = "boatlist-editor-body" v-if = "listsAddDelMode">
       <div class="search">
         <label for="search">Search</label>
         <input
@@ -28,8 +31,15 @@
       </div>
       <div class = "offlist">
         <boat-list
+          v-if = "editorMode === 'boat'"
           :search = "search"
           :boat-list = "boatLists.offList"
+          @input = "offSelected = $event"
+        />
+        <country-list
+          v-if = "editorMode === 'country'"
+          :search = "search"
+          :country-list = "countryLists.offList"
           @input = "offSelected = $event"
         />
       </div>
@@ -53,11 +63,18 @@
           </button>
         </div>
       </div>
-      <div class = "onlist-header">Included boats</div>
+      <div class = "onlist-header">Included {{listTypeLabel}}</div>
       <div class = "onlist">
         <boat-list
+          v-if = "editorMode === 'boat'"
           :search = "search"
           :boat-list = "boatLists.onList"
+          @input = "onSelected = $event"
+        />
+        <country-list
+          v-if = "editorMode === 'country'"
+          :search = "search"
+          :country-list = "countryLists.onList"
           @input = "onSelected = $event"
         />
       </div>
@@ -70,12 +87,15 @@ import Vue from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import PopupWindow from '../../popupwindow.vue';
 import BoatList from './boatlist.vue';
+import CountryList from './countrylist.vue';
+import { validCountries } from '../../../lib/sol.js';
 
 export default {
   name: 'BoatlistSelector',
   components: {
     'popup-window': PopupWindow,
     'boat-list': BoatList,
+    'country-list': CountryList,
   },
   props: {
     editorType: {
@@ -98,9 +118,23 @@ export default {
   computed: {
     editorMode () {
       if (this.editListKey !== null) {
-	return ((this.editList.filter.boats !== null) ? 'boat' : 'distance');
+	if (this.editList.filter.boats !== null) {
+          return 'boat';
+        }
+        if (this.editList.filter.distance !== null) {
+          return 'distance';
+        }
+	if (this.editList.filter.country !== null) {
+          return 'country';
+        }
       }
       return this.editorType;
+    },
+    listsAddDelMode () {
+      return (this.editorMode !== 'distance');
+    },
+    listTypeLabel () {
+      return (this.editorMode === 'boat') ? 'boats' : 'countries';
     },
     submitLabel () {
       return this.editorType === 'edit' ? 'Edit list' : 'Create list';
@@ -119,7 +153,8 @@ export default {
       if (this.editorMode === 'distance') {
         const regex = /^\d(\.\d)?/;
         return regex.test(this.distance);
-      } else if (this.editorMode === 'boat') {
+      } else if ((this.editorMode === 'boat') ||
+                 (this.editorMode === 'country')) {
         return Object.keys(this.onList).length > 0;
       }
       /* Should never be reached */
@@ -136,6 +171,31 @@ export default {
           res.onList.push(boatList[i]);
         } else {
           res.offList.push(boatList[i]);
+        }
+      }
+      return res;
+    },
+    countryList () {
+      let res = Object.keys(validCountries).sort((a, b) => {
+        return a - b;
+      }).reduce((arr, val) => {
+        arr.push({
+          country: val.toUpperCase(),
+        });
+        return arr;
+      }, []);
+      return res;
+    },
+    countryLists () {
+      let res = {
+        offList: [],
+        onList: [],
+      }
+      for (let country of this.countryList) {
+        if (typeof this.onList[country.country] !== 'undefined') {
+          res.onList.push(country);
+        } else {
+          res.offList.push(country);
         }
       }
       return res;
@@ -166,6 +226,9 @@ export default {
       if (this.editList.filter.distance !== null) {
         this.distance = this.editList.filter.distance;
       }
+      if (this.editList.filter.coutry !== null) {
+        this.onList = Object.assign({}, this.editList.filter.country);
+      }
     }
   },
   methods: {
@@ -179,6 +242,7 @@ export default {
         filter: {
           boats: (this.editorMode === 'boat') ? this.onList : null,
           distance: (this.editorMode === 'distance') ? parseFloat(this.distance) : null,
+          country: (this.editorMode === 'country') ? this.onList: null,
         },
       });
       this.$emit('close');
