@@ -91,12 +91,12 @@ export default {
           dummyData: 'code',
         },
         {
-          dataField: 'country', th: 'code',
+          dataField: 'country', th: 'Code',
           align: 'l', visible: true, localeSort: false,
           dummyData: 'code',
         },
         {
-          dataField: 'name', th: 'name',
+          dataField: 'name', th: 'Name',
           align: 'l', visible: true, localeSort: false,
           dummyData: 'SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA',
         },
