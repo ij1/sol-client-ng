@@ -1,6 +1,9 @@
 <template>
   <div v-if = "boatSyc === false">
-    <img src="images/joinsyc.png">
+    <div id = "join-bg">
+      <div id = "join-blinker"/>
+      <img id = "banner" src="images/joinsyc.png">
+    </div>
   </div>
 </template>
 
@@ -26,3 +29,33 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#join-bg {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+}
+#join-blinker {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-image: radial-gradient(ellipse at center,
+                                    #4080e0 10%,
+                                    #60a0e0 45%,
+                                    transparent 70%);
+  animation: blinker 4s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+#banner {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+}
+</style>
