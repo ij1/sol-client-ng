@@ -124,7 +124,7 @@ export function loxoCalc(from, to) {
     navMode: 'loxo',
     startBearing: bearing,
     distance: Math.abs(cos) < 1e-9 ?
-              Math.abs((degToRad(to.lng) - degToRad(from.lng)) * Math.cos(from.lat)) :
+              Math.abs((degToRad(to.lng) - degToRad(from.lng)) * Math.cos(degToRad(from.lat))) :
               Math.abs((degToRad(to.lat) - degToRad(from.lat)) / Math.cos(bearing)),
   }
 }
