@@ -57,7 +57,7 @@
           size = 12
         >
       </div>
-      <div>
+      <div id = "steering-buttons">
         <button type = "submit" :disabled = "!canSend">
           {{applySteeringTxt}}
         </button>
@@ -453,5 +453,9 @@ export default {
   position: relative;
   bottom: 0px;
   left: 0px;
+}
+#steering-buttons button {
+  margin-left: 4px;
+  padding: 0px;
 }
 </style>
