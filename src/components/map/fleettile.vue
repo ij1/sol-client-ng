@@ -19,6 +19,7 @@ export default {
       this.fleetTime;
       this.wxUpdated;
       this.zoom;
+      this.cfgOwnBoatColor;
 
       return Date.now();
     },
@@ -30,6 +31,7 @@ export default {
       zoom: state => state.map.zoom,
       fleetTime: state => state.race.fleet.fleetTime,
       wxUpdated: state => state.weather.data.updated,
+      cfgOwnBoatColor: state => state.map.cfg.ownBoatColor.value,
     }),
   },
   methods: {

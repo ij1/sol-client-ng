@@ -16,6 +16,15 @@ export default {
     viewUpdateStamp: 0,
 
     cfg: {
+      ownBoatColor: {
+        value: 'magenta',
+        type: 'values',
+        values: [
+          ['magenta', 'magenta'],
+          ['server', 'use server color'],
+        ],
+        cfgText: 'Color for own trace and fleet boat',
+      },
       tinyIslands: {
         value: 'default',
         type: 'values',

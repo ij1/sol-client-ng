@@ -247,7 +247,11 @@ export default {
       }
     },
     /* Does not use state, just to use common code for boat colors */
-    boatColor: () => (boat) => {
+    boatColor: (state, getters, rootState) => (boat) => {
+      if ((boat.id === state.boat[state.playerBoatIdx].id) &&
+          (rootState.map.cfg.ownBoatColor.value === 'magenta')) {
+        return '#ff00ff';
+      }
       return 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ', 0.8)';
     },
 

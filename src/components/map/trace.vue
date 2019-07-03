@@ -49,6 +49,9 @@ export default {
       return this.id === this.$store.state.boat.id;
     },
     color () {
+      if (this.isPlayerBoat && this.cfgOwnBoatColor === 'magenta') {
+        return '#ff00ff';
+      }
       return this.boatColor(this.boat);
     },
     lastMileTrace () {
@@ -75,6 +78,7 @@ export default {
     },
     ...mapState({
       mapWrapList: state => state.map.wrapList,
+      cfgOwnBoatColor: state => state.map.cfg.ownBoatColor.value,
     }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
