@@ -77,9 +77,12 @@ export default {
   flex: none;
   overflow: hidden;
   font-size: 10px;
+  display: flex;
+  flex-direction: row;
 }
 #leaderboard-createbuttons button {
   font-size: 10px;
   margin-left: 4px;
+  padding: 0px;
 }
 </style>
