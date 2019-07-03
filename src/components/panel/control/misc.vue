@@ -18,6 +18,9 @@
         Settings
       </button>
     </div>
+    <div id = "banner-container">
+      <syc-banner/>
+    </div>
     <div>
       <div class="misc-header">Main Frameworks and Libraries Used</div>
       <ul>
@@ -34,9 +37,13 @@
 
 <script>
 import { mapState } from 'vuex';
+import SycBanner from '../../sycbanner.vue';
 
 export default {
   name: 'ControlMisc',
+  components: {
+    'syc-banner': SycBanner,
+  },
   data () {
     return {
       libraries: [
@@ -117,5 +124,8 @@ export default {
 .misc-header {
   font-size: 11px;
   font-weight: bold;
+}
+#banner-container {
+  position: relative;
 }
 </style>

@@ -41,6 +41,9 @@ export default {
   padding-top: 20px;
   padding-bottom: 20px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 #join-blinker {
   position: absolute;
