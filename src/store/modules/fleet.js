@@ -130,9 +130,7 @@ export default {
           state.boat[idx].log = boat.log;
           state.boat[idx].distance = boat.distance;
           state.boat[idx].lastRoundedMark = boat.lastRoundedMark;
-          if (idx !== state.playerBoatIdx) {
-            state.boat[idx].color = boat.color;
-          }
+          state.boat[idx].color = boat.color;
 
         } else {
           Vue.set(state.id2idx, id, state.boat.length);
