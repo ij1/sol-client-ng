@@ -1,6 +1,6 @@
 <template>
   <div class="syc-container" v-if="syc">
-    <span class="syc-flag">&#9658;</span>
+    <img src="images/sycflag.png" class="syc-flag"/>
   </div>
 </template>
 
@@ -19,16 +19,13 @@ export default {
 .syc-container {
   position: relative;
   display: inline-block;
-  width: 11px;
-  height: 11px;
+  width: 16px;
+  height: 13px;
   margin-left: 1px;
-  overflow: hidden;
 }
 .syc-flag {
   position: relative;
-  top: -2px;
-  left: 0px;
-  font-size: 10px;
-  width: 11px;
+  top: 1px;
+  left: 1px;
 }
 </style>
