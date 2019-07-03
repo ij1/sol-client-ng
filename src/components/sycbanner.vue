@@ -2,7 +2,12 @@
   <div v-if = "boatSyc === false">
     <div id = "join-bg">
       <div id = "join-blinker"/>
-      <img id = "banner" src="images/joinsyc.png">
+      <a
+        href = "http://www.sailonline.org/blog/2008/mar/10/sailonline-yacht-club-launched/"
+        target = "_blank"
+      >
+        <img id = "banner" src="images/joinsyc.png">
+      </a>
     </div>
   </div>
 </template>
