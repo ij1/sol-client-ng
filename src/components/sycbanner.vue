@@ -61,6 +61,5 @@ export default {
 #banner {
   position: relative;
   z-index: 2;
-  background: #ffffff;
 }
 </style>
