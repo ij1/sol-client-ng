@@ -8,7 +8,7 @@
         @editlist = "doEditList"
       />
       <div id = "leaderboard-createbuttons">
-        Create new list by:
+        <span id = "leaderboard-createbuttons-label">Create new list by:</span>
         <button @click = "editorType = 'boat'">Boat</button>
         <button @click = "editorType = 'distance'">Distance</button>
         <button @click = "editorType = 'country'">Country</button>
@@ -79,6 +79,9 @@ export default {
   font-size: 10px;
   display: flex;
   flex-direction: row;
+}
+#leaderboard-createbuttons-label {
+  flex: none;
 }
 #leaderboard-createbuttons button {
   font-size: 10px;
