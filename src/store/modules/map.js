@@ -10,7 +10,7 @@ export default {
     bounds: L.latLngBounds([-1, -1], [1, 1]),      /* dummy initial value */
     wrapList: [-360, 0, 360],
     minZoom: 1,
-    maxZoom: 18,
+    maxZoom: 16.8,
     hoverLatLng: null,
     size: L.point(1, 1),
     viewUpdateStamp: 0,
