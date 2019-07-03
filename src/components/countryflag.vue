@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { validCountries } from '../lib/sol.js';
+import { validCountries } from '../lib/country.js';
 
 export default {
   name: 'CountryFlag',

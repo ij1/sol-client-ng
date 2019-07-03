@@ -88,7 +88,7 @@ import { mapState, mapGetters } from 'vuex';
 import PopupWindow from '../../popupwindow.vue';
 import BoatList from './boatlist.vue';
 import CountryList from './countrylist.vue';
-import { validCountries } from '../../../lib/sol.js';
+import { validCountries } from '../../../lib/country.js';
 
 export default {
   name: 'BoatlistSelector',
