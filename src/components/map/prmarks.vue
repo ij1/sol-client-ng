@@ -35,7 +35,7 @@ export default {
 
   data () {
     return {
-      markRadius: 3.5,
+      markZoom: 16.8342,
       markColor: "#ff00ff",
       markTooltipOptions: {
         permanent: true,
@@ -82,7 +82,8 @@ export default {
            * Scale radius to match what the old client does, it has 9px
            * marks.
            */
-          radius: Math.cos(degToRad(markBoat.latLng.lat)) / Math.pow(2, 17 + 8) *
+          radius: Math.cos(degToRad(markBoat.latLng.lat)) /
+                  Math.pow(2, this.markZoom + 8) *
                   4.5 * EARTH_CIRC,
         });
         i++;
