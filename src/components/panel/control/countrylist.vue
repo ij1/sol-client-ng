@@ -94,7 +94,12 @@ export default {
           dataField: 'country', th: 'code',
           align: 'l', visible: true, localeSort: false,
           dummyData: 'code',
-        },        
+        },
+        {
+          dataField: 'name', th: 'name',
+          align: 'l', visible: true, localeSort: false,
+          dummyData: 'SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA',
+        },
       ];
     },
     visibleColumnsWithSort () {

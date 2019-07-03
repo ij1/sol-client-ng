@@ -181,6 +181,7 @@ export default {
       }).reduce((arr, val) => {
         arr.push({
           country: val.toUpperCase(),
+          name: validCountries[val],
         });
         return arr;
       }, []);
