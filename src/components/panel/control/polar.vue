@@ -67,10 +67,21 @@ export default {
   },
   computed: {
     maxWidth () {
-      return Math.max(this.polarSizeLimit.maxWidth - this.margin * 2, 180);
+      const yScale = (this.polarSizeLimit.maxHeight - this.margin * 2) /
+                     (this.maxSpeed * this.polarHeadroom +
+                      this.maxVmgUp * this.polarHeadroom);
+      const xScale = (this.polarSizeLimit.maxWidth - this.margin * 2) /
+                     (this.maxSpeed * this.polarHeadroom);
+      const maxScale = xScale < yScale ? 1 : yScale / xScale;
+
+      return Math.max(maxScale * this.polarSizeLimit.maxWidth - this.margin * 2,
+                      180);
     },
     maxSpeed () {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 1) * this.polarHeadroom;
+    },
+    maxVmgUp () {
+      return Math.max(...this.bgCurves.map(c => c.maxvmg.up.vmg), 1);
     },
     gridIntervalKnots () {
       return Math.ceil(this.maxSpeed / (this.maxWidth / this.gridMinSpacing));
@@ -85,8 +96,7 @@ export default {
       return this.gridIntervalPixels / this.gridIntervalKnots;
     },
     gridOrigoY () {
-      const maxVmgUp = Math.max(...this.bgCurves.map(c => c.maxvmg.up.vmg), 1);
-      return Math.ceil(maxVmgUp * this.gridScale * this.polarHeadroom);
+      return Math.ceil(this.maxVmgUp * this.gridScale * this.polarHeadroom);
     },
     gridSize () {
       return {
