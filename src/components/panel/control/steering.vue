@@ -66,8 +66,7 @@
         </button>
       </div>
     </form>
-    <polar-container/>
-    <div class = "flex-space"/>
+    <polar-container class="flex-space"/>
     <syc-banner class = "bottom-banner"/>
   </div>
 </template>

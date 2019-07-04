@@ -42,17 +42,18 @@ export default {
     'wind-key': WindKey,
   },
   mixins: [polarMixin],
+  props: {
+    polarSizeLimit: {
+      type: Object,
+      required: true,
+    },
+  },
   data () {
     return {
       margin: 22,
       /* 105% of the real max speed to give a small breathing room for the curves */
       polarHeadroom: 1.05,
       gridMinSpacing: 20,
-      /*
-       * FIXME: only set in mounted(). Should listen resize or perhaps
-       * use vue-resize?
-       */
-      maxWidth: 40,
 
       hover: {
         sog: null,
@@ -65,6 +66,9 @@ export default {
     }
   },
   computed: {
+    maxWidth () {
+      return Math.max(this.polarSizeLimit.maxWidth - this.margin * 2, 180);
+    },
     maxSpeed () {
       return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 1) * this.polarHeadroom;
     },
@@ -337,17 +341,6 @@ export default {
     onMouseOut () {
       this.clearHoverInfo();
     },
-    recalculateMaxWidth () {
-      this.maxWidth = Math.max(this.$refs['polar-container'].clientWidth -
-                               this.margin * 2,
-                               180);
-      this.draw();
-    },
-    onResize () {
-      this.$nextTick(() => {
-        this.recalculateMaxWidth();
-      });
-    },
     roundToFixed,
   },
   watch: {
@@ -377,16 +370,15 @@ export default {
         this.clearHoverInfo();
       }
     },
+    maxWidth () {
+      this.draw();
+    },
     twaTextPrefix,
   },
   mounted () {
-    this.$nextTick(() => {
-      window.addEventListener('resize', this.onResize);
-      this.recalculateMaxWidth();
-    });
+    this.draw();
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.onResize);
     if (this.fgAnimFrame != null) {
       L.Util.cancelAnimFrame(this.fgAnimFrame);
     }
@@ -398,7 +390,10 @@ export default {
 </script>
 
 <style scoped>
-#polar, #labels {
+#polar {
+  position: absolute;
+}
+#labels {
   position: relative;
 }
 .polar-draw-area {
