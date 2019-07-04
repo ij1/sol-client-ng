@@ -85,7 +85,7 @@ export default {
 .popup-window form {
   min-height: 50px;
   max-height: 80vh;
-  max-width: 70vh;
+  max-width: 70vw;
   display: flex;
   flex-direction: column;
   padding: 10px;
