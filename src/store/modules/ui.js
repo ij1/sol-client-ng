@@ -51,6 +51,11 @@ export default {
     },
     configSetValue,
   },
+  getters: {
+    inDefaultUiMode: (state) => {
+      return state.uiModeCancel === null;
+    },
+  },
   actions: {
     setUiMode({state, commit}, uiMode) {
       /* Change the mode, clear the previous mode before setting new */

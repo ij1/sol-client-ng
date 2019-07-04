@@ -156,6 +156,7 @@ export default {
     ...mapGetters({
       mapMinWrap: 'map/mapMinWrap',
       mapMaxWrap: 'map/mapMaxWrap',
+      inDefaultUiMode: 'ui/inDefaultUiMode',
     }),
   },
 
@@ -166,6 +167,7 @@ export default {
       this.map.getPane('timeofdayPane').style.zIndex = 300;
       this.map.on('mousemove', this.setHoverPos, this);
       this.map.on('mouseout', this.clearHoverPos, this);
+      this.map.on('dblclick', this.onDblClick, this);
       this.updateView();
       this.setSize();
     });
@@ -174,6 +176,9 @@ export default {
     // FIXME: is this racy with nextTick setups? Can we call with bogus values?
     this.map.off('mousemove', this.setHoverPos, this);
     this.map.off('mousemout', this.clearHoverPos, this);
+    if (this.inDefaultUiMode) {
+      this.map.off('dblclick', this.onDblClick, this);
+    }
   },
 
   methods: {
@@ -220,6 +225,11 @@ export default {
       this.$store.commit('map/setHover', null);
       this.mousePos = null;
     },
+    onDblClick (e) {
+      if (this.inDefaultUiMode) {
+        this.map.panTo(e.latlng);
+      }
+    },
   },
 
   watch: {
@@ -231,6 +241,19 @@ export default {
         this.$nextTick(() => {
           this.map.flyToBounds(this.raceBoundary);
         });
+      }
+    },
+    inDefaultUiMode (newValue, oldValue) {
+      if (newValue === oldValue) {
+        return;
+      }
+      if (newValue) {
+        // ADDME: fix races here vs beforeDestroyed
+        setTimeout(() => {
+          this.map.on('dblclick', this.onDblClick, this);
+        }, 0);
+      } else {
+        this.map.off('dblclick', this.onDblClick, this);
       }
     }
   },
