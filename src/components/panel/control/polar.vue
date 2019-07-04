@@ -401,9 +401,6 @@ export default {
 #polar, #labels {
   position: relative;
 }
-#polar-container {
-  width: 100%;
-}
 .polar-draw-area {
   position: absolute;
   top: 20px;
