@@ -67,10 +67,10 @@ export default {
   },
   computed: {
     maxWidth () {
-      const yScale = (this.polarSizeLimit.maxHeight - this.margin * 2) /
+      const yScale = Math.max(this.polarSizeLimit.maxHeight - this.margin * 2, 40) /
                      (this.maxSpeed * this.polarHeadroom +
                       this.maxVmgUp * this.polarHeadroom);
-      const xScale = (this.polarSizeLimit.maxWidth - this.margin * 2) /
+      const xScale = Math.max(this.polarSizeLimit.maxWidth - this.margin * 2, 40) /
                      (this.maxSpeed * this.polarHeadroom);
       const maxScale = xScale < yScale ? 1 : yScale / xScale;
 
