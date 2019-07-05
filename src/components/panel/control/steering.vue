@@ -62,7 +62,7 @@
           {{applySteeringTxt}}
         </button>
         <button type = "button" @click.prevent = "recallCurrent">
-          From current
+          Reset
         </button>
       </div>
     </form>
