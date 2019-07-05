@@ -150,13 +150,13 @@ export default {
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
-      maxZoom: state => state.map.maxZoom,
       mapWrapList: state => state.map.wrapList,
     }),
     ...mapGetters({
       mapMinWrap: 'map/mapMinWrap',
       mapMaxWrap: 'map/mapMaxWrap',
       inDefaultUiMode: 'ui/inDefaultUiMode',
+      maxZoom: 'map/maxZoom',
     }),
   },
 

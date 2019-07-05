@@ -23,7 +23,7 @@ import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LTooltip } from 'vue2-leaflet';
 import { degToRad, latLngAddOffset } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
-import { EARTH_R } from '../../lib/sol.js';
+import { EARTH_R, OLD_CLIENT_MAXZOOM_ACCURATE } from '../../lib/sol.js';
 
 export default {
   name: 'PrMarks',
@@ -35,7 +35,6 @@ export default {
 
   data () {
     return {
-      markZoom: 16.8342,
       markColor: "#ff00ff",
       markTooltipOptions: {
         permanent: true,
@@ -83,7 +82,7 @@ export default {
            * marks.
            */
           radius: Math.cos(degToRad(markBoat.latLng.lat)) /
-                  Math.pow(2, this.markZoom + 8) *
+                  Math.pow(2, OLD_CLIENT_MAXZOOM_ACCURATE + 8) *
                   4.5 * EARTH_CIRC,
         });
         i++;

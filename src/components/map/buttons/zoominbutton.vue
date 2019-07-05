@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import L from 'leaflet';
 import { LControl } from 'vue2-leaflet';
+import { OLD_CLIENT_MAXZOOM } from '../../../lib/sol.js';
 
 export default {
   name: 'ZoomInButton',
@@ -29,17 +29,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    ...mapState({
-      maxZoom: state => state.map.maxZoom,
-    }),
-  },
   methods: {
     onClick (ev) {
       if (!ev.altKey) {
         this.map.zoomIn();
       } else {
-        this.map.flyTo(this.map.getCenter(), this.maxZoom);
+        this.map.flyTo(this.map.getCenter(), OLD_CLIENT_MAXZOOM);
       }
     },
   },

@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import { configSetValue } from '../../components/config/configstore.js';
+import { OLD_CLIENT_MAXZOOM } from '../../lib/sol.js';
 
 export default {
   namespaced: true,
@@ -10,7 +11,6 @@ export default {
     bounds: L.latLngBounds([-1, -1], [1, 1]),      /* dummy initial value */
     wrapList: [-360, 0, 360],
     minZoom: 1,
-    maxZoom: 16.8,
     hoverLatLng: null,
     size: L.point(1, 1),
     viewUpdateStamp: 0,
@@ -35,6 +35,11 @@ export default {
         ],
         cfgText: 'Minimum size for drawing tiny islands',
       },
+      extraZoomLevels: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Allow extra zoom (Warning: incompatible with PR rules)',
+      }
     },
   },
 
@@ -72,5 +77,8 @@ export default {
       const maxLat = state.bounds.getEast();
       return Math.ceil((maxLat - 180) / 360) * 360;
     },
+    maxZoom: (state) => {
+      return state.cfg.extraZoomLevels.value ? 21 : OLD_CLIENT_MAXZOOM;
+    }
   },
 }

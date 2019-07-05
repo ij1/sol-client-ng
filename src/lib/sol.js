@@ -4,6 +4,8 @@ import { atan2Bearing } from './nav.js';
 export const MS_TO_KNT = 3600 / 1852;
 export const EARTH_R = 6378137;
 export const PROJECTION = L.CRS.EPSG3857;
+export const OLD_CLIENT_MAXZOOM = 16.8;
+export const OLD_CLIENT_MAXZOOM_ACCURATE = 16.8342;
 
 export function UVToWind(uv) {
   /* u,v are negated because u,v points "to", whereas TWD is wind "from" */
