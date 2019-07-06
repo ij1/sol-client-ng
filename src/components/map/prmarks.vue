@@ -63,7 +63,7 @@ export default {
     prMarks () {
       const EARTH_CIRC = 2 * Math.PI * EARTH_R;
       let res = [];
-      for (let i = 1; i < this.maxMark; i++) {
+      for (let i = 1; i < this.maxMark + 1; i++) {
         const name = 'Practice_Mark_' + i;
         const markBoat = this.$store.getters['race/fleet/boatFromName'](name);
         if (markBoat === null) {
@@ -85,7 +85,6 @@ export default {
                   Math.pow(2, OLD_CLIENT_MAXZOOM_ACCURATE + 8) *
                   4.5 * EARTH_CIRC,
         });
-        i++;
       }
       return res;
     },
