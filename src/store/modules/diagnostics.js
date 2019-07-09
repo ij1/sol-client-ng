@@ -11,7 +11,7 @@ export default {
     __add (state, message) {
       message.id = state.idCount++;
       state.messages.push(message);
-      if (state.message.length > 200) {
+      if (state.messages.length > 200) {
         state.messages.shift();
       }
     },
