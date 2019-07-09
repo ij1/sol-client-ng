@@ -237,7 +237,7 @@ export default {
         if (!loaded) {
           commit('boat/setType', boatType, {root: true});
           commit('chatrooms/init', chatroomsData, {root: true});
-          commit('boat/polar/set', polarRawData, {root: true});
+          await dispatch('boat/polar/parse', polarRawData, {root: true});
         } else {
           changed = getters['compareRaceInfo'](dispatch, raceInfo);
         }

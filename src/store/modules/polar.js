@@ -17,26 +17,10 @@ export default {
   },
 
   mutations: {
-    set(state, polar) {
-      state.twsval = Object.freeze(polar.tws_splined.split(/\s+/).map(parseFloat));
-      state.twaval = Object.freeze(polar.twa_splined.split(/\s+/).map(parseFloat).map(degToRad));
-
-      let rows = polar.bs_splined.split(/;\s*/);
-
-      if (rows.length !== state.twaval.length + 1) {
-        console.log("Inconsistent polar!");
-      }
-
-      let bs = [];
-      for (let i = 0; i < rows.length - 1; i++) {
-        let tmp = rows[i].split(/\s+/).map(parseFloat);
-        if (tmp.length !== state.twsval.length) {
-          console.log("Inconsistent polar check!");
-        }
-        bs.push(Object.freeze(tmp));
-      }
-      state.bs = Object.freeze(bs);
-
+    set(state, polarData) {
+      state.twsval = polarData.twsval;
+      state.twaval = polarData.twaval;
+      state.bs = polarData.bs;
       state.loaded = true;
     },
   },
@@ -126,6 +110,30 @@ export default {
     currentCurve: (state, getters, rootState) => {
       const knots = rootState.boat.instruments.tws.value * MS_TO_KNT;
       return getters['curve'](knots, state.twaInterval);
+    },
+  },
+  actions: {
+    parse ({commit}, rawData) {
+      let polarData = {};
+      polarData.twsval = Object.freeze(rawData.tws_splined.split(/\s+/).map(parseFloat));
+      polarData.twaval = Object.freeze(rawData.twa_splined.split(/\s+/).map(parseFloat).map(degToRad));
+
+      let rows = rawData.bs_splined.split(/;\s*/);
+
+      if (rows.length !== polarData.twaval.length + 1) {
+        console.log("Inconsistent polar!");
+      }
+
+      let bs = [];
+      for (let i = 0; i < rows.length - 1; i++) {
+        let tmp = rows[i].split(/\s+/).map(parseFloat);
+        if (tmp.length !== polarData.twsval.length) {
+          console.log("Inconsistent polar check!");
+        }
+        bs.push(Object.freeze(tmp));
+      }
+      polarData.bs = Object.freeze(bs);
+      commit('set', polarData);
     },
   },
 }
