@@ -41,6 +41,7 @@ import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { speedTowardsBearing, cogTwdToTwa, loxoCalc, pixelDistanceCalc } from '../../../lib/nav.js';
 import SailBoat from '../sailboat.vue';
+import { uiModeMixin } from '../../mixins/uimode.js';
 
 export default {
   name: 'VisualSteering', 
@@ -51,6 +52,7 @@ export default {
     'l-tooltip': LTooltip,
     'sail-boat': SailBoat,
   },
+  mixins: [uiModeMixin],
   props: {
     map: {
       type: Object,
