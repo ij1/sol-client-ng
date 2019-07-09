@@ -11,6 +11,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import { EventBus } from '../../../lib/event-bus.js';
 import PolarGraph from './polar.vue';
 
 export default {
@@ -48,11 +49,13 @@ export default {
   mounted () {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
+      EventBus.$on('right-pane-resize', this.recalculateDimensions);
       this.recalculateDimensions();
     });
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.onResize);
+    EventBus.$off('right-pane-resize', this.recalculateDimensions);
   },
 }
 </script>
