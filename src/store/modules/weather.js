@@ -352,7 +352,7 @@ export default {
         if (updated === null) {
           dispatch(
             'diagnostics/add',
-            'Invalid date in weather data: ' + weatherData.$.last_updated,
+            'DATA ERROR: Invalid date in weather data: ' + weatherData.$.last_updated,
             {root: true}
           );
           return;
@@ -371,7 +371,7 @@ export default {
           if (utc === null) {
             dispatch(
               'diagnostics/add',
-              'Invalid date in weather data: ' + frame.$.target_time,
+              'DATA ERROR: Invalid date in weather data: ' + frame.$.target_time,
               {root: true}
             );
             return;
@@ -383,7 +383,7 @@ export default {
           if (u.length !== v.length) {
             dispatch(
               'diagnostics/add',
-              'Inconsistent weather lengths: ' + u.length + ' ' + v.length,
+              'DATA ERROR: Inconsistent weather lengths: ' + u.length + ' ' + v.length,
               {root: true}
             );
             return;
@@ -401,7 +401,7 @@ export default {
             if (uu.length !== vv.length) {
               dispatch(
                 'diagnostics/add',
-                'Inconsistent weather lengths: ' + uu.length + ' ' + vv.length,
+                'DATA ERROR: Inconsistent weather lengths: ' + uu.length + ' ' + vv.length,
                 {root: true}
               );
               return;
@@ -467,7 +467,7 @@ export default {
       if (w === null) {
         dispatch(
           'diagnostics/add',
-          'No WX update times found in description!',
+          'DATA WARNING: No WX update times found in description!',
           {root: true}
         );
         return;
@@ -478,7 +478,7 @@ export default {
         if ((time < 10000) || (12400 < time)) {
           dispatch(
             'diagnostics/add',
-            'Invalid WX update time: ' + w[i],
+            'DATA ERROR: Invalid WX update time: ' + w[i],
             {root: true}
           );
           return;
