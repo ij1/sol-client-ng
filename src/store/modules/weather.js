@@ -350,7 +350,11 @@ export default {
 
         const updated = UTCToMsec(weatherData.$.last_updated);
         if (updated === null) {
-          console.log("Invalid date in weather data!");
+          dispatch(
+            'diagnostics/add',
+            'Invalid date in weather data: ' + weatherData.$.last_updated,
+            {root: true}
+          );
           return;
         }
 
@@ -365,7 +369,11 @@ export default {
         for (let frame of weatherData.frames.frame) {
           const utc = UTCToMsec(frame.$.target_time);
           if (utc === null) {
-            console.log("Invalid date in weather data!");
+            dispatch(
+              'diagnostics/add',
+              'Invalid date in weather data: ' + frame.$.target_time,
+              {root: true}
+            );
             return;
           }
           timeSeries.push(utc);
@@ -373,7 +381,11 @@ export default {
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
           if (u.length !== v.length) {
-            console.log("Inconsistent weather data!");
+            dispatch(
+              'diagnostics/add',
+              'Inconsistent weather lengths: ' + u.length + ' ' + v.length,
+              {root: true}
+            );
             return;
           }
 
@@ -387,7 +399,11 @@ export default {
             let vv = v[i].trim().split(/\s+/);
 
             if (uu.length !== vv.length) {
-              console.log("Inconsistent weather data!");
+              dispatch(
+                'diagnostics/add',
+                'Inconsistent weather lengths: ' + uu.length + ' ' + vv.length,
+                {root: true}
+              );
               return;
             }
 
@@ -445,18 +461,26 @@ export default {
         commit('solapi/unlock', 'weather', {root: true});
       }
     },
-    parseUpdateTimes({commit}, description) {
+    parseUpdateTimes({commit, dispatch}, description) {
       const regex = /WX [Uu]pdates: *<br> *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9])\.* *<br>/;
       const w = regex.exec(description);
       if (w === null) {
-        console.log('No WX update times found in description!');
+        dispatch(
+          'diagnostics/add',
+          'No WX update times found in description!',
+          {root: true}
+        );
         return;
       }
       let times = [];
       for (let i = 1; i <= 4; i++) {
         let time = +('1' + w[i]);
         if ((time < 10000) || (12400 < time)) {
-          console.log('Invalid WX update time: ' + w[i]);
+          dispatch(
+            'diagnostics/add',
+            'Invalid WX update time: ' + w[i],
+            {root: true}
+          );
           return;
         }
         time -= 10000;
