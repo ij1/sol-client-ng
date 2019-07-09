@@ -6,6 +6,13 @@ export class SolapiError extends Error {
   }
 }
 
+export class SolapiDataError extends SolapiError {
+  constructor(message) {
+    super('data', message);
+    this.name = 'SolapiDataError';
+  }
+}
+
 export function solapiRetryDispatch (dispatch, action, param, timeout = 10000) {
   setTimeout(() => {
     dispatch(action, param);

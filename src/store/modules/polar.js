@@ -1,6 +1,7 @@
 import { degToRad, bsearchLeft, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
 import { speedTowardsBearing } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
+import { SolapiDataError } from '../../lib/solapi.js';
 
 export default {
   namespaced: true,
@@ -113,7 +114,7 @@ export default {
     },
   },
   actions: {
-    parse ({commit}, rawData) {
+    parse ({dispatch, commit}, rawData) {
       let polarData = {};
       polarData.twsval = Object.freeze(rawData.tws_splined.split(/\s+/).map(parseFloat));
       polarData.twaval = Object.freeze(rawData.twa_splined.split(/\s+/).map(parseFloat).map(degToRad));
@@ -121,14 +122,28 @@ export default {
       let rows = rawData.bs_splined.split(/;\s*/);
 
       if (rows.length !== polarData.twaval.length + 1) {
-        console.log("Inconsistent polar!");
+        dispatch(
+          'diagnostics/add',
+          'DATA ERROR: Inconsistent polar lengths:' +
+          rows.length + ' ' + (polarData.twaval.length + 1),
+          {root: true}
+        );
+        /* Throw here to force a retry, no point to sail without a polar? */
+        throw new SolapiDataError('polar', 'Polar data length error');
       }
 
       let bs = [];
       for (let i = 0; i < rows.length - 1; i++) {
         let tmp = rows[i].split(/\s+/).map(parseFloat);
         if (tmp.length !== polarData.twsval.length) {
-          console.log("Inconsistent polar check!");
+          dispatch(
+            'diagnostics/add',
+            'DATA ERROR: Inconsistent polar lengths:' +
+            tmp.length + ' ' + polarData.twsval.length,
+            {root: true}
+          );
+          /* Throw here to force a retry, no point to sail without a polar? */
+          throw new SolapiDataError('polar', 'Polar data length error');
         }
         bs.push(Object.freeze(tmp));
       }
