@@ -380,12 +380,18 @@ export default {
         return;
       }
       const delayTime = this.delayTime;
+      const delayValue = this.delayOn ? delayTime : 0;
+      const cmdValue = this.type === 'cc' ? this.ccRad : this.twaRad;
       const sendParams = {
-        delay: this.delayOn ? delayTime : 0,
-        value: this.type === 'cc' ? this.ccRad : this.twaRad,
+        delay: delayValue,
+        value: cmdValue,
         command: this.type,
       };
       this.sending = true;
+      const steeringTxt = this.type + '=' +
+                           radToDeg(cmdValue) + ' ' +
+                           (this.delayOn ? ('DC=' + delayValue) : '');
+      this.$store.dispatch('diagnostics/add', 'INFO: steering SEND ' + steeringTxt);
       this.$store.dispatch('boat/steering/sendSteeringCommand', sendParams)
       .then(status => {
         if (status !== 'OK') {
@@ -395,6 +401,9 @@ export default {
               ' command!',
             color: 'red',
           });
+          this.$store.dispatch('diagnostics/add', 'INFO: steering FAIL ' + steeringTxt);
+        } else {
+          this.$store.dispatch('diagnostics/add', 'INFO: steering OK ' + steeringTxt);
         }
         if (delayTime > 0) {
           this.$store.dispatch('boat/steering/fetchDCs');

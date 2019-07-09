@@ -50,8 +50,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #client-diagnostics {
   text-align: left;
+  font-size: 10px;
 }
 </style>
