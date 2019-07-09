@@ -54,5 +54,7 @@ export default {
 #client-diagnostics {
   text-align: left;
   font-size: 10px;
+  overflow: scroll;
+  height: 100%;
 }
 </style>
