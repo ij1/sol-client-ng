@@ -33,8 +33,7 @@ export default {
   data () {
     return {
       lastPosition: null,
-      dblClickTimer: null,
-      dblClickInterval: 200,
+      uiModeHandlingDblClicks: true,
     }
   },
   computed: {
@@ -72,37 +71,20 @@ export default {
       this.$store.commit('ui/ruler/newSegment', newSegment);
       this.lastPosition = latLng;
     },
-    onClick (e) {
-      if (this.dblClickTimer !== null) {
-        this.onDoubleClick(e.latlng);
-      } else {
-        this.dblClickTimer = setTimeout(this.onSingleClick,
-                                        this.dblClickInterval,
-                                        e.latlng);
-      }
-    },
-    onSingleClick (latLng) {
+    onSingleClick (e) {
+      const latLng = e.latlng;
       if (this.lastPosition === null) {
         this.lastPosition = latLng;
       } else {
         this.addSegment(latLng);
       }
-      this.dblClickTimer = null;
     },
-    onDoubleClick (latLng) {
-      if (this.lastPosition !== null) {
-        this.addSegment(latLng);
-      }
-      this.cancelEvents();
+    onDoubleClick () {
       this.$store.dispatch('ui/cancelUiMode');
     },
     onCancelKey (e) {
       if (e.which === 8) {
-        if (this.dblClickTimer !== null) {
-          clearTimeout(this.dblClickTimer);
-          this.dblClickTimer = null;
-          return;
-        } else if ((this.lastPosition !== null) &&
+        if ((this.lastPosition !== null) &&
             (this.lastFixedSegment !== null)) {
           if (this.lastPosition.equals(this.lastFixedSegment.line[1])) {
             this.lastPosition = this.lastFixedSegment.line[0];
@@ -116,21 +98,16 @@ export default {
         this.$store.commit('ui/ruler/delSegment');
       }
     },
-    cancelEvents() {
-      window.removeEventListener('keyup', this.onCancelKey);
-      this.map.off('click', this.onClick, this);
-      if (this.dblClickTimer !== null) {
-        clearTimeout(this.dblClickTimer);
-        this.dblClickTimer = null;
-      }
-    },
   },
   mounted () {
-    this.map.on('click', this.onClick, this);
     window.addEventListener('keyup', this.onCancelKey);
+    this.$on('doubleclick', this.onDoubleClick);
+    this.$on('singleclick-early', this.onSingleClick);
   },
   beforeDestroy () {
-    this.cancelEvents();
+    window.removeEventListener('keyup', this.onCancelKey);
+    this.$off('doubleclick', this.onDoubleClick);
+    this.$off('singleclick-early', this.onSingleClick);
   },
 }
 </script>
