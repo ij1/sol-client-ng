@@ -95,7 +95,11 @@ export default {
       this.$store.dispatch('ui/cancelUiMode');
     },
     onCancelKey (e) {
-      if (e.which === 27 || e.which === 8) {
+      if (e.which === 27) {
+        this.$store.dispatch('ui/cancelUiMode');
+        return;
+      }
+      if (e.which === 8) {
         if (this.dblClickTimer !== null) {
           clearTimeout(this.dblClickTimer);
           this.dblClickTimer = null;
