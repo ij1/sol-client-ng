@@ -11,6 +11,7 @@ import weatherModule from './modules/weather';
 import chatroomsModule from './modules/chatrooms';
 import mapModule from './modules/map';
 import mapTilesModule from './modules/tiles';
+import diagnosticsModule from './modules/diagnostics';
 
 Vue.use(Vuex);
 
@@ -27,5 +28,6 @@ export default new Vuex.Store({
     chatrooms: chatroomsModule,
     map: mapModule,
     tiles: mapTilesModule,
+    diagnostics: diagnosticsModule,
   },
 });

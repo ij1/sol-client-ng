@@ -13,12 +13,26 @@
       <div>Locked API calls:</div>
       <div v-for = "call in lockedApiCalls" :key = "call">{{call}}</div>
     </div>
+    <div>
+      <div
+        v-for = "message in diagnosticsMessages"
+        :key = "message.id"
+      >
+        {{message.time | msecToUTCString}} {{message.message}}
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import { msecToUTCString } from '../../../lib/utils.js';
+
 export default {
   name: 'ClientDiagnostics',
+  filters: {
+    msecToUTCString,
+  },
   computed: {
     lockedApiCalls () {
       this.$store.state.solapi.activeApiCallsStamp;
@@ -29,6 +43,9 @@ export default {
         return a.localeCompare(b);
       });
     },
+    ...mapState({
+      diagnosticsMessages: state => state.diagnostics.messages,
+    }),
   },
 }
 </script>
