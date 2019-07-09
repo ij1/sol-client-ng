@@ -1,9 +1,19 @@
+import { configSetValue } from '../../components/config/configstore.js';
+
 export default {
   namespaced: true,
 
   state: {
     messages: [],
     idCount: 0,
+
+    cfg: {
+      showDiagnostics: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Show diagnostics',
+      },
+    },
   },
 
   mutations: {
@@ -15,6 +25,8 @@ export default {
         state.messages.shift();
       }
     },
+
+    configSetValue,
   },
 
   actions: {

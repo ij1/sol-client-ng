@@ -7,7 +7,11 @@
       <a @click="activeTab=3" :class="activeTab === 3 ? 'active' : ''">Chat</a>
       <a @click="activeTab=4" :class="activeTab === 4 ? 'active' : ''">NOR</a>
       <a @click="activeTab=6" :class="activeTab === 6 ? 'active' : ''">Misc</a>
-      <a @click="activeTab=7" :class="activeTab === 7 ? 'active' : ''">Diag</a>
+      <a
+        v-if = "configShowDiagnostics"
+        @click = "activeTab=7"
+        :class="activeTab === 7 ? 'active' : ''"
+      >Diag</a>
     </div>
     <div>
       <div v-if="activeTab === 0" class="control-panel-content">
@@ -42,6 +46,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import ControlSteering from './steering.vue';
 import ControlDCs from './dcs.vue';
 import ControlLeaderboards from './leaderboards.vue';
@@ -70,6 +75,9 @@ export default {
         this.$store.commit('ui/setActiveTab', value);
       }
     },
+    ...mapState({
+      configShowDiagnostics: state => state.diagnostics.cfg.showDiagnostics.value,
+    }),
   },
 }
 </script>

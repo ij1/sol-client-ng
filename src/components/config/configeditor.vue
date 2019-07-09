@@ -122,6 +122,12 @@ export default {
             ],
           }],
         },
+        {
+          title: 'Diagnostics',
+          cfgs: [{
+            base: 'diagnostics',
+          }],
+        },
       ];
     },
     configList () {
