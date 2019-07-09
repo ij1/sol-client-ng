@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { store } from '../../store/index.js';
 import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
 import { UVToWind } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
@@ -106,7 +107,10 @@ export default {
        */
       const boundedTime = boundTime(state, state.time);
       if (boundedTime !== null) {
-        console.log("time outside wx, fixing: " + state.time + " vs " + state.data.timeSeries[0] + "-" + state.data.timeSeries[state.data.timeSeries.length - 1]);
+        store.dispatch(
+          'diagnostics/add',
+          "WARNING: time outside wx, fixing: " + state.time + " vs " + state.data.timeSeries[0] + "-" + state.data.timeSeries[state.data.timeSeries.length - 1]
+        );
         state.time = boundedTime;
       }
     },
@@ -156,7 +160,10 @@ export default {
       /* For now, check that the result is valid, */
       if ((state.data.timeSeries[idx] > state.time) ||
           (state.data.timeSeries[idx+1] < state.time)) {
-        console.log("Bug in binary-search: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?");
+        store.dispatch(
+          'diagnostics/add',
+          "BUG: binary-search: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?"
+        );
       }
       return idx;
     },
@@ -178,7 +185,10 @@ export default {
       /* For now, check that the result is valid, */
       if ((state.data.timeSeries[idx] > timestamp) ||
           (state.data.timeSeries[idx+1] < timestamp)) {
-        console.log("Bug in binary-search: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?");
+        store.dispatch(
+          'diagnostics/add',
+          "BUG: binary-search: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?"
+        );
       }
       return idx;
     },

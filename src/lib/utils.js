@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { store } from '../store/index.js';
 
 export function UTCToMsec(dateString) {
   const regex = /^(\d{4})\/([01]\d)\/([0-3]\d) ([012]\d):([0-5]\d):([0-5]\d)/;
@@ -109,7 +110,10 @@ export function interpolateFactor(startPoint, intermediatePoint, endPoint) {
   const factor = (intermediatePoint - startPoint) / (endPoint - startPoint);
 
   if (factor < 0 || factor > 1.0) {
-    console.log("Invalid factor: " + factor);
+    store.dispatch(
+      'diagnostics/add',
+      "WARNING: Invalid factor: " + factor
+    );
   }
 
   return factor;
