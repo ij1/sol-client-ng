@@ -15,7 +15,7 @@ import diagnosticsModule from './modules/diagnostics';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export const store = new Vuex.Store({
   modules: {
     time: timeModule,
     auth: authModule,
