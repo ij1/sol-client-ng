@@ -16,12 +16,14 @@ import { mapState } from 'vuex';
 import L from 'leaflet';
 import { loxoCalc } from '../../../lib/nav.js';
 import RulerSegment from './rulersegment.vue';
+import { uiModeMixin } from '../../mixins/uimode.js';
 
 export default {
   name: 'RulerTool',
   components: {
     'ruler-segment': RulerSegment,
   },
+  mixins: [uiModeMixin],
   props: {
     map: {
       type: Object,
@@ -95,10 +97,6 @@ export default {
       this.$store.dispatch('ui/cancelUiMode');
     },
     onCancelKey (e) {
-      if (e.which === 27) {
-        this.$store.dispatch('ui/cancelUiMode');
-        return;
-      }
       if (e.which === 8) {
         if (this.dblClickTimer !== null) {
           clearTimeout(this.dblClickTimer);
