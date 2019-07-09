@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { EventBus } from './lib/event-bus.js';
+
 import Splitpanes from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
 import LoginPopup from './components/loginpopup.vue';
@@ -50,9 +52,7 @@ export default {
   },
   methods: {
     doResize () {
-      if (this.$refs['map'].map !== null) {
-        this.$refs['map'].map.invalidateSize({pan: false});
-      }
+      EventBus.$emit('right-pane-resize');
     }
   }
 }

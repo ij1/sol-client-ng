@@ -60,6 +60,7 @@
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet';
+import { EventBus } from '../../lib/event-bus.js';
 import { PROJECTION } from '../../lib/sol.js';
 
 import MapTiles from './tiles';
@@ -170,6 +171,7 @@ export default {
       this.map.on('dblclick', this.onDblClick, this);
       this.updateView();
       this.setSize();
+      EventBus.$on('right-pane-resize', this.forceResize);
     });
   },
   beforeDestroy () {
@@ -179,6 +181,7 @@ export default {
     if (this.inDefaultUiMode) {
       this.map.off('dblclick', this.onDblClick, this);
     }
+    EventBus.$off('right-pane-resize', this.forceResize);
   },
 
   methods: {
@@ -202,6 +205,9 @@ export default {
         bounds: this.map.getBounds(),
       });
       this.updateWrapList();
+    },
+    forceResize () {
+      this.map.invalidateSize({pan: false});
     },
     /* Sadly a vuex getter fires unnecessarily even if its dependencies
      * values did not change so workaround it
