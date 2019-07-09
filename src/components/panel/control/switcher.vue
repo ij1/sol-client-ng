@@ -1,13 +1,13 @@
 <template>
   <div id="control-panel">
     <div class="tabs">
-      <a v-on:click="activeTab=0" v-bind:class="activeTab === 0 ? 'active' : ''">Steer</a>
-      <a v-on:click="activeTab=1" v-bind:class="activeTab === 1 ? 'active' : ''">DCs</a>
-      <a v-on:click="activeTab=2" v-bind:class="activeTab === 2 ? 'active' : ''">LB</a>
-      <a v-on:click="activeTab=3" v-bind:class="activeTab === 3 ? 'active' : ''">Chat</a>
-      <a v-on:click="activeTab=4" v-bind:class="activeTab === 4 ? 'active' : ''">NOR</a>
-      <a v-on:click="activeTab=6" v-bind:class="activeTab === 6 ? 'active' : ''">Misc</a>
-      <a v-on:click="activeTab=7" v-bind:class="activeTab === 7 ? 'active' : ''">Diag</a>
+      <a @click="activeTab=0" :class="activeTab === 0 ? 'active' : ''">Steer</a>
+      <a @click="activeTab=1" :class="activeTab === 1 ? 'active' : ''">DCs</a>
+      <a @click="activeTab=2" :class="activeTab === 2 ? 'active' : ''">LB</a>
+      <a @click="activeTab=3" :class="activeTab === 3 ? 'active' : ''">Chat</a>
+      <a @click="activeTab=4" :class="activeTab === 4 ? 'active' : ''">NOR</a>
+      <a @click="activeTab=6" :class="activeTab === 6 ? 'active' : ''">Misc</a>
+      <a @click="activeTab=7" :class="activeTab === 7 ? 'active' : ''">Diag</a>
     </div>
     <div>
       <div v-if="activeTab === 0" class="control-panel-content">
