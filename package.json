@@ -11,7 +11,7 @@
   "dependencies": {
     "@joergdietrich/leaflet.terminator": "^1.0.0",
     "leaflet": "git+https://github.com/ij1/Leaflet.git#v1.3.4-gridlayer-fixes",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "pako": "^1.0.7",
     "portal-vue": "^1.5.1",
     "rbush": "^2.0.2",
