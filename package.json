@@ -20,7 +20,7 @@
     "util.promisify": "^1.0.0",
     "vue": "^2.6.10",
     "vue2-leaflet": "^2.1.1",
-    "vuejs-datepicker": "^1.5.4",
+    "vuejs-datepicker": "^1.6.2",
     "vuex": "^3.0.1",
     "xml2js": "^0.4.19"
   },
