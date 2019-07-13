@@ -47,7 +47,7 @@ export default {
 <style scoped>
 .boat-instrument {
   float: left;
-  width: 60px;
+  min-width: 55px;
   padding: 3px;
   border: 1px solid #f0f0f0;
   border-right: none;
