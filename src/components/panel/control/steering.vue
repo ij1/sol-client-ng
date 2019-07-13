@@ -1,73 +1,75 @@
 <template>
   <div id="steering">
     <form @submit.prevent = "sendSteeringCommand">
-      <div class = "steering-input">
-        <input
-          type = "radio"
-          value = "cc"
-          v-model = "type"
-          @click = "$refs.cc.focus()"
-        >
-        <label for = "cc" @click = "type = 'cc'">COG</label>
-        <input
-          class = "steering-input-box"
-          ref = "cc"
-          id = "cc"
-          @click="type = 'cc'"
-          @input = "type = 'cc'"
-          v-model.trim = "cc"
-          maxlength = 7
-          size = 7
-        >&deg;
-      </div>
-      <div class = "steering-input">
-        <input
-          type = "radio"
-          value = "twa"
-          v-model = "type"
-          @click = "$refs.twa.focus()"
-        >
-        <label for = "twa" @click = "type = 'twa'">TWA</label>
-        <input
-          class = "steering-input-box"
-          :style = "{'background-color': twaColor}"
-          ref = "twa"
-          id = "twa"
-          @click = "type = 'twa'"
-          @input = "type = 'twa'"
-          v-model.trim = "twa"
-          maxlength = 8
-          size = 8
-        >&deg;
-      </div>
-      <div class = "steering-input">
-        <input
-          type = "checkbox"
-          id = "delayOn"
-          v-model = "delayOn"
-          @click = "$refs.delay.focus()"
-        >
-        <label for = "delay" @click = "delayOn = true">Delay for</label>
-        <input
-          class = "steering-input-box"
-          ref = "delay"
-          id = "delay"
-          v-model.trim = "delay"
-          maxlength = 12
-          size = 12
-        >
-      </div>
-      <div id = "steering-buttons">
-        <button type = "submit" :disabled = "!canSend">
-          {{applySteeringTxt}}
-        </button>
-        <button
-          type = "button"
-          @click.prevent = "recallCurrent"
-          :disabled = "!allowControl">
-          Reset
-        </button>
-      </div>
+      <fieldset :disabled="!allowControl">
+        <div class = "steering-input">
+          <input
+            type = "radio"
+            value = "cc"
+            v-model = "type"
+            @click = "$refs.cc.focus()"
+          >
+          <label for = "cc" @click = "type = 'cc'">COG</label>
+          <input
+            class = "steering-input-box"
+            ref = "cc"
+            id = "cc"
+            @click="type = 'cc'"
+            @input = "type = 'cc'"
+            v-model.trim = "cc"
+            maxlength = 7
+            size = 7
+          >&deg;
+        </div>
+        <div class = "steering-input">
+          <input
+            type = "radio"
+            value = "twa"
+            v-model = "type"
+            @click = "$refs.twa.focus()"
+          >
+          <label for = "twa" @click = "type = 'twa'">TWA</label>
+          <input
+            class = "steering-input-box"
+            :style = "{'background-color': twaColor}"
+            ref = "twa"
+            id = "twa"
+            @click = "type = 'twa'"
+            @input = "type = 'twa'"
+            v-model.trim = "twa"
+            maxlength = 8
+            size = 8
+          >&deg;
+        </div>
+        <div class = "steering-input">
+          <input
+            type = "checkbox"
+            id = "delayOn"
+            v-model = "delayOn"
+            @click = "$refs.delay.focus()"
+          >
+          <label for = "delay" @click = "delayOn = true">Delay for</label>
+          <input
+            class = "steering-input-box"
+            ref = "delay"
+            id = "delay"
+            v-model.trim = "delay"
+            maxlength = 12
+            size = 12
+          >
+        </div>
+        <div id = "steering-buttons">
+          <button type = "submit" :disabled = "!canSend">
+            {{applySteeringTxt}}
+          </button>
+          <button
+            type = "button"
+            @click.prevent = "recallCurrent"
+            :disabled = "!allowControl">
+            Reset
+          </button>
+        </div>
+      </fieldset>
     </form>
     <polar-container class="flex-space"/>
     <syc-banner class = "bottom-banner"/>
