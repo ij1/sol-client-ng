@@ -42,6 +42,9 @@ export default {
     isLocked: (state) => (apiCall) => {
       return state.activeApiCalls.has(apiCall);
     },
+    isProductionServer: (state) => {
+      return state.server === 'http://www.sailonline.org';
+    },
   },
 
   actions: {

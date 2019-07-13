@@ -61,7 +61,10 @@
         <button type = "submit" :disabled = "!canSend">
           {{applySteeringTxt}}
         </button>
-        <button type = "button" @click.prevent = "recallCurrent">
+        <button
+          type = "button"
+          @click.prevent = "recallCurrent"
+          :disabled = "!allowControl">
           Reset
         </button>
       </div>
@@ -72,7 +75,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import PolarContainer from './polarcontainer.vue';
 import SycBanner from '../../sycbanner.vue';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
@@ -159,8 +162,12 @@ export default {
       return this.plottedSteering.prevCopyDecimals;
     },
 
+    allowControl () {
+      return !this.publicBoat || !this.isProductionServer;
+    },
     canSend () {
-      return (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
+      return this.allowControl &&
+        (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
         !this.sending;
     },
     twaColor () {
@@ -353,6 +360,9 @@ export default {
     },
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
+    }),
+    ...mapGetters({
+      publicBoat: 'boat/publicBoat',
     }),
   },
 

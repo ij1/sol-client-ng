@@ -82,6 +82,9 @@ export default {
       return L.latLng(state.position.lat,
                       state.position.lng + state.visualLngOffset);
     },
+    publicBoat: (state) => {
+      return state.name === 'guest' || state.name === 'sol';
+    },
   },
 
   actions: {
