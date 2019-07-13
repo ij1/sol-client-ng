@@ -363,6 +363,7 @@ export default {
       if (this.fgAnimFrame === null) {
         if (this.overlayAnimFrame !== null) {
           L.Util.cancelAnimFrame(this.overlayAnimFrame);
+          this.overlayAnimFrame = null;
         }
         this.fgAnimFrame = L.Util.requestAnimFrame(this.drawFg, this);
       }
