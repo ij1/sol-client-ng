@@ -75,7 +75,7 @@ export default {
   computed: {
     target () {
       if ((this.hoverLatLng === null) ||
-          (this.minPixelDistance(this.hoverLatLng) < this.minSteeringDistance)) {
+          (this.maxPixelDistance(this.hoverLatLng) < this.minSteeringDistance)) {
         return this.visualPosition;
       }
       return this.hoverLatLng;
@@ -119,7 +119,7 @@ export default {
   methods: {
     onClick (e) {
       const res = loxoCalc(this.visualPosition, e.latlng);
-      if (this.minPixelDistance(e.latlng) < this.minSteeringDistance) {
+      if (this.maxPixelDistance(e.latlng) < this.minSteeringDistance) {
         return;
       }
       this.$store.commit('boat/steering/setSteering', {
@@ -129,9 +129,9 @@ export default {
       this.map.off('click', this.onClick, this);
       this.$store.dispatch('ui/cancelUiMode');
     },
-    minPixelDistance (latLng) {
+    maxPixelDistance (latLng) {
       const pxDst = pixelDistanceCalc(this.visualPosition, latLng, this.zoom);
-      return Math.min(Math.abs(pxDst.dx), Math.abs(pxDst.dy));
+      return Math.max(Math.abs(pxDst.dx), Math.abs(pxDst.dy));
     },
   },
   mounted () {
