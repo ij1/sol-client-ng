@@ -198,6 +198,21 @@ export default {
             error: err,
           }, {root: true});
         });
-    }
+    },
+    parse({rootState, rootGetters, commit}, chatData) {
+      const now = rootGetters['time/now']();
+      chatData.fetchTimestamp = now;
+
+      if ((typeof chatData.chat !== 'undefined') &&
+          (typeof chatData.timestamp !== 'undefined')) {
+        if (!Array.isArray(chatData.chat)) {
+          chatData.chat = [chatData.chat];
+        }
+        commit('updateRoom', chatData);
+        commit('chatrooms/mapBoatIds', rootState.race.fleet.name2id, {root: true});
+      } else {
+        commit('markFetch', chatData);
+      }
+    },
   }
 }

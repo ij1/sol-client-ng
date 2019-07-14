@@ -107,7 +107,6 @@ export default {
         boatData.boat.time = now;
         let chatData = boatData.chats;
         chatData.id = nextChatroom;
-        chatData.fetchTimestamp = now;
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
@@ -124,16 +123,7 @@ export default {
           }
         }
 
-        if ((typeof chatData.chat !== 'undefined') &&
-            (typeof chatData.timestamp !== 'undefined')) {
-          if (!Array.isArray(chatData.chat)) {
-            chatData.chat = [chatData.chat];
-          }
-          commit('chatrooms/updateRoom', chatData, {root: true});
-          commit('chatrooms/mapBoatIds', rootState.race.fleet.name2id, {root: true});
-        } else {
-          commit('chatrooms/markFetch', chatData, {root: true});
-        }
+        await dispatch('chatrooms/parse', chatData, {root: true});
 
         dispatch('race/fetchRaceComponents', null, {root: true});
         if (rootGetters['boat/steering/nextTimeToFetchDCs'] <= now) {
