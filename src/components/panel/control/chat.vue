@@ -30,8 +30,8 @@
     </div>
     <div class="chat-block-list">
       <div class="chat-block"
-        v-for = "(msg, index) in msgs"
-        v-bind:key = "index"
+        v-for = "msg in msgs"
+        :key = "msg.id"
       >
         <div class="chat-block-header">
           <country-flag :country = "msg.boat.country"/>
@@ -40,7 +40,7 @@
             <span v-html="msg.name"/>
           </span>
           <span class="chat-time">
-            {{ timeOnlyForToday(msg.t) }}
+            {{ timeOnlyForToday(msg.timestamp) }}
           </span>
         </div>
         <div class="chat-msg">
@@ -72,7 +72,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { msecToUTCDateString } from '../../../lib/utils.js';
+import { msecToUTCDateWithoutYearString, msecToUTCTimeString } from '../../../lib/utils.js';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
 
@@ -140,12 +140,12 @@ export default {
     canClose () {
       return this.$store.state.chatrooms.activeRooms.length > 1;
     },
-    /* Trim, force all consecutive newline chars into singular '\n' */
+    /* Trim, force consecutive newline chars to up to double '\n' */
     myStringClean () {
-      return this.messageDraft.trim().replace(/[\n\r][\n\r]*/g, '\n');
+      return this.messageDraft.trim().replace(/[\n\r][\n\r][\n\r]*/g, '\n');
     },
-    boatTimeString () {
-      return msecToUTCDateString(this.boatTime);
+    boatDateString () {
+      return msecToUTCDateWithoutYearString(this.boatTime);
     },
     ...mapGetters({
       boatTime: 'boat/time',
@@ -154,12 +154,12 @@ export default {
 
   methods: {
     timeOnlyForToday (value) {
-      const s = value.split(" ", 2);
-      if (this.boatTimeString !== s[0]) {
-        const d = s[0].split("/", 3);
-        return d[1] + "/" + d[2] + ' ' + s[1];
+      const date = msecToUTCDateWithoutYearString(value);
+      const time = msecToUTCTimeString(value);
+      if (this.boatDateString !== date) {
+        return date + ' ' + time;
       }
-      return s[1];
+      return time;
     },
     selectRoom(e) {
       this.$store.commit('chatrooms/selectRoom', {

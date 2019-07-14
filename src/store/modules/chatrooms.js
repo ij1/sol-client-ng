@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { orderBy } from 'lodash';
-import { secToMsec } from '../../lib/utils.js';
+import { secToMsec, UTCToMsec } from '../../lib/utils.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
 
 
@@ -16,6 +16,7 @@ export default {
     lastSentStamp: 0,
     fetchCounter: 0,
     retryTimer: 1000,
+    chatMsgId: 0,       /* Add unique ID to chat messages */
   },
 
   mutations: {
@@ -44,7 +45,7 @@ export default {
       let newMsgs = data.chat;
       if (data.timestamp !== null) {
         // ADDME: Truncate tail?
-        newMsgs = orderBy(newMsgs.concat(state.rooms[data.id].msgs), 't', 'desc');
+        newMsgs = orderBy(newMsgs.concat(state.rooms[data.id].msgs), 'timestamp', 'desc');
         state.rooms[data.id].msgs = newMsgs;
         state.rooms[data.id].timestamp = data.timestamp;
         state.rooms[data.id].boatIdsMapped = false;
@@ -56,6 +57,9 @@ export default {
       } else {
         state.fetchCounter++;
       }
+    },
+    consumeMsgId (state) {
+      state.chatMsgId++;
     },
 
     mapBoatIds (state, name2boatId) {
@@ -194,7 +198,7 @@ export default {
           }, {root: true});
         });
     },
-    parse({rootState, rootGetters, commit}, chatInfo) {
+    parse({state, rootState, rootGetters, dispatch, commit}, chatInfo) {
       const now = rootGetters['time/now']();
       const chatData = chatInfo.chatData;
       let chat = [];
@@ -205,11 +209,46 @@ export default {
         timestamp = parseFloat(chatData.timestamp);
         if (isNaN(timestamp)) {
           timestamp = null;
+
         } else {
-          if (!Array.isArray(chatData.chat)) {
-            chat = [chatData.chat];
-          } else {
-            chat = chatData.chat;
+          const lastMsg = state.rooms[chatInfo.id].msgs[0];
+          let chatRaw = chatData.chat;
+          if (!Array.isArray(chatRaw)) {
+            chatRaw = [chatData.chat];
+          }
+
+          for (let i = chatRaw.length - 1; i >= 0; i--) {
+            const c = chatRaw[i];
+            const timestamp = UTCToMsec(c.t);
+            if (timestamp === null) {
+              dispatch('notifications/add', {
+                text: 'Dropped message from ' + c.name + ' due to invalid timestamp: "' + c.t + '"',
+              }, {root: true});
+              continue;
+            }
+            const msg = c.msg.trim().replace(/[\n\r]/g, '<br>')
+                          .replace(/<br><br>(<br>)*/g, '<br><br>');
+            if (msg.length === 0) {
+              dispatch('notifications/add', {
+                text: 'Dropped empty message from ' + c.name,
+              }, {root: true});
+              continue;
+            }
+
+            if ((typeof lastMsg !== 'undefined') && msg === lastMsg) {
+              dispatch('notifications/add', {
+                text: 'Dropped duplicated message from ' + c.name,
+              }, {root: true});
+              continue;
+            }
+
+            chat.push({
+              id: state.chatMsgId,
+              timestamp: timestamp,
+              name: c.name,
+              msg: msg,
+            });
+            commit('consumeMsgId');
           }
         }
       }
