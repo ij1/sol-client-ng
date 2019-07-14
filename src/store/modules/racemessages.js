@@ -24,7 +24,7 @@ export default {
         } else if (newId > state.lastId) {
           state.lastId = newId;
         }
-        message.message = ('<p>' + message.message.replace(/\n/g, '</p><p>') + '</p>').replace(/<p><\/p>/g, '')
+        message.message = ('<p>' + message.message.replace(/\n/g, '</p><p>') + '</p>').replace(/<p><\/p>/g, '');
         message.lastUpdated = UTCToMsec(message.last_updated);
         delete message.last_updated;
 
