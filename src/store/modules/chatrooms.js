@@ -226,8 +226,9 @@ export default {
               }, {root: true});
               continue;
             }
-            const msg = c.msg.trim().replace(/[\n\r]/g, '<br>')
-                          .replace(/<br><br>(<br>)*/g, '<br><br>');
+            const msg = c.msg.trim()
+                          .replace(/\r\n?/g, '\n')
+                          .replace(/\n/g, '<br>');
             if (msg.length === 0) {
               dispatch('notifications/add', {
                 text: 'Dropped empty message from ' + c.name,
