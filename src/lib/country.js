@@ -81,6 +81,7 @@ export const validCountries = {
   gd: "GRENADA",
   ge: "GEORGIA",
   gf: "FRENCH GUIANA",
+  gg: "GUERNSEY",
   gh: "GHANA",
   gi: "GIBRALTAR",
   gl: "GREENLAND",
