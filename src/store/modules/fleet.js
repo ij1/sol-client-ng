@@ -182,10 +182,12 @@ export default {
           const idx = state.id2idx[id];
 
           state.boat[idx].syc = (boat.$.syc === 'True');
-          if (state.boat[idx].country === null) {
-            state.flaglessBoats--;
+          if ((typeof boat.$.c !== 'undefined') && (boat.$.c.length === 2)) {
+            if (state.boat[idx].country === null) {
+              state.flaglessBoats--;
+            }
+            state.boat[idx].country = boat.$.c;
           }
-          state.boat[idx].country = boat.$.c;
         }
       }
     },
