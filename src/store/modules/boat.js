@@ -105,8 +105,10 @@ export default {
         let boatData = await dispatch('solapi/get', getDef, {root: true});
         const now = rootGetters['time/now']();
         boatData.boat.time = now;
-        let chatData = boatData.chats;
-        chatData.id = nextChatroom;
+        const chatInfo = {
+          id: nextChatroom,
+          chatData: boatData.chats,
+        };
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
@@ -123,7 +125,7 @@ export default {
           }
         }
 
-        await dispatch('chatrooms/parse', chatData, {root: true});
+        await dispatch('chatrooms/parse', chatInfo, {root: true});
 
         dispatch('race/fetchRaceComponents', null, {root: true});
         if (rootGetters['boat/steering/nextTimeToFetchDCs'] <= now) {

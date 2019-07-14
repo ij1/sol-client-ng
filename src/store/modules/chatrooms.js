@@ -42,19 +42,14 @@ export default {
 
     updateRoom (state, data) {
       let newMsgs = data.chat;
-      // ADDME: Truncate tail?
-      newMsgs = orderBy(newMsgs.concat(state.rooms[data.id].msgs), 't', 'desc');
-      state.rooms[data.id].msgs = newMsgs;
-      state.rooms[data.id].timestamp = data.timestamp;
-      state.rooms[data.id].lastFetched = data.fetchTimestamp;
-      state.rooms[data.id].boatIdsMapped = false;
-      if (state.fetchCounter >= state.activeRooms.length) {
-        state.fetchCounter = 0;
-      } else {
-        state.fetchCounter++;
+      if (data.timestamp !== null) {
+        // ADDME: Truncate tail?
+        newMsgs = orderBy(newMsgs.concat(state.rooms[data.id].msgs), 't', 'desc');
+        state.rooms[data.id].msgs = newMsgs;
+        state.rooms[data.id].timestamp = data.timestamp;
+        state.rooms[data.id].boatIdsMapped = false;
       }
-    },
-    markFetch (state, data) {
+
       state.rooms[data.id].lastFetched = data.fetchTimestamp;
       if (state.fetchCounter >= state.activeRooms.length) {
         state.fetchCounter = 0;
@@ -199,20 +194,32 @@ export default {
           }, {root: true});
         });
     },
-    parse({rootState, rootGetters, commit}, chatData) {
+    parse({rootState, rootGetters, commit}, chatInfo) {
       const now = rootGetters['time/now']();
-      chatData.fetchTimestamp = now;
+      const chatData = chatInfo.chatData;
+      let chat = [];
+      let timestamp = null;
 
       if ((typeof chatData.chat !== 'undefined') &&
           (typeof chatData.timestamp !== 'undefined')) {
-        if (!Array.isArray(chatData.chat)) {
-          chatData.chat = [chatData.chat];
+        timestamp = parseFloat(chatData.timestamp);
+        if (isNaN(timestamp)) {
+          timestamp = null;
+        } else {
+          if (!Array.isArray(chatData.chat)) {
+            chat = [chatData.chat];
+          } else {
+            chat = chatData.chat;
+          }
         }
-        commit('updateRoom', chatData);
-        commit('chatrooms/mapBoatIds', rootState.race.fleet.name2id, {root: true});
-      } else {
-        commit('markFetch', chatData);
       }
+      commit('updateRoom', {
+        id: chatInfo.id,
+        timestamp: timestamp,
+        fetchTimestamp: now,
+        chat: chat,
+      });
+      commit('mapBoatIds', rootState.race.fleet.name2id);
     },
   }
 }
