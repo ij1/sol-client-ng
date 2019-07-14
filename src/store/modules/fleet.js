@@ -43,10 +43,7 @@ export default {
   namespaced: true,
 
   state: {
-    /* Set to latest known new boat ID. Once metainfo for it arrives, we
-     * should have it for all boats if the SOL API is sane.
-     */
-    newBoatId: null,
+    flaglessBoats: 0,        /* Fetch metainfo until all boats have country */
     fleetTime: 0,
     fleetFetchInterval: secToMsec(55),
     tracesTime: 0,
@@ -99,6 +96,7 @@ export default {
         country: null,
         trace: [boatData.wrappedLatLng],
       });
+      state.flaglessBoats++;
       addToName2id(state, boatData.name, boatData.id);
     },
     updateFleet (state, update) {
@@ -155,7 +153,7 @@ export default {
             trace: [boat.wrappedLatLng],
           });
 
-          state.newBoatId = id;
+          state.flaglessBoats++;
 
           addToName2id(state, boat.name, id);
         }
@@ -183,10 +181,10 @@ export default {
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
 
-          if (state.newBoatId === id) {
-            state.newBoatId = null;
-          }
           state.boat[idx].syc = (boat.$.syc === 'True');
+          if (state.boat[idx].country === null) {
+            state.flaglessBoats--;
+          }
           state.boat[idx].country = boat.$.c;
         }
       }
@@ -393,7 +391,7 @@ export default {
           });
           commit('chatrooms/mapBoatIds', state.name2id, {root: true});
 
-          if (state.newBoatId !== null) {
+          if (state.flaglessBoats > 0) {
             dispatch('fetchMetainfo');
           }
           if (getters['nextTimeToFetchTraces'] <= now) {
