@@ -129,5 +129,6 @@ export default {
   z-index: 550;
   mix-blend-mode: multiply;
   cursor: crosshair;
+  pointer-events: none;
 }
 </style>
