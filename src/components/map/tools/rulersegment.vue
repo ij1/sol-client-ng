@@ -45,9 +45,6 @@ export default {
       required: true,
     },
   },
-  filters: {
-    latLngArrayAddOffset,
-  },
   computed: {
     lines () {
       let res = [];
