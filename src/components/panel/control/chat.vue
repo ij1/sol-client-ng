@@ -142,7 +142,9 @@ export default {
     },
     /* Trim, force consecutive newline chars to up to double '\n' */
     myStringClean () {
-      return this.messageDraft.trim().replace(/[\n\r][\n\r][\n\r]*/g, '\n');
+      return this.messageDraft.trim()
+               .replace(/\r\n/g, '\n')
+               .replace(/\n\n\n*/g, '\n\n');
     },
     boatDateString () {
       return msecToUTCDateWithoutYearString(this.boatTime);
