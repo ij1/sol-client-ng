@@ -1,4 +1,5 @@
 import boatlistsModule from './boatlists.js';
+import poiModule from './poi.js';
 import rulerModule from './ruler.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
@@ -7,6 +8,7 @@ export default {
 
   modules: {
     boatlists: boatlistsModule,
+    poi: poiModule,
     ruler: rulerModule,
   },
 

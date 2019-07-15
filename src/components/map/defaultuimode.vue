@@ -31,12 +31,21 @@ export default {
         this.map.panTo(e.latlng);
       }
     },
+    onSingleClick (e) {
+      if (e.originalEvent.altKey) {
+        this.$store.commit('ui/poi/newPoi', {
+          latLng: e.latlng.wrap(),
+        });
+      }
+    },
   },
   mounted () {
     this.$on('doubleclick', this.onDoubleClick);
+    this.$on('singleclick-committed', this.onSingleClick);
   },
   beforeDestroy () {
     this.$off('doubleclick', this.onDoubleClick);
+    this.$off('singleclick-commited', this.onSingleClick);
   },
 }
 </script>
