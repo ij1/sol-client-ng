@@ -4,7 +4,7 @@
     :position = "'topright'"
   >
     <div>
-      {{ wrappedHoverLatLng | positionFormat }}
+      <map-coordinate :lat-lng = "wrappedHoverLatLng"/>
     </div>
     <path-distance v-if = 'path !== null' :path = "path"/>
     <div v-if = 'wxLoaded'>
@@ -19,21 +19,15 @@ import { LControl } from 'vue2-leaflet';
 import { radToDeg } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { gcCalc, loxoCalc, zeroPath } from '../../lib/nav.js';
+import MapCoordinate from '../coordinate.vue';
 import PathDistance from '../distance.vue';
 
 export default {
   name: 'HoverInfo',
   components: {
     'l-control': LControl,
+    'map-coordinate': MapCoordinate,
     'path-distance': PathDistance,
-  },
-  filters: {
-    positionFormat (value) {
-      if (value === undefined) {
-        return '';
-      }
-      return value === null ? '' : roundToFixed(value.lat, 6) + ',' + roundToFixed(value.lng, 6);
-    },
   },
   computed: {
     wind () {
