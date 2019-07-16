@@ -5,7 +5,7 @@
         icon-url = "images/poi-icon.png">
       </l-icon>
       <l-popup :options="popupOptions">
-        <map-coordinate :lat-lng = "poi.latLng"/>
+        <poi-info :poi = "poi"/>
         <form @submit.prevent = "onDelete">
           <button type="submit">Delete</button>
         </form>
@@ -16,7 +16,7 @@
 
 <script>
 import { LLayerGroup, LMarker, LIcon, LPopup } from 'vue2-leaflet';
-import MapCoordinate from '../../coordinate.vue';
+import PoiInfo from './poiinfo.vue';
 
 export default {
   name: 'MapPoi',
@@ -25,7 +25,7 @@ export default {
     'l-marker': LMarker,
     'l-icon': LIcon,
     'l-popup': LPopup,
-    'map-coordinate': MapCoordinate,
+    'poi-info': PoiInfo,
   },
   props: {
     poi: {
