@@ -15,17 +15,20 @@ export default {
     }
   },
   computed: {
+    precision () {
+      return 5;
+    },
     latFormatted () {
       if ((typeof this.latLng === 'undefined') || (this.latLng === null)) {
         return '';
       }
-      return roundToFixed(this.latLng.lat, 6);
+      return roundToFixed(this.latLng.lat, this.precision);
     },
     lngFormatted () {
       if ((typeof this.latLng === 'undefined') || (this.latLng === null)) {
         return '';
       }
-      return roundToFixed(this.latLng.lng, 6);
+      return roundToFixed(this.latLng.lng, this.precision);
 
     },
   }
