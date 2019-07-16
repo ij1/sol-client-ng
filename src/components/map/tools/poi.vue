@@ -36,6 +36,8 @@ export default {
   data () {
     return {
       popupOptions: {
+        autoClose: false,
+        closeOnClick: false,
         className: 'poi-popup',
       },
     }
