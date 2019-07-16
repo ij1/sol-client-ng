@@ -29,7 +29,6 @@ export default {
         return '';
       }
       return roundToFixed(this.latLng.lng, this.precision);
-
     },
   }
 }
