@@ -26,6 +26,16 @@ export default {
         type: 'boolean',
         cfgText: 'Use great-circle distance',
       },
+      coordinateFormat: {
+        value: 'degmin',
+        values: [
+          ['degmin', "DD\xb0MM.mmm'H"],
+          ['deg', 'DD.ddddd\xb0H'],
+          ['signdeg', '+/-DD.ddddd\xb0'],
+        ],
+        type: 'values',
+        cfgText: 'Lat/Lon format',
+      },
     },
   },
 
@@ -56,6 +66,9 @@ export default {
   getters: {
     inDefaultUiMode: (state) => {
       return state.uiModeCancel === null;
+    },
+    coordinateSignToHemisphere: (state) => {
+      return state.cfg.coordinateFormat.value !== 'signdeg';
     },
   },
   actions: {
