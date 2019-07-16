@@ -325,6 +325,9 @@ export default {
       while (i * this.gridIntervalKnots <= this.gridMaxKnots) {
         const r = i * this.gridIntervalKnots * this.gridScale;
         labelctx.fillText('' + (i * this.gridIntervalKnots), -5, r);
+        if (r <= this.gridOrigoY) {
+          labelctx.fillText('' + (i * this.gridIntervalKnots), -5, -r);
+        }
         i++;
       }
     },
