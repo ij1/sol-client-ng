@@ -346,11 +346,15 @@ export default {
   cursor: crosshair;
 }
 
+.leaflet-left {
+  mix-blend-mode: multiply;
+}
+
 .tool-button {
   padding: 5px;
   border: 1px solid rgb(48, 48, 48, 0.6);
   border-radius: 3px;
-  background-color: rgb(255, 255, 255, 0.6);
+  background-color: #ddd;
   font-weight: bold;
   overflow: hidden;
 }
