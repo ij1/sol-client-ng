@@ -302,6 +302,22 @@ export default {
   all: unset;
 }
 
+.leaflet-popup-pane {
+  mix-blend-mode: multiply;
+}
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: #ddd;
+}
+.leaflet-container a.leaflet-popup-close-button {
+  color: #333;
+}
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #000;
+}
+.poi-popup {
+  font-weight: bold;
+}
+
 .ruler-line-tooltip {
   background: transparent;
   border: 0px;

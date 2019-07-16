@@ -4,7 +4,7 @@
       <l-icon
         icon-url = "images/poi-icon.png">
       </l-icon>
-      <l-popup>
+      <l-popup :options="popupOptions">
         <map-coordinate :lat-lng = "poi.latLng"/>
         <form @submit.prevent = "onDelete">
           <button type="submit">Delete</button>
@@ -32,6 +32,13 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  data () {
+    return {
+      popupOptions: {
+        className: 'poi-popup',
+      },
+    }
   },
   methods: {
     onDelete () {
