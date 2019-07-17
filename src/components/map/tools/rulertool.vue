@@ -82,20 +82,23 @@ export default {
     onDoubleClick () {
       this.$store.dispatch('ui/cancelUiMode');
     },
-    onCancelKey (e) {
-      if (e.which === 8) {
-        if ((this.lastPosition !== null) &&
-            (this.lastFixedSegment !== null)) {
-          if (this.lastPosition.equals(this.lastFixedSegment.line[1])) {
-            this.lastPosition = this.lastFixedSegment.line[0];
-          } else {
-            this.lastPosition = null;
-            return;
-          }
+    onCancel () {
+      if ((this.lastPosition !== null) &&
+          (this.lastFixedSegment !== null)) {
+        if (this.lastPosition.equals(this.lastFixedSegment.line[1])) {
+          this.lastPosition = this.lastFixedSegment.line[0];
         } else {
           this.lastPosition = null;
+          return;
         }
-        this.$store.commit('ui/ruler/delSegment');
+      } else {
+        this.lastPosition = null;
+      }
+      this.$store.commit('ui/ruler/delSegment');
+    },
+    onCancelKey (e) {
+      if (e.which === 8) {
+        this.onCancel();
       }
     },
   },
