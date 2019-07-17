@@ -41,12 +41,12 @@ export let uiModeMixin = {
     },
   },
   mounted () {
-    this.map.on('click', this.uiModeOnClick, this);
+    this.map.on('mousedown', this.uiModeOnClick, this);
     window.addEventListener('keyup', this.uiModeOnKey);
   },
   beforeDestroy () {
     window.removeEventListener('keyup', this.uiModeOnKey);
-    this.map.off('click', this.uiModeOnClick, this);
+    this.map.off('mousedown', this.uiModeOnClick, this);
     if (this.dblClickTimer !== null) {
       this.uiModeCancelDblClickTimer();
     }
