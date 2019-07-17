@@ -21,14 +21,23 @@ export let uiModeMixin = {
         return;
       }
     },
+    checkLeftButton (e) {
+      return e.button === 0;
+    },
     uiModeOnCommitClick (e) {
+      if (!this.checkLeftButton(e.originalEvent)) {
+        return;
+      }
       if (!this.uiModeData.inClick) {
         this.$emit('singleclick-committed', e);
       }
       this.uiModeData.inClick = false;
       this.uiModeData.clickTimer = null;
     },
-    uiModeOnMouseUp () {
+    uiModeOnMouseUp (e) {
+      if (!this.checkLeftButton(e)) {
+        return;
+      }
       if (!this.uiModeData.inClick) {
         return;
       }
@@ -41,6 +50,9 @@ export let uiModeMixin = {
       this.uiModeData.inClick = false;
     },
     uiModeOnClick (e) {
+      if (!this.checkLeftButton(e.originalEvent)) {
+        return;
+      }
       if (this.uiModeData.clickTimer !== null) {
         this.uiModeCancelClickTimer();
         if (!this.uiModeHandlingDblClicks) {
