@@ -316,6 +316,7 @@ export default {
 }
 .poi-popup {
   font-weight: bold;
+  color: #000;
 }
 
 .ruler-line-tooltip {
