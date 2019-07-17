@@ -344,6 +344,10 @@ export default {
   cursor: crosshair;
 }
 
+.leaflet-interactive {
+  cursor: crosshair;
+}
+
 .leaflet-left {
   mix-blend-mode: multiply;
 }
