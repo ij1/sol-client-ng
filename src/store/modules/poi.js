@@ -8,8 +8,8 @@ export default {
 
   mutations: {
     newPoi (state, poi) {
-      poi.id = poi.segmentId;
-      state.segmentId++;
+      poi.id = state.poiId;
+      state.poiId++;
 
       state.pois.push(poi);
     },
