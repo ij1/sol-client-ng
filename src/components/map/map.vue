@@ -251,11 +251,8 @@ export default {
 </script>
 
 <style scoped>
-#mapcontainer {
-  position: absolute;
-  width: 100%;
-  top: 0px;
-  bottom: 0px;
+#map-container {
+  cursor: crosshair;
 }
 
 #map {
