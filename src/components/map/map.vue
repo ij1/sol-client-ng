@@ -314,9 +314,9 @@ export default {
 .leaflet-container a.leaflet-popup-close-button:hover {
   color: #000;
 }
-.poi-popup {
+.leaflet-popup-content {
+  color: #333;
   font-weight: bold;
-  color: #000;
 }
 
 .ruler-line-tooltip {

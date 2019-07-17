@@ -39,7 +39,6 @@ export default {
         maxWidth: 350,
         autoClose: false,
         closeOnClick: false,
-        className: 'poi-popup',
       },
     }
   },
