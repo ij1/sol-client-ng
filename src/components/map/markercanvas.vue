@@ -91,5 +91,6 @@ export default {
   position: absolute;
   top: 0px;
   left: 0px;
+  cursor: crosshair;
 }
 </style>
