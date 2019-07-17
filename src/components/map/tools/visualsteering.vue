@@ -135,10 +135,10 @@ export default {
     },
   },
   mounted () {
-    this.map.on('click', this.onClick, this);
+    this.$on('singleclick-committed', this.onClick);
   },
   beforeDestroy () {
-    this.map.off('click', this.onClick, this);
+    this.$off('singleclick-committed', this.onClick);
   },
   watch: {
     twa (val) {

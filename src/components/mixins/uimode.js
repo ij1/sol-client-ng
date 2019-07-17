@@ -7,7 +7,9 @@ export let uiModeMixin = {
     return {
       uiModeData: {
         clickTimer: null,
-        dblClickInterval: 200,
+        clickTimerDelay: 200,
+        inClick: false,
+        eventData: null,
       },
       uiModeHandlingDblClicks: false,
     }
@@ -20,35 +22,56 @@ export let uiModeMixin = {
       }
     },
     uiModeOnCommitClick (e) {
-      this.$emit('singleclick-committed', e);
+      if (!this.uiModeData.inClick) {
+        this.$emit('singleclick-committed', e);
+      }
+      this.uiModeData.inClick = false;
       this.uiModeData.clickTimer = null;
     },
+    uiModeOnMouseUp () {
+      if (!this.uiModeData.inClick) {
+        return;
+      }
+      if (!this.uiModeHandlingDblClicks) {
+        this.uiModeCancelClickTimer();
+        this.$emit('singleclick-committed', this.uiModeData.eventData);
+      } else {
+        this.$emit('singleclick-early', this.uiModeData.eventData);
+      }
+      this.uiModeData.inClick = false;
+    },
     uiModeOnClick (e) {
-      if (this.uiModeHandlingDblClicks) {
-        if (this.uiModeData.clickTimer !== null) {
-          this.uiModeCancelClickTimer();
-          this.$emit('doubleclick', e);
+      if (this.uiModeData.clickTimer !== null) {
+        this.uiModeCancelClickTimer();
+        if (!this.uiModeHandlingDblClicks) {
+          /* dblclick without mouseup?!? */
+          this.uiModeOnMouseUp();
         } else {
-          this.$emit('singleclick-early', e);
-          this.uiModeData.clickTimer = setTimeout(this.uiModeOnCommitClick,
-                                                     this.uiModeData.dblClickInterval, e);
+          this.$emit('doubleclick', e);
         }
       } else {
-        this.$emit('singleclick-committed', e);
+        this.uiModeData.eventData = e;
+        this.uiModeData.inClick = true;
+        this.uiModeData.clickTimer = setTimeout(this.uiModeOnCommitClick,
+                                                this.uiModeData.clickTimerDelay, e);
       }
     },
     uiModeCancelClickTimer () {
-      clearTimeout(this.uiModeData.clickTimer);
-      this.uiModeData.clickTimer = null;
+      if (this.uiModeData.clickTimer !== null) {
+        clearTimeout(this.uiModeData.clickTimer);
+        this.uiModeData.clickTimer = null;
+      }
     },
   },
   mounted () {
+    window.addEventListener('mouseup', this.uiModeOnMouseUp);
     this.map.on('mousedown', this.uiModeOnClick, this);
     window.addEventListener('keyup', this.uiModeOnKey);
   },
   beforeDestroy () {
     window.removeEventListener('keyup', this.uiModeOnKey);
     this.map.off('mousedown', this.uiModeOnClick, this);
+    window.removeEventListener('mouseup', this.uiModeOnMouseUp);
     if (this.uiModeData.clickTimer !== null) {
       this.uiModeCancelClickTimer();
     }
