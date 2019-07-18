@@ -1,6 +1,6 @@
 <template>
   <l-layer-group>
-    <l-marker :lat-lng = "poi.latLng">
+    <l-marker :lat-lng = "poi.latLng" :options = "poiOptions">
       <l-icon
         icon-url = "images/poi-icon.png">
       </l-icon>
@@ -35,6 +35,9 @@ export default {
   },
   data () {
     return {
+      poiOptions: {
+        bubblingMouseEvents: true,
+      },
       popupOptions: {
         maxWidth: 350,
         autoClose: false,
