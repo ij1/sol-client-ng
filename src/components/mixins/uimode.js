@@ -8,6 +8,7 @@ export let uiModeMixin = {
       uiModeData: {
         clickTimer: null,
         clickTimerDelay: 200,
+        clickDragLimit: 40,
         inClick: false,
         eventData: null,
       },
@@ -38,6 +39,9 @@ export let uiModeMixin = {
       if (!this.checkLeftButton(e)) {
         return;
       }
+      this.uiModeFinishClick();
+    },
+    uiModeFinishClick () {
       if (!this.uiModeData.inClick) {
         return;
       }
@@ -68,6 +72,11 @@ export let uiModeMixin = {
                                                 this.uiModeData.clickTimerDelay, e);
       }
     },
+    uiModeOnDragEnd (e) {
+      if (e.distance <= this.uiModeData.clickDragLimit) {
+        this.uiModeFinishClick();
+      }
+    },
     uiModeCancelClickTimer () {
       if (this.uiModeData.clickTimer !== null) {
         clearTimeout(this.uiModeData.clickTimer);
@@ -79,11 +88,13 @@ export let uiModeMixin = {
     window.addEventListener('mouseup', this.uiModeOnMouseUp);
     this.map.on('mousedown', this.uiModeOnClick, this);
     window.addEventListener('keyup', this.uiModeOnKey);
+    this.map.on('dragend', this.uiModeOnDragEnd, this);
   },
   beforeDestroy () {
     window.removeEventListener('keyup', this.uiModeOnKey);
     this.map.off('mousedown', this.uiModeOnClick, this);
     window.removeEventListener('mouseup', this.uiModeOnMouseUp);
+    this.map.on('dragend', this.uiModeOnDragEnd, this);
     if (this.uiModeData.clickTimer !== null) {
       this.uiModeCancelClickTimer();
     }
