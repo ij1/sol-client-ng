@@ -2,11 +2,13 @@
   <l-marker
     ref = "marker-container"
     :lat-lng = "latLng"
+    :options = "markerOptions"
     @ready = "doReady"
   >
     <l-icon
       :icon-size = "iconSize"
       :icon-anchor = "iconCenter"
+      :options = "markerOptions"
     >
       <canvas
         :width = 'iconSize[0]'
@@ -47,6 +49,9 @@ export default {
     return {
       canvas: null,
       canvasReady: false,
+      markerOptions: {
+        className: 'marker-nopointer',
+      },
     }
   },
 
@@ -92,5 +97,9 @@ export default {
   top: 0px;
   left: 0px;
   cursor: crosshair;
+}
+
+.marker-nopointer {
+  pointer-events: none !important;
 }
 </style>
