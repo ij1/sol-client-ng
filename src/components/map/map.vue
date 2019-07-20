@@ -348,7 +348,7 @@ export default {
   cursor: crosshair;
 }
 
-.leaflet-left {
+.leaflet-top {
   mix-blend-mode: multiply;
 }
 
