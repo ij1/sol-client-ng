@@ -47,6 +47,9 @@ export default {
       }
       return this.$parent.map.project(this.visualPosition, z).round();
     },
+    timeOrigo () {
+      return this.boatTime;
+    },
     currentSteering () {
       return this.$store.state.boat.currentSteering;
     },
@@ -231,7 +234,7 @@ export default {
     },
 
     cogCalc () {
-      let t = this.boatTime;
+      let t = this.timeOrigo;
       const endTime = t + hToMsec(this.predictorLen);
       let lastLatLng = this.visualPosition;
 
@@ -268,7 +271,7 @@ export default {
     },
 
     twaCalc () {
-      let t = this.boatTime;
+      let t = this.timeOrigo;
       const endTime = t + hToMsec(this.predictorLen);
       let lastLatLng = this.visualPosition;
 
