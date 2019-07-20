@@ -48,6 +48,9 @@ export default {
       return this.$parent.map.project(this.visualPosition, z).round();
     },
     timeOrigo () {
+      if (this.raceLoaded && this.isTowbackPeriod) {
+        return this.raceStartTime;
+      }
       return this.boatTime;
     },
     currentSteering () {
@@ -148,10 +151,13 @@ export default {
     ...mapGetters({
       boatTime: 'boat/time',
       visualPosition: 'boat/visualPosition',
+      isTowbackPeriod: 'race/isTowbackPeriod',
     }),
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       wxUpdated: state => state.weather.data.updated,
+      raceLoaded: state => state.race.loaded,
+      raceStartTime: state => state.race.info.startTime,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
