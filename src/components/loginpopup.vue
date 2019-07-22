@@ -87,7 +87,16 @@ export default {
     },
   },
   created() {
-    this.fetchRaces();
+    /* Detect injected login credentials */
+    if ((typeof window.token !== 'undefined') &&
+        (typeof window.theracenumber !== 'undefined')) {
+      this.$store.commit('auth/loggedIn', {
+        token: window.token,
+        raceId: window.theracenumber,
+      });
+    } else {
+      this.fetchRaces();
+    }
   },
   beforeDestroy () {
     if (this.retryTimeout !== null) {
