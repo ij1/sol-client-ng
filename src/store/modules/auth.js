@@ -33,7 +33,7 @@ export default {
           commit('loginFailed');
           return;
         }
-        authParams.token = response.token
+        authParams.token = response.token;
         commit('loggedIn', authParams);
         dispatch('race/fetchRaceinfo', null, {root: true});
       })
