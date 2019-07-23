@@ -1,8 +1,21 @@
+function secTimer (state, commit) {
+  commit('update');
+  const delay = 1000 - ((state.realTime + 2) % 1000);
+  setTimeout(secTimer, delay, state, commit);
+}
+
 export default {
   namespaced: true,
 
   state: {
     clockOffset: 0,
+    realTime: 0,
+  },
+
+  mutations: {
+    update (state) {
+      state.realTime = Date.now() + state.clockOffset;
+    },
   },
 
   getters: {
@@ -11,6 +24,12 @@ export default {
      */
     now: state => () => {
       return Date.now() + state.clockOffset;
+    },
+  },
+
+  actions: {
+    init ({state, commit}) {
+      secTimer(state, commit);
     },
   },
 }

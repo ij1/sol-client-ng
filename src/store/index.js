@@ -31,3 +31,10 @@ export const store = new Vuex.Store({
     diagnostics: diagnosticsModule,
   },
 });
+
+/*
+ * Being not in async function, we cannot await for the dispatch so the
+ * extra commit ahead of it ensures time is initialized synchronuously.
+ */
+store.commit('time/update');
+store.dispatch('time/init');
