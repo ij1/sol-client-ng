@@ -112,6 +112,15 @@ export default {
     nextTimeToFetchDCs: (state) => {
       return state.dcs.fetchTime + state.dcs.dcFetchInterval;
     },
+    nextDC: (state) => {
+      return state.dcs.list.length > 0 ? state.dcs.list[0] : null;
+    },
+    nextDCDelay: (state, getters, rootState) => {
+      if (getters.nextDC === null) {
+        return null;
+      }
+      return Math.max(getters.nextDC.time - rootState.time.realTime, 0);
+    },
   },
 
   actions: {
