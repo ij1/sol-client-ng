@@ -1,5 +1,5 @@
 <template>
-  <l-layer-group>
+  <l-layer-group v-if = "isPlayerBoat || !isPracticeMark">
     <l-polyline
       v-for = "offset in mapWrapList"
       :key = "'t' + offset"
@@ -47,6 +47,9 @@ export default {
     },
     isPlayerBoat () {
       return this.id === this.$store.state.boat.id;
+    },
+    isPracticeMark () {
+      return this.boat.name.startsWith('Practice_Mark');
     },
     color () {
       if (this.isPlayerBoat && this.cfgOwnBoatColor === 'magenta') {
