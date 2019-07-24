@@ -12,6 +12,7 @@ export default {
           distance: null,
           country: null,
         },
+        filterStamp: 0,
         editable: false,
         showOnlyListBoats: null,
       },
@@ -19,6 +20,7 @@ export default {
     defaultList: '-1',
     activeList: '-1',
     nextBoatlistKey: 0,       /* Used to produce unique keys for the lists */
+    nextFilterStamp: 1,       /* Unique filter stamps generator */
   },
 
   mutations: {
@@ -40,6 +42,7 @@ export default {
           distance: boatlist.filter.distance,
           country: boatlist.filter.country,
         },
+        filterStamp: state.nextFilterStamp++,
         editable: true,
         showOblyListBoats: false,
       });
@@ -53,13 +56,6 @@ export default {
     },
     setShowOnly (state, showOnly) {
       state.boatlists[showOnly.boatlistKey] = showOnly.showOnly;
-    },
-    setFilter (state, filterData) {
-      state.boatlists.filter = {
-        boats: filterData.boats,
-        distance: filterData.distance,
-        country: filterData.country,
-      };
     },
     setActive (state, boatlistKey) {
       state.activeList = boatlistKey;
