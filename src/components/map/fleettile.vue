@@ -19,6 +19,7 @@ export default {
       fleetBoatFromId: 'race/fleet/boatFromId',
       boatColor: 'race/fleet/boatColor',
       tilesNeedRedraw: 'map/fleetTilesNeedRedraw',
+      currentFilter: 'ui/boatlists/currentFilter',
     }),
     ...mapState({
       zoom: state => state.map.zoom,
@@ -50,6 +51,16 @@ export default {
       let prev = L.point(0, 0);
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
+        if (this.currentFilter !== null) {
+          if (((this.currentFilter.boats !== null) &&
+               !this.currentFilter.boats.has(boat.name)) ||
+              ((this.currentFilter.distance !== null) &&
+               (boat.distance > this.currentFilter.distance)) ||
+              ((this.currentFilter.country !== null) &&
+               !this.currentFilter.country.has(boat.country))) {
+            continue;
+          }
+        }
         /* 'i' has both coords for search purposes (with correct lng offset) */
         const center = map.project(i, this.coords.z).subtract(L.point(sw.x, ne.y));
         const color = this.boatColor(boat);

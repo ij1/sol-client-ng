@@ -9,10 +9,18 @@
     <div
       class = "leaderboard-boatlist-container"
       :style = "{
-        height: 'calc(100% - 68px - ' + (listEditable ? 18 : 0) + 'px)'
+        height: 'calc(100% - 68px - ' + (listEditable ? 41 : 0) + 'px)'
       }"
       v-if = "active"
     >
+      <div v-if = "listEditable" style="text-align: right">
+        <input
+          type = "checkbox"
+          :checked = "showOnly"
+          @change = "onShowOnly($event.target.checked)"
+        />
+        Show only boats from this list
+      </div>
       <div class="leaderboard-search">
         <label for="search">Search</label>
         <input
@@ -65,6 +73,9 @@ export default {
     listEditable () {
       return this.boatlistInfo.editable;
     },
+    showOnly () {
+      return this.boatlistKey === this.filterListKey;
+    },
     active () {
       return this.boatlistKey === this.activeBoatlist;
     },
@@ -95,6 +106,7 @@ export default {
     ...mapState({
       boatlists: state => state.ui.boatlists.boatlists,
       activeBoatlist: state => state.ui.boatlists.activeList,
+      filterListKey: state => state.ui.boatlists.filterList,
       selectedList: state => state.race.fleet.selected,
       hoverList: state => state.race.fleet.hover,
     }),
@@ -116,6 +128,10 @@ export default {
     onActivate () {
       this.$store.commit('ui/boatlists/setActive',
                          this.boatlistKey);
+    },
+    onShowOnly (value) {
+      this.$store.commit('ui/boatlists/setFilterList',
+                         value ? this.boatlistKey : null);
     },
     onDelete () {
       this.$store.commit('ui/boatlists/delete',

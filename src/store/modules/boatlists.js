@@ -14,11 +14,11 @@ export default {
         },
         filterStamp: 0,
         editable: false,
-        showOnlyListBoats: null,
       },
     },
     defaultList: '-1',
     activeList: '-1',
+    filterList: null,
     nextBoatlistKey: 0,       /* Used to produce unique keys for the lists */
     nextFilterStamp: 1,       /* Unique filter stamps generator */
   },
@@ -54,11 +54,17 @@ export default {
       }
       Vue.delete(state.boatlists, boatlistKey);
     },
-    setShowOnly (state, showOnly) {
-      state.boatlists[showOnly.boatlistKey] = showOnly.showOnly;
-    },
     setActive (state, boatlistKey) {
       state.activeList = boatlistKey;
+    },
+    setFilterList (state, boatlistKey) {
+      state.filterList = boatlistKey;
+    },
+  },
+  getters: {
+    currentFilter: (state) => {
+      return state.filterList !== null ?
+             state.boatlists[state.filterList].filter : null;
     }
   },
 }

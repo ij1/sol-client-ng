@@ -85,6 +85,7 @@ export default {
       rootState.weather.data.updated;
       state.zoom;
       state.cfg.ownBoatColor.value;
+      rootState.ui.boatlists.filterList;
 
       return Date.now();
     },
