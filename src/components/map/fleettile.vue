@@ -15,23 +15,14 @@ export default {
     },
   },
   computed: {
-    needsRedraw () {
-      this.fleetTime;
-      this.wxUpdated;
-      this.zoom;
-      this.cfgOwnBoatColor;
-
-      return Date.now();
-    },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
       boatColor: 'race/fleet/boatColor',
+      tilesNeedRedraw: 'map/fleetTilesNeedRedraw',
     }),
     ...mapState({
       zoom: state => state.map.zoom,
       fleetTime: state => state.race.fleet.fleetTime,
-      wxUpdated: state => state.weather.data.updated,
-      cfgOwnBoatColor: state => state.map.cfg.ownBoatColor.value,
     }),
   },
   methods: {
@@ -100,7 +91,7 @@ export default {
   },
 
   watch: {
-    needsRedraw () {
+    tilesNeedRedraw () {
       this.redraw();
     }
   },
