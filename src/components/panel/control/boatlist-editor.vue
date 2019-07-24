@@ -152,7 +152,7 @@ export default {
         }
       }
       if (this.editorMode === 'distance') {
-        const regex = /^\d(\.\d)?/;
+        const regex = /^\d\d*(\.\d\d*)?$/;
         return regex.test(this.distance);
       } else if ((this.editorMode === 'boat') ||
                  (this.editorMode === 'country')) {
