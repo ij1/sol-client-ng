@@ -228,7 +228,7 @@ export default {
       if (this.editList.filter.distance !== null) {
         this.distance = this.editList.filter.distance;
       }
-      if (this.editList.filter.coutry !== null) {
+      if (this.editList.filter.country !== null) {
         this.onList = Object.assign({}, this.editList.filter.country);
       }
     }
