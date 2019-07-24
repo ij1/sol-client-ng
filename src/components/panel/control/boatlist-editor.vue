@@ -83,7 +83,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import PopupWindow from '../../popupwindow.vue';
 import BoatList from './boatlist.vue';
@@ -110,7 +109,8 @@ export default {
       listname: '',
       distance: '',
       search: '',
-      onList: {},
+      onListStamp: 0,
+      onList: new Set(),
       onSelected: {},
       offSelected: {},
     }
@@ -156,7 +156,8 @@ export default {
         return regex.test(this.distance);
       } else if ((this.editorMode === 'boat') ||
                  (this.editorMode === 'country')) {
-        return Object.keys(this.onList).length > 0;
+        this.onListStamp;
+        return this.onList.size > 0;
       }
       /* Should never be reached */
       return false;
@@ -167,8 +168,9 @@ export default {
         offList: [],
         onList: [],
       }
+      this.onListStamp;
       for (let i = 0; i < boatList.length; i++) {
-        if (typeof this.onList[boatList[i].id] !== 'undefined') {
+        if (this.onList.has(boatList[i].name)) {
           res.onList.push(boatList[i]);
         } else {
           res.offList.push(boatList[i]);
@@ -193,8 +195,9 @@ export default {
         offList: [],
         onList: [],
       }
+      this.onListStamp;
       for (let country of this.countryList) {
-        if (typeof this.onList[country.country] !== 'undefined') {
+        if (this.onList.has(country.country)) {
           res.onList.push(country);
         } else {
           res.offList.push(country);
@@ -223,13 +226,15 @@ export default {
     if (this.editList !== null) {
       this.listname = this.editList.name;
       if (this.editList.filter.boats !== null) {
-        this.onList = Object.assign({}, this.editList.filter.boats);
+        this.onList = new Set(this.editList.filter.boats);
+        this.onListStamp++;
       }
       if (this.editList.filter.distance !== null) {
         this.distance = this.editList.filter.distance;
       }
       if (this.editList.filter.country !== null) {
-        this.onList = Object.assign({}, this.editList.filter.country);
+        this.onList = new Set(this.editList.filter.country);
+        this.onListStamp++;
       }
     }
   },
@@ -251,14 +256,24 @@ export default {
     },
     onAdd () {
       for (let id of Object.keys(this.offSelected)) {
-        Vue.set(this.onList, id, true);
+        if (this.editorMode === 'boat') {
+          this.onList.add(this.fleetBoatFromId(id).name);
+        } else {
+          this.onList.add(id);
+        }
       }
+      this.onListStamp++;
       this.offSelected = {};
     },
     onDel () {
       for (let id of Object.keys(this.onSelected)) {
-        Vue.delete(this.onList, id);
+        if (this.editorMode === 'boat') {
+          this.onList.delete(this.fleetBoatFromId(id).name);
+        } else {
+          this.onList.delete(id);
+        }
       }
+      this.onListStamp++;
       this.onSelected = {};
     },
   },

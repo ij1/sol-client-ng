@@ -73,7 +73,7 @@ export default {
       this.boatlistInfo.filterStamp;
       if (this.boatlistInfo.filter.boats !== null) {
         res = res.filter(i => {
-          return typeof this.boatlistInfo.filter.boats[i.id] !== 'undefined'
+          return this.boatlistInfo.filter.boats.has(i.name);
         });
       }
       if (this.boatlistInfo.filter.distance !== null) {
@@ -81,7 +81,7 @@ export default {
       }
       if (this.boatlistInfo.filter.country !== null) {
         res = res.filter(i => {
-          return typeof this.boatlistInfo.filter.country[i.country] !== 'undefined'
+          return this.boatlistInfo.filter.country.has(i.country);
         });
       }
       return res;
