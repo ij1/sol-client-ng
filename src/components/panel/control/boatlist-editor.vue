@@ -118,6 +118,7 @@ export default {
   computed: {
     editorMode () {
       if (this.editListKey !== null) {
+        this.editList.filterStamp;
 	if (this.editList.filter.boats !== null) {
           return 'boat';
         }

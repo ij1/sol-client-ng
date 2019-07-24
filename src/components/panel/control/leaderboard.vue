@@ -70,6 +70,7 @@ export default {
     },
     boatList () {
       let res = this.$store.state.race.fleet.boat;
+      this.boatlistInfo.filterStamp;
       if (this.boatlistInfo.filter.boats !== null) {
         res = res.filter(i => {
           return typeof this.boatlistInfo.filter.boats[i.id] !== 'undefined'
