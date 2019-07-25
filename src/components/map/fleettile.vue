@@ -20,6 +20,7 @@ export default {
       boatColor: 'race/fleet/boatColor',
       tilesNeedRedraw: 'map/fleetTilesNeedRedraw',
       currentFilter: 'ui/boatlists/currentFilter',
+      applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
     }),
     ...mapState({
       zoom: state => state.map.zoom,
@@ -52,12 +53,7 @@ export default {
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
         if (this.currentFilter !== null) {
-          if (((this.currentFilter.boats !== null) &&
-               !this.currentFilter.boats.has(boat.name)) ||
-              ((this.currentFilter.distance !== null) &&
-               (boat.distance > this.currentFilter.distance)) ||
-              ((this.currentFilter.country !== null) &&
-               !this.currentFilter.country.has(boat.country))) {
+          if (!this.applyFilterToBoat(boat)) {
             continue;
           }
         }

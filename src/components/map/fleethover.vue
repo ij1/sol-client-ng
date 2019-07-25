@@ -25,6 +25,7 @@ export default {
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
       currentFilter: 'ui/boatlists/currentFilter',
+      applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
       fleetBoatFromId: 'race/fleet/boatFromId',
     }),
   },
@@ -45,18 +46,7 @@ export default {
         res = this.$store.getters['race/fleet/searchAt'](this.wrappedHoverLatLng, this.zoom, distance);
 
         if (this.currentFilter !== null) {
-          res = res.filter(i => {
-            const boat = this.fleetBoatFromId(i.id);
-            if (((this.currentFilter.boats !== null) &&
-                 !this.currentFilter.boats.has(boat.name)) ||
-                ((this.currentFilter.distance !== null) &&
-                 (boat.distance > this.currentFilter.distance)) ||
-                ((this.currentFilter.country !== null) &&
-                 !this.currentFilter.country.has(boat.country))) {
-              return false;
-            }
-            return true;
-          });
+          res = res.filter(i => this.applyFilterToBoat(this.fleetBoatFromId(i.id)));
         }
         if (res.length > 0) {
           break;
