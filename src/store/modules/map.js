@@ -80,12 +80,14 @@ export default {
     maxZoom: (state) => {
       return state.cfg.extraZoomLevels.value ? 21 : OLD_CLIENT_MAXZOOM;
     },
-    fleetTilesNeedRedraw: (state, getters, rootState) => {
+    fleetTilesNeedRedraw: (state, getters, rootState, rootGetters) => {
       rootState.race.fleet.fleetTime;
       rootState.weather.data.updated;
       state.zoom;
       state.cfg.ownBoatColor.value;
-      rootState.ui.boatlists.filterList;
+      if (rootState.ui.boatlists.filterList !== null) {
+        rootGetters['ui/boatlists/currentFilter'].filterStamp;
+      }
 
       return Date.now();
     },
