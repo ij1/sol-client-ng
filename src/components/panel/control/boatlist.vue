@@ -229,12 +229,15 @@ export default {
 
       } else if (typeof this.selected[id] !== 'undefined') {
         Vue.delete(this.selected, id);
+        this.clearHover();
       } else if (select) {
         Vue.set(this.selected, id, true);
         this.$emit('select', {
           boatId: id,
           altModifier: ev.altKey,
         });
+      } else {
+        this.clearHover();
       }
       this.$emit('input', this.selected);
       this.lastClicked = id;
