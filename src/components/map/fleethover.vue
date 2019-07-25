@@ -15,12 +15,17 @@ export default {
         return obj;
       }, {});
     },
+    filterNeedsUpdate () {
+      return this.currentFilter !== null ? this.currentFilter.filterStamp : null;
+    },
     ...mapState({
       fleetTime: state => state.race.fleet.fleetTime,
       zoom: state => state.map.zoom,
     }),
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
+      currentFilter: 'ui/boatlists/currentFilter',
+      fleetBoatFromId: 'race/fleet/boatFromId',
     }),
   },
   mounted () {
@@ -38,6 +43,21 @@ export default {
       let res;
       for (let distance = 3; distance < 7; distance++) {
         res = this.$store.getters['race/fleet/searchAt'](this.wrappedHoverLatLng, this.zoom, distance);
+
+        if (this.currentFilter !== null) {
+          res = res.filter(i => {
+            const boat = this.fleetBoatFromId(i.id);
+            if (((this.currentFilter.boats !== null) &&
+                 !this.currentFilter.boats.has(boat.name)) ||
+                ((this.currentFilter.distance !== null) &&
+                 (boat.distance > this.currentFilter.distance)) ||
+                ((this.currentFilter.country !== null) &&
+                 !this.currentFilter.country.has(boat.country))) {
+              return false;
+            }
+            return true;
+          });
+        }
         if (res.length > 0) {
           break;
         }
@@ -61,6 +81,9 @@ export default {
       this.updateHover();
     },
     fleetTime () {
+      this.updateHover();
+    },
+    filterNeedsUpdate () {
       this.updateHover();
     },
   },
