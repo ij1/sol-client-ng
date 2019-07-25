@@ -65,6 +65,21 @@ export default {
     currentFilter: (state) => {
       return state.filterList !== null ?
              state.boatlists[state.filterList].filter : null;
-    }
+    },
+    applyFilterToBoat: (state, getters) => (boat) => {
+      if (getters.currentFilter === null) {
+        return true;
+      }
+      const currentFilter = getters.currentFilter;
+      if (((currentFilter.boats !== null) &&
+           !currentFilter.boats.has(boat.name)) ||
+          ((currentFilter.distance !== null) &&
+           (boat.distance > currentFilter.distance)) ||
+          ((currentFilter.country !== null) &&
+           !currentFilter.country.has(boat.country))) {
+        return false;
+      }
+      return true;
+    },
   },
 }

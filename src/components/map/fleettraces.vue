@@ -32,12 +32,24 @@ export default {
       return this.$store.state.race.fleet.leader;
     },
     showLeaderTrace () {
-      return (this.leaderId !== null) &&
-             (this.leaderId !== this.playerId) &&
-             !this.showIds.includes(this.leaderId);
+      if ((this.leaderId === null) ||
+          (this.leaderId === this.playerId)) {
+        return false;
+      }
+      if (this.showIds.includes(this.leaderId)) {
+        return false;
+      }
+      if (this.currentFilter !== null) {
+        this.currentFilter.filterStamp;
+        return this.applyFilterToBoat(this.fleetBoatFromId(this.leaderId));
+      }
+      return true;
     },
     ...mapGetters({
       'showIds': 'race/fleet/showIds',
+      currentFilter: 'ui/boatlists/currentFilter',
+      applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
+      fleetBoatFromId: 'race/fleet/boatFromId',
     }),
   },
 }
