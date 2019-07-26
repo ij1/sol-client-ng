@@ -1,6 +1,11 @@
 <template>
   <l-layer-group>
-    <l-marker :lat-lng = "poi.latLng" :options = "poiOptions">
+    <l-marker
+      v-for = "offset in wrapList"
+      :key = "poi.id + '_' + offset"
+      :lat-lng = "latLngAddOffset(poi.latLng, offset)"
+      :options = "poiOptions"
+    >
       <l-icon
         icon-url = "images/poi-icon.png">
       </l-icon>
@@ -17,6 +22,7 @@
 <script>
 import { LLayerGroup, LMarker, LIcon, LPopup } from 'vue2-leaflet';
 import PoiInfo from './poiinfo.vue';
+import { latLngAddOffset } from '../../../lib/utils.js';
 
 export default {
   name: 'MapPoi',
@@ -43,12 +49,14 @@ export default {
         autoClose: false,
         closeOnClick: false,
       },
+      wrapList: [-360, 0, 360],
     }
   },
   methods: {
     onDelete () {
       this.$store.commit('ui/poi/delPoi', this.poi.id);
     },
+    latLngAddOffset,
   },
 }
 </script>
