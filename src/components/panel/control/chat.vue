@@ -193,10 +193,12 @@ export default {
   height: 100%;
   max-height: 100%;
   font-size: 9px;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-channel-header {
-  position: relative;
+  flex: none;
   display: flex;
   text-align: left;
   font-size: 10px;
@@ -218,11 +220,11 @@ export default {
 }
 
 .chat-block-list {
-  height: calc(100% - 100px);
   width: 100%;
   border: solid 1px;
   border-color: #a0a0a0;
   overflow-y: scroll;
+  flex: auto;
 }
 
 .chat-block {
@@ -257,6 +259,7 @@ export default {
 .chat-channel-input {
   padding-top: 5px;
   width: 100%;
+  flex: none;
 }
 .chat-channel-input-box {
   width: 100%;
