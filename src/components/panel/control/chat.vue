@@ -253,7 +253,7 @@ export default {
   padding-left: 2px;
   padding-top: 2px;
   overflow-wrap: break-word;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .chat-channel-input {
@@ -263,7 +263,7 @@ export default {
 }
 .chat-channel-input-box {
   width: 100%;
-  font-size: 9px;
+  font-size: 12px;
   height: 4em;
   box-sizing: border-box;
   resize: none;
