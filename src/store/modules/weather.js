@@ -151,12 +151,17 @@ export default {
       return getters.lastTimestamp - rootGetters['boat/time'];
     },
     timeIndex: (state) => {
+      let idx;
       /* Short-circuit for the common case near the beginning of the wx series */
       if (state.time <= state.data.timeSeries[1]) {
-        return 0;
+        idx = 0;
+      } else {
+        idx = bsearchLeft(state.data.timeSeries, state.time, 2, state.data.timeSeries.length - 1) - 1;
       }
-
-      let idx = bsearchLeft(state.data.timeSeries, state.time, 2, state.data.timeSeries.length - 1) - 1;
+      /* Sanity check frames */
+      if ((idx < 0) || (state.data.timeSeries.length < idx+1)) {
+        return null;
+      }
       /* For now, check that the result is valid, */
       if ((state.data.timeSeries[idx] > state.time) ||
           (state.data.timeSeries[idx+1] < state.time)) {
@@ -168,20 +173,26 @@ export default {
       return idx;
     },
     timeIndexAny: (state, getters) => (timestamp) => {
+      let idx;
       /* Short-circuit for the common case near the beginning of the wx series */
       if (timestamp <= state.data.timeSeries[1]) {
-        return 0;
+        idx = 0;
+      } else {
+        let min = 2;
+        let max = state.data.timeSeries.length - 1;
+        if (state.data.timeSeries[getters.timeIndex+1] < timestamp) {
+          min = getters.timeIndex + 2;
+        } else if (state.data.timeSeries[getters.timeIndex] > timestamp) {
+          max = getters.timeIndex;
+        }
+
+        idx = bsearchLeft(state.data.timeSeries, timestamp, min, max) - 1;
+      }
+      /* Sanity check frames */
+      if ((idx < 0) || (state.data.timeSeries.length < idx+1)) {
+        return null;
       }
 
-      let min = 2;
-      let max = state.data.timeSeries.length - 1;
-      if (state.data.timeSeries[getters.timeIndex+1] < timestamp) {
-        min = getters.timeIndex + 2;
-      } else if (state.data.timeSeries[getters.timeIndex] > timestamp) {
-        max = getters.timeIndex;
-      }
-
-      let idx = bsearchLeft(state.data.timeSeries, timestamp, min, max) - 1;
       /* For now, check that the result is valid, */
       if ((state.data.timeSeries[idx] > timestamp) ||
           (state.data.timeSeries[idx+1] < timestamp)) {
@@ -225,6 +236,13 @@ export default {
       if (typeof timestamp !== 'undefined') {
         timeVal = timestamp;
         timeIdx = getters['timeIndexAny'](timestamp);
+      }
+
+      /* Sanity check wx data */
+      if ((timeIdx === null) ||
+          (typeof state.data.windMap[timeIdx+1] === 'undefined') ||
+          (state.data.timeSeries[timeIdx+1] < timeVal)) {
+        return undefined;
       }
 
       /* latitude (y) solution */
