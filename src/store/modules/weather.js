@@ -167,7 +167,7 @@ export default {
           (state.data.timeSeries[idx+1] < state.time)) {
         store.dispatch(
           'diagnostics/add',
-          "BUG: binary-search: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?"
+          "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?"
         );
       }
       return idx;
@@ -198,7 +198,7 @@ export default {
           (state.data.timeSeries[idx+1] < timestamp)) {
         store.dispatch(
           'diagnostics/add',
-          "BUG: binary-search: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?"
+          "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?"
         );
       }
       return idx;
