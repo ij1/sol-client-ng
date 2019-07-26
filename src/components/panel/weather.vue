@@ -15,7 +15,10 @@
     <div id="weather-panel-placeholder" v-if="!wxLoaded">
       Waiting for the weather information to load...
     </div>
-    <div id="weather-panel-control" v-if="wxLoaded">
+    <div id="weather-panel-placeholder" v-if="wxLoaded && !wxValidTimeseries">
+      Weather information is truncated...
+    </div>
+    <div id="weather-panel-control" v-if="wxLoaded && wxValidTimeseries">
       <button @click="setTime(0)">&#124;&#9664;</button>
       <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
       <span>Weather forecasted for</span>
@@ -109,6 +112,9 @@ export default {
   },
 
   computed: {
+    wxValidTimeseries () {
+      return this.wxLoaded && (this.wxLastTimestamp > this.boatTime);
+    },
     activeTimescales () {
       let res = [];
       for (let i = 0; i < this.weatherTimescales.length; i++) {
@@ -150,6 +156,7 @@ export default {
     ...mapGetters({
       boatTime: 'boat/time',
       wxDataTimescale: 'weather/dataTimescale',
+      wxLastTimestamp: 'weather/lastTimestamp',
     }),
   },
 
