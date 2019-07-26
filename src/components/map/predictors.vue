@@ -111,8 +111,22 @@ export default {
         const idx = hToMsec(time) / this.timeDelta;
         const lowIdx = Math.floor(idx);
         let markers = this.getMarkers([lowIdx]);
+        /*
+         * If either predictor fails to calculate to the dc point due to
+         * buggy wx, don't show any dots
+         */
+        if (markers.length !== 2) {
+          return [];
+        }
         if (time < this.predictorLen) {
           const highMarkers = this.getMarkers([lowIdx + 1]);
+          /*
+           * If either predictor fails to calculate to the dc point due to
+           * buggy wx, don't show any dots
+           */
+          if (highMarkers.length !== 2) {
+            return [];
+          }
           const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
 
           /* Assumes the same order (twa & cc) */
@@ -260,6 +274,9 @@ export default {
 
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
+        if (typeof wind === 'undefined') {
+          break;
+        }
         const twa = cogTwdToTwa(cogPred.cog, wind.twd);
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa);
 
@@ -297,6 +314,9 @@ export default {
 
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
+        if (typeof wind === 'undefined') {
+          break;
+        }
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twaPred.twa);
 
         const course = twaTwdToCog(twaPred.twa, wind.twd);
@@ -323,14 +343,18 @@ export default {
       }
       let res = [];
       for (let i of indexes) {
-        res.push({
-          type: 'twa',
-          latLng: this.twa.latLngs[i],
-        });
-        res.push({
-          type: 'cc',
-          latLng: this.cog.latLngs[i],
-        });
+        if (i < this.twa.latLngs.length) {
+          res.push({
+            type: 'twa',
+            latLng: this.twa.latLngs[i],
+          });
+        }
+        if (i < this.cog.latLngs.length) {
+          res.push({
+            type: 'cc',
+            latLng: this.cog.latLngs[i],
+          });
+        }
       }
       return res;
     },
