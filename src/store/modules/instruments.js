@@ -1,8 +1,11 @@
 import L from 'leaflet';
+import { minToMsec } from '../../lib/utils.js';
 import { speedTowardsBearing, gcCalc, twaTextPrefix } from '../../lib/nav.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
+
+const API_DOWN_DELAY = minToMsec(2);
 
 function defaultFormat (instrument, state) {
   const decimals = Math.max(instrument.minDecimals,
@@ -146,6 +149,14 @@ export default {
         const d = new Date(instrument.value);
         return ("0" + d.getUTCHours()).slice(-2) + ':' +
                ("0" + d.getUTCMinutes()).slice(-2);
+      },
+      apiDownDelay: API_DOWN_DELAY,
+      color: (instrument, state) => {
+        if ((instrument.value > 0) &&
+            (instrument.value + instrument.apiDownDelay < state.time.realTime)) {
+          return 'red';
+        }
+        return null;
       },
     },
     date: {

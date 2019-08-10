@@ -6,7 +6,7 @@
     <div class="boat-instrument-label">
       {{ instrument.name }} [{{ instrument.unit }}]
     </div>
-    <div class="boat-instrument-value">
+    <div class="boat-instrument-value" :style = '{color: color}'>
       {{ instrument | format($store.state) }}
     </div>
   </div>
@@ -28,6 +28,15 @@ export default {
     enabled () {
       return (typeof this.instrument.enabled === 'undefined') ||
              this.instrument.enabled.value;
+    },
+    color () {
+      if (typeof this.instrument.color !== 'undefined') {
+        const col = this.instrument.color(this.instrument, this.$store.state);
+        if (col !== null) {
+          return col;
+        }
+      }
+      return '#00ff00';
     }
   },
   filters: {
@@ -66,6 +75,5 @@ export default {
   font-size: 12px;
   font-weight: bold;
   text-align: right;
-  color: #00ff00;
 }
 </style>
