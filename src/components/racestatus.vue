@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import { roundToFixed } from '../lib/quirks.js';
 
@@ -18,16 +19,37 @@ export default {
   },
   computed: {
     boatInfo () {
-      if (this.$store.state.boat.id === null) {
+      if (this.boatId === null) {
         return '';
       }
-      let txt = 'Boat ' + this.$store.state.boat.name;
-      if (this.$store.state.boat.finishTime !== null) {
+      let txt = 'Boat ' + this.boatName;
+      if (this.boatFinishTime !== null) {
         return txt + ' has finished the race.';
       }
-      return txt + ' ranked #' + this.$store.state.boat.ranking +
-             ' with ' + roundToFixed(this.$store.state.boat.dtg, 1) + 'nm to go.'
+      return txt + ' ranked #' + this.boatRanking +
+             ' with ' + roundToFixed(this.boatDtg, 1) + 'nm to go.'
     },
+    /* Handle also browser titlebar here */
+    titlebar () {
+      if (!this.raceLoaded) {
+        return 'Sailonline.org client';
+      }
+      return 'Sailonline.org - ' + this.raceName;
+    },
+    ...mapState({
+      boatId: state => state.boat.id,
+      boatName: state => state.boat.name,
+      boatFinishTime: state => state.boat.finishTime,
+      boatRanking: state => state.boat.ranking,
+      boatDtg: state => state.boat.dtg,
+      raceLoaded: state => state.race.loaded,
+      raceName: state => state.race.info.name,
+    }),
+  },
+  watch: {
+    titlebar (newValue) {
+      document.title = newValue;
+    }
   },
 }
 </script>
