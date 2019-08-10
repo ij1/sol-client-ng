@@ -429,6 +429,10 @@ export default {
         dataField: 'boatinfo',
         compressedPayload: true,
       };
+      if (rootGetters['solapi/isLocked']('fleetmetainfo')) {
+        return;
+      }
+      commit('solapi/lock', 'fleetmetainfo', {root: true});
 
       dispatch('solapi/get', getDef, {root: true})
       .then(metaInfo => {
@@ -449,6 +453,9 @@ export default {
           apiCall: 'fleetmeta',
           error: err,
         }, {root: true});
+      })
+      .finally(() => {
+        commit('solapi/unlock', 'fleetmetainfo', {root: true});
       });
     },
 
