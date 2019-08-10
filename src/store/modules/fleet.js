@@ -46,6 +46,8 @@ export default {
     flaglessBoats: 0,        /* Fetch metainfo until all boats have country */
     fleetTime: 0,
     fleetFetchInterval: secToMsec(55),
+    metadataTime: 0,
+    metadataFetchInterval: minToMsec(10),
     tracesTime: 0,
     tracesFetchInterval: minToMsec(3),
     boat: [],
@@ -171,8 +173,9 @@ export default {
       }
       state.boatTypesCount = state.boatTypes.length;
     },
-    updateFleetMeta (state, meta) {
-      for (let boat of meta) {
+    updateFleetMeta (state, metadata) {
+      state.metadataTime = metadata.time;
+      for (let boat of metadata.meta) {
         const id = boat.$.id;
 
         /* If not in the fleet yet, postpone all work to the next metainfo
@@ -261,6 +264,9 @@ export default {
 
     nextTimeToFetch: (state) => {
       return state.fleetTime + state.fleetFetchInterval;
+    },
+    nextTimeToFetchMetadata: (state) => {
+      return state.metadataTime + state.metadataFetchInterval;
     },
     nextTimeToFetchTraces: (state) => {
       return state.tracesTime + state.tracesFetchInterval;
@@ -393,7 +399,8 @@ export default {
           });
           commit('chatrooms/mapBoatIds', state.name2id, {root: true});
 
-          if (state.flaglessBoats > 0) {
+          if ((state.flaglessBoats > 0) ||
+              (getters['nextTimeToFetchMetadata'] <= now)) {
             dispatch('fetchMetainfo');
           }
           if (getters['nextTimeToFetchTraces'] <= now) {
@@ -412,7 +419,7 @@ export default {
       });
     },
 
-    fetchMetainfo({rootState, commit, dispatch}) {
+    fetchMetainfo({rootState, rootGetters, commit, dispatch}) {
       const getDef = {
         url: "/webclient/metainfo_" + rootState.auth.raceId + ".xml",
         params: {
@@ -425,12 +432,16 @@ export default {
 
       dispatch('solapi/get', getDef, {root: true})
       .then(metaInfo => {
+        const now = rootGetters['time/now']();
         let boatList = metaInfo.b;
         if (typeof boatList !== 'undefined') {
           if (!Array.isArray(boatList)) {
             boatList = [boatList];
           }
-          commit('updateFleetMeta', boatList);
+          commit('updateFleetMeta', {
+            meta: boatList,
+            time: now,
+          });
         }
       })
       .catch(err => {
