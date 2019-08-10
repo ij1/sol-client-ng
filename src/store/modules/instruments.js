@@ -98,7 +98,7 @@ export default {
       name: "VMG",
       unit: "kn",
       mult: 1,
-      calculate: (data) => {
+      calculate: function (data) {
         return speedTowardsBearing(data.speed.value,
                                    data.course.value,
                                    data.twd.value);
@@ -111,7 +111,7 @@ export default {
       name: "VMC",
       unit: "kn",
       mult: 1,
-      calculate: (data, rootGetters) => {
+      calculate: function (data, rootGetters) {
         const gcPath = gcCalc(L.latLng(data.lat.value, data.lon.value),
                                rootGetters['race/nextWaypoint'].latLng);
         return speedTowardsBearing(data.speed.value,
@@ -142,7 +142,7 @@ export default {
       name: "TIME",
       unit: "UTC",
       datafield: 'time',
-      format: (instrument) => {
+      format: function (instrument) {
         if (instrument.value === 0) {
           return '--:--';
         }
@@ -151,7 +151,7 @@ export default {
                ("0" + d.getUTCMinutes()).slice(-2);
       },
       apiDownDelay: API_DOWN_DELAY,
-      color: (instrument, state) => {
+      color: function (instrument, state) {
         if ((instrument.value > 0) &&
             (instrument.value + instrument.apiDownDelay < state.time.realTime)) {
           return 'red';
@@ -164,7 +164,7 @@ export default {
       name: "DATE",
       unit: "UTC",
       datafield: 'time',
-      format: (instrument) => {
+      format: function (instrument) {
         if (instrument.value === 0) {
           return '--/--';
         }
