@@ -5,7 +5,7 @@ import { roundToFixed } from '../../lib/quirks.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
-const API_DOWN_DELAY = minToMsec(2);
+const API_DOWN_DELAY = minToMsec(1);
 
 function defaultFormat (instrument, state) {
   const decimals = Math.max(instrument.minDecimals,
