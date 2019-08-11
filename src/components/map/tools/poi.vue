@@ -5,16 +5,11 @@
       :key = "poi.id + '_' + offset"
       :lat-lng = "latLngAddOffset(poi.latLng, offset)"
       :options = "poiOptions"
-      ref = "popupCtrl"
     >
       <l-icon
         icon-url = "images/poi-icon.png">
       </l-icon>
-      <l-popup
-        :options = "popupOptions"
-        @add = "onOpen"
-        @remove = "onClose"
-      >
+      <l-popup :options="popupOptions">
         <poi-info :poi = "poi"/>
         <form @submit.prevent = "onDelete">
           <button type="submit">Delete</button>
@@ -53,35 +48,13 @@ export default {
         maxWidth: 350,
         autoClose: false,
         closeOnClick: false,
-        autoPan: false,
       },
       wrapList: [-360, 0, 360],
-      recursionTrap: false,
     }
   },
   methods: {
     onDelete () {
       this.$store.commit('ui/poi/delPoi', this.poi.id);
-    },
-    updatePopupState (toOpen) {
-      if (this.recursionTrap) {
-        return;
-      }
-      this.recursionTrap = true;
-      for (const el of this.$refs.popupCtrl) {
-        if (toOpen) {
-          el.mapObject.openPopup();
-        } else {
-          el.mapObject.closePopup();
-        }
-      }
-      this.recursionTrap = false;
-    },
-    onOpen () {
-      this.updatePopupState(true);
-    },
-    onClose () {
-      this.updatePopupState(false);
     },
     latLngAddOffset,
   },
