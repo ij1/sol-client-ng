@@ -264,7 +264,7 @@ export default {
 </style>
 
 <style>
-@import '~leaflet/dist/leaflet.css'
+@import url(~leaflet/dist/leaflet.css)
 </style>
 
 /* For now, put Leaflet global CSS defs here to avoid breaking CSS
