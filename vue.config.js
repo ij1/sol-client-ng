@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: process.env.NODE_ENV === 'development' ? '/' : '/static/breezy/',
   devServer: {
     host: '127.0.0.1',
     proxy: {
