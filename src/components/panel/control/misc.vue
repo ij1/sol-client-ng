@@ -87,22 +87,22 @@ export default {
       let res = [];
       res.push({
         name: 'Sailonline Manual',
-        url: 'http://www.sailonline.org/wiki/show/Manual/'
+        url: '/wiki/show/Manual/'
       });
       res.push({
         name: 'Race Leaderboard',
         url: this.raceLoaded ?
-             'http://www.sailonline.org/races/' + this.raceId + '/leaderboard' :
+             '/races/' + this.raceId + '/leaderboard' :
              null,
       });
       res.push({
         name: 'SYC Official Ranking',
-        url: 'http://www.sailonline.org/series/2/',
+        url: '/series/2/',
       });
       res.push({
         name: 'Google Earth Feed',
         url: this.raceLoaded ?
-             'http://www.sailonline.org/googleearth/race_' + this.raceId + '.kml' :
+             '/googleearth/race_' + this.raceId + '.kml' :
              null,
       });
       return res;
