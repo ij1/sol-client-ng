@@ -12,7 +12,7 @@ export default {
 
   state: {
     // eslint-disable-next-line
-    server: process.env.VUE_APP_API_URL,
+    serverPrefix: process.env.VUE_APP_API_URL,
     activeApiCalls: new Set(),
     activeApiCallsStamp: 0,	/* Set is not reactive, dummy dep this */
     errorLog: [],
@@ -43,7 +43,7 @@ export default {
       return state.activeApiCalls.has(apiCall);
     },
     isProductionServer: (state) => {
-      return state.server === 'http://www.sailonline.org';
+      return state.serverPrefix === 'http://www.sailonline.org';
     },
   },
 
@@ -56,7 +56,7 @@ export default {
         url += '?' + params;
       }
 
-      let p = fetch(state.server + url)
+      let p = fetch(state.serverPrefix + url)
       .catch(err => {
         return Promise.reject(new SolapiError('network', err.message));
       })
@@ -107,7 +107,7 @@ export default {
     },
 
     post ({state, commit}, reqDef) {
-      let p = fetch(state.server + reqDef.url, {
+      let p = fetch(state.serverPrefix + reqDef.url, {
         method: "POST",
         body: queryString.stringify(reqDef.params),
       })
