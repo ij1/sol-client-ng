@@ -365,6 +365,7 @@ export default {
     }),
     ...mapGetters({
       publicBoat: 'boat/publicBoat',
+      isProductionServer: 'solapi/isProductionServer',
     }),
   },
 
