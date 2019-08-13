@@ -2,7 +2,7 @@
   <div class="flag-container">
     <img
       v-if = "valid"
-      :src="'flags/' + flagImage + '.png'"
+      :src="flagUrl"
     />
   </div>
 </template>
@@ -28,6 +28,9 @@ export default {
         return '';
       }
       return this.country.toLowerCase();
+    },
+    flagUrl () {
+      return 'flags/' + this.flagImage + '.png';
     }
   },
 }
