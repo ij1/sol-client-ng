@@ -1,6 +1,8 @@
 import L from 'leaflet';
 import { atan2Bearing } from './nav.js';
 
+export const publicPath = process.env.BASE_URL;
+
 export const MS_TO_KNT = 3600 / 1852;
 export const EARTH_R = 6378137;
 export const PROJECTION = L.CRS.EPSG3857;

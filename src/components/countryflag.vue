@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { publicPath } from '../lib/sol.js';
 import { validCountries } from '../lib/country.js';
 
 export default {
@@ -30,7 +31,7 @@ export default {
       return this.country.toLowerCase();
     },
     flagUrl () {
-      return 'flags/' + this.flagImage + '.png';
+      return publicPath + 'flags/' + this.flagImage + '.png';
     }
   },
 }
