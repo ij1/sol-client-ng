@@ -135,7 +135,7 @@ export default {
       return res;
     },
     canSend () {
-      return (this.messageDraft.trim().length > 0);
+      return !this.publicBoat && (this.messageDraft.trim().length > 0);
     },
     canClose () {
       return this.$store.state.chatrooms.activeRooms.length > 1;
@@ -151,6 +151,7 @@ export default {
     },
     ...mapGetters({
       boatTime: 'boat/time',
+      publicBoat: 'boat/publicBoat',
     }),
   },
 
