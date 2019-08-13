@@ -1,6 +1,6 @@
 <template>
   <div class="syc-container" v-if="syc">
-    <img src="images/sycflag.png" class="syc-flag"/>
+    <img src="../images/sycflag.png" class="syc-flag"/>
   </div>
 </template>
 
