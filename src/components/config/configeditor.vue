@@ -17,31 +17,33 @@
         Reset to defaults
       </button>
     </template>
-    <div
-      v-for = "(cfggroup, gindex) in configTree"
-      :key = "'g' + gindex"
-      id = "config-content"
-    >
-      <div class = "config-header">{{cfggroup.title}}</div>
+    <div id = "config-container">
       <div
-        v-for = "cfg in cfggroup.cfgs"
-        :key = "cfg.idx"
+        v-for = "(cfggroup, gindex) in configTree"
+        :key = "'g' + gindex"
+        class = "config-content"
       >
-        <config-boolean
-          v-if = "cfg.cfgObj.type === 'boolean'"
-          :cfg = "cfg.cfgObj"
-          :value.sync = "config[cfg.idx]"
-        />
-        <config-range
-          v-if = "cfg.cfgObj.type === 'range'"
-          :cfg = "cfg.cfgObj"
-          :value.sync = "config[cfg.idx]"
-        />
-        <config-values
-          v-if = "cfg.cfgObj.type === 'values'"
-          :cfg = "cfg.cfgObj"
-          :value.sync = "config[cfg.idx]"
-        />
+        <div class = "config-header">{{cfggroup.title}}</div>
+        <div
+          v-for = "cfg in cfggroup.cfgs"
+          :key = "cfg.idx"
+        >
+          <config-boolean
+            v-if = "cfg.cfgObj.type === 'boolean'"
+            :cfg = "cfg.cfgObj"
+            :value.sync = "config[cfg.idx]"
+          />
+          <config-range
+            v-if = "cfg.cfgObj.type === 'range'"
+            :cfg = "cfg.cfgObj"
+            :value.sync = "config[cfg.idx]"
+          />
+          <config-values
+            v-if = "cfg.cfgObj.type === 'values'"
+            :cfg = "cfg.cfgObj"
+            :value.sync = "config[cfg.idx]"
+          />
+        </div>
       </div>
     </div>
   </popup-window>
@@ -263,7 +265,11 @@ export default {
 </script>
 
 <style scoped>
-#config-content {
+#config-container {
+  height: 100%;
+  overflow-y: auto;
+}
+.config-content {
   font-size: 10px;
   text-align: left;
 }
