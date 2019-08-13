@@ -7,7 +7,7 @@
       :options = "poiOptions"
     >
       <l-icon
-        icon-url = "images/poi-icon.png">
+        :icon-url = "iconUrl">
       </l-icon>
       <l-popup :options="popupOptions">
         <poi-info :poi = "poi"/>
@@ -22,7 +22,10 @@
 <script>
 import { LLayerGroup, LMarker, LIcon, LPopup } from 'vue2-leaflet';
 import PoiInfo from './poiinfo.vue';
+import { publicPath } from '../../../lib/sol.js';
 import { latLngAddOffset } from '../../../lib/utils.js';
+
+const iconUrl = publicPath + 'images/poi-icon.png';
 
 export default {
   name: 'MapPoi',
@@ -50,6 +53,7 @@ export default {
         closeOnClick: false,
       },
       wrapList: [-360, 0, 360],
+      iconUrl: iconUrl,
     }
   },
   methods: {
