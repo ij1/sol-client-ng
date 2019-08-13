@@ -1,5 +1,5 @@
 import { orderBy } from 'lodash';
-import { UTCToMsec } from '../../lib/utils.js';
+import { UTCToMsec, secToMsec } from '../../lib/utils.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
 
 export default {
@@ -91,7 +91,8 @@ export default {
       .finally(() => {
         /* New messages appeared during our last fetch, fetch again */
         if (state.expectedId > state.lastId) {
-          solapiRetryDispatch(dispatch, 'fetch', undefined, 1000);
+          const refetchDelay = secToMsec(5) + secToMsec(15) * Math.random();
+          solapiRetryDispatch(dispatch, 'fetch', undefined, refetchDelay);
         }
       });
     },
