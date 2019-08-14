@@ -112,15 +112,28 @@ export default {
     }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
+      currentFilter: 'ui/boatlists/currentFilter',
       applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
     }),
   },
   methods: {
     updateSelection (newSelected) {
+      if (this.currentFilter) {
+        newSelected = Object.assign({}, newSelected);
+        for (const id of Object.keys(newSelected)) {
+          if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
+            delete newSelected['' + id];
+          }
+        }
+      }
       this.$store.commit('race/fleet/setSelected', newSelected);
     },
     selectBoat (e) {
-      const position = this.fleetBoatFromId(e.boatId).latLng;
+      const boat = this.fleetBoatFromId(e.boatId);
+      if (this.currentFilter && !this.applyFilterToBoat(boat)) {
+        return;
+      }
+      const position = boat.latLng;
       EventBus.$emit('map-highlight', {
         latLng: position,
         keepMapPosition: e.altModifier,
@@ -133,19 +146,14 @@ export default {
     onShowOnly (value) {
       this.$store.commit('ui/boatlists/setFilterList',
                          value ? this.boatlistKey : null);
+
       /* Apply filter on currently selected boats */
       if (value) {
-        let resetSelected = false;
-        let newSelected = {};
         for (const id of Object.keys(this.selectedObj)) {
           if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
-            resetSelected = true;
-            continue;
+            this.updateSelection(this.selectedObj);
+            break;
           }
-          newSelected['' + id] = true;
-        }
-        if (resetSelected) {
-          this.updateSelection(newSelected);
         }
       }
     },
