@@ -112,6 +112,7 @@ export default {
     }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
+      applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
     }),
   },
   methods: {
@@ -132,6 +133,21 @@ export default {
     onShowOnly (value) {
       this.$store.commit('ui/boatlists/setFilterList',
                          value ? this.boatlistKey : null);
+      /* Apply filter on currently selected boats */
+      if (value) {
+        let resetSelected = false;
+        let newSelected = {};
+        for (const id of Object.keys(this.selectedList)) {
+          if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
+            resetSelected = true;
+            continue;
+          }
+          newSelected['' + id] = true;
+        }
+        if (resetSelected) {
+          this.updateSelection(newSelected);
+        }
+      }
     },
     onDelete () {
       this.$store.commit('ui/boatlists/delete',
