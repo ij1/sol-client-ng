@@ -13,7 +13,11 @@
       <a @click="activeTab=3" :class="activeTab === 3 ? 'active' : ''">
         <img src="../../../images/chat.png"/>
       </a>
-      <a @click="activeTab=4" :class="activeTab === 4 ? 'active' : ''">
+      <a
+        v-if = "racemessages.length > 0"
+        @click = "activeTab=4"
+        :class="activeTab === 4 ? 'active' : ''"
+      >
         <lima-flag :size = "14"/>
       </a>
       <a @click="activeTab=6" :class="activeTab === 6 ? 'active' : ''">Misc</a>
@@ -89,6 +93,7 @@ export default {
     },
     ...mapState({
       configShowDiagnostics: state => state.diagnostics.cfg.showDiagnostics.value,
+      racemessages: state => state.race.messages.racemsgs,
     }),
   },
 }
