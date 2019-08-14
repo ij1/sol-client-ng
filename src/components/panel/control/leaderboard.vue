@@ -33,7 +33,7 @@
         <boat-list
           :search = "search"
           :boat-list = "boatList"
-          :initial-selected = "selectedList"
+          :initial-selected = "selectedObj"
           :hover-list = "hoverList"
           :enable-hover = "true"
           @select = "selectBoat"
@@ -107,7 +107,7 @@ export default {
       boatlists: state => state.ui.boatlists.boatlists,
       activeBoatlist: state => state.ui.boatlists.activeList,
       filterListKey: state => state.ui.boatlists.filterList,
-      selectedList: state => state.race.fleet.selected,
+      selectedObj: state => state.race.fleet.selected,
       hoverList: state => state.race.fleet.hover,
     }),
     ...mapGetters({
@@ -116,8 +116,8 @@ export default {
     }),
   },
   methods: {
-    updateSelection (selectedList) {
-      this.$store.commit('race/fleet/setSelected', selectedList);
+    updateSelection (newSelected) {
+      this.$store.commit('race/fleet/setSelected', newSelected);
     },
     selectBoat (e) {
       const position = this.fleetBoatFromId(e.boatId).latLng;
@@ -137,7 +137,7 @@ export default {
       if (value) {
         let resetSelected = false;
         let newSelected = {};
-        for (const id of Object.keys(this.selectedList)) {
+        for (const id of Object.keys(this.selectedObj)) {
           if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
             resetSelected = true;
             continue;
