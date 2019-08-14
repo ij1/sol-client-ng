@@ -27,6 +27,7 @@
     "@vue/cli-plugin-babel": "^3.9.2",
     "@vue/cli-plugin-eslint": "^3.9.2",
     "@vue/cli-service": "^3.9.2",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "git-revision-webpack-plugin": "^3.0.3"
   }
 }

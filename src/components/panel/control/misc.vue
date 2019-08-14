@@ -32,6 +32,12 @@
         </li>
       </ul>
     </div>
+    <div>
+      <div class="misc-header">About</div>
+      <div>
+        Version identifier {{version}} (GPL v2) ij 2018-2019.
+      </div>
+    </div>
   </div>
 </template>
 
@@ -80,6 +86,7 @@ export default {
           license: 'MIT',
         },        
       ],
+      version: process.env.VUE_APP_GIT_REV,
     }
   },
   computed: {
@@ -118,8 +125,10 @@ export default {
 <style scoped>
 #misc {
   width: 100%;
+  height: 100%;
   font-size: 10px;
   text-align: left;
+  overflow-y: auto;
 }
 .misc-header {
   font-size: 11px;

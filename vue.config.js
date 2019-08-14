@@ -25,3 +25,7 @@ module.exports = {
         })
   },
 }
+
+const GitRevisionPlugin = require("git-revision-webpack-plugin")
+const git = new GitRevisionPlugin({ versionCommand: "rev-parse --short HEAD" })
+process.env.VUE_APP_GIT_REV = git.version()
