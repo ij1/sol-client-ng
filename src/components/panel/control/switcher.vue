@@ -1,11 +1,21 @@
 <template>
   <div id="control-panel">
     <div class="tabs">
-      <a @click="activeTab=0" :class="activeTab === 0 ? 'active' : ''">Steer</a>
-      <a @click="activeTab=1" :class="activeTab === 1 ? 'active' : ''">DCs</a>
-      <a @click="activeTab=2" :class="activeTab === 2 ? 'active' : ''">LB</a>
-      <a @click="activeTab=3" :class="activeTab === 3 ? 'active' : ''">Chat</a>
-      <a @click="activeTab=4" :class="activeTab === 4 ? 'active' : ''">NOR</a>
+      <a @click="activeTab=0" :class="activeTab === 0 ? 'active' : ''">
+        <img src="../../../images/wheel.png"/>
+      </a>
+      <a @click="activeTab=1" :class="activeTab === 1 ? 'active' : ''">
+        <img src="../../../images/clock.png"/>
+      </a>
+      <a @click="activeTab=2" :class="activeTab === 2 ? 'active' : ''">
+        <img src="../../../images/podium.png"/>
+      </a>
+      <a @click="activeTab=3" :class="activeTab === 3 ? 'active' : ''">
+        <img src="../../../images/chat.png"/>
+      </a>
+      <a @click="activeTab=4" :class="activeTab === 4 ? 'active' : ''">
+        <lima-flag :size = "14"/>
+      </a>
       <a @click="activeTab=6" :class="activeTab === 6 ? 'active' : ''">Misc</a>
       <a
         v-if = "configShowDiagnostics"
@@ -54,6 +64,7 @@ import ControlChats from './chats.vue';
 import ControlRaceMessages from './racemessages.vue';
 import ControlMisc from './misc.vue';
 import ControlDiagnostics from './diagnostics.vue';
+import LimaFlag from '../../limaflag.vue';
 
 export default {
   name: 'ControlPanel',
@@ -65,6 +76,7 @@ export default {
     'control-race-messages': ControlRaceMessages,
     'control-misc': ControlMisc,
     'control-diagnostics': ControlDiagnostics,
+    'lima-flag': LimaFlag,
   },
   computed: {
     activeTab: {
@@ -100,7 +112,9 @@ export default {
 }
 
 .tabs a {
-  padding: 5px;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
   padding-bottom: 2px;
   border: 1px solid #c0c0c0;
   border-right: none;
