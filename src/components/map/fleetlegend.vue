@@ -66,7 +66,6 @@ export default {
       combinedIds: 'race/fleet/combinedIds',
     }),
     ...mapState({
-      selectedObj: state => state.race.fleet.selected,
       hoverObj: state => state.race.fleet.hover,
     }),
   },
