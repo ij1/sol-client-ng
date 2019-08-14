@@ -188,6 +188,9 @@ export default {
     },
     ...mapGetters({
       multiClassRace: 'race/fleet/multiClassRace',
+      fleetBoatFromId: 'race/fleet/boatFromId',
+      currentFilter: 'ui/boatlists/currentFilter',
+      applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
     }),
   },
   methods: {
@@ -247,6 +250,11 @@ export default {
         return;
       }
       const id = this.sortedBoatList[index].id;
+      if (this.currentFilter !== null) {
+        if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
+          return;
+        }
+      }
       let obj = {};
       obj['' + id] = true;
       this.$store.commit('race/fleet/setHover', obj);
