@@ -1,24 +1,19 @@
 <template>
-  <l-control
+  <div
     id = "towback-flag"
-    :position = "'topleft'"
     v-if = 'raceLoaded && isTowbackPeriod'
   >
     <div id = "towback-flag-outer">
       <div id = "towback-flag-inner"/>
     </div>
-  </l-control>
+  </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { LControl } from 'vue2-leaflet';
 
 export default {
   name: 'TowbackFlag',
-  components: {
-    'l-control': LControl,
-  },
   computed: {
     ...mapState({
       raceLoaded: state => state.race.loaded,
@@ -33,6 +28,12 @@ export default {
 </script>
 
 <style scoped>
+#towback-flag {
+  position: absolute;
+  left: 70px;
+  top: 36px;
+  z-index: 900;
+}
 #towback-flag-outer {
   position: absolute;
   top: 0px;
