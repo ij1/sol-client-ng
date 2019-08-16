@@ -47,6 +47,7 @@ export default {
         /* Make sure different roundings of +/-180 don't overflow the index */
         if (twaidx > state.twaval.length - 1) {
           twaidx = state.twaval.length - 1;
+          twa = state.twaval[twaidx];
         }
         twaidx--;
       }
