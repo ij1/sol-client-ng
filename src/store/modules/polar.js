@@ -38,8 +38,8 @@ export default {
       if (twsidx > 0) {
         /* Wind beyond the max tws defined by the polar? */
         if (twsms > getters.maxTws) {
-          twsms = getters.maxTws;
           twsidx = state.twsval.length - 1;
+          twsms = state.twsval[twsidx];
         }
         twsidx--;
       }
