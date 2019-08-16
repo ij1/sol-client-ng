@@ -36,13 +36,18 @@ export default {
       let twsidx = bsearchLeft(state.twsval, twsms);
       let twaidx = bsearchLeft(state.twaval, twa);
       if (twsidx > 0) {
-        twsidx--;
         /* Wind beyond the max tws defined by the polar? */
         if (twsms > getters.maxTws) {
           twsms = getters.maxTws;
+          twsidx = state.twsval.length - 1;
         }
+        twsidx--;
       }
       if (twaidx > 0) {
+        /* Make sure different roundings of +/-180 don't overflow the index */
+        if (twaidx > state.twaval.length - 1) {
+          twaidx = state.twaval.length - 1;
+        }
         twaidx--;
       }
 
