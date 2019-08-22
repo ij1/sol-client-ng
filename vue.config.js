@@ -24,6 +24,18 @@ module.exports = {
           return options;
         })
   },
+  pages: {
+    index: {
+      entry: 'src/main.js',
+      template: 'public/index.html',
+      filename: 'index.html',
+    },
+    template: {
+      entry: 'src/main.js',
+      template: 'public/index.template.html',
+      filename: 'index.template.html',
+    },
+  },
 }
 
 const GitRevisionPlugin = require("git-revision-webpack-plugin")
