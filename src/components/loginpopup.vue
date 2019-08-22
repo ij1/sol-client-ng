@@ -92,7 +92,7 @@ export default {
         (typeof window.theracenumber !== 'undefined')) {
       this.$store.commit('auth/loggedIn', {
         token: window.token,
-        raceId: window.theracenumber,
+        race_id: window.theracenumber,
       });
       this.$store.dispatch('race/fetchRaceinfo');
     } else {
