@@ -94,6 +94,7 @@ export default {
         token: window.token,
         raceId: window.theracenumber,
       });
+      this.$store.dispatch('race/fetchRaceinfo');
     } else {
       this.fetchRaces();
     }
