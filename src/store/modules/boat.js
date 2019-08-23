@@ -92,6 +92,10 @@ export default {
       return getters.isGuestBoat || getters.isSolBoat;
     },
     allowControl: (state, getters, rootState, rootGetters) => {
+      /* Prevent auth race vs boat API races during startup */
+      if (state.id === null) {
+        return false;
+      }
       /* Development version has more rights */
       if (!rootGetters['solapi/isProductionServer']) {
         return true;
