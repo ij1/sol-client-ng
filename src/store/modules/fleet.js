@@ -40,11 +40,13 @@ function sortedIdList (boatIdsObj, getters) {
 }
 
 function fleetSearchTreeFilter (boat, rootGetters) {
-  const inPractice = rootGetters['race/isPracticePeriod'];
-  if (!boat.name.startsWith('Practice_Mark') || inPractice) {
-    return true;
+  if (boat.name === 'guest') {
+    return false;
   }
-  return false;
+  if ((boat.name === 'sol') || boat.name.startsWith('Practice_Mark')) {
+    return rootGetters['race/isPracticePeriod'];
+  }
+  return true;
 }
 
 export default {
