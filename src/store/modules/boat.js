@@ -88,8 +88,11 @@ export default {
     isSolBoat: (state) => {
       return state.name === 'sol';
     },
+    isPracticeMark: (state) => {
+      return state.name.startsWith('Practice_Mark');
+    },
     publicBoat: (state, getters) => {
-      return getters.isGuestBoat || getters.isSolBoat;
+      return getters.isGuestBoat || getters.isSolBoat || getters.isPracticeMark;
     },
     allowControl: (state, getters, rootState, rootGetters) => {
       /* Prevent auth race vs boat API races during startup */
@@ -103,9 +106,9 @@ export default {
       if (getters.isGuestBoat) {
         return false;
       }
-      /* sol control allowed only during pre-race practice */
-      if (getters.isSolBoat && !rootGetters['race/isPracticePeriod']) {
-        return false;
+      /* sol & PR marks control allowed only during pre-race practice */
+      if (getters.isSolBoat || getters.isPracticeMark) {
+        return rootGetters['race/isPracticePeriod'];
       }
       return true;
     },
