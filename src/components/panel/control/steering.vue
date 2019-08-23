@@ -362,7 +362,6 @@ export default {
     }),
     ...mapGetters({
       allowControl: 'boat/allowControl',
-      isProductionServer: 'solapi/isProductionServer',
     }),
   },
 
