@@ -85,7 +85,8 @@ export default {
       return UTCToMsec(date);
     },
     canSend () {
-      return this.valid && this.dirty && (this.newTime !== null);
+      return this.valid && this.dirty &&
+             (this.newTime !== null) && (this.boatTime <= this.newTime);
     },
     disabledDates () {
       let today = new Date(this.boatTime);
