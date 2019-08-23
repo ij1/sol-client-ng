@@ -1,5 +1,5 @@
 <template>
-  <l-layer-group v-if = "boatId !== null">
+  <l-layer-group v-if = "boatId !== null && this.allowControl">
     <sail-boat
       :lat-lng="visualPosition"
       :course = "course"
@@ -46,6 +46,7 @@ export default {
     }),
     ...mapGetters({
       visualPosition: 'boat/visualPosition',
+      allowControl: 'boat/allowControl',
     }),
   },
 }

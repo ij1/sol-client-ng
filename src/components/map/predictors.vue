@@ -166,6 +166,7 @@ export default {
       boatTime: 'boat/time',
       visualPosition: 'boat/visualPosition',
       isTowbackPeriod: 'race/isTowbackPeriod',
+      allowControl: 'boat/allowControl',
     }),
     ...mapState({
       wxLoaded: state => state.weather.loaded,
@@ -180,6 +181,9 @@ export default {
   },
   methods: {
     isEnabled (predictor) {
+      if (!this.allowControl) {
+        return false;
+      }
       if (this.currentSteering === predictor) {
         return this.cfgPredictors !== 'none';
       }
