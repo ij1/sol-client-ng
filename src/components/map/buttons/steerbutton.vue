@@ -15,7 +15,7 @@
 
 <script>
 import L from 'leaflet';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 
 export default {
@@ -31,10 +31,13 @@ export default {
       showPolar: state => state.boat.steering.visualSteering.showPolar,
       boatPosition: state => state.boat.position,
     }),
+    ...mapGetters({
+      allowControl: 'boat/allowControl',
+    }),
   },
   methods: {
     onClick () {
-      if (this.boatPosition === null) {
+      if (!this.allowControl || (this.boatPosition === null)) {
         return;
       }
 
