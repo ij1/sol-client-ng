@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { dcTwaTextPrefix } from '../../../lib/nav.js';
@@ -80,10 +81,11 @@ export default {
   },
   computed: {
     canEdit () {
-      return (this.selectedDC !== null) && (this.dcToEdit === null);
+      return this.allowControl &&
+        (this.selectedDC !== null) && (this.dcToEdit === null);
     },
     canDelete () {
-      return this.selectedDC !== null;
+      return this.allowControl && (this.selectedDC !== null);
     },
     selectedDC () {
       if (this.selected === null) {
@@ -95,7 +97,10 @@ export default {
         }
       }
       return null;
-    }
+    },
+    ...mapGetters({
+      allowControl: 'boat/allowControl',
+    }),
   },
   methods: {
     doRefresh () {
