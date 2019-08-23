@@ -84,7 +84,7 @@ import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
 
-const dayHourMinSecRegex = /^([1-9][0-9]?d)?([012]?[0-9]h)?([0-5]?[0-9]m)?([0-5]?[0-9]s)?$/;
+const dayHourMinSecRegex = /^([1-9][0-9]*d)?([0-9][0-9]*h)?([0-9][0-9]*m)?([0-9][0-9]*s)?$/;
 
 // FIXME: The values should probably use some arbitary precision library
 // to avoid unexpected rounding with floating-points.
