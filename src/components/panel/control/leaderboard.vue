@@ -118,8 +118,10 @@ export default {
   },
   methods: {
     updateSelection (newSelected) {
+      /* Make sure the inputted object is not shared into vuex */
+      newSelected = Object.assign({}, newSelected);
+
       if (this.currentFilter) {
-        newSelected = Object.assign({}, newSelected);
         for (const id of Object.keys(newSelected)) {
           if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
             delete newSelected['' + id];
