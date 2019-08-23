@@ -43,8 +43,7 @@ export default {
       return state.activeApiCalls.has(apiCall);
     },
     isProductionServer: (state) => {
-      return (state.serverPrefix === '') &&
-             (window.location.hostname !== 'beta.sailonline.org');
+      return state.serverPrefix === '';
     },
   },
 
