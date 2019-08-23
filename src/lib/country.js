@@ -7,6 +7,7 @@ export const validCountries = {
   al: "ALBANIA",
   am: "ARMENIA",
   ao: "ANGOLA",
+  aq: "ANTARCTICA",
   ar: "ARGENTINA",
   as: "AMERICAN SAMOA",
   at: "AUSTRIA",
