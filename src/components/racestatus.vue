@@ -1,7 +1,7 @@
 <template>
   <l-control :position = "'topleft'">
-    <div id = "race-status" v-if="$store.state.race.loaded">
-      <span v-html="$store.state.race.info['message']"/>
+    <div id = "race-status">
+      <span v-html="message"/>
       {{ boatInfo }}
     </div>
   </l-control>
@@ -29,6 +29,12 @@ export default {
       return txt + ' ranked #' + this.boatRanking +
              ' with ' + roundToFixed(this.boatDtg, 1) + 'nm to go.'
     },
+    message () {
+      if (!this.raceLoaded || (typeof this.raceMessage === 'undefined')) {
+        return '&nbsp;';
+      }
+      return this.raceMessage;
+    },
     /* Handle also browser titlebar here */
     titlebar () {
       if (!this.raceLoaded) {
@@ -44,6 +50,7 @@ export default {
       boatDtg: state => state.boat.dtg,
       raceLoaded: state => state.race.loaded,
       raceName: state => state.race.info.name,
+      raceMessage: state => state.race.info.message,
     }),
   },
   watch: {
