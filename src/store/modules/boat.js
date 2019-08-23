@@ -85,6 +85,9 @@ export default {
     publicBoat: (state) => {
       return state.name === 'guest' || state.name === 'sol';
     },
+    allowControl: (state, getters, rootState, rootGetters) => {
+      return !getters.publicBoat || !rootGetters['solapi/isProductionServer'];
+    },
   },
 
   actions: {

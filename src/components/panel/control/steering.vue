@@ -164,9 +164,6 @@ export default {
       return this.plottedSteering.prevCopyDecimals;
     },
 
-    allowControl () {
-      return !this.publicBoat || !this.isProductionServer;
-    },
     canSend () {
       return this.allowControl &&
         (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
@@ -364,7 +361,7 @@ export default {
       plottedSteering: state => state.boat.steering.plottedSteering,
     }),
     ...mapGetters({
-      publicBoat: 'boat/publicBoat',
+      allowControl: 'boat/allowControl',
       isProductionServer: 'solapi/isProductionServer',
     }),
   },
