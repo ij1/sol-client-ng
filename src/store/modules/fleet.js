@@ -39,6 +39,14 @@ function sortedIdList (boatIdsObj, getters) {
   });
 }
 
+function fleetSearchTreeFilter (boat, rootGetters) {
+  const inPractice = rootGetters['race/isPracticePeriod'];
+  if (!boat.name.startsWith('Practice_Mark') || inPractice) {
+    return true;
+  }
+  return false;
+}
+
 export default {
   namespaced: true,
 
@@ -322,13 +330,12 @@ export default {
           let leaderId = null;
           let boatTypes = new Set();
           let searchData = [];
-          const inPractice = rootGetters['race/isPracticePeriod'];
 
           for (let boat of boatList) {
             boat.latLng = L.latLng(boat.lat, boat.lon);
             boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boat.latLng);
 
-            if (!boat.name.startsWith('Practice_Mark') || inPractice) {
+            if (fleetSearchTreeFilter(boat, rootGetters)) {
               for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
                 let searchItem = {
                   lng: boat.latLng.lng + ddeg,
