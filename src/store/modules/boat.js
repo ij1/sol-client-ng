@@ -82,11 +82,28 @@ export default {
       return L.latLng(state.position.lat,
                       state.position.lng + state.visualLngOffset);
     },
-    publicBoat: (state) => {
-      return state.name === 'guest' || state.name === 'sol';
+    isGuestBoat: (state) => {
+      return state.name === 'guest';
+    },
+    isSolBoat: (state) => {
+      return state.name === 'sol';
+    },
+    publicBoat: (state, getters) => {
+      return getters.isGuestBoat || getters.isSolBoat;
     },
     allowControl: (state, getters, rootState, rootGetters) => {
-      return !getters.publicBoat || !rootGetters['solapi/isProductionServer'];
+      /* Development version has more rights */
+      if (!rootGetters['solapi/isProductionServer']) {
+        return true;
+      }
+      if (getters.isGuestBoat) {
+        return false;
+      }
+      /* sol control allowed only during pre-race practice */
+      if (getters.isSolBoat && !rootGetters['race/isPracticePeriod']) {
+        return false;
+      }
+      return true;
     },
   },
 
