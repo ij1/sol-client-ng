@@ -270,7 +270,7 @@ export default {
 
     toTwa () {
       if (!this.isCcValid) {
-        return undefined;
+        return null;
       }
       const cc = parseFloat(this.cc);
       let diff = this.ccTwaDelta - cc;
@@ -291,7 +291,7 @@ export default {
     },
     toCc () {
       if (!this.isTwaValid) {
-        return undefined;
+        return null;
       }
       const twa = parseFloat(this.twa);
       let diff = this.ccTwaDelta - twa;
@@ -367,13 +367,13 @@ export default {
 
   watch: {
     toCc (value) {
-      if ((this.type === 'cc') || (typeof value === 'undefined')) {
+      if ((this.type === 'cc') || (value === null)) {
         return;
       }
       this.cc = value;
     },
     toTwa (value) {
-      if ((this.type === 'twa') || (typeof value === 'undefined')) {
+      if ((this.type === 'twa') || (value === null)) {
         return;
       }
       this.twa = twaTextPrefix(value) + value;
