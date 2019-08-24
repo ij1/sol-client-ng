@@ -50,7 +50,7 @@ export default {
           if (windPoint !== null) {
             windPoint = this.$parent.map.wrapLatLng(windPoint);
             const wind = this.$store.getters['weather/latLngWind'](windPoint);
-            if (wind !== undefined) {
+            if (wind !== null) {
               ctx.rotate(wind.twd);
               const color = windToColor(wind.knots);
               ctx.strokeStyle = color;

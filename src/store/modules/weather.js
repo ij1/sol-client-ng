@@ -206,7 +206,7 @@ export default {
 
     latLngWind: (state, getters) => (latLng, timestamp) => {
       if (state.data.boundary === null) {
-        return undefined;
+        return null;
       }
       const wxLat = latLng.lat;
       let wxLng = latLng.lng;
@@ -225,7 +225,7 @@ export default {
       if ((wxLng >= state.data.boundary.getNorthEast().lng) ||
           (wxLat < state.data.boundary.getSouthWest().lat) ||
           (wxLat >= state.data.boundary.getNorthEast().lat)) {
-        return undefined;
+        return null;
       }
 
       const lonIdx = Math.floor((wxLng - state.data.origo[1]) / state.data.increment[1]);
@@ -242,7 +242,7 @@ export default {
       if ((timeIdx === null) ||
           (typeof state.data.windMap[timeIdx+1] === 'undefined') ||
           (state.data.timeSeries[timeIdx+1] < timeVal)) {
-        return undefined;
+        return null;
       }
 
       /* latitude (y) solution */

@@ -35,7 +35,7 @@ export default {
         return '';
       }
       const wind = this.$store.getters['weather/latLngWind'](this.wrappedHoverLatLng);
-      if (wind === undefined) {
+      if (wind === null) {
         return '';
       }
       return roundToFixed(wind.knots, 2) + 'kn @' +

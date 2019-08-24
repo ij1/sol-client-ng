@@ -66,8 +66,7 @@ export default {
         if (boat.dtg > 0) {
           const wind = this.$store.getters['weather/latLngWind'](boat.latLng,
                                                                  this.$store.state.race.fleet.fleetTime);
-          let twa = (typeof wind !== 'undefined') ?
-                      cogTwdToTwa(boat.cog, wind.twd) : 0;
+          let twa = (wind !== null) ? cogTwdToTwa(boat.cog, wind.twd) : 0;
           /* TWA=0 heuristics for <0.5deg to handle wx & fleet time
            * mismatch and numeric precision challenges
            */
