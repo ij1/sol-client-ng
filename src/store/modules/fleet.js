@@ -3,7 +3,7 @@ import L from 'leaflet';
 import rbush from 'rbush';
 import { minToMsec, secToMsec } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
-import { PROJECTION, EARTH_R } from '../../lib/sol.js';
+import { PROJECTION, EARTH_R, solBoatPolicy } from '../../lib/sol.js';
 
 function addToName2id (state, name, id) {
   if (state.name2id.has(name)) {
@@ -37,16 +37,6 @@ function sortedIdList (boatIdsObj, getters) {
   }).filter(function(item, idx, arr) {
     return (idx === arr.length - 1) || (arr[idx + 1] !== item);
   });
-}
-
-function fleetSearchTreeFilter (boat, rootGetters) {
-  if (boat.name === 'guest') {
-    return false;
-  }
-  if ((boat.name === 'sol') || boat.name.startsWith('Practice_Mark')) {
-    return rootGetters['race/isPracticePeriod'];
-  }
-  return true;
 }
 
 export default {
@@ -337,7 +327,7 @@ export default {
             boat.latLng = L.latLng(boat.lat, boat.lon);
             boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boat.latLng);
 
-            if (fleetSearchTreeFilter(boat, rootGetters)) {
+            if (solBoatPolicy(boat.name, rootGetters)) {
               for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
                 let searchItem = {
                   lng: boat.latLng.lng + ddeg,

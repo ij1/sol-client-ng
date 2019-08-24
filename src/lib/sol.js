@@ -9,6 +9,18 @@ export const PROJECTION = L.CRS.EPSG3857;
 export const OLD_CLIENT_MAXZOOM = 16.8;
 export const OLD_CLIENT_MAXZOOM_ACCURATE = 16.8342;
 
+/* Returns true if the boat is ok to draw / control */
+export function solBoatPolicy(boatname, rootGetters) {
+  if (boatname === 'guest') {
+    return false;
+  }
+  if ((boatname === 'sol') || boatname.startsWith('Practice_Mark')) {
+    return rootGetters['race/isPracticePeriod'];
+  }
+  return true;
+
+}
+
 export function UVToWind(uv) {
   /* u,v are negated because u,v points "to", whereas TWD is wind "from" */
   let twd = atan2Bearing(-uv[0], uv[1]);

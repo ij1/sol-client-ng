@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import { radToDeg, degToRad, UTCToMsec } from '../../lib/utils.js';
 import { minTurnAngle } from '../../lib/nav.js';
+import { solBoatPolicy } from '../../lib/sol.js';
 import polarModule from './polar';
 import steeringModule from './steering';
 import instrumentModule from './instruments';
@@ -103,14 +104,7 @@ export default {
       if (!rootGetters['solapi/isProductionServer']) {
         return true;
       }
-      if (getters.isGuestBoat) {
-        return false;
-      }
-      /* sol & PR marks control allowed only during pre-race practice */
-      if (getters.isSolBoat || getters.isPracticeMark) {
-        return rootGetters['race/isPracticePeriod'];
-      }
-      return true;
+      return solBoatPolicy(state.name, rootGetters);
     },
   },
 
