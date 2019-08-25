@@ -6,7 +6,7 @@
        id = "zoom-button"
        class = "tool-button"
        ref = "zoom-out-button"
-       @click.prevent = "onClick"
+       @mousedown.prevent = "onClick"
     >
       &#x2013;
     </div>
@@ -16,10 +16,12 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
+import { mouseDownRepeatMixin } from './mousedownrepeat.js';
 import { LControl } from 'vue2-leaflet';
 
 export default {
   name: 'ZoomOutButton',
+  mixins: [ mouseDownRepeatMixin ],
   components: {
     'l-control': LControl,
   },
@@ -38,14 +40,22 @@ export default {
     onClick (ev) {
       if (!ev.altKey) {
         this.map.zoomOut();
+        this.mouseDownRepeatOnMouseDown();
       } else {
         this.map.flyTo(this.map.getCenter(), this.minZoom);
       }
     },
+    onRepeat () {
+      this.map.zoomOut(0.6);
+    },
   },
- mounted () {
-   L.DomEvent.disableClickPropagation(this.$refs['zoom-out-button']);
- },
+  mounted () {
+    L.DomEvent.disableClickPropagation(this.$refs['zoom-out-button']);
+    this.$on('clickrepeat', this.onRepeat);
+  },
+  beforeDestroy () {
+    this.$off('clickrepeat', this.onRepeat);
+  },
 }
 </script>
 

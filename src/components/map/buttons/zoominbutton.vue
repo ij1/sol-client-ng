@@ -6,7 +6,7 @@
        id = "zoom-button"
        class = "tool-button"
        ref = "zoom-in-button"
-       @click.prevent = "onClick"
+       @mousedown.prevent = "onClick"
     >
       +
     </div>
@@ -16,10 +16,12 @@
 <script>
 import L from 'leaflet';
 import { LControl } from 'vue2-leaflet';
+import { mouseDownRepeatMixin } from './mousedownrepeat.js';
 import { OLD_CLIENT_MAXZOOM } from '../../../lib/sol.js';
 
 export default {
   name: 'ZoomInButton',
+  mixins: [ mouseDownRepeatMixin ],
   components: {
     'l-control': LControl,
   },
@@ -33,14 +35,22 @@ export default {
     onClick (ev) {
       if (!ev.altKey) {
         this.map.zoomIn();
+        this.mouseDownRepeatOnMouseDown();
       } else {
         this.map.flyTo(this.map.getCenter(), OLD_CLIENT_MAXZOOM);
       }
     },
+    onRepeat () {
+      this.map.zoomIn(0.6);
+    },
   },
- mounted () {
-   L.DomEvent.disableClickPropagation(this.$refs['zoom-in-button']);
- },
+  mounted () {
+    L.DomEvent.disableClickPropagation(this.$refs['zoom-in-button']);
+    this.$on('clickrepeat', this.onRepeat);
+  },
+  beforeDestroy () {
+    this.$off('clickrepeat', this.onRepeat);
+  },
 }
 </script>
 
