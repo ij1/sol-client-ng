@@ -253,7 +253,7 @@ export default {
       this.configTree = groups;
     },
     localStorageKey(cfg) {
-      return 'sol-cfg:' + cfg.base + ':' + cfg.path
+      return 'sol-cfg:' + cfg.base + ':' + cfg.path;
     },
   },
   watch: {
