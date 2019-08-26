@@ -45,6 +45,7 @@
           />
         </div>
       </div>
+      <button @click.prevent = "onClear">Clear Local Storage</button>
     </div>
   </popup-window>
 </template>
@@ -254,6 +255,23 @@ export default {
     },
     localStorageKey(cfg) {
       return 'sol-cfg:' + cfg.base + ':' + cfg.path;
+    },
+    onClear () {
+      this.resetToDefaults();
+      let clearlist = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('sol-')) {
+          clearlist.push(key);
+        }
+      }
+      try {
+        for (const key of clearlist) {
+          localStorage.removeItem(key);
+        }
+      } catch(err) {
+        // NOP
+      }
     },
   },
   watch: {
