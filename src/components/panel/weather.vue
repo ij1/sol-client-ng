@@ -4,7 +4,7 @@
       <div
         id = "weather-slider"
         ref = "weatherslider"
-        @click = "onClick"
+        @mousedown = "onMouseDown"
       >
         <div
           id = "weather-slider-fg"
@@ -76,6 +76,7 @@ export default {
       playTimer: null,
       tickInterval: 100,
       sliderZeroPx: 8,
+      draggingSlider: false,
 
       weatherTimescales: [
         {
@@ -237,7 +238,7 @@ export default {
       }
       this.setTime(value);
     },
-    onClick (ev) {
+    onDragTo (ev) {
       const pt = L.DomEvent.getMousePosition(ev, this.$refs.weatherslider);
       const x = Math.floor(pt.x) - this.sliderZeroPx / 2;
       let frac = x / (this.$refs.weatherslider.offsetWidth - this.sliderZeroPx);
@@ -245,6 +246,32 @@ export default {
       frac = Math.max(0, frac);
       this.setTime(Math.round(frac * this.offsetMax));
     },
+    onMouseMove (ev) {
+      this.onDragTo(ev);
+    },
+    onMouseDown (ev) {
+      if (!this.wxLoaded) {
+        return;
+      }
+      this.draggingSlider = true;
+      window.addEventListener('mousemove', this.onMouseMove);
+      this.onDragTo(ev);
+    },
+    onMouseUp () {
+      if (this.draggingSlider) {
+        window.removeEventListener('mousemove', this.onMouseMove);
+      }
+      this.draggingSlider = false;
+    },
+  },
+  mounted () {
+    window.addEventListener('mouseup', this.onMouseUp);
+  },
+  beforeDestroy () {
+    window.removeEventListener('mouseup', this.onMouseUp);
+    if (this.draggingSlider) {
+      window.removeEventListener('mousemove', this.onMouseMove);
+    }
   },
 }
 </script>
