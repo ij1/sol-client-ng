@@ -198,7 +198,7 @@ export default {
 #countrylist-table {
   width: 100%;
   height: 100%;
-  font-size: 10px;
+  font-size: 11px;
 }
 .countrylist-row {
   background: #ffffff;

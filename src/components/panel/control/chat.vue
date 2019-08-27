@@ -193,7 +193,7 @@ export default {
 .chat-channel {
   height: 100%;
   max-height: 100%;
-  font-size: 9px;
+  font-size: 11px;
   display: flex;
   flex-direction: column;
 }
@@ -202,7 +202,7 @@ export default {
   flex: none;
   display: flex;
   text-align: left;
-  font-size: 10px;
+  font-size: 11px;
   padding-bottom: 5px;
   justify-content: space-between;
 }
@@ -212,7 +212,7 @@ export default {
 }
 
 #chat-channel-selector {
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .chat-channel-close {
@@ -244,9 +244,9 @@ export default {
 }
 .chat-name {
   float: left;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: bold;
-  padding-right: 10px;
+  padding-right: 11px;
 }
 .chat-time {
 }

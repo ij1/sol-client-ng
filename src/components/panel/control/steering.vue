@@ -451,7 +451,7 @@ export default {
 
 <style scoped>
 #steering {
-  font-size: 10px;
+  font-size: 12px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -460,7 +460,7 @@ export default {
   text-align: left;
 }
 .steering-input-box {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
 }
 .flex-space {

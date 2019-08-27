@@ -126,12 +126,12 @@ export default {
 #misc {
   width: 100%;
   height: 100%;
-  font-size: 10px;
+  font-size: 11px;
   text-align: left;
   overflow-y: auto;
 }
 .misc-header {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
 }
 #banner-container {

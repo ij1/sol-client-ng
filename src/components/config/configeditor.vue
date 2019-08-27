@@ -288,11 +288,11 @@ export default {
   overflow-y: auto;
 }
 .config-content {
-  font-size: 10px;
+  font-size: 12px;
   text-align: left;
 }
 .config-header {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: bold;
 }
 </style>

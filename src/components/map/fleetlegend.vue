@@ -80,7 +80,7 @@ export default {
 #legend-info {
   text-align: left;
   margin: 2px;
-  font-size: 10px;
+  font-size: 11px;
 }
 .legend-row {
   margin: 1px;

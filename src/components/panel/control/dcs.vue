@@ -153,7 +153,7 @@ export default {
   margin: 2px;
 }
 #dc-table {
-  font-size: 10px;
+  font-size: 12px;
   height: calc(100% - 32px);
 }
 #dc-table tr {

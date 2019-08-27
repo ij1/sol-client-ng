@@ -188,7 +188,7 @@ export default {
   width: 100%;
 }
 .leaderboard-search input {
-  font-size: 10px;
+  font-size: 11px;
 }
 #leaderboard-boatlist {
   width: 100%;
@@ -198,7 +198,7 @@ export default {
   text-align: right;
 }
 .leaderboard-buttons button {
-  font-size: 10px;
+  font-size: 11px;
   margin: 2px;
 }
 </style>

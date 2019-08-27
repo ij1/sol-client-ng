@@ -37,6 +37,6 @@ export default {
 
 <style scoped>
 input[checkbox] {
-  font-size: 10px;
+  font-size: 11px;
 }
 </style>

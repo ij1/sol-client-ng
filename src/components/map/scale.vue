@@ -65,6 +65,6 @@ export default {
   color: #000;
   border: 1px solid #000;
   border-top: 0px;
-  font-size: 10px;
+  font-size: 11px;
 }
 </style>
