@@ -82,27 +82,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-#fleet-info-ctrl {
-  pointer-events: none;
-  margin: 2px;
-}
-#fleet-info {
-  text-align: left;
-  margin: 2px;
-  font-size: 10px;
-}
-.fleet-row {
-  margin: 1px;
-}
-.color-block {
-  display: inline-block;
-  width: 12px;
-  min-width: 12px;
-  height: 12px;
-}
-.boat-ranking, .boat-name {
-  margin: 2px;
-}
-</style>
