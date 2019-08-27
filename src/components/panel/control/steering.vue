@@ -212,7 +212,7 @@ export default {
       return (Number.isFinite(delay) && delay >= 0);
     },
     isDelayStart () {
-      return (this.delay === 'start') &&
+      return (this.delay.toLowerCase() === 'start') &&
              !this.$store.getters['race/isRaceStarted'];
     },
     isDelayHourMin () {
