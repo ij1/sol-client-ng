@@ -23,7 +23,7 @@
     </div>
     <div>
       <div class="misc-header">Main Frameworks and Libraries Used</div>
-      <ul>
+      <ul class="misc-small">
         <li
           v-for = "library in libraries"
           :key = "library.name"
@@ -126,13 +126,16 @@ export default {
 #misc {
   width: 100%;
   height: 100%;
-  font-size: 11px;
+  font-size: 12px;
   text-align: left;
   overflow-y: auto;
 }
 .misc-header {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
+}
+.misc-small {
+  font-size: 11px;
 }
 #banner-container {
   position: relative;
