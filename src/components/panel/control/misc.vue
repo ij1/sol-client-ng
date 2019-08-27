@@ -34,7 +34,7 @@
     </div>
     <div>
       <div class="misc-header">About</div>
-      <div>
+      <div class="misc-small">
         Version identifier {{version}} (GPL v2) ij 2018-2019.
       </div>
     </div>
