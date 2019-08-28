@@ -28,5 +28,7 @@ export default {
   transform: translate(-50%, 0);
   border: 1px solid #f0f0f0;
   background-image: linear-gradient(#f0f0f0, #101010);
+  display: flex;
+  flex-direction: row;
 }
 </style>
