@@ -282,7 +282,7 @@ export default {
   width: 630px;
   height: 40px;
   left: 50%;
-  bottom: 35px;
+  bottom: 42px;
   margin-right: -50%;
   transform: translate(-50%, 0);
   border: 1px solid #f0f0f0;

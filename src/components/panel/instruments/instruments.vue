@@ -26,8 +26,8 @@ export default {
   bottom: 0;
   margin-right: -50%;
   transform: translate(-50%, 0);
-  border: 1px solid #f0f0f0;
-  background-image: linear-gradient(#f0f0f0, #101010);
+  border: 1px solid #c0c0c0;
+  background-image: linear-gradient(#f0f0f0, #707070);
   display: flex;
   flex-direction: row;
 }

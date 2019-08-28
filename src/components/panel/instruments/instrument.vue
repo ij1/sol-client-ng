@@ -36,7 +36,7 @@ export default {
           return col;
         }
       }
-      return '#00ff00';
+      return '#000000';
     }
   },
   filters: {
@@ -57,12 +57,12 @@ export default {
 .boat-instrument {
   min-width: 55px;
   padding: 3px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #c0c0c0;
   border-right: none;
 }
 
 .boat-instrument:last-child {
-  border-right: 1px solid #f0f0f0;
+  border-right: 1px solid #c0c0c0;
 }
 
 .boat-instrument-label {
@@ -71,7 +71,7 @@ export default {
 }
 
 .boat-instrument-value {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
   text-align: right;
 }
