@@ -279,7 +279,7 @@ export default {
 <style scoped>
 #weather-panel {
   position: absolute;
-  width: 600px;
+  width: 630px;
   height: 40px;
   left: 50%;
   bottom: 35px;
