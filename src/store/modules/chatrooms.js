@@ -221,25 +221,23 @@ export default {
             const c = chatRaw[i];
             const timestamp = UTCToMsec(c.t);
             if (timestamp === null) {
-              dispatch('notifications/add', {
-                text: 'Dropped message from ' + c.name + ' due to invalid timestamp: "' + c.t + '"',
-              }, {root: true});
+              dispatch('diagnostics/add',
+                       'Dropped message from ' + c.name + ' due to invalid timestamp: "' + c.t + '"',
+                       {root: true});
               continue;
             }
             const msg = c.msg.trim()
                           .replace(/\r\n?/g, '\n')
                           .replace(/\n/g, '<br>');
             if (msg.length === 0) {
-              dispatch('notifications/add', {
-                text: 'Dropped empty message from ' + c.name,
-              }, {root: true});
+              dispatch('diagnostics/add',
+                       'Dropped empty message from ' + c.name, {root: true});
               continue;
             }
 
             if ((typeof lastMsg !== 'undefined') && msg === lastMsg) {
-              dispatch('notifications/add', {
-                text: 'Dropped duplicated message from ' + c.name,
-              }, {root: true});
+              dispatch('diagnostics/add',
+                       'Dropped duplicated message from ' + c.name, {root: true});
               continue;
             }
 
