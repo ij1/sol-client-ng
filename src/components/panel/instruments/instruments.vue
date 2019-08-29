@@ -21,13 +21,6 @@ export default {
 
 <style scoped>
 #boat-instruments {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  margin-right: -50%;
-  transform: translate(-50%, 0);
-  border: 1px solid #c0c0c0;
-  background-image: linear-gradient(#f0f0f0, #707070);
   display: flex;
   flex-direction: row;
 }

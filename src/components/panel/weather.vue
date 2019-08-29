@@ -278,16 +278,9 @@ export default {
 
 <style scoped>
 #weather-panel {
-  position: absolute;
   width: 630px;
-  height: 40px;
-  left: 50%;
-  bottom: 42px;
-  margin-right: -50%;
-  transform: translate(-50%, 0);
   border: 1px solid #f0f0f0;
   background: #ddd;
-  mix-blend-mode: multiply;
 }
 #weather-slider-container {
   position: relative;

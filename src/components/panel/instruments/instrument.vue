@@ -57,12 +57,14 @@ export default {
 .boat-instrument {
   min-width: 55px;
   padding: 3px;
-  border: 1px solid #c0c0c0;
+  border: 2px solid #c0c0c0;
   border-right: none;
+  border-bottom: 0px;
+  background-image: linear-gradient(#f0f0f0, #707070);
 }
 
 .boat-instrument:last-child {
-  border-right: 1px solid #c0c0c0;
+  border-right: 2px solid #c0c0c0;
 }
 
 .boat-instrument-label {

@@ -13,8 +13,7 @@
     >
       <div id = "left-div" splitpanes-size = "80">
         <map-view ref="map"/>
-        <weather-panel/>
-        <boat-instruments/>
+        <bottom-panel/>
       </div>
       <div id = "right-div" splitpanes-size = "20">
         <control-panel-switcher/>
@@ -33,8 +32,7 @@ import NotificationsPopup from './components/notificationspopup.vue';
 import ConfigEditor from './components/config/configeditor.vue';
 import RaceMessagesPopup from './components/racemessagespopup.vue';
 import Map from './components/map/map.vue';
-import BoatInstruments from './components/panel/instruments/instruments.vue';
-import WeatherPanel from './components/panel/weatherwrapper.vue';
+import BottomPanel from './components/panel/bottompanel.vue';
 import ControlPanelSwitcher from './components/panel/control/switcher.vue';
 
 export default {
@@ -46,8 +44,7 @@ export default {
     'config-editor': ConfigEditor,
     'race-messages-popup': RaceMessagesPopup,
     'map-view': Map,
-    'boat-instruments': BoatInstruments,
-    'weather-panel': WeatherPanel,
+    'bottom-panel': BottomPanel,
     'control-panel-switcher': ControlPanelSwitcher,
   },
   methods: {
