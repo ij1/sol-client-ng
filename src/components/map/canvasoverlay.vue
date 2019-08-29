@@ -10,6 +10,7 @@ import { mapState } from 'vuex';
 import L from 'leaflet';
 import WindMap from './wind';
 import SteeringPredictors from './predictors';
+import { canvasAlignToPixelCenter } from '../../lib/quirks.js';
 
 export default {
   name: 'CanvasOverlay',
@@ -59,9 +60,11 @@ export default {
 
       if (this.ready) {
         ctx.save();
+        canvasAlignToPixelCenter(ctx);
         this.$refs['wind-map'].redraw(ctx);
         ctx.restore();
         ctx.save();
+        canvasAlignToPixelCenter(ctx);
         this.$refs['steering-predictors'].redraw(ctx);
         ctx.restore();
       }
