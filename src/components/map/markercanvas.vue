@@ -22,6 +22,7 @@
 
 <script>
 import { LIcon, LMarker } from 'vue2-leaflet';
+import { canvasAlignToPixelValue } from '../../lib/quirks.js';
 
 export default {
   name: 'MarkerCanvas',
@@ -64,7 +65,8 @@ export default {
   methods: {
     initCanvas () {
       let ctx = this.canvas.getContext('2d');
-      ctx.translate(this.iconCenter[0] + 0.5, this.iconCenter[1] + 0.5);
+      ctx.translate(this.iconCenter[0] + canvasAlignToPixelValue,
+                    this.iconCenter[1] + canvasAlignToPixelValue);
 
       this.$emit('draw', ctx);
     },
@@ -81,8 +83,8 @@ export default {
       if (this.canvasReady) {
         let ctx = this.canvas.getContext('2d');
 
-        ctx.clearRect(-(this.iconCenter[0] + 0.5),
-                      -(this.iconCenter[1] + 0.5),
+        ctx.clearRect(-(this.iconCenter[0] + canvasAlignToPixelValue),
+                      -(this.iconCenter[1] + canvasAlignToPixelValue),
                       this.canvas.width, this.canvas.height);
         this.$emit('draw', ctx);
       }
