@@ -67,7 +67,7 @@ export default {
       arrowsBarbs: {
         value: 'arrows',
         type: 'values',
-        values: ['arrows', 'barbs'],
+        values: ['arrows', 'barbs', 'none'],
         cfgText: 'Wind arrows / barbs',
       },
       start24h: {

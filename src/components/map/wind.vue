@@ -17,6 +17,9 @@ export default {
     useArrows () {
       return this.cfgArrowsBarbs === 'arrows';
     },
+    useBarbs () {
+      return this.cfgArrowsBarbs === 'barbs';
+    },
     needsRedraw () {
       /* Dummy access for the dependencies */
       this.wxLoaded;
@@ -74,7 +77,7 @@ export default {
                 ctx.moveTo(0, -lw-2);
                 ctx.lineTo(0, -len);
                 ctx.stroke();
-              } else {
+              } else if (this.useBarbs) {
                 let fiveScale = Math.round(wind.knots / 5);
                 const hemi = windPoint.lat > 0 ? 1 : -1;
                 ctx.beginPath();
