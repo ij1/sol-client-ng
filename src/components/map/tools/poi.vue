@@ -37,6 +37,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import L from 'leaflet';
 import { LLayerGroup, LMarker, LIcon, LPopup } from 'vue2-leaflet';
 import PoiInfo from './poiinfo.vue';
 import MapPolar from '../mappolar.vue';
@@ -72,7 +73,7 @@ export default {
         closeOnClick: false,
         autoPan: false,
       },
-      wrapList: [-360, 0, 360],
+      baseWrapList: [-360, 0, 360],
       iconUrl: iconUrl,
       recursionTrap: false,
     }
@@ -92,8 +93,36 @@ export default {
     open () {
       return this.poi.open;
     },
+    /*
+     * Chrome has buggy mix-blend-mode when large translates are used and
+     * only blank is displayed instead of the popup when the problem
+     * manifests. Our wrapped copies may have rather large translate
+     * which leads to problems in displaying the popups if all
+     * copies are opened at once. Hack around that by showing only the
+     * popups that fit inside the current view.
+     *
+     * FIXME: it would be better to enlarge the filter from the current
+     * screen to avoid some annoying open/close transients.
+     */
+    chromeFilterRegion () {
+      if (!L.Browser.chrome) {
+        return null;
+      }
+      return this.viewBounds;
+    },
+    wrapList () {
+      if (this.chromeFilterRegion === null) {
+        return this.baseWrapList;
+      }
+
+      return this.baseWrapList.filter(i => {
+        return this.chromeFilterRegion.contains(latLngAddOffset(this.poi.latLng, i));
+      });
+    },
+
     ...mapState({
       wxTime: state => state.weather.time,
+      viewBounds: state => state.map.bounds,
     }),
   },
   methods: {
@@ -104,7 +133,7 @@ export default {
       this.$store.commit('ui/poi/toggleButterfly', this.poi.id);
     },
     updatePopupState () {
-      if (this.recursionTrap) {
+      if (this.recursionTrap || (typeof this.$refs.popupctrl === "undefined")) {
         return;
       }
       this.recursionTrap = true;
@@ -118,12 +147,18 @@ export default {
       this.recursionTrap = false;
     },
     onOpen () {
+      if (this.recursionTrap) {
+        return;
+      }
       this.$store.commit('ui/poi/setOpen', {
         id: this.poi.id,
         open: true,
       });
     },
     onClose () {
+      if (this.recursionTrap) {
+        return;
+      }
       this.$store.commit('ui/poi/setOpen', {
         id: this.poi.id,
         open: false,
@@ -135,11 +170,20 @@ export default {
     open () {
       this.updatePopupState();
     },
+    wrapList () {
+      this.updatePopupState();
+    },
   },
   mounted () {
     this.$nextTick(() => {
       this.updatePopupState();
     });
   },
+  beforeUpdate () {
+    this.recursionTrap = true;
+  },
+  updated () {
+    this.recursionTrap = false;
+  }
 }
 </script>
