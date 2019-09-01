@@ -9,9 +9,7 @@
         :options = "poiOptions"
         ref = "popupctrl"
       >
-        <l-icon
-          :icon-url = "iconUrl">
-        </l-icon>
+        <l-icon :icon-url = "iconUrl"/>
         <l-popup
           :options="popupOptions"
           @add = "onOpen"
