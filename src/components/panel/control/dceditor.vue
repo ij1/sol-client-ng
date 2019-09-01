@@ -77,6 +77,7 @@ export default {
       value: dcTwaTextPrefix(this.dcToEdit) +
              roundToFixed(radToDeg(this.dcToEdit.value), 3),
       origDc: Object.assign({}, this.dcToEdit),
+      sending: false,
     }
   },
   computed: {
@@ -85,7 +86,7 @@ export default {
       return UTCToMsec(date);
     },
     canSend () {
-      return this.valid && this.dirty &&
+      return !this.sending && this.valid && this.dirty &&
              (this.newTime !== null) && (this.boatTime <= this.newTime);
     },
     disabledDates () {
@@ -146,6 +147,7 @@ export default {
       const now = this.$store.getters['time/now']();
       // FIXME: is 500 msecs correction ok or should it be something else?
       let timeDelta = Math.max(this.newTime - now - 500, 0);
+      this.sending = true;
 
       Promise.all([
         this.$store.dispatch('boat/steering/sendSteeringCommand', {
@@ -161,6 +163,7 @@ export default {
         if ((status[0] === 'OK') && (status[1] === 'OK')) {
           this.$emit('close');
         } else {
+          this.sending = false;
           this.$store.dispatch('notifications/add', {
             text: 'DC change failed, please check your DCs!',
             color: 'red',
