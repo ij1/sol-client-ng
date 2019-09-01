@@ -93,6 +93,10 @@ export default {
       return state.name.startsWith('Practice_Mark');
     },
     publicBoat: (state, getters) => {
+      /* Prevent state.name related races */
+      if (state.name === null) {
+        return true;
+      }
       return getters.isGuestBoat || getters.isSolBoat || getters.isPracticeMark;
     },
     allowControl: (state, getters, rootState, rootGetters) => {
