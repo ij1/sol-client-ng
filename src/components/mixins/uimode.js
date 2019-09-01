@@ -7,7 +7,7 @@ export let uiModeMixin = {
     return {
       uiModeData: {
         clickTimer: null,
-        clickTimerDelay: 200,
+        clickTimerDelay: 250,
         clickDragLimit: 40,
         inClick: false,
         eventData: null,
