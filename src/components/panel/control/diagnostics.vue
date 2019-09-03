@@ -1,6 +1,9 @@
 <template>
   <div id = "client-diagnostics">
     <div>
+      <div>Browser id:{{browserId}}</div>
+    </div>
+    <div>
       <div>Errors:</div>
       <div
          v-for = "apiCall in erroredApiCalls"
@@ -26,6 +29,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import L from 'leaflet';
 import { msecToUTCString } from '../../../lib/utils.js';
 
 export default {
@@ -42,6 +46,15 @@ export default {
       return Object.keys(this.$store.state.solapi.errorLog).sort((a, b) => {
         return a.localeCompare(b);
       });
+    },
+    browserId () {
+      let id = "";
+      for (let i of Object.keys(L.Browser)) {
+        if (L.Browser[i] === true) {
+          id += " " + i;
+        }
+      }
+      return id;
     },
     ...mapState({
       diagnosticsMessages: state => state.diagnostics.messages,
