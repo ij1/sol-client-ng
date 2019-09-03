@@ -9,6 +9,7 @@ export default {
     center: L.latLng(0, 0),
     zoom: 3,
     bounds: L.latLngBounds([-1, -1], [1, 1]),      /* dummy initial value */
+    tripleBounds: L.latLngBounds([-1, -1], [1, 1]),/* dummy initial value */
     wrapList: [-360, 0, 360],
     minZoom: 1,
     hoverLatLng: null,
@@ -48,11 +49,13 @@ export default {
       state.center = view.center;
       state.zoom = view.zoom;
       state.bounds = view.bounds;
+      state.tripleBounds = view.tripleBounds;
       state.viewUpdateStamp++;
     },
     setSize(state, size) {
       state.size = size.size;
       state.bounds = size.bounds;
+      state.tripleBounds = size.tripleBounds;
       state.viewUpdateStamp++;
     },
     setWrapList(state, wrapList) {

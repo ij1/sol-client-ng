@@ -187,12 +187,19 @@ export default {
   },
 
   methods: {
+    tripleBounds (size) {
+      return L.latLngBounds(
+        this.map.containerPointToLatLng(L.point(-size.x, -size.y)),
+        this.map.containerPointToLatLng(L.point(size.x * 2, size.y * 2))
+      );
+    },
     updateView() {
       const center = this.map.getCenter();
       this.$store.commit('map/setView', {
         center: center,
         zoom: this.map.getZoom(),
         bounds: this.map.getBounds(),
+        tripleBounds: this.tripleBounds(this.map.getSize()),
       });
       this.$store.commit('boat/updateLngOffset', center.lng);
       this.updateWrapList();
@@ -202,9 +209,11 @@ export default {
       }
     },
     setSize () {
+      const size = this.map.getSize();
       this.$store.commit('map/setSize', {
-        size: this.map.getSize(),
+        size: size,
         bounds: this.map.getBounds(),
+        tripleBounds: this.tripleBounds(size),
       });
       this.updateWrapList();
     },
