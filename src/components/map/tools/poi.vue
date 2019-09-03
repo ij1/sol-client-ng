@@ -168,8 +168,23 @@ export default {
     open () {
       this.updatePopupState();
     },
-    wrapList () {
-      this.updatePopupState();
+    wrapList (newVal, oldVal) {
+      let update = false;
+      if (newVal.length !== oldVal.length) {
+        update = true;
+      } else {
+        for (let i = 0; i < newVal.length; i++) {
+          if (newVal[i] !== oldVal[i]) {
+            update = true;
+            break;
+          }
+        }
+      }
+      if (update) {
+        this.$nextTick(() => {
+          this.updatePopupState();
+        });
+      }
     },
   },
   mounted () {
