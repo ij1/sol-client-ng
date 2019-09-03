@@ -98,15 +98,12 @@ export default {
      * which leads to problems in displaying the popups if all
      * copies are opened at once. Hack around that by showing only the
      * popups that fit inside the current view.
-     *
-     * FIXME: it would be better to enlarge the filter from the current
-     * screen to avoid some annoying open/close transients.
      */
     chromeFilterRegion () {
       if (!L.Browser.chrome) {
         return null;
       }
-      return this.viewBounds;
+      return this.tripleBounds;
     },
     wrapList () {
       if (this.chromeFilterRegion === null) {
@@ -120,7 +117,7 @@ export default {
 
     ...mapState({
       wxTime: state => state.weather.time,
-      viewBounds: state => state.map.bounds,
+      tripleBounds: state => state.map.tripleBounds,
     }),
   },
   methods: {
