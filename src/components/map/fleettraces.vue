@@ -46,7 +46,7 @@ export default {
       return true;
     },
     ...mapGetters({
-      'showIds': 'race/fleet/showIds',
+      'showIds': 'race/fleet/combinedIds',
       currentFilter: 'ui/boatlists/currentFilter',
       applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
       fleetBoatFromId: 'race/fleet/boatFromId',
