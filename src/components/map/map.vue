@@ -54,6 +54,17 @@
       <map-scale v-if = "map !== null" :map = "map"/>
       <fleet-hover v-if = "map !== null" :map = "map"/>
       <fleet-legend v-if = "map !== null"/>
+
+      <div
+        v-if = "mousePos !== null"
+        :style = "{top: mousePos.y + 'px'}"
+        class = "aimline hline"
+      />
+      <div
+        v-if = "mousePos !== null"
+        :style = "{left: mousePos.x + 'px'}"
+        class = "aimline vline"
+      />
     </l-map>
   </div>
 </template>
@@ -368,5 +379,22 @@ export default {
   background-color: #ddd;
   font-weight: bold;
   overflow: hidden;
+}
+
+.aimline {
+  position: absolute;
+  background: #ddd;
+  mix-blend-mode: multiply;
+  z-index: 999;
+}
+
+.hline {
+  width: 100%;
+  height: 1px;
+}
+
+.vline {
+  width: 1px;
+  height: 100%;
 }
 </style>
