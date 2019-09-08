@@ -36,6 +36,15 @@ export default {
         type: 'values',
         cfgText: 'Lat/Lon format',
       },
+      cursorLines: {
+        value: 'none',
+        values: [
+          ['none', "None"],
+          ['normal', "Horizontal and vertical"],
+        ],
+        type: 'values',
+        cfgText: 'Auxiliary cursor lines',
+      },
     },
   },
 

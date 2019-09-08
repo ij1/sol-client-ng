@@ -56,12 +56,12 @@
       <fleet-legend v-if = "map !== null"/>
 
       <div
-        v-if = "mousePos !== null"
+        v-if = "showCursorAid"
         :style = "{top: mousePos.y + 'px'}"
         class = "aimline hline"
       />
       <div
-        v-if = "mousePos !== null"
+        v-if = "showCursorAid"
         :style = "{left: mousePos.x + 'px'}"
         class = "aimline vline"
       />
@@ -163,12 +163,17 @@ export default {
     }
   },
   computed: {
+    showCursorAid () {
+      return (this.cfgCursorLines === 'normal') &&
+             (this.mousePos !== null);
+    },
     ...mapState({
       raceLoaded: state => state.race.loaded,
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
       mapWrapList: state => state.map.wrapList,
+      cfgCursorLines: state => state.ui.cfg.cursorLines.value,
     }),
     ...mapGetters({
       mapMinWrap: 'map/mapMinWrap',
