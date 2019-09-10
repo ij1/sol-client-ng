@@ -391,6 +391,7 @@ export default {
   background: #ddd;
   mix-blend-mode: multiply;
   z-index: 999;
+  pointer-events: none;
 }
 
 .hline {
