@@ -272,8 +272,20 @@ export default {
       return state.tracesTime + state.tracesFetchInterval;
     },
 
+    selectedFiltered: (state, getters, rootState, rootGetters) => {
+      let res = Object.assign({}, state.selected);
+      for (const id of Object.keys(state.selected)) {
+        const boat = getters.boatFromId(id);
+        if (!solBoatPolicy(boat.name, rootGetters) ||
+            !rootGetters['ui/boatlists/applyFilterToBoat'](boat)) {
+          delete res['' + id];
+        }
+      }
+      return res;
+    },
+
     selectedSorted: (state, getters) => {
-      return sortedIdList(Object.keys(state.selected), getters);
+      return sortedIdList(Object.keys(getters.selectedFiltered), getters);
     },
     hoverSorted: (state, getters) => {
       return sortedIdList(Object.keys(state.hover), getters);

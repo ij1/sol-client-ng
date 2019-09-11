@@ -107,11 +107,11 @@ export default {
       boatlists: state => state.ui.boatlists.boatlists,
       activeBoatlist: state => state.ui.boatlists.activeList,
       filterListKey: state => state.ui.boatlists.filterList,
-      selectedObj: state => state.race.fleet.selected,
       hoverList: state => state.race.fleet.hover,
     }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
+      selectedObj: 'race/fleet/selectedFiltered',
       currentFilter: 'ui/boatlists/currentFilter',
       applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
     }),
@@ -120,14 +120,6 @@ export default {
     updateSelection (newSelected) {
       /* Make sure the inputted object is not shared into vuex */
       newSelected = Object.assign({}, newSelected);
-
-      if (this.currentFilter) {
-        for (const id of Object.keys(newSelected)) {
-          if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
-            delete newSelected['' + id];
-          }
-        }
-      }
       this.$store.commit('race/fleet/setSelected', newSelected);
     },
     selectBoat (e) {
@@ -148,16 +140,6 @@ export default {
     onShowOnly (value) {
       this.$store.commit('ui/boatlists/setFilterList',
                          value ? this.boatlistKey : null);
-
-      /* Apply filter on currently selected boats */
-      if (value) {
-        for (const id of Object.keys(this.selectedObj)) {
-          if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
-            this.updateSelection(this.selectedObj);
-            break;
-          }
-        }
-      }
     },
     onDelete () {
       this.$store.commit('ui/boatlists/delete',
