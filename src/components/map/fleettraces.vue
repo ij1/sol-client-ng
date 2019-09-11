@@ -40,7 +40,6 @@ export default {
         return false;
       }
       if (this.currentFilter !== null) {
-        this.currentFilter.filterStamp;
         return this.applyFilterToBoat(this.fleetBoatFromId(this.leaderId));
       }
       return true;

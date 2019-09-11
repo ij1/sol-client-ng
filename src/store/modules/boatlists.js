@@ -71,6 +71,7 @@ export default {
         return true;
       }
       const currentFilter = getters.currentFilter;
+      currentFilter.filterStamp;		/* force dependency */
       if (((currentFilter.boats !== null) &&
            !currentFilter.boats.has(boat.name)) ||
           ((currentFilter.distance !== null) &&
