@@ -9,12 +9,14 @@ export const PROJECTION = L.CRS.EPSG3857;
 export const OLD_CLIENT_MAXZOOM = 16.8;
 export const OLD_CLIENT_MAXZOOM_ACCURATE = 16.8342;
 
+export const PR_MARK_BOAT = 'Practice_Mark_';
+
 /* Returns true if the boat is ok to draw / control */
 export function solBoatPolicy(boatname, rootGetters) {
   if (boatname === 'guest') {
     return false;
   }
-  if ((boatname === 'sol') || boatname.startsWith('Practice_Mark')) {
+  if ((boatname === 'sol') || boatname.startsWith(PR_MARK_BOAT)) {
     return rootGetters['race/isPracticePeriod'];
   }
   return true;

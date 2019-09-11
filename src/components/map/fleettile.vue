@@ -75,9 +75,9 @@ export default {
           }
 
           /* Practice marks */
-          if ((boat.ranking === 9999) && boat.name.startsWith('Practice_Mark')) {
+          if (boat.practiceMark) {
             ctx.arc(0, 0, 4, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgb(255, 0, 255)';
+            ctx.fillStyle = color;
             ctx.fill();
           } else {
             ctx.strokeStyle = color;

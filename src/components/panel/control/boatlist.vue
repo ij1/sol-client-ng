@@ -66,7 +66,7 @@ import ScrollableTable from './scrollabletable.vue';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
 import { roundToFixed } from '../../../lib/quirks.js';
-import { solBoatPolicy } from '../../../lib/sol.js';
+import { solBoatPolicy, PR_MARK_BOAT } from '../../../lib/sol.js';
 
 export default {
   name: 'BoatList',
@@ -135,7 +135,7 @@ export default {
         {
           dataField: 'name', th: 'Name',
           align: 'l', visible: true, localeSort: true,
-          dummyData: 'Practice_Mark_5',
+          dummyData: PR_MARK_BOAT + '5',
         },
         {
           dataField: 'dtg', th: 'DTF',

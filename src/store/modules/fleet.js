@@ -3,7 +3,7 @@ import L from 'leaflet';
 import rbush from 'rbush';
 import { minToMsec, secToMsec } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
-import { PROJECTION, EARTH_R, solBoatPolicy } from '../../lib/sol.js';
+import { PROJECTION, EARTH_R, solBoatPolicy, PR_MARK_BOAT } from '../../lib/sol.js';
 
 function addToName2id (state, name, id) {
   if (state.name2id.has(name)) {
@@ -94,6 +94,7 @@ export default {
         latLng: boatData.latLng,
         wrappedLatLng: boatData.wrappedLatLng,
         buddy: false,
+        practiceMark: boatData.name.startsWith(PR_MARK_BOAT),
         syc: null,
         country: null,
         trace: [boatData.wrappedLatLng],
@@ -113,6 +114,7 @@ export default {
             state.boat[idx].name = boat.name;
             addToName2id(state, boat.name, id);
             state.boat[idx].buddy = boat.buddy;
+            state.boat[idx].practiceMark = boat.practiceMark;
           }
 
           state.boat[idx].latLng = boat.latLng;
@@ -150,6 +152,7 @@ export default {
             lastRoundedMark: boat.lastRoundedMark,
             log: boat.log,
             buddy: boat.buddy,
+            practiceMark: boat.practiceMark,
             syc: false,
             country: null,
             trace: [boat.wrappedLatLng],
@@ -359,6 +362,7 @@ export default {
             boat.dbl = parseFloat(boat.dbl);
             boat.log = parseFloat(boat.log);
             boat.buddy = (boat.name.charAt(0) === '@');
+            boat.practiceMark = boat.name.startsWith(PR_MARK_BOAT);
 
             boat.lastRoundedMark = parseInt(boat.current_leg);
             delete boat.current_leg;
@@ -373,6 +377,8 @@ export default {
             delete boat.color_B;
             if (boat.buddy) {
               boat.color = { r: 255, g: 204, b: 0 };
+            } else if (boat.practiceMark) {
+              boat.color = { r: 255, g: 0, b: 255 };
             } else if (boat.ranking === 1) {
               boat.color = { r: 204, g: 0, b: 204 };
               leaderId = boat.id;

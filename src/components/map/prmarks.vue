@@ -23,7 +23,7 @@ import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LTooltip } from 'vue2-leaflet';
 import { degToRad, latLngAddOffset } from '../../lib/utils.js';
 import { gcCalc } from '../../lib/nav.js';
-import { EARTH_R, OLD_CLIENT_MAXZOOM_ACCURATE } from '../../lib/sol.js';
+import { EARTH_R, OLD_CLIENT_MAXZOOM_ACCURATE, PR_MARK_BOAT } from '../../lib/sol.js';
 
 export default {
   name: 'PrMarks',
@@ -51,7 +51,7 @@ export default {
       let i = 1;
       // eslint-disable-next-line
       while (true) {
-        const name = 'Practice_Mark_' + i;
+        const name = PR_MARK_BOAT + i;
         const markBoat = this.$store.getters['race/fleet/boatFromName'](name);
         if (markBoat === null) {
           break;
@@ -64,7 +64,7 @@ export default {
       const EARTH_CIRC = 2 * Math.PI * EARTH_R;
       let res = [];
       for (let i = 1; i < this.maxMark + 1; i++) {
-        const name = 'Practice_Mark_' + i;
+        const name = PR_MARK_BOAT + i;
         const markBoat = this.$store.getters['race/fleet/boatFromName'](name);
         if (markBoat === null) {
           break;
