@@ -66,6 +66,7 @@ import ScrollableTable from './scrollabletable.vue';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
 import { roundToFixed } from '../../../lib/quirks.js';
+import { solBoatPolicy } from '../../../lib/sol.js';
 
 export default {
   name: 'BoatList',
@@ -250,8 +251,12 @@ export default {
         return;
       }
       const id = this.sortedBoatList[index].id;
+      const boat = this.fleetBoatFromId(id);
+      if (!solBoatPolicy(boat.name, this.$store.getters)) {
+        return;
+      }
       if (this.currentFilter !== null) {
-        if (!this.applyFilterToBoat(this.fleetBoatFromId(id))) {
+        if (!this.applyFilterToBoat(boat)) {
           return;
         }
       }

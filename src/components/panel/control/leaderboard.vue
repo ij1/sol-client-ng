@@ -51,6 +51,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
+import { solBoatPolicy } from '../../../lib/sol.js';
 import BoatList from './boatlist.vue';
 
 export default {
@@ -124,6 +125,9 @@ export default {
     },
     selectBoat (e) {
       const boat = this.fleetBoatFromId(e.boatId);
+      if (!solBoatPolicy(boat.name, this.$store.getters)) {
+        return;
+      }
       if (this.currentFilter && !this.applyFilterToBoat(boat)) {
         return;
       }
