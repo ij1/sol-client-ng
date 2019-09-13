@@ -250,6 +250,7 @@ export default {
       this.onDragTo(ev);
     },
     onMouseDown (ev) {
+      ev.preventDefault();
       if (!this.wxLoaded) {
         return;
       }
