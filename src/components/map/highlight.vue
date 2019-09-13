@@ -90,6 +90,10 @@ export default {
         this.timer = setInterval(this.updateNow.bind(this), this.interval);
 
         if (!highlightInfo.keepMapPosition) {
+          /* Stop an ongoing pan animation before issuing the next one.
+           * Hopefully this resolves the misaligned fleet gridlayer issue.
+           */
+          this.map.stop();
           this.map.flyTo(targetLatLng);
         }
       });
