@@ -36,7 +36,7 @@ export default {
     }
   },
   computed: {
-    lastPosition: {
+    pendingPosition: {
       get () {
         return this.rulerPendingPosition;
       },
@@ -45,13 +45,13 @@ export default {
       }
     },
     aimSegment () {
-      if ((this.lastPosition === null) ||
+      if ((this.pendingPosition === null) ||
           (this.hoverLatLng === null) ||
-          this.lastPosition.equals(this.hoverLatLng)) {
+          this.pendingPosition.equals(this.hoverLatLng)) {
         return null;
       }
-      let segment = loxoCalc(this.lastPosition, this.hoverLatLng);
-      segment.line = [this.lastPosition, this.hoverLatLng];
+      let segment = loxoCalc(this.pendingPosition, this.hoverLatLng);
+      segment.line = [this.pendingPosition, this.hoverLatLng];
       return segment;
     },
     lastFixedSegment () {
@@ -68,21 +68,21 @@ export default {
   },
   methods: {
     addSegment (latLng) {
-      if (this.lastPosition.equals(latLng)) {
+      if (this.pendingPosition.equals(latLng)) {
         return;
       }
-      let newSegment = loxoCalc(this.lastPosition, latLng);
-      const wrappedPos = this.lastPosition.wrap();
+      let newSegment = loxoCalc(this.pendingPosition, latLng);
+      const wrappedPos = this.pendingPosition.wrap();
       const wrappedDst = L.latLng(latLng.lat,
-                                  latLng.lng + (wrappedPos.lng - this.lastPosition.lng));
+                                  latLng.lng + (wrappedPos.lng - this.pendingPosition.lng));
       newSegment.line = [wrappedPos, wrappedDst];
       this.$store.commit('ui/ruler/newSegment', newSegment);
-      this.lastPosition = latLng;
+      this.pendingPosition = latLng;
     },
     onSingleClick (e) {
       const latLng = e.latlng;
-      if (this.lastPosition === null) {
-        this.lastPosition = latLng;
+      if (this.pendingPosition === null) {
+        this.pendingPosition = latLng;
       } else {
         this.addSegment(latLng);
       }
@@ -91,16 +91,16 @@ export default {
       this.$store.dispatch('ui/cancelUiMode');
     },
     onCancel () {
-      if ((this.lastPosition !== null) &&
+      if ((this.pendingPosition !== null) &&
           (this.lastFixedSegment !== null)) {
-        if (this.lastPosition.equals(this.lastFixedSegment.line[1])) {
-          this.lastPosition = this.lastFixedSegment.line[0];
+        if (this.pendingPosition.equals(this.lastFixedSegment.line[1])) {
+          this.pendingPosition = this.lastFixedSegment.line[0];
         } else {
-          this.lastPosition = null;
+          this.pendingPosition = null;
           return;
         }
       } else {
-        this.lastPosition = null;
+        this.pendingPosition = null;
       }
       this.$store.commit('ui/ruler/delSegment');
     },
@@ -117,7 +117,7 @@ export default {
     this.$on('singleclick-early', this.onSingleClick);
   },
   beforeDestroy () {
-    this.lastPosition = null;
+    this.pendingPosition = null;
     window.removeEventListener('keyup', this.onCancelKey);
     this.$off('doubleclick', this.onDoubleClick);
     this.$off('singleclick-early', this.onSingleClick);
