@@ -26,6 +26,7 @@ export default {
     },
     delAll (state) {
       state.rulerSegments = [];
+      state.rulerPendingPosition = null;
     },
     setPendingPosition (state, pendingPosition) {
       state.rulerPendingPosition = pendingPosition;
