@@ -98,6 +98,7 @@ export default {
     },
     onCancelKey (e) {
       if (e.which === 8) {
+        e.preventDefault();
         this.onCancel();
       }
     },
