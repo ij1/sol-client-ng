@@ -280,8 +280,9 @@ export default {
 <style scoped>
 #weather-panel {
   width: 630px;
-  border: 1px solid #f0f0f0;
-  background: #ddd;
+  border: 1px solid rgba(220, 220, 220, 0.8);
+  border-bottom: 0px;
+  background: rgba(200, 200, 200, 0.8);
 }
 #weather-slider-container {
   position: relative;

@@ -30,6 +30,5 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  mix-blend-mode: multiply;
 }
 </style>
