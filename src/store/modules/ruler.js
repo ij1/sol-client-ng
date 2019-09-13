@@ -23,5 +23,8 @@ export default {
     delSegment (state) {
       state.rulerSegments.pop();
     },
+    delAll (state) {
+      state.rulerSegments = [];
+    },
   },
 }

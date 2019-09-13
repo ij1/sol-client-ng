@@ -381,6 +381,7 @@ export default {
   padding: 5px;
   border: 1px solid rgb(48, 48, 48, 0.6);
   border-radius: 3px;
+  margin-right: 2px;
   background-color: #ddd;
   font-weight: bold;
   overflow: hidden;

@@ -2,13 +2,24 @@
   <l-control
     :position = "'topleft'"
   >
-    <div
-      class = "tool-button"
-      ref = "ruler-button"
-      :style = "{color: rulerEnabled ? 'red' : 'black'}"
-      @click.prevent = "onClick"
-    >
-      Ruler
+    <div id = "ruler-container">
+      <div
+        class = "tool-button"
+        ref = "ruler-button"
+        :style = "{color: rulerEnabled ? 'red' : 'black'}"
+        @click.prevent = "onClick"
+      >
+        Ruler
+      </div>
+      <div
+        class = "tool-button"
+        ref = "del-all-button"
+        v-if = "rulerEnabled"
+        :style = "{color: rulerSegments.length === 0 ? 'grey' : 'black'}"
+        @click.prevent = "onDelAll"
+      >
+        Delete All
+      </div>
     </div>
   </l-control>
 </template>
@@ -27,6 +38,7 @@ export default {
     ...mapState({
       uiModeCancel: state => state.ui.uiModeCancel,
       rulerEnabled: state => state.ui.ruler.enabled,
+      rulerSegments: state => state.ui.ruler.rulerSegments,
     }),
   },
   methods: {
@@ -37,9 +49,24 @@ export default {
         newMode: newMode,
       });
     },
+    onDelAll () {
+      this.$store.commit('ui/ruler/delAll');
+    },
   },
   mounted () {
     L.DomEvent.disableClickPropagation(this.$refs['ruler-button']);
   },
+  updated () {
+    if (typeof this.$refs['del-all-button'] !== 'undefined') {
+      L.DomEvent.disableClickPropagation(this.$refs['del-all-button']);
+    }
+  },
 }
 </script>
+
+<style scoped>
+#ruler-container {
+  display: flex;
+  flex-direction: row;
+}
+</style>
