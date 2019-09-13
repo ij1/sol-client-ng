@@ -1,7 +1,21 @@
 const sailOffset = -6;
-const boatPath = new Path2D('M -3 11 C -5 7,-6 -1,0 -13 C 6 -1,5 7,3 11 Z');
-const sailPath = new Path2D('M 0 0 C -3 5,-3 12,0 17');
-const sailTwa0Path = new Path2D('M 0 0 L 0 17');
+
+/* Edge doesn't support SVG string in Path2D constructor. Thus, create the
+ * shapes one bit at a time instead.
+ */
+const boatPath = new Path2D();
+boatPath.moveTo(-3, 11);
+boatPath.bezierCurveTo(-5, 7, -6, -1, 0, -13);
+boatPath.bezierCurveTo(6, -1, 5, 7, 3, 11);
+boatPath.closePath();
+
+const sailPath = new Path2D();
+sailPath.moveTo(0, 0);
+sailPath.bezierCurveTo(-3, 5, -3, 12, 0, 17);
+
+const sailTwa0Path = new Path2D();
+sailTwa0Path.moveTo(0, 0);
+sailTwa0Path.lineTo(0, 17);
 
 export function drawBoat(ctx, course, twa) {
   const sangle = sailAngle(twa);
