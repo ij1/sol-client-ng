@@ -32,11 +32,18 @@ export default {
   },
   data () {
     return {
-      lastPosition: null,
       uiModeHandlingDblClicks: true,
     }
   },
   computed: {
+    lastPosition: {
+      get () {
+        return this.rulerPendingPosition;
+      },
+      set (value) {
+        this.$store.commit('ui/ruler/setPendingPosition', value);
+      }
+    },
     aimSegment () {
       if ((this.lastPosition === null) ||
           (this.hoverLatLng === null) ||
@@ -56,6 +63,7 @@ export default {
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
       rulerSegments: state => state.ui.ruler.rulerSegments,
+      rulerPendingPosition: state => state.ui.ruler.rulerPendingPosition,
     }),
   },
   methods: {
@@ -109,6 +117,7 @@ export default {
     this.$on('singleclick-early', this.onSingleClick);
   },
   beforeDestroy () {
+    this.lastPosition = null;
     window.removeEventListener('keyup', this.onCancelKey);
     this.$off('doubleclick', this.onDoubleClick);
     this.$off('singleclick-early', this.onSingleClick);

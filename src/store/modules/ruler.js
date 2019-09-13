@@ -4,6 +4,7 @@ export default {
   state: {
     enabled: false,
     rulerSegments: [],
+    rulerPendingPosition: null,
     segmentId: 0,
   },
 
@@ -25,6 +26,9 @@ export default {
     },
     delAll (state) {
       state.rulerSegments = [];
+    },
+    setPendingPosition (state, pendingPosition) {
+      state.rulerPendingPosition = pendingPosition;
     },
   },
 }
