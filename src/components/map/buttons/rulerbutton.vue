@@ -14,7 +14,7 @@
       <div
         class = "tool-button"
         ref = "del-all-button"
-        v-if = "rulerEnabled"
+        v-if = "rulerEnabled || rulerSegments.length > 0"
         :style = "{color: rulerSegments.length === 0 ? 'grey' : 'black'}"
         @click.prevent = "onDelAll"
       >
