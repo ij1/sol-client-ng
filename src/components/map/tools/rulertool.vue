@@ -62,24 +62,22 @@ export default {
   },
   methods: {
     addSegment (latLng) {
-      if (this.pendingPosition.equals(latLng)) {
-        return;
-      }
       let newSegment = loxoCalc(this.pendingPosition, latLng);
       const wrappedPos = this.pendingPosition.wrap();
       const wrappedDst = L.latLng(latLng.lat,
                                   latLng.lng + (wrappedPos.lng - this.pendingPosition.lng));
       newSegment.line = [wrappedPos, wrappedDst];
       this.$store.commit('ui/ruler/newSegment', newSegment);
-      this.pendingPosition = latLng;
     },
     onSingleClick (e) {
       const latLng = e.latlng;
-      if (this.pendingPosition === null) {
-        this.pendingPosition = latLng;
-      } else {
+      if (this.pendingPosition !== null) {
+        if (this.pendingPosition.equals(latLng)) {
+          return;
+        }
         this.addSegment(latLng);
       }
+      this.pendingPosition = latLng;
     },
     onDoubleClick () {
       this.$store.dispatch('ui/cancelUiMode');
