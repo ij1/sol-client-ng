@@ -14,8 +14,18 @@
       <transition name = "fade">
         <div
           class = "tool-button tool-subbutton"
+          ref = "del-last-button"
+          v-if = "canDel"
+          @click.prevent = "onDelLast"
+        >
+          Delete Last
+        </div>
+      </transition>
+      <transition name = "fade">
+        <div
+          class = "tool-button tool-subbutton"
           ref = "del-all-button"
-          v-if = "canDelAll"
+          v-if = "canDel"
           @click.prevent = "onDelAll"
         >
           Delete All
@@ -36,7 +46,7 @@ export default {
     'l-control': LControl,
   },
   computed: {
-    canDelAll () {
+    canDel () {
       return (this.rulerSegments.length > 0) ||
              (this.rulerPendingPosition !== null);
     },
@@ -55,6 +65,9 @@ export default {
         newMode: newMode,
       });
     },
+    onDelLast () {
+      this.$store.commit('ui/ruler/delSegment');
+    },
     onDelAll () {
       this.$store.commit('ui/ruler/delAll');
     },
@@ -63,6 +76,9 @@ export default {
     L.DomEvent.disableClickPropagation(this.$refs['ruler-button']);
   },
   updated () {
+    if (typeof this.$refs['del-last-button'] !== 'undefined') {
+      L.DomEvent.disableClickPropagation(this.$refs['del-last-button']);
+    }
     if (typeof this.$refs['del-all-button'] !== 'undefined') {
       L.DomEvent.disableClickPropagation(this.$refs['del-all-button']);
     }
