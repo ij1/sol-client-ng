@@ -13,7 +13,7 @@
       </div>
       <transition name = "fade">
         <div
-          class = "tool-button"
+          class = "tool-button tool-subbutton"
           ref = "del-all-button"
           v-if = "canDelAll"
           @click.prevent = "onDelAll"
@@ -73,7 +73,13 @@ export default {
 <style scoped>
 #ruler-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tool-subbutton {
+  margin-top: 2px;
+  margin-left: 10px;
 }
 
 .fade-enter-active, .fade-leave-active {
