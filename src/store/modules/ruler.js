@@ -14,6 +14,7 @@ export default {
     },
     off (state) {
       state.enabled = false;
+      state.rulerPendingPosition = null;
     },
     newSegment (state, segment) {
       segment.id = state.segmentId;

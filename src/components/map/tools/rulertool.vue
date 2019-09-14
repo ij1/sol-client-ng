@@ -100,7 +100,6 @@ export default {
     this.$on('singleclick-early', this.onSingleClick);
   },
   beforeDestroy () {
-    this.pendingPosition = null;
     window.removeEventListener('keyup', this.onCancelKey);
     this.$off('doubleclick', this.onDoubleClick);
     this.$off('singleclick-early', this.onSingleClick);
