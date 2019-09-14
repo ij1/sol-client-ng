@@ -11,15 +11,16 @@
       >
         Ruler
       </div>
-      <div
-        class = "tool-button"
-        ref = "del-all-button"
-        v-if = "rulerEnabled || rulerSegments.length > 0"
-        :style = "{color: rulerSegments.length === 0 ? 'grey' : 'black'}"
-        @click.prevent = "onDelAll"
-      >
-        Delete All
-      </div>
+      <transition name = "fade">
+        <div
+          class = "tool-button"
+          ref = "del-all-button"
+          v-if = "canDelAll"
+          @click.prevent = "onDelAll"
+        >
+          Delete All
+        </div>
+      </transition>
     </div>
   </l-control>
 </template>
@@ -35,10 +36,15 @@ export default {
     'l-control': LControl,
   },
   computed: {
+    canDelAll () {
+      return (this.rulerSegments.length > 0) ||
+             (this.rulerPendingPosition !== null);
+    },
     ...mapState({
       uiModeCancel: state => state.ui.uiModeCancel,
       rulerEnabled: state => state.ui.ruler.enabled,
       rulerSegments: state => state.ui.ruler.rulerSegments,
+      rulerPendingPosition: state => state.ui.ruler.rulerPendingPosition,
     }),
   },
   methods: {
@@ -68,5 +74,12 @@ export default {
 #ruler-container {
   display: flex;
   flex-direction: row;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.7s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
