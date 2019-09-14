@@ -11,26 +11,26 @@
       >
         Ruler
       </div>
-      <transition name = "fade">
+      <transition-group name = "fade" tag="div">
         <div
           class = "tool-button tool-subbutton"
           ref = "del-last-button"
+          key = "last-button"
           v-if = "canDel"
           @click.prevent = "onDelLast"
         >
           Delete Last
         </div>
-      </transition>
-      <transition name = "fade">
         <div
           class = "tool-button tool-subbutton"
           ref = "del-all-button"
+          key = "all-button"
           v-if = "canDel"
           @click.prevent = "onDelAll"
         >
           Delete All
         </div>
-      </transition>
+      </transition-group>
     </div>
   </l-control>
 </template>
