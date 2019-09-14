@@ -54,12 +54,6 @@ export default {
       segment.line = [this.pendingPosition, this.hoverLatLng];
       return segment;
     },
-    lastFixedSegment () {
-      if (this.rulerSegments.length === 0) {
-        return null;
-      }
-      return this.rulerSegments[this.rulerSegments.length - 1];
-    },
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
       rulerSegments: state => state.ui.ruler.rulerSegments,
@@ -91,17 +85,6 @@ export default {
       this.$store.dispatch('ui/cancelUiMode');
     },
     onCancel () {
-      if ((this.pendingPosition !== null) &&
-          (this.lastFixedSegment !== null)) {
-        if (this.pendingPosition.equals(this.lastFixedSegment.line[1])) {
-          this.pendingPosition = this.lastFixedSegment.line[0];
-        } else {
-          this.pendingPosition = null;
-          return;
-        }
-      } else {
-        this.pendingPosition = null;
-      }
       this.$store.commit('ui/ruler/delSegment');
     },
     onCancelKey (e) {

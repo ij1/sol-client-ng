@@ -22,6 +22,21 @@ export default {
       state.rulerSegments.push(segment);
     },
     delSegment (state) {
+      const lastFixedSegment = state.rulerSegments.length > 0 ?
+                               state.rulerSegments[state.rulerSegments.length - 1] :
+                               null;
+
+      if ((state.rulerPendingPosition !== null) &&
+          (lastFixedSegment !== null)) {
+        if (state.rulerPendingPosition.equals(lastFixedSegment.line[1])) {
+          state.rulerPendingPosition = lastFixedSegment.line[0];
+        } else {
+          state.rulerPendingPosition = null;
+          return;
+        }
+      } else {
+        state.rulerPendingPosition = null;
+      }
       state.rulerSegments.pop();
     },
     delAll (state) {
