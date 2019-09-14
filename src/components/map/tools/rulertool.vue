@@ -36,14 +36,6 @@ export default {
     }
   },
   computed: {
-    pendingPosition: {
-      get () {
-        return this.rulerPendingPosition;
-      },
-      set (value) {
-        this.$store.commit('ui/ruler/setPendingPosition', value);
-      }
-    },
     aimSegment () {
       if ((this.pendingPosition === null) ||
           (this.hoverLatLng === null) ||
@@ -57,7 +49,7 @@ export default {
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
       rulerSegments: state => state.ui.ruler.rulerSegments,
-      rulerPendingPosition: state => state.ui.ruler.rulerPendingPosition,
+      pendingPosition: state => state.ui.ruler.rulerPendingPosition,
     }),
   },
   methods: {
@@ -77,7 +69,7 @@ export default {
         }
         this.addSegment(latLng);
       }
-      this.pendingPosition = latLng;
+      this.$store.commit('ui/ruler/setPendingPosition', latLng);
     },
     onDoubleClick () {
       this.$store.dispatch('ui/cancelUiMode');
