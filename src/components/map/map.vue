@@ -20,6 +20,8 @@
         zoomDelta: 0.1,
         wheelPxPerZoomLevel: 120,
         doubleClickZoom: false,
+        dragging: !L.Browser.mobile,
+        touchZoom: true,
       }"
     >
       <map-tiles v-if = "map !== null" :map = "map"/>
