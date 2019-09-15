@@ -386,6 +386,7 @@ export default {
   background-color: #ddd;
   font-weight: bold;
   overflow: hidden;
+  cursor: auto;
 }
 
 .aimline {
