@@ -304,6 +304,7 @@ export default {
 #weather-panel-control span {
   font-size: 11px;
   padding: 1px;
+  user-select: none;
 }
 #weather-panel-control button,select {
   border: none;
