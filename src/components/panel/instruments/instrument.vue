@@ -70,6 +70,7 @@ export default {
 .boat-instrument-label {
   font-size: 9px;
   text-align: left;
+  user-select: none;
 }
 
 .boat-instrument-value {
