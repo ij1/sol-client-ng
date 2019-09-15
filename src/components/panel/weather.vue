@@ -282,7 +282,7 @@ export default {
   width: 630px;
   border: 1px solid rgba(220, 220, 220, 0.8);
   border-bottom: 0px;
-  background: rgba(200, 200, 200, 0.8);
+  border-radius: 5px 5px 0 0;
 }
 #weather-slider-container {
   position: relative;
@@ -291,15 +291,19 @@ export default {
 #weather-slider {
   position: relative;
   width: 100%;
-  background-image: linear-gradient(#eee, #ccc, #eee);
+  background-image: linear-gradient(rgba(234, 234, 234, 0.8), rgba(191, 191, 191, 0.8), rgba(234, 234, 234, 0.8));
+  border-radius: 5px 5px 2px 2px;
 }
 #weather-slider-fg {
   position: absolute;
-  background-image: linear-gradient(#7ac, #7cf, #7ac);
+  background-image: linear-gradient(rgba(85, 149, 191, 0.8), rgba(85, 191, 255, 0.8), rgba(85, 149, 191, 0.8));
+  border-radius: 5px;
 }
 #weather-slider, #weather-slider-fg {
-  border-radius: 5px;
   height: 9px;
+}
+#weather-panel-control, #weather-panel-placeholder {
+  background: rgba(200, 200, 200, 0.8);
 }
 #weather-panel-control span {
   font-size: 11px;
