@@ -59,12 +59,34 @@
 
       <div
         v-if = "showCursorAid"
-        :style = "{top: mousePos.y + 'px'}"
+        :style = "{
+          top: mousePos.y + 'px',
+          left: (mousePos.x + cursorFreeCircle) + 'px'
+        }"
         class = "aimline hline"
       />
       <div
         v-if = "showCursorAid"
-        :style = "{left: mousePos.x + 'px'}"
+        :style = "{
+          top: mousePos.y + 'px',
+          right: 'calc(100% - ' + (mousePos.x - cursorFreeCircle) + 'px)'
+        }"
+        class = "aimline hline"
+      />
+      <div
+        v-if = "showCursorAid"
+        :style = "{
+          left: mousePos.x + 'px',
+          top: (mousePos.y + cursorFreeCircle) + 'px'
+        }"
+        class = "aimline vline"
+      />
+      <div
+        v-if = "showCursorAid"
+        :style = "{
+          left: mousePos.x + 'px',
+          bottom: 'calc(100% - ' + (mousePos.y - cursorFreeCircle) + 'px)'
+        }"
         class = "aimline vline"
       />
     </l-map>
@@ -159,6 +181,7 @@ export default {
       map: null,
 
       mousePos: null,
+      cursorFreeCircle: 32,
 
       L: L,
       PROJECTION: PROJECTION,
