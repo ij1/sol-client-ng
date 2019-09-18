@@ -80,7 +80,7 @@
 import { mapState, mapGetters } from 'vuex';
 import PolarContainer from './polarcontainer.vue';
 import SycBanner from '../../sycbanner.vue';
-import { radToDeg, degToRad } from '../../../lib/utils.js';
+import { radToDeg, degToRad, msecToH } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
 
@@ -236,9 +236,10 @@ export default {
           const now = this.$store.getters['time/now']();
           const towbackPeriod = this.$store.getters['race/towbackPeriod'];
 
-          return Math.max((towbackPeriod.end - towbackPeriod.start) * 0.8 *
+          const delay = Math.max((towbackPeriod.end - towbackPeriod.start) * 0.8 *
                           Math.random() +
                           towbackPeriod.start - now, 0);
+          return msecToH(delay);
         }
       }
       if (this.isDelayHourMin) {
