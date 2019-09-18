@@ -181,7 +181,7 @@ export default {
       map: null,
 
       mousePos: null,
-      cursorFreeCircle: 32,
+      cursorFreeCircle: 24,
 
       L: L,
       PROJECTION: PROJECTION,
