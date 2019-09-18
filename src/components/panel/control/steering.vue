@@ -236,9 +236,9 @@ export default {
           const now = this.$store.getters['time/now']();
           const towbackPeriod = this.$store.getters['race/towbackPeriod'];
 
-          return (towbackPeriod.end - towbackPeriod.start) * 0.8 *
-                 Math.random() +
-                 towbackPeriod.start - now;
+          return Math.max((towbackPeriod.end - towbackPeriod.start) * 0.8 *
+                          Math.random() +
+                          towbackPeriod.start - now, 0);
         }
       }
       if (this.isDelayHourMin) {
