@@ -404,7 +404,7 @@ export default {
 
 .tool-button {
   padding: 5px;
-  border: 1px solid rgb(48, 48, 48, 0.6);
+  border: 1px solid rgba(48, 48, 48, 0.6);
   border-radius: 3px;
   background-color: #ddd;
   font-weight: bold;

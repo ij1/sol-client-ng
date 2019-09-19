@@ -255,7 +255,7 @@ export default {
     drawGraticules (ctx) {
       /* Draw a graticule lines */
       ctx.beginPath();
-      ctx.strokeStyle = 'rgb(127, 127, 127, 0.8)';
+      ctx.strokeStyle = 'rgba(127, 127, 127, 0.8)';
       ctx.moveTo(0, 0);
       ctx.lineTo(0, this.tilesize.y);
       ctx.moveTo(0, 0);

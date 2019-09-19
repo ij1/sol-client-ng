@@ -258,7 +258,7 @@ export default {
           (rootState.map.cfg.ownBoatColor.value === 'magenta')) {
         return '#ff00ff';
       }
-      return 'rgb(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ', 0.8)';
+      return 'rgba(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ', 0.8)';
     },
 
     multiClassRace: (state) => {

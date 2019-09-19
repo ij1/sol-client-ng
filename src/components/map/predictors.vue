@@ -190,7 +190,7 @@ export default {
       return this.cfgPredictors === 'both';
     },
     predictorColor (predictor) {
-      return this.currentSteering === predictor ? '#ff00ff' : 'rgb(170, 0, 170, 0.5)';
+      return this.currentSteering === predictor ? '#ff00ff' : 'rgba(134, 0, 134, 0.7)';
     },
     redraw (ctx) {
       const z = this.zoom;
