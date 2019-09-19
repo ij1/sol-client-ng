@@ -32,6 +32,9 @@ export default {
       state.loaded = true;
       state.loadTime = raceInfo.loadTime;
     },
+    updateLoadTime (state, loadTime) {
+      state.loadTime = loadTime;
+    },
     updateMessage (state, msg) {
       state.info.message = msg;
     },
@@ -243,6 +246,8 @@ export default {
         }
         if (changed) {
           commit('init', raceInfo);
+        } else {
+          commit('updateLoadTime', raceInfo.loadTime);
         }
 
         await dispatch('weather/parseUpdateTimes', raceInfo.description, {root: true});
