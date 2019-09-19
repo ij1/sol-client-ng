@@ -7,6 +7,10 @@
   >
     <div class = "popup-titlebar">
       <span>{{title}}</span>
+      <span
+        v-if = "closeButtonLabel !== null"
+        @click.prevent = "$emit('close')"
+      >X</span>
     </div>
     <form @submit.prevent="$emit('submit')" >
       <div class = "popup-content">
@@ -78,6 +82,9 @@ export default {
 .popup-titlebar {
   background-color: #808080;
   margin: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .popup-titlebar span {
   margin: 10px;
