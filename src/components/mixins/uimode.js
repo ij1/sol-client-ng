@@ -87,11 +87,11 @@ export let uiModeMixin = {
   mounted () {
     window.addEventListener('mouseup', this.uiModeOnMouseUp);
     this.map.on('mousedown', this.uiModeOnClick, this);
-    window.addEventListener('keyup', this.uiModeOnKey);
+    window.addEventListener('keydown', this.uiModeOnKey);
     this.map.on('dragend', this.uiModeOnDragEnd, this);
   },
   beforeDestroy () {
-    window.removeEventListener('keyup', this.uiModeOnKey);
+    window.removeEventListener('keydown', this.uiModeOnKey);
     this.map.off('mousedown', this.uiModeOnClick, this);
     window.removeEventListener('mouseup', this.uiModeOnMouseUp);
     this.map.on('dragend', this.uiModeOnDragEnd, this);

@@ -85,12 +85,12 @@ export default {
     },
   },
   mounted () {
-    window.addEventListener('keyup', this.onCancelKey);
+    window.addEventListener('keydown', this.onCancelKey);
     this.$on('doubleclick', this.onDoubleClick);
     this.$on('singleclick-early', this.onSingleClick);
   },
   beforeDestroy () {
-    window.removeEventListener('keyup', this.onCancelKey);
+    window.removeEventListener('keydown', this.onCancelKey);
     this.$off('doubleclick', this.onDoubleClick);
     this.$off('singleclick-early', this.onSingleClick);
   },
