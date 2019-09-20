@@ -318,6 +318,7 @@ export default {
 }
 #weather-panel-control button {
   background: #ffffff;
+  touch-action: none;
 }
 #weather-panel-control select option {
   border: none;
