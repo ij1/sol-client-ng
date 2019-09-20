@@ -100,6 +100,7 @@ export default {
 .popup-content {
   min-height: 0px;
   flex: auto;
+  overflow-y: auto;
 }
 .popup-buttons {
  margin-top: 10px;

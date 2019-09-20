@@ -6,7 +6,7 @@
     @close = "doOk"
     v-if="pendingRacemsgs.length > 0"
   >
-    <div class="race-message-list">
+    <div>
       <race-message
         v-for = "racemsg in pendingRacemsgs"
         :key = "racemsg.id"
@@ -43,10 +43,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.race-message-list {
-  height: 100%;
-  overflow-y: auto;
-}
-</style>

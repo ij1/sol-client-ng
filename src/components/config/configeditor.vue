@@ -17,7 +17,7 @@
         Reset to defaults
       </button>
     </template>
-    <div id = "config-container">
+    <div>
       <div
         v-for = "(cfggroup, gindex) in configTree"
         :key = "'g' + gindex"
@@ -283,10 +283,6 @@ export default {
 </script>
 
 <style scoped>
-#config-container {
-  height: 100%;
-  overflow-y: auto;
-}
 .config-content {
   font-size: 12px;
   text-align: left;

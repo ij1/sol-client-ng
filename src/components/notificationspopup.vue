@@ -6,7 +6,7 @@
     @close = "doOk"
     v-if="notifications.length > 0"
   >
-    <div id="notifications-content">
+    <div>
       <div
         v-for = "notification in notifications"
         :key = "notification.id"
@@ -43,10 +43,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-#notifications-content {
-  height: 100%;
-  overflow-y: auto;
-}
-</style>
