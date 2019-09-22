@@ -13,6 +13,11 @@ export default {
         type: 'boolean',
         cfgText: 'Show diagnostics',
       },
+      extraDebug: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Extra diagnostics',
+      },
     },
   },
 

@@ -204,6 +204,9 @@ export default {
     },
 
     isDelayNumber () {
+      if (this.cfgExtraDebug) {
+        this.debugIsDelayNumber();
+      }
       const regex = /^\d+(\.\d+)?$/;
       if (!regex.test(this.delay)) {
         return false;
@@ -360,6 +363,7 @@ export default {
     },
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
+      cfgExtraDebug: state => state.diagnostics.cfg.extraDebug.value,
     }),
     ...mapGetters({
       allowControl: 'boat/allowControl',
@@ -438,6 +442,14 @@ export default {
         const twaVal = this.$store.state.boat.instruments.twa.value;
         this.twa = twaTextPrefix(twaVal) + roundToFixed(radToDeg(twaVal), 3);
       }
+    },
+    debugIsDelayNumber () {
+      const regex = /^\d+(\.\d+)?$/;
+      const asHex = this.delay.split("").reduce((res, c) => res += c.charCodeAt(0).toString(16).padStart(4,"0"),"");
+      this.$store.dispatch('diagnostics/add', 'IsDelayNumber: for "' + this.delay + '" (' + asHex + ') ' +
+                           'regex: ' + regex.test(this.delay) + ' ' +
+                           'parseFloat: ' + parseFloat(this.delay) + ' ' +
+                           'isFinite: ' + Number.isFinite(parseFloat(this.delay)));
     },
   },
   mounted () {
