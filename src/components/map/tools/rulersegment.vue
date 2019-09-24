@@ -1,25 +1,35 @@
 <template>
   <l-layer-group>
-    <l-polyline
+    <l-layer-group
       v-for = "line in lines"
       :key = "line.offset"
-      :lat-lngs = "line.line"
-      :color = "color"
-      :weight = "1"
-      :fill = "false"
     >
-      <l-tooltip
-        :options="lineTooltipOptions"
+      <l-polyline
+        :lat-lngs = "line.line"
+        :color = "color"
+        :weight = "1"
+        :fill = "false"
       >
-        <path-distance :path = "segment"/>
-      </l-tooltip>
-    </l-polyline>
+        <l-tooltip
+          :options="lineTooltipOptions"
+        >
+          <path-distance :path = "segment"/>
+        </l-tooltip>
+      </l-polyline>
+      <l-circle-marker
+        :lat-lng = "line.line[0]"
+        :radius = "3"
+        :color = "color"
+        :weight = "1"
+        :fill = "false"
+      />
+    </l-layer-group>
   </l-layer-group>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import { LLayerGroup, LPolyline, LTooltip } from 'vue2-leaflet';
+import { LLayerGroup, LPolyline, LTooltip, LCircleMarker } from 'vue2-leaflet';
 import { radToDeg, latLngArrayAddOffset } from '../../../lib/utils.js';
 import PathDistance from '../../distance.vue';
 
@@ -29,6 +39,7 @@ export default {
     'l-layer-group': LLayerGroup,
     'l-polyline': LPolyline,
     'l-tooltip': LTooltip,
+    'l-circle-marker': LCircleMarker,
     'path-distance': PathDistance,
   },
   props: {
