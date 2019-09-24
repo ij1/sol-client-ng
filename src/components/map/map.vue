@@ -198,12 +198,9 @@ export default {
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
-      mapWrapList: state => state.map.wrapList,
       cfgCursorLines: state => state.ui.cfg.cursorLines.value,
     }),
     ...mapGetters({
-      mapMinWrap: 'map/mapMinWrap',
-      mapMaxWrap: 'map/mapMaxWrap',
       inDefaultUiMode: 'ui/inDefaultUiMode',
       maxZoom: 'map/maxZoom',
     }),
@@ -236,7 +233,6 @@ export default {
         tripleBounds: tripleBounds(this.map, this.map.getSize()),
       });
       this.$store.commit('boat/updateLngOffset', center.lng);
-      this.updateWrapList();
       if (this.mousePos !== null) {
         this.$store.commit('map/setHover',
                            this.map.containerPointToLatLng(this.mousePos));
@@ -250,23 +246,9 @@ export default {
         bounds: this.map.getBounds(),
         tripleBounds: tripleBounds(this.map, size),
       });
-      this.updateWrapList();
     },
     forceResize () {
       this.map.invalidateSize({pan: false});
-    },
-    /* Sadly a vuex getter fires unnecessarily even if its dependencies
-     * values did not change so workaround it
-     */
-    updateWrapList () {
-      if ((this.mapWrapList[0] !== this.mapMinWrap - 360) ||
-          (this.mapWrapList[this.mapWrapList.length - 1] !== this.mapMaxWrap + 360)) {
-        let wrapList = [];
-        for (let i = this.mapMinWrap - 360; i <= this.mapMaxWrap + 360; i += 360) {
-          wrapList.push(i);
-        }
-        this.$store.commit('map/setWrapList', wrapList);
-      }
     },
     setHoverPos (e) {
       /* For some reason it's not camel-cased in the event! */

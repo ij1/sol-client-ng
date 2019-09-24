@@ -2,6 +2,21 @@ import L from 'leaflet';
 import { configSetValue } from '../../components/config/configstore.js';
 import { OLD_CLIENT_MAXZOOM } from '../../lib/sol.js';
 
+function updateWrapList (state) {
+  const mapMinWrap = Math.floor((state.bounds.getWest() + 180) / 360) * 360;
+  const mapMaxWrap = Math.ceil((state.bounds.getEast() - 180) / 360) * 360;
+
+  /* Only update when needed to avoid unnecessary work */
+  if ((state.wrapList[0] !== mapMinWrap - 360) ||
+      (state.wrapList[state.wrapList.length - 1] !== mapMaxWrap + 360)) {
+    let wrapList = [];
+    for (let i = mapMinWrap - 360; i <= mapMaxWrap + 360; i += 360) {
+      wrapList.push(i);
+    }
+    state.wrapList = wrapList;
+  }
+}
+
 export default {
   namespaced: true,
 
@@ -50,6 +65,7 @@ export default {
       state.zoom = view.zoom;
       state.bounds = view.bounds;
       state.tripleBounds = view.tripleBounds;
+      updateWrapList(state);
       state.viewUpdateStamp++;
     },
     setSize(state, size) {
@@ -57,10 +73,8 @@ export default {
       state.size = size.size;
       state.bounds = size.bounds;
       state.tripleBounds = size.tripleBounds;
+      updateWrapList(state);
       state.viewUpdateStamp++;
-    },
-    setWrapList(state, wrapList) {
-      state.wrapList = wrapList;
     },
     setHover(state, latLng) {
       state.hoverLatLng = latLng;
@@ -70,16 +84,6 @@ export default {
   getters: {
     wrappedHoverLatLng: (state) => {
       return (state.hoverLatLng !== null) ? state.hoverLatLng.wrap() : null;
-    },
-    mapMinWrap: (state) => {
-      state.bounds;
-      const minLat = state.bounds.getWest();
-      return Math.floor((minLat + 180) / 360) * 360;
-    },
-    mapMaxWrap: (state) => {
-      state.bounds;
-      const maxLat = state.bounds.getEast();
-      return Math.ceil((maxLat - 180) / 360) * 360;
     },
     maxZoom: (state) => {
       return state.cfg.extraZoomLevels.value ? 21 : OLD_CLIENT_MAXZOOM;
