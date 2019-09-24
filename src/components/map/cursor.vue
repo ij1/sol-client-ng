@@ -3,32 +3,15 @@
     v-if = "showCursorAid"
   >
     <div
+      v-for = "i in angles"
+      :key = "i"
       :style = "{
         top: mousePos.y + 'px',
-        left: (mousePos.x + cursorFreeCircle) + 'px'
-      }"
-      class = "aimline hline"
-    />
-    <div
-      :style = "{
-        top: mousePos.y + 'px',
-        right: 'calc(100% - ' + (mousePos.x - cursorFreeCircle) + 'px)'
-      }"
-      class = "aimline hline"
-    />
-    <div
-      :style = "{
         left: mousePos.x + 'px',
-        top: (mousePos.y + cursorFreeCircle) + 'px'
+        'transform-origin': '0 ' + -cursorFreeCircle + 'px',
+        transform: 'translate(0, ' + cursorFreeCircle + 'px) rotate(' + i + 'deg)'
       }"
-      class = "aimline vline"
-    />
-    <div
-      :style = "{
-        left: mousePos.x + 'px',
-        bottom: 'calc(100% - ' + (mousePos.y - cursorFreeCircle) + 'px)'
-      }"
-      class = "aimline vline"
+      class = "aimline"
     />
   </div>
 </template>
@@ -50,6 +33,7 @@ export default {
     return {
       mousePos: null,
       cursorFreeCircle: 24,
+      angles: [0, 90, 180, 270],
     }
   },
   computed: {
@@ -110,15 +94,8 @@ export default {
   mix-blend-mode: multiply;
   z-index: 999;
   pointer-events: none;
-}
-
-.hline {
-  width: 100%;
-  height: 1px;
-}
-
-.vline {
-  width: 1px;
   height: 100%;
+  width: 1px;
+  transform-origin: top;
 }
 </style>
