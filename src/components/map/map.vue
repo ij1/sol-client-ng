@@ -223,7 +223,7 @@ export default {
   beforeDestroy () {
     // FIXME: is this racy with nextTick setups? Can we call with bogus values?
     this.map.off('mousemove', this.setHoverPos, this);
-    this.map.off('mousemout', this.clearHoverPos, this);
+    this.map.off('mouseout', this.clearHoverPos, this);
     EventBus.$off('right-pane-resize', this.forceResize);
   },
 
