@@ -5,6 +5,7 @@
         id = "weather-slider"
         ref = "weatherslider"
         @mousedown = "onMouseDown"
+        @touchstart = "onMouseDown"
       >
         <div
           id = "weather-slider-fg"
@@ -70,6 +71,10 @@ const eventMap = {
   mousedown: {
     move: 'mousemove',
     end: 'mouseup',
+  },
+  touchstart: {
+    move: 'touchmove',
+    end: 'touchend',
   },
 };
 
@@ -280,9 +285,11 @@ export default {
   },
   mounted () {
     window.addEventListener('mouseup', this.onMouseUp);
+    window.addEventListener('touchend', this.onMouseUp);
   },
   beforeDestroy () {
     window.removeEventListener('mouseup', this.onMouseUp);
+    window.removeEventListener('touchend', this.onMouseUp);
     if (this.draggingSlider !== null) {
       this.endDragging();
     }
