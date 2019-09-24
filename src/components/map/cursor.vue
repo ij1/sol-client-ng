@@ -12,16 +12,40 @@
       }"
       class = "aimline"
     />
+    <div
+      v-if = "normalCursorAid && wrappedHoverLatLng !== null"
+    >
+      <div
+        id = "loninfo"
+        class = "coordinfo"
+        :style = "{left: mousePosXpx}"
+      >
+        <lon-coordinate :lat-lng = "wrappedHoverLatLng"/>
+      </div>
+      <div
+        id = "latinfo"
+        class = "coordinfo"
+        :style = "{top: mousePosYpx}"
+      >
+        <lat-coordinate :lat-lng = "wrappedHoverLatLng"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { radToDeg, tripleBounds } from '../../lib/utils.js';
+import LatCoordinate from '../latcoordinate.vue';
+import LonCoordinate from '../loncoordinate.vue';
 
 export default {
   name: 'MapCursor',
 
+  components: {
+    'lat-coordinate': LatCoordinate,
+    'lon-coordinate': LonCoordinate,
+  },
   props: {
     map: {
       type: Object,
@@ -38,6 +62,9 @@ export default {
   computed: {
     showCursorAid () {
       return (this.cfgCursorLines !== 'none') && (this.mousePos !== null);
+    },
+    normalCursorAid () {
+      return this.cfgCursorLines === 'normal';
     },
     windCursorAid () {
       return this.cfgCursorLines === 'wind';
@@ -58,6 +85,7 @@ export default {
       cfgCursorLines: state => state.ui.cfg.cursorLines.value,
     }),
     ...mapGetters({
+      wrappedHoverLatLng: 'map/wrappedHoverLatLng',
       hoverWind: 'map/hoverWind',
     }),
   },
@@ -114,5 +142,25 @@ export default {
   height: 100%;
   width: 1px;
   transform-origin: 0 -24px;		/* -this.cursorFreeCircle */
+}
+</style>
+
+<style scoped>
+.coordinfo {
+  position: absolute;
+  pointer-events: none;
+  cursor: crosshair;
+  font-size: 12px;
+  z-index: 999;
+}
+#latinfo {
+  right: 2px;
+  text-align: right;
+  margin-right: 10px;
+}
+#loninfo {
+  top: 2px;
+  text-align: left;
+  margin-left: 3px;
 }
 </style>
