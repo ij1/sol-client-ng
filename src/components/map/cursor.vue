@@ -8,7 +8,6 @@
       :style = "{
         top: mousePosYpx,
         left: mousePosXpx,
-        'transform-origin': '0 ' + -cursorFreeCircle + 'px',
         transform: 'translate(0, ' + cursorFreeCircle + 'px) rotate(' + (i + twd) + 'deg)'
       }"
       class = "aimline"
@@ -114,6 +113,6 @@ export default {
   cursor: crosshair;
   height: 100%;
   width: 1px;
-  transform-origin: top;
+  transform-origin: 0 -24px;		/* -this.cursorFreeCircle */
 }
 </style>
