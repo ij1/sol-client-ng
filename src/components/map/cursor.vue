@@ -8,6 +8,7 @@
       :style = "{
         top: mousePosYpx,
         left: mousePosXpx,
+        height: maxLineLengthPx,
         transform: i,
       }"
       class = "aimline"
@@ -70,6 +71,9 @@ export default {
     windCursorAid () {
       return this.cfgCursorLines === 'wind';
     },
+    maxLineLengthPx () {
+      return (this.mapSize.x + this.mapSize.y) + 'px';
+    },
     twd () {
       if ((this.hoverWind !== null) && this.windCursorAid) {
         return radToDeg(this.hoverWind.twd);
@@ -98,6 +102,7 @@ export default {
     },
     ...mapState({
       cfgCursorLines: state => state.ui.cfg.cursorLines.value,
+      mapSize: state => state.map.size,
     }),
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
@@ -154,7 +159,6 @@ export default {
   z-index: 999;
   pointer-events: none;
   cursor: crosshair;
-  height: 100%;
   width: 1px;
   transform-origin: 0 -24px;		/* -this.cursorFreeCircle */
 }
