@@ -1,6 +1,7 @@
 <template>
   <l-layer-group v-if = "boatId !== null">
     <l-terminator
+      v-if = "showTerminator"
       :stroke = "false"
       :fill-color = "'#000'"
       :fill-opacity = "0.1"
@@ -28,8 +29,12 @@ export default {
     'l-terminator': Vue2LeafletTerminator,
   },
   computed: {
+    showTerminator () {
+      return this.cfgDayNightMode === 'day';
+    },
     ...mapState({
       boatId: state => state.boat.id,
+      cfgDayNightMode: state => state.ui.cfg.dayNightMode.value,
     }),
     ...mapGetters({
       boatTime: 'boat/time',

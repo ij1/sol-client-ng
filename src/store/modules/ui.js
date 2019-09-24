@@ -36,6 +36,15 @@ export default {
         type: 'values',
         cfgText: 'Lat/Lon format',
       },
+      dayNightMode: {
+        value: 'day',
+        values: [
+          ['day', 'Daylight only'],
+          ['white', 'White, no terminator'],
+        ],
+        type: 'values',
+        cfgText: 'Day/night mode',
+      },
       cursorLines: {
         value: 'none',
         values: [
