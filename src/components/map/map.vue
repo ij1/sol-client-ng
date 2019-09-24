@@ -252,6 +252,7 @@ export default {
     setSize () {
       const size = this.map.getSize();
       this.$store.commit('map/setSize', {
+        center: this.map.getCenter(),
         size: size,
         bounds: this.map.getBounds(),
         tripleBounds: this.tripleBounds(size),
