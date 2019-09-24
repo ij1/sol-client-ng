@@ -9,7 +9,7 @@
         top: mousePos.y + 'px',
         left: mousePos.x + 'px',
         'transform-origin': '0 ' + -cursorFreeCircle + 'px',
-        transform: 'translate(0, ' + cursorFreeCircle + 'px) rotate(' + i + 'deg)'
+        transform: 'translate(0, ' + cursorFreeCircle + 'px) rotate(' + (i + twd) + 'deg)'
       }"
       class = "aimline"
     />
@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { tripleBounds } from '../../lib/utils.js';
+import { mapState, mapGetters } from 'vuex';
+import { radToDeg, tripleBounds } from '../../lib/utils.js';
 
 export default {
   name: 'MapCursor',
@@ -38,11 +38,22 @@ export default {
   },
   computed: {
     showCursorAid () {
-      return (this.cfgCursorLines === 'normal') &&
-             (this.mousePos !== null);
+      return (this.cfgCursorLines !== 'none') && (this.mousePos !== null);
+    },
+    windCursorAid () {
+      return this.cfgCursorLines === 'wind';
+    },
+    twd () {
+      if ((this.hoverWind !== null) && this.windCursorAid) {
+        return radToDeg(this.hoverWind.twd);
+      }
+      return 0;
     },
     ...mapState({
       cfgCursorLines: state => state.ui.cfg.cursorLines.value,
+    }),
+    ...mapGetters({
+      hoverWind: 'map/hoverWind',
     }),
   },
 

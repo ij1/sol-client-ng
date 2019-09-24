@@ -41,6 +41,7 @@ export default {
         values: [
           ['none', "None"],
           ['normal', "Horizontal and vertical"],
+          ['wind', "Wind based"],
         ],
         type: 'values',
         cfgText: 'Auxiliary cursor lines',
