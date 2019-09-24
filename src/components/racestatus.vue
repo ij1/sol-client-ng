@@ -65,5 +65,6 @@ export default {
 #race-status {
   pointer-events: none;
   font-size: 12px;
+  cursor: crosshair;
 }
 </style>

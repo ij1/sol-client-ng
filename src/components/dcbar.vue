@@ -63,5 +63,6 @@ export default {
 #dc-bar {
   pointer-events: none;
   text-align: right;
+  cursor: crosshair;
 }
 </style>
