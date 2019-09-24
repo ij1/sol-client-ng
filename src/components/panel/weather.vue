@@ -66,6 +66,13 @@ import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '
 import { roundToFixed } from '../../lib/quirks.js';
 import L from 'leaflet';
 
+const eventMap = {
+  mousedown: {
+    move: 'mousemove',
+    end: 'mouseup',
+  },
+};
+
 export default {
   name: 'WeatherPanel',
   data () {
@@ -76,7 +83,7 @@ export default {
       playTimer: null,
       tickInterval: 100,
       sliderZeroPx: 8,
-      draggingSlider: false,
+      draggingSlider: null,
 
       weatherTimescales: [
         {
@@ -254,24 +261,30 @@ export default {
       if (!this.wxLoaded) {
         return;
       }
-      this.draggingSlider = true;
-      window.addEventListener('mousemove', this.onMouseMove);
+      this.draggingSlider = ev.type;
+      window.addEventListener(eventMap[this.draggingSlider].move,
+                              this.onMouseMove);
       this.onDragTo(ev);
     },
-    onMouseUp () {
-      if (this.draggingSlider) {
-        window.removeEventListener('mousemove', this.onMouseMove);
+    onMouseUp (ev) {
+      if ((this.draggingSlider !== null) &&
+          (eventMap[this.draggingSlider].end === ev.type)) {
+        this.endDragging();
       }
-      this.draggingSlider = false;
     },
+    endDragging () {
+      window.removeEventListener(eventMap[this.draggingSlider].move,
+                                 this.onMouseMove);
+      this.draggingSlider = null;
+    }
   },
   mounted () {
     window.addEventListener('mouseup', this.onMouseUp);
   },
   beforeDestroy () {
     window.removeEventListener('mouseup', this.onMouseUp);
-    if (this.draggingSlider) {
-      window.removeEventListener('mousemove', this.onMouseMove);
+    if (this.draggingSlider !== null) {
+      this.endDragging();
     }
   },
 }
