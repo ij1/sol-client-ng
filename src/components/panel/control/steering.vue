@@ -384,7 +384,9 @@ export default {
       this.twa = twaTextPrefix(value) + value;
     },
     delayTime (value) {
-      this.$store.commit('boat/steering/setDelayTime', value);
+      /* Don't show the DC dot when "start" is used as the delay */
+      this.$store.commit('boat/steering/setDelayTime',
+                         !this.isDelayStart ? value : null);
     },
   },
 
