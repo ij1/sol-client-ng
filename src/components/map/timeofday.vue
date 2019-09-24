@@ -17,6 +17,12 @@ import Vue2LeafletTerminator from './Vue2LeafletTerminator.vue';
 
 export default {
   name: 'TimeOfDay',
+  props: {
+    map: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {
     'l-layer-group': LLayerGroup,
     'l-terminator': Vue2LeafletTerminator,
@@ -28,6 +34,10 @@ export default {
     ...mapGetters({
       boatTime: 'boat/time',
     }),
+  },
+  created () {
+    let pane = this.map.createPane('timeofdayPane');
+    pane.style.zIndex = 300;
   },
 }
 </script>
