@@ -44,6 +44,7 @@ export default {
       }
       let segment = loxoCalc(this.pendingPosition, this.hoverLatLng);
       segment.line = [this.pendingPosition, this.hoverLatLng];
+      segment.lastSegment = true;
       return segment;
     },
     ...mapState({

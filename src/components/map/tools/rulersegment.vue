@@ -23,6 +23,14 @@
         :weight = "1"
         :fill = "false"
       />
+      <l-circle-marker
+        v-if = "segment.lastSegment"
+        :lat-lng = "line.line[line.line.length - 1]"
+        :radius = "3"
+        :color = "color"
+        :weight = "1"
+        :fill = "false"
+      />
     </l-layer-group>
   </l-layer-group>
 </template>
