@@ -105,6 +105,7 @@ export default {
   mix-blend-mode: multiply;
   z-index: 999;
   pointer-events: none;
+  cursor: crosshair;
   height: 100%;
   width: 1px;
   transform-origin: top;
