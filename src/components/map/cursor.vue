@@ -6,8 +6,8 @@
       v-for = "i in angles"
       :key = "i"
       :style = "{
-        top: mousePos.y + 'px',
-        left: mousePos.x + 'px',
+        top: mousePosYpx,
+        left: mousePosXpx,
         'transform-origin': '0 ' + -cursorFreeCircle + 'px',
         transform: 'translate(0, ' + cursorFreeCircle + 'px) rotate(' + (i + twd) + 'deg)'
       }"
@@ -48,6 +48,12 @@ export default {
         return radToDeg(this.hoverWind.twd);
       }
       return 0;
+    },
+    mousePosXpx () {
+      return this.mousePos.x + 'px';
+    },
+    mousePosYpx () {
+      return this.mousePos.y + 'px';
     },
     ...mapState({
       cfgCursorLines: state => state.ui.cfg.cursorLines.value,
