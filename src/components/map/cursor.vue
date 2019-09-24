@@ -3,12 +3,12 @@
     v-if = "showCursorAid"
   >
     <div
-      v-for = "i in angles"
-      :key = "i"
+      v-for = "(i, idx) in transformAngles"
+      :key = "idx"
       :style = "{
         top: mousePosYpx,
         left: mousePosXpx,
-        transform: 'translate(0, ' + cursorFreeCircle + 'px) rotate(' + (i + twd) + 'deg)'
+        transform: i,
       }"
       class = "aimline"
     />
@@ -39,6 +39,8 @@ import { radToDeg, tripleBounds } from '../../lib/utils.js';
 import LatCoordinate from '../latcoordinate.vue';
 import LonCoordinate from '../loncoordinate.vue';
 
+const angles = [0, 90, 180, 270];
+
 export default {
   name: 'MapCursor',
 
@@ -56,7 +58,6 @@ export default {
     return {
       mousePos: null,
       cursorFreeCircle: 24,
-      angles: [0, 90, 180, 270],
     }
   },
   computed: {
@@ -74,6 +75,21 @@ export default {
         return radToDeg(this.hoverWind.twd);
       }
       return 0;
+    },
+    transformAngles () {
+      let res = [];
+      for (const i of angles) {
+        let angle = i;
+        /*
+         * Hide twd & hoverWind deps under wind cursor lines to avoid recalcs
+         * other types of lines are in use.
+         */
+        if (this.windCursorAid) {
+          i += this.twd;
+        }
+        res.push('translate(0, ' + this.cursorFreeCircle + 'px) rotate(' + i + 'deg)');
+      }
+      return res;
     },
     mousePosXpx () {
       return this.mousePos.x + 'px';
