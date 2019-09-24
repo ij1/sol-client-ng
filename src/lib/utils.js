@@ -109,6 +109,13 @@ export function latLngBoundsAddOffset(latLngBounds, offset) {
 
 }
 
+export function tripleBounds (map, size) {
+  return L.latLngBounds(
+    map.containerPointToLatLng(L.point(-size.x, -size.y)),
+    map.containerPointToLatLng(L.point(size.x * 2, size.y * 2))
+  );
+}
+
 /* Calculates the factor for interpolating the intermediate point from
  * a range between start and end.
  */

@@ -99,6 +99,7 @@ import L from 'leaflet';
 import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet';
 import { EventBus } from '../../lib/event-bus.js';
 import { PROJECTION } from '../../lib/sol.js';
+import { tripleBounds } from '../../lib/utils.js';
 
 import MapTiles from './tiles';
 import TimeOfDay from './timeofday.vue'
@@ -226,19 +227,13 @@ export default {
   },
 
   methods: {
-    tripleBounds (size) {
-      return L.latLngBounds(
-        this.map.containerPointToLatLng(L.point(-size.x, -size.y)),
-        this.map.containerPointToLatLng(L.point(size.x * 2, size.y * 2))
-      );
-    },
     updateView() {
       const center = this.map.getCenter();
       this.$store.commit('map/setView', {
         center: center,
         zoom: this.map.getZoom(),
         bounds: this.map.getBounds(),
-        tripleBounds: this.tripleBounds(this.map.getSize()),
+        tripleBounds: tripleBounds(this.map, this.map.getSize()),
       });
       this.$store.commit('boat/updateLngOffset', center.lng);
       this.updateWrapList();
@@ -253,7 +248,7 @@ export default {
         center: this.map.getCenter(),
         size: size,
         bounds: this.map.getBounds(),
-        tripleBounds: this.tripleBounds(size),
+        tripleBounds: tripleBounds(this.map, size),
       });
       this.updateWrapList();
     },
