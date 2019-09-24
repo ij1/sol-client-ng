@@ -78,16 +78,15 @@ export default {
     },
     transformAngles () {
       let res = [];
-      for (const i of angles) {
-        let angle = i;
+      for (let angle of angles) {
         /*
          * Hide twd & hoverWind deps under wind cursor lines to avoid recalcs
          * other types of lines are in use.
          */
         if (this.windCursorAid) {
-          i += this.twd;
+          angle += this.twd;
         }
-        res.push('translate(0, ' + this.cursorFreeCircle + 'px) rotate(' + i + 'deg)');
+        res.push('translate(0, ' + this.cursorFreeCircle + 'px) rotate(' + angle + 'deg)');
       }
       return res;
     },
