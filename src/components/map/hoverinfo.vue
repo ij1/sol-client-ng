@@ -31,10 +31,7 @@ export default {
   },
   computed: {
     wind () {
-      if (this.wrappedHoverLatLng === null) {
-        return '';
-      }
-      const wind = this.$store.getters['weather/latLngWind'](this.wrappedHoverLatLng);
+      const wind = this.hoverWind;
       if (wind === null) {
         return '';
       }
@@ -61,6 +58,7 @@ export default {
     }),
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
+      hoverWind: 'map/hoverWind',
     }),
   },
 }

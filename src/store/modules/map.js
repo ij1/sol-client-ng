@@ -85,6 +85,12 @@ export default {
     wrappedHoverLatLng: (state) => {
       return (state.hoverLatLng !== null) ? state.hoverLatLng.wrap() : null;
     },
+    hoverWind: (state, getters, rootState, rootGetters) => {
+      if (state.hoverLatLng === null) {
+        return null;
+      }
+      return rootGetters['weather/latLngWind'](getters.wrappedHoverLatLng);
+    },
     maxZoom: (state) => {
       return state.cfg.extraZoomLevels.value ? 21 : OLD_CLIENT_MAXZOOM;
     },
