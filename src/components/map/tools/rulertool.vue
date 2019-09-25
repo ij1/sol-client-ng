@@ -6,6 +6,7 @@
     v-if = "aimSegment !== null"
     :key = "Date.now()"
     :segment = "aimSegment"
+    :index = "null"
     :color = "'#333'"
     :world-copy-wrap = "false"
   />
@@ -44,8 +45,31 @@ export default {
       }
       let segment = loxoCalc(this.pendingPosition, this.hoverLatLng);
       segment.line = [this.pendingPosition, this.hoverLatLng];
-      segment.lastSegment = true;
+      segment.totalDistance = segment.distance;
+      if (this.continuing) {
+        segment.totalDistance += this.prevSegment.totalDistance;
+      }
       return segment;
+    },
+    wrappedPendingPosition () {
+      return this.pendingPosition.wrap();
+    },
+    prevSegment () {
+      if (this.rulerSegments.length === 0) {
+        return null;
+      }
+      return this.rulerSegments[this.rulerSegments.length - 1];
+    },
+    prevSegmentEndPoint () {
+      if (this.prevSegment === null) {
+        return null;
+      }
+      return this.prevSegment.line[this.prevSegment.line.length - 1].wrap();
+    },
+    continuing () {
+      return (this.pendingPosition !== null) &&
+             (this.prevSegmentEndPoint !== null) &&
+             this.wrappedPendingPosition.equals(this.prevSegmentEndPoint);
     },
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
@@ -56,10 +80,14 @@ export default {
   methods: {
     addSegment (latLng) {
       let newSegment = loxoCalc(this.pendingPosition, latLng);
-      const wrappedPos = this.pendingPosition.wrap();
       const wrappedDst = L.latLng(latLng.lat,
-                                  latLng.lng + (wrappedPos.lng - this.pendingPosition.lng));
-      newSegment.line = [wrappedPos, wrappedDst];
+                                  latLng.lng + (this.wrappedPendingPosition.lng - this.pendingPosition.lng));
+      newSegment.line = [this.wrappedPendingPosition, wrappedDst];
+      newSegment.totalDistance = newSegment.distance;
+      if (this.continuing) {
+        newSegment.totalDistance += this.prevSegment.totalDistance;
+      }
+
       this.$store.commit('ui/ruler/newSegment', newSegment);
     },
     onSingleClick (e) {

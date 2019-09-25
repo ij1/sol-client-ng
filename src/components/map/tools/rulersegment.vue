@@ -24,13 +24,19 @@
         :fill = "false"
       />
       <l-circle-marker
-        v-if = "segment.lastSegment"
+        v-if = "terminatesPath"
         :lat-lng = "line.line[line.line.length - 1]"
         :radius = "3"
         :color = "color"
         :weight = "1"
         :fill = "false"
-      />
+      >
+        <l-tooltip
+          :options="lineTooltipOptions"
+        >
+          {{segment.totalDistance | distance}}nm
+        </l-tooltip>
+      </l-circle-marker>
     </l-layer-group>
   </l-layer-group>
 </template>
@@ -39,6 +45,7 @@
 import { mapState } from 'vuex';
 import { LLayerGroup, LPolyline, LTooltip, LCircleMarker } from 'vue2-leaflet';
 import { radToDeg, latLngArrayAddOffset } from '../../../lib/utils.js';
+import { distanceMixin } from '../../mixins/distance.js';
 import PathDistance from '../../distance.vue';
 
 export default {
@@ -50,6 +57,7 @@ export default {
     'l-circle-marker': LCircleMarker,
     'path-distance': PathDistance,
   },
+  mixins: [distanceMixin],
   props: {
     worldCopyWrap: {
       type: Boolean,
@@ -58,6 +66,9 @@ export default {
     segment: {
       type: Object,
       required: true,
+    },
+    index: {
+      type: Number,
     },
     color: {
       type: String,
@@ -78,6 +89,28 @@ export default {
         });
       }
       return res;
+    },
+    wrappedLastPoint () {
+      const lastPoint = this.segment.line[this.segment.line.length - 1];
+      return lastPoint.wrap();
+    },
+    nextSegmentFirstPoint () {
+      if (this.index < this.allRulerSegments.length - 1) {
+        return this.allRulerSegments[this.index + 1].line[0].wrap();
+      }
+      return null;
+    },
+    terminatesPath () {
+      if (this.index === null) {
+        return true;
+      }
+      if (this.nextSegmentFirstPoint === null) {
+        return true;
+      }
+      if (this.wrappedLastPoint.equals(this.nextSegmentFirstPoint)) {
+        return false;
+      }
+      return true;
     },
     lineTooltipOptions () {
       let direction;
@@ -102,6 +135,7 @@ export default {
     },
     ...mapState({
       mapWrapList: state => state.map.wrapList,
+      allRulerSegments: state => state.ui.ruler.rulerSegments,
     }),
   },
 }

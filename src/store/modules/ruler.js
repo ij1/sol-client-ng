@@ -18,16 +18,8 @@ export default {
     },
     newSegment (state, segment) {
       segment.id = state.segmentId;
-      segment.lastSegment = true;
       state.segmentId++;
 
-      /* Adjust lastSegment of the prev segment if path is continuous */
-      if (state.rulerSegments.length > 0) {
-        let prevSeg = state.rulerSegments[state.rulerSegments.length - 1];
-        if (prevSeg.line[prevSeg.line.length - 1].equals(segment.line[0])) {
-          prevSeg.lastSegment = false;
-        }
-      }
       state.rulerSegments.push(segment);
     },
     delSegment (state) {
@@ -47,9 +39,6 @@ export default {
         state.rulerPendingPosition = null;
       }
       state.rulerSegments.pop();
-      if (state.rulerSegments.length > 0) {
-        state.rulerSegments[state.rulerSegments.length - 1].lastSegment = true;
-      }
     },
     delAll (state) {
       state.rulerSegments = [];

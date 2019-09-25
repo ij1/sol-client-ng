@@ -1,9 +1,10 @@
 <template>
   <l-layer-group>
     <ruler-segment
-      v-for = "segment in rulerSegments"
+      v-for = "(segment, index) in rulerSegments"
       :key = "segment.id"
       :segment = "segment"
+      :index = "index"
       :color = "'#000'"
     />
   </l-layer-group>
