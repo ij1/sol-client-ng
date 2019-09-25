@@ -313,6 +313,7 @@ export default {
   width: 100%;
   background-image: linear-gradient(rgba(234, 234, 234, 0.8), rgba(191, 191, 191, 0.8), rgba(234, 234, 234, 0.8));
   border-radius: 5px 5px 2px 2px;
+  touch-action: none;
 }
 #weather-slider-fg {
   position: absolute;
