@@ -48,4 +48,10 @@ export default {
       state.rulerPendingPosition = pendingPosition;
     },
   },
+  getters: {
+    wrappedPendingPosition: (state) => {
+      return state.rulerPendingPosition === null ? null :
+             state.rulerPendingPosition.wrap();
+    },
+  },
 }

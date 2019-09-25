@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { loxoCalc } from '../../../lib/nav.js';
 import RulerSegment from './rulersegment.vue';
@@ -51,9 +51,6 @@ export default {
       }
       return segment;
     },
-    wrappedPendingPosition () {
-      return this.pendingPosition.wrap();
-    },
     prevSegment () {
       if (this.rulerSegments.length === 0) {
         return null;
@@ -75,6 +72,9 @@ export default {
       hoverLatLng: state => state.map.hoverLatLng,
       rulerSegments: state => state.ui.ruler.rulerSegments,
       pendingPosition: state => state.ui.ruler.rulerPendingPosition,
+    }),
+    ...mapGetters({
+      wrappedPendingPosition: 'ui/ruler/wrappedPendingPosition',
     }),
   },
   methods: {
