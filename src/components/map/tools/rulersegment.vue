@@ -20,7 +20,7 @@
         :lat-lng = "line.line[0]"
         :radius = "3"
         :color = "color"
-        :weight = "1"
+        :weight = "0.5"
         :fill = "false"
       />
       <l-circle-marker
@@ -28,7 +28,7 @@
         :lat-lng = "line.line[line.line.length - 1]"
         :radius = "3"
         :color = "color"
-        :weight = "1"
+        :weight = "0.5"
         :fill = "false"
       >
         <l-tooltip
