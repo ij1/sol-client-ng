@@ -58,7 +58,8 @@ export default {
              state.rulerSegments[state.rulerSegments.length - 1];
     },
     extendingPath: (state, getters) => {
-      if ((state.pendingPosition === null) || (getters.lastSegment === null)) {
+      if ((state.rulerPendingPosition === null) ||
+          (getters.lastSegment === null)) {
         return false;
       }
 
