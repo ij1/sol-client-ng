@@ -3,14 +3,16 @@
     <div>
       <map-coordinate :lat-lng = "poi.latLng"/>
     </div>
-    <div>
-      <path-distance :path = "loxoPath"/>
-    </div>
-    <div>
-      <path-distance :path = "gcPath"/>
-    </div>
-    <div>
-      VMG: {{vmg}}kn
+    <div v-if = "boatPosition !== null">
+      <div>
+        <path-distance :path = "loxoPath"/>
+      </div>
+      <div>
+        <path-distance :path = "gcPath"/>
+      </div>
+      <div>
+        VMG: {{vmg}}kn
+      </div>
     </div>
   </div>
 </template>

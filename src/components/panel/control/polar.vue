@@ -204,16 +204,19 @@ export default {
       ctx.translate(0, this.gridOrigoY);
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 2;
-      this.drawPolarCurve(ctx, this.fgCurve, this.gridScale);
+      if (this.fgCurve !== null) {
+        this.drawPolarCurve(ctx, this.fgCurve, this.gridScale);
+      }
 
-      const twa = Math.abs(this.boatTwa);
-      const speed = this.boatSpeed;
-      const polarPos = this.polarCoords(twa, speed, this.gridScale);
+      if ((this.boatTwa !== null) && (this.boatSpeed !== null)) {
+        const twa = Math.abs(this.boatTwa);
+        const speed = this.boatSpeed;
+        const polarPos = this.polarCoords(twa, speed, this.gridScale);
 
-      ctx.beginPath();
-      ctx.arc(polarPos.x, polarPos.y, 2, 0, 2 * Math.PI);
-      ctx.stroke();
-
+        ctx.beginPath();
+        ctx.arc(polarPos.x, polarPos.y, 2, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
       ctx.restore();
 
       this._drawOverlay();

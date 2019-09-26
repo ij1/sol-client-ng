@@ -115,6 +115,9 @@ export default {
       return res;
     },
     currentCurve: (state, getters, rootState) => {
+      if (rootState.boat.instruments.tws.value === null) {
+        return null;
+      }
       const knots = rootState.boat.instruments.tws.value * MS_TO_KNT;
       return getters['curve'](knots, state.twaInterval);
     },

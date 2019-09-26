@@ -57,6 +57,9 @@ export default {
       return [size, size];
     },
     polarScale () {
+      if (this.polarCurve === null) {
+        return 0;
+      }
       return this.polarSize / this.polarHeadroom / this.polarCurve.maxspeed.speed;
     },
     needsRedraw () {
@@ -77,7 +80,7 @@ export default {
 
   methods: {
     draw (ctx) {
-      if (!this.showPolar) {
+      if (!this.showPolar || (this.polarCurve === null)) {
         return;
       }
 
