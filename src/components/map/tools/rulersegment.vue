@@ -5,6 +5,7 @@
       :key = "line.offset"
     >
       <l-polyline
+        v-if = "!zeroLen"
         :lat-lngs = "line.line"
         :color = "color"
         :weight = "1"
@@ -17,6 +18,7 @@
         </l-tooltip>
       </l-polyline>
       <l-circle-marker
+        v-if = "!zeroLen"
         :lat-lng = "line.line[0]"
         :radius = "3"
         :color = "color"
@@ -42,7 +44,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LPolyline, LTooltip, LCircleMarker } from 'vue2-leaflet';
 import { radToDeg, latLngArrayAddOffset } from '../../../lib/utils.js';
 import { distanceMixin } from '../../mixins/distance.js';
@@ -76,6 +78,9 @@ export default {
     },
   },
   computed: {
+    zeroLen () {
+      return this.segment.line[0].equals(this.segment.line[1]);
+    },
     lines () {
       let res = [];
       let wrapList = this.worldCopyWrap ? this.mapWrapList : [0];
@@ -104,7 +109,7 @@ export default {
         return true;
       }
       if (this.nextSegmentFirstPoint === null) {
-        return true;
+        return (this.rulerPendingPosition === null) || !this.rulerExtendingPath;
       }
       if (this.wrappedLastPoint.equals(this.nextSegmentFirstPoint)) {
         return false;
@@ -135,6 +140,10 @@ export default {
     ...mapState({
       mapWrapList: state => state.map.wrapList,
       allRulerSegments: state => state.ui.ruler.rulerSegments,
+      rulerPendingPosition: state => state.ui.rulerPendingPosition,
+    }),
+    ...mapGetters({
+      rulerExtendingPath: 'ui/ruler/extendingPath',
     }),
   },
 }

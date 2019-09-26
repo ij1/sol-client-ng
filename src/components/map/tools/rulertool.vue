@@ -38,15 +38,17 @@ export default {
   },
   computed: {
     aimSegment () {
-      if ((this.pendingPosition === null) ||
-          (this.hoverLatLng === null) ||
-          this.pendingPosition.equals(this.hoverLatLng)) {
+      if (this.pendingPosition === null) {
         return null;
       }
-      let segment = loxoCalc(this.pendingPosition, this.hoverLatLng);
-      segment.line = [this.pendingPosition, this.hoverLatLng];
-      segment.wrappedLine = [this.wrappedPendingPosition,
-                             this.wrappedHoverLatLng];
+      let target = this.hoverLatLng;
+      if (target === null) {
+        /* Create zero line */
+        target = this.pendingPosition;
+      }
+      let segment = loxoCalc(this.pendingPosition, target);
+      segment.line = [this.pendingPosition, target];
+      segment.wrappedLine = [this.wrappedPendingPosition, target.wrap()];
       segment.totalDistance = segment.distance;
       if (this.extendingPath) {
         segment.totalDistance += this.lastSegment.totalDistance;
