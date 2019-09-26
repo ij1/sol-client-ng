@@ -57,5 +57,13 @@ export default {
       return state.rulerSegments.length === 0 ? null :
              state.rulerSegments[state.rulerSegments.length - 1];
     },
+    extendingPath: (state, getters) => {
+      if ((state.pendingPosition === null) || (getters.lastSegment === null)) {
+        return false;
+      }
+
+      const lastSegmentEndPoint = getters.lastSegment.wrappedLine[getters.lastSegment.wrappedLine.length - 1];
+      return getters.wrappedPendingPosition.equals(lastSegmentEndPoint);
+    },
   },
 }
