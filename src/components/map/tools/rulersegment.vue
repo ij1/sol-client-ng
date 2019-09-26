@@ -91,12 +91,11 @@ export default {
       return res;
     },
     wrappedLastPoint () {
-      const lastPoint = this.segment.line[this.segment.line.length - 1];
-      return lastPoint.wrap();
+      return this.segment.wrappedLine[this.segment.line.length - 1];
     },
     nextSegmentFirstPoint () {
       if (this.index < this.allRulerSegments.length - 1) {
-        return this.allRulerSegments[this.index + 1].line[0].wrap();
+        return this.allRulerSegments[this.index + 1].wrappedLine[0];
       }
       return null;
     },

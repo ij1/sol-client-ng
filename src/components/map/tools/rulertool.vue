@@ -45,6 +45,8 @@ export default {
       }
       let segment = loxoCalc(this.pendingPosition, this.hoverLatLng);
       segment.line = [this.pendingPosition, this.hoverLatLng];
+      segment.wrappedLine = [this.wrappedPendingPosition,
+                             this.wrappedHoverLatLng];
       segment.totalDistance = segment.distance;
       if (this.continuing) {
         segment.totalDistance += this.prevSegment.totalDistance;
@@ -61,7 +63,7 @@ export default {
       if (this.prevSegment === null) {
         return null;
       }
-      return this.prevSegment.line[this.prevSegment.line.length - 1].wrap();
+      return this.prevSegment.wrappedLine[this.prevSegment.line.length - 1];
     },
     continuing () {
       return (this.pendingPosition !== null) &&
@@ -80,9 +82,13 @@ export default {
   methods: {
     addSegment (latLng) {
       let newSegment = loxoCalc(this.pendingPosition, latLng);
+      /* Wraps start pos and adjust destination by the same amount */
       const wrappedDst = L.latLng(latLng.lat,
                                   latLng.lng + (this.wrappedPendingPosition.lng - this.pendingPosition.lng));
       newSegment.line = [this.wrappedPendingPosition, wrappedDst];
+      /* Fully wrap the destination here */
+      newSegment.wrappedLine = [this.wrappedPendingPosition.wrap(),
+                                wrappedDst.wrap()];
       newSegment.totalDistance = newSegment.distance;
       if (this.continuing) {
         newSegment.totalDistance += this.prevSegment.totalDistance;
