@@ -49,26 +49,20 @@ export default {
                              this.wrappedHoverLatLng];
       segment.totalDistance = segment.distance;
       if (this.continuing) {
-        segment.totalDistance += this.prevSegment.totalDistance;
+        segment.totalDistance += this.lastSegment.totalDistance;
       }
       return segment;
     },
-    prevSegment () {
-      if (this.rulerSegments.length === 0) {
+    lastSegmentEndPoint () {
+      if (this.lastSegment === null) {
         return null;
       }
-      return this.rulerSegments[this.rulerSegments.length - 1];
-    },
-    prevSegmentEndPoint () {
-      if (this.prevSegment === null) {
-        return null;
-      }
-      return this.prevSegment.wrappedLine[this.prevSegment.line.length - 1];
+      return this.lastSegment.wrappedLine[this.lastSegment.line.length - 1];
     },
     continuing () {
       return (this.pendingPosition !== null) &&
-             (this.prevSegmentEndPoint !== null) &&
-             this.wrappedPendingPosition.equals(this.prevSegmentEndPoint);
+             (this.lastSegmentEndPoint !== null) &&
+             this.wrappedPendingPosition.equals(this.lastSegmentEndPoint);
     },
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
@@ -77,6 +71,7 @@ export default {
     }),
     ...mapGetters({
       wrappedPendingPosition: 'ui/ruler/wrappedPendingPosition',
+      lastSegment: 'ui/ruler/lastSegment',
     }),
   },
   methods: {
@@ -91,7 +86,7 @@ export default {
                                 wrappedDst.wrap()];
       newSegment.totalDistance = newSegment.distance;
       if (this.continuing) {
-        newSegment.totalDistance += this.prevSegment.totalDistance;
+        newSegment.totalDistance += this.lastSegment.totalDistance;
       }
 
       this.$store.commit('ui/ruler/newSegment', newSegment);

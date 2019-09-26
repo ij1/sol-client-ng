@@ -53,5 +53,9 @@ export default {
       return state.rulerPendingPosition === null ? null :
              state.rulerPendingPosition.wrap();
     },
+    lastSegment: (state) => {
+      return state.rulerSegments.length === 0 ? null :
+             state.rulerSegments[state.rulerSegments.length - 1];
+    },
   },
 }
