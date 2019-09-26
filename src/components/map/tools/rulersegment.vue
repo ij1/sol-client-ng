@@ -91,7 +91,7 @@ export default {
       return res;
     },
     wrappedLastPoint () {
-      return this.segment.wrappedLine[this.segment.line.length - 1];
+      return this.segment.wrappedLine[this.segment.wrappedLine.length - 1];
     },
     nextSegmentFirstPoint () {
       if (this.index < this.allRulerSegments.length - 1) {

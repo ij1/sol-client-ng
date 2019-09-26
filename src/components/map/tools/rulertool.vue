@@ -57,7 +57,7 @@ export default {
       if (this.lastSegment === null) {
         return null;
       }
-      return this.lastSegment.wrappedLine[this.lastSegment.line.length - 1];
+      return this.lastSegment.wrappedLine[this.lastSegment.wrappedLine.length - 1];
     },
     continuing () {
       return (this.pendingPosition !== null) &&
