@@ -3,16 +3,38 @@
     v-if = "showCursorAid"
   >
     <div
-      v-for = "(i, idx) in transformAngles"
-      :key = "idx"
-      :style = "{
-        top: mousePosYpx,
-        left: mousePosXpx,
-        height: maxLineLengthPx,
-        transform: i,
-      }"
-      class = "aimline"
-    />
+      id = "aimline-container"
+      :style = "[posStyle, rotateStyle]"
+    >
+      <div
+        class = "aimline"
+        :style = "{
+          height: maxLineLengthPx,
+          bottom: cursorFreeCirclePx,
+        }"
+      />
+      <div
+        class = "aimline"
+        :style = "{
+          height: maxLineLengthPx,
+          top: cursorFreeCirclePx,
+        }"
+      />
+      <div
+        class = "aimline"
+        :style = "{
+          width: maxLineLengthPx,
+          right: cursorFreeCirclePx,
+        }"
+      />
+      <div
+        class = "aimline"
+        :style = "{
+          width: maxLineLengthPx,
+          left: cursorFreeCirclePx,
+        }"
+      />
+    </div>
     <div
       v-if = "normalCursorAid && wrappedHoverLatLng !== null"
     >
@@ -40,8 +62,6 @@ import { radToDeg, tripleBounds } from '../../lib/utils.js';
 import LatCoordinate from '../latcoordinate.vue';
 import LonCoordinate from '../loncoordinate.vue';
 
-const angles = [0, 90, 180, 270];
-
 export default {
   name: 'MapCursor',
 
@@ -58,7 +78,7 @@ export default {
   data () {
     return {
       mousePos: null,
-      cursorFreeCircle: 24,
+      cursorFreeCirclePx: '24px',
     }
   },
   computed: {
@@ -74,31 +94,25 @@ export default {
     maxLineLengthPx () {
       return (this.mapSize.x + this.mapSize.y) + 'px';
     },
-    twd () {
+    rotateStyle () {
       if (this.windCursorAid && (this.hoverWind !== null)) {
-        return radToDeg(this.hoverWind.twd);
-      }
-      return 0;
-    },
-    transformAngles () {
-      let res = [];
-      for (let angle of angles) {
-        /*
-         * Hide twd & hoverWind deps under wind cursor lines to avoid recalcs
-         * other types of lines are in use.
-         */
-        if (this.windCursorAid) {
-          angle += this.twd;
+        return {
+          transform: 'rotate(' + radToDeg(this.hoverWind.twd) + 'deg)',
         }
-        res.push('translate(0, ' + this.cursorFreeCircle + 'px) rotate(' + angle + 'deg)');
       }
-      return res;
+      return {};
     },
     mousePosXpx () {
       return this.mousePos.x + 'px';
     },
     mousePosYpx () {
       return this.mousePos.y + 'px';
+    },
+    posStyle () {
+      return {
+        left: this.mousePosXpx,
+        top: this.mousePosYpx,
+      }
     },
     ...mapState({
       cfgCursorLines: state => state.ui.cfg.cursorLines.value,
@@ -152,15 +166,18 @@ export default {
 </script>
 
 <style>
+#aimline-container {
+  position: absolute;
+  mix-blend-mode: multiply;
+  z-index: 999;
+}
 .aimline {
   position: absolute;
   background: #ddd;
-  mix-blend-mode: multiply;
-  z-index: 999;
   pointer-events: none;
   cursor: crosshair;
   width: 1px;
-  transform-origin: 0 -24px;		/* -this.cursorFreeCircle */
+  height: 1px;
 }
 </style>
 
