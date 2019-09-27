@@ -168,13 +168,13 @@ export default {
 <style>
 #aimline-container {
   position: absolute;
+  pointer-events: none;
   mix-blend-mode: multiply;
   z-index: 999;
 }
 .aimline {
   position: absolute;
   background: #ddd;
-  pointer-events: none;
   cursor: crosshair;
   width: 1px;
   height: 1px;
