@@ -75,7 +75,7 @@ export default {
       return (this.mapSize.x + this.mapSize.y) + 'px';
     },
     twd () {
-      if ((this.hoverWind !== null) && this.windCursorAid) {
+      if (this.windCursorAid && (this.hoverWind !== null)) {
         return radToDeg(this.hoverWind.twd);
       }
       return 0;
