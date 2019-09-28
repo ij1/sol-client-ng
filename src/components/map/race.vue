@@ -272,6 +272,9 @@ export default {
         return "(Start)";
       }
 
+      if (mark > this.lastRoundedMark + 1) {
+        return "";
+      }
       if (this.isIntermediateMark(mark)) {
         if (mark <= this.lastRoundedMark) {
           return "Rounded.";
