@@ -74,13 +74,16 @@ export default {
         if (!Array.isArray(raceMessages.racemessage)) {
           raceMessages.racemessage = [raceMessages.racemessage];
         }
+        const oldLastId = state.lastId;
         commit('add', raceMessages.racemessage);
-        commit('ui/setActiveTab', 4, {root: true});
-        /*
-         * This causes one unnecessary raceinfo fetch in start sequence
-         * when a race message is picked up but it should be harmless
-         */
-        dispatch('race/fetchRaceinfo', null, {root: true});
+        if (state.lastId > oldLastId) {
+          commit('ui/setActiveTab', 4, {root: true});
+          /*
+           * This causes one unnecessary raceinfo fetch in start sequence
+           * when a race message is picked up but it should be harmless
+           */
+          dispatch('race/fetchRaceinfo', null, {root: true});
+        }
       })
       .catch(err => {
         commit('solapi/logError', {
