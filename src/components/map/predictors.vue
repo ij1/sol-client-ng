@@ -15,6 +15,7 @@ export default {
 
       hourRadius: 3,
       quarterRadius: 2,
+      first15minRadius: 1,
       plottedDelayRadius: 3,
       otherDelayRadius: 2,
 
@@ -73,6 +74,13 @@ export default {
       }
       return res;
     },
+    first15minIndexes () {
+      let res = [];
+      for (let i = 1; i <= 14; i++) {
+        res.push(Math.floor(minToMsec(1) * i / this.timeDelta));
+      }
+      return res;
+    },
     cogPath () {
       this.cog.time;
 
@@ -99,6 +107,9 @@ export default {
     },
     quarterMarkers () {
       return this.getMarkers(this.quarterIndexes);
+    },
+    first15minMarkers () {
+      return this.getMarkers(this.first15minIndexes);
     },
     predictorMarkers () {
       const time = this.plottedDcDelay;
@@ -227,6 +238,16 @@ export default {
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
         ctx.fill();
+      }
+      for (let pt of this.first15minMarkers) {
+        if (!this.isEnabled(pt.type)) {
+          continue;
+        }
+        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+        ctx.strokeStyle = this.predictorColor(pt.type);
+        ctx.beginPath();
+        ctx.arc(tmp.x, tmp.y, this.first15minRadius, 0, Math.PI*2);
+        ctx.stroke();
       }
       for (let pt of this.predictorMarkers) {
         if (!this.isEnabled(pt.type)) {
