@@ -65,14 +65,9 @@ export default {
       state.zoom = view.zoom;
       state.bounds = view.bounds;
       state.tripleBounds = view.tripleBounds;
-      updateWrapList(state);
-      state.viewUpdateStamp++;
-    },
-    setSize(state, size) {
-      state.center = size.center;
-      state.size = size.size;
-      state.bounds = size.bounds;
-      state.tripleBounds = size.tripleBounds;
+      if (typeof view.size !== 'undefined') {
+        state.size = view.size;
+      }
       updateWrapList(state);
       state.viewUpdateStamp++;
     },
