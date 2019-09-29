@@ -240,7 +240,7 @@ export default {
         ctx.fill();
       }
       for (let pt of this.first15minMarkers) {
-        if (!this.isEnabled(pt.type)) {
+        if (!this.isEnabled(pt.type) || (this.zoom < 12)) {
           continue;
         }
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
