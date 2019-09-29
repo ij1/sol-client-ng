@@ -181,8 +181,9 @@ export default {
   methods: {
     setSize () {
       const size = this.map.getSize();
-      this.$store.commit('map/setSize', {
+      this.$store.commit('map/setView', {
         center: this.map.getCenter(),
+        zoom: this.map.getZoom(),
         size: size,
         bounds: this.map.getBounds(),
         tripleBounds: tripleBounds(this.map, size),
