@@ -15,7 +15,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
-import { loxoCalc } from '../../../lib/nav.js';
+import { gcCalc, loxoCalc } from '../../../lib/nav.js';
 import RulerSegment from './rulersegment.vue';
 import { uiModeMixin } from '../../mixins/uimode.js';
 
@@ -46,19 +46,13 @@ export default {
         /* Create zero line */
         target = this.pendingPosition;
       }
-      let segment = loxoCalc(this.pendingPosition, target);
-      segment.line = [this.pendingPosition, target];
-      segment.wrappedLine = [this.wrappedPendingPosition, target.wrap()];
-      segment.totalDistance = segment.distance;
-      if (this.extendingPath) {
-        segment.totalDistance += this.lastSegment.totalDistance;
-      }
-      return segment;
+      return this.calculateSegment(target, false);
     },
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
       rulerSegments: state => state.ui.ruler.rulerSegments,
       pendingPosition: state => state.ui.ruler.rulerPendingPosition,
+      cfgGcMode: state => state.ui.cfg.gcMode.value,
     }),
     ...mapGetters({
       wrappedPendingPosition: 'ui/ruler/wrappedPendingPosition',
@@ -67,21 +61,36 @@ export default {
     }),
   },
   methods: {
-    addSegment (latLng) {
-      let newSegment = loxoCalc(this.pendingPosition, latLng);
-      /* Wraps start pos and adjust destination by the same amount */
-      const wrappedDst = L.latLng(latLng.lat,
-                                  latLng.lng + (this.wrappedPendingPosition.lng - this.pendingPosition.lng));
-      newSegment.line = [this.wrappedPendingPosition, wrappedDst];
+    calculateSegment (latLng, wrap) {
+      let newSegment;
+      if (this.cfgGcMode) {
+        newSegment = gcCalc(this.pendingPosition, latLng);
+      } else {
+        newSegment = loxoCalc(this.pendingPosition, latLng);
+      }
+      let lineDst;
+      if (wrap) {
+        /* Wraps start pos and adjust destination by the same amount */
+        let wrappedLng = latLng.lng +
+                         (this.wrappedPendingPosition.lng - this.pendingPosition.lng);
+        // FIXME: Wrap needs further adjustment if path goes other way around */
+        lineDst = L.latLng(latLng.lat, wrappedLng);
+        newSegment.line = [this.wrappedPendingPosition, lineDst];
+      } else {
+        lineDst = latLng;
+        newSegment.line = [this.pendingPosition, lineDst];
+      }
       /* Fully wrap the destination here */
-      newSegment.wrappedLine = [this.wrappedPendingPosition.wrap(),
-                                wrappedDst.wrap()];
+      newSegment.wrappedLine = [this.wrappedPendingPosition, lineDst.wrap()];
       newSegment.totalDistance = newSegment.distance;
       if (this.extendingPath) {
         newSegment.totalDistance += this.lastSegment.totalDistance;
       }
-
-      this.$store.commit('ui/ruler/newSegment', newSegment);
+      return newSegment;
+    },
+    addSegment (latLng) {
+      this.$store.commit('ui/ruler/newSegment',
+                         this.calculateSegment(latLng, true));
     },
     onSingleClick (e) {
       const latLng = e.latlng;
