@@ -91,8 +91,6 @@ export default {
       }
 
       let wrapList = this.worldCopyWrap ? this.mapWrapList : [0];
-      // ADDME: when the second point crosses anti-meridian compared with
-      // the first point, we need to add more copies
 
       for (const offset of wrapList) {
         res.push({
