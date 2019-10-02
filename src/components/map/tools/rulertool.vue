@@ -53,6 +53,7 @@ export default {
       rulerSegments: state => state.ui.ruler.rulerSegments,
       pendingPosition: state => state.ui.ruler.rulerPendingPosition,
       cfgGcMode: state => state.ui.cfg.gcMode.value,
+      mapCenter: state => state.map.center,
     }),
     ...mapGetters({
       wrappedPendingPosition: 'ui/ruler/wrappedPendingPosition',
@@ -123,6 +124,21 @@ export default {
         }
       }
     },
+  },
+  watch: {
+    mapCenter (newVal, oldVal) {
+      if ((this.pendingPosition === null) ||
+          (Math.sign(oldVal.lng) === Math.sign(newVal.lng)) ||
+          (Math.abs(oldVal.lng) < 90) ||
+          (Math.abs(newVal.lng) < 90)) {
+        return;
+      }
+      const diff = newVal.lng - oldVal.lng;
+      const adjust = Math.sign(diff) * Math.ceil(Math.abs(diff) / 360) * 360;
+      const newPos = L.latLng(this.pendingPosition.lat,
+                              this.pendingPosition.lng + adjust);
+      this.$store.commit('ui/ruler/setPendingPosition', newPos);
+    }
   },
   mounted () {
     window.addEventListener('keydown', this.onCancelKey);
