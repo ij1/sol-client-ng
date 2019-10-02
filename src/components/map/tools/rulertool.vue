@@ -62,22 +62,29 @@ export default {
   },
   methods: {
     calculateSegment (latLng, wrap) {
+      let target = latLng;
+      const lngDiff = target.lng - this.pendingPosition.lng;
+      /* Truncate to 179 degrees to avoid UI inconsistencies */
+      if (lngDiff > 179) {
+        target = L.latLng(target.lat, this.pendingPosition.lng + 179);
+      } else if (lngDiff < -179) {
+        target = L.latLng(target.lat, this.pendingPosition.lng - 179);
+      }
       let newSegment;
       if (this.cfgGcMode) {
-        newSegment = gcCalc(this.pendingPosition, latLng);
+        newSegment = gcCalc(this.pendingPosition, target);
       } else {
-        newSegment = loxoCalc(this.pendingPosition, latLng);
+        newSegment = loxoCalc(this.pendingPosition, target);
       }
       let lineDst;
       if (wrap) {
         /* Wraps start pos and adjust destination by the same amount */
-        let wrappedLng = latLng.lng +
+        let wrappedLng = target.lng +
                          (this.wrappedPendingPosition.lng - this.pendingPosition.lng);
-        // FIXME: Wrap needs further adjustment if path goes other way around */
-        lineDst = L.latLng(latLng.lat, wrappedLng);
+        lineDst = L.latLng(target.lat, wrappedLng);
         newSegment.line = [this.wrappedPendingPosition, lineDst];
       } else {
-        lineDst = latLng;
+        lineDst = target;
         newSegment.line = [this.pendingPosition, lineDst];
       }
       /* Fully wrap the destination here */
