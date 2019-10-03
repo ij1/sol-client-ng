@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 export default {
   namespaced: true,
 
@@ -29,8 +31,13 @@ export default {
 
       if ((state.rulerPendingPosition !== null) &&
           (lastFixedSegment !== null)) {
-        if (state.rulerPendingPosition.equals(lastFixedSegment.line[1])) {
-          state.rulerPendingPosition = lastFixedSegment.line[0];
+        if (state.rulerPendingPosition.wrap().equals(lastFixedSegment.line[1].wrap())) {
+          const adjust = state.rulerPendingPosition.lng - lastFixedSegment.line[1].lng;
+          let newPos = lastFixedSegment.line[0];
+          if (adjust !== 0) {
+            newPos = L.latLng(newPos.lat, newPos.lng + adjust);
+          }
+          state.rulerPendingPosition = newPos;
         } else {
           state.rulerPendingPosition = null;
           return;
