@@ -99,10 +99,6 @@ export default {
       }
       return newSegment;
     },
-    addSegment (latLng) {
-      this.$store.commit('ui/ruler/newSegment',
-                         this.calculateSegment(latLng, true));
-    },
     onSingleClick (e) {
       let target = e.latlng;
       if (this.pendingPosition !== null) {
@@ -110,7 +106,8 @@ export default {
         if (this.pendingPosition.equals(target)) {
           return;
         }
-        this.addSegment(target);
+        this.$store.commit('ui/ruler/newSegment',
+                           this.calculateSegment(target, true));
       }
       this.$store.commit('ui/ruler/setPendingPosition', target);
     },
