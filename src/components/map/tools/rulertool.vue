@@ -46,7 +46,7 @@ export default {
         /* Create zero line */
         target = this.pendingPosition;
       }
-      return this.calculateSegment(target, false);
+      return this.calculateSegment(this.limitTarget(target), false);
     },
     ...mapState({
       hoverLatLng: state => state.map.hoverLatLng,
@@ -62,7 +62,7 @@ export default {
     }),
   },
   methods: {
-    calculateSegment (latLng, wrap) {
+    limitTarget (latLng) {
       let target = latLng;
       const lngDiff = target.lng - this.pendingPosition.lng;
       /* Truncate to 179 degrees to avoid UI inconsistencies */
@@ -71,6 +71,9 @@ export default {
       } else if (lngDiff < -179) {
         target = L.latLng(target.lat, this.pendingPosition.lng - 179);
       }
+      return target;
+    },
+    calculateSegment (target, wrap) {
       let newSegment;
       if (this.cfgGcMode) {
         newSegment = gcCalc(this.pendingPosition, target);
@@ -101,14 +104,15 @@ export default {
                          this.calculateSegment(latLng, true));
     },
     onSingleClick (e) {
-      const latLng = e.latlng;
+      let target = e.latlng;
       if (this.pendingPosition !== null) {
-        if (this.pendingPosition.equals(latLng)) {
+        target = this.limitTarget(target);
+        if (this.pendingPosition.equals(target)) {
           return;
         }
-        this.addSegment(latLng);
+        this.addSegment(target);
       }
-      this.$store.commit('ui/ruler/setPendingPosition', latLng);
+      this.$store.commit('ui/ruler/setPendingPosition', target);
     },
     onDoubleClick () {
       this.$store.dispatch('ui/cancelUiMode');
