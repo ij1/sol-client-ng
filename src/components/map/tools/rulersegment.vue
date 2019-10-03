@@ -178,7 +178,7 @@ export default {
       let res = [this.segment.line[0]];
       /* Avoid degenerated cases with small angle limit */
       if ((Math.abs(bearing0) >= 0.000001) &&
-          (Math.abs(Math.PI - bearing0) >= 0.000001) &&
+          (Math.abs(Math.PI - Math.abs(bearing0)) >= 0.000001) &&
           (bearing0 <= Math.PI * 2 - 0.000001)) {
         const cot0 = 1 / Math.tan(bearing0);
         const lon2 = degToRad(this.segment.line[this.segment.line.length - 1].lng);
