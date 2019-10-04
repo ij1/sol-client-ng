@@ -19,6 +19,7 @@
         <control-panel-switcher/>
       </div>
     </splitpanes>
+    <weather-sound/>
   </div>
 </template>
 
@@ -34,6 +35,7 @@ import RaceMessagesPopup from './components/racemessagespopup.vue';
 import Map from './components/map/map.vue';
 import BottomPanel from './components/panel/bottompanel.vue';
 import ControlPanelSwitcher from './components/panel/control/switcher.vue';
+import WeatherSound from './components/weathersound.vue';
 
 export default {
   name: 'app',
@@ -46,6 +48,7 @@ export default {
     'map-view': Map,
     'bottom-panel': BottomPanel,
     'control-panel-switcher': ControlPanelSwitcher,
+    'weather-sound': WeatherSound,
   },
   methods: {
     doResize () {
