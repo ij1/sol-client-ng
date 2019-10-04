@@ -495,7 +495,7 @@ export default {
       }
     },
     parseUpdateTimes({commit, dispatch}, description) {
-      const regex = /WX [Uu]pdates: *<br> *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9])\.* *<br>/;
+      const regex = /WX [Uu]pdates: *(<br>)* *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9])\.* *(<br>)*/;
       const w = regex.exec(description);
       if (w === null) {
         dispatch(
@@ -506,7 +506,7 @@ export default {
         return;
       }
       let times = [];
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 2; i <= 5; i++) {
         let time = +('1' + w[i]);
         if ((time < 10000) || (12400 < time)) {
           dispatch(
