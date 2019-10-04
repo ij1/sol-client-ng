@@ -63,33 +63,33 @@ export default {
                 const lw = wind.knots < 50 ? wind.knots / 10 : 5;
                 const len = (wind.knots < 20 ? Math.floor(wind.knots) : 20) + 6;
 
-                ctx.beginPath();
                 ctx.lineWidth = 1;
                 ctx.lineJoin = 'miter';
+                ctx.beginPath();
                 ctx.moveTo(0, 0);
                 ctx.lineTo(lw+2, -lw-3);
                 ctx.lineTo(-lw-2, -lw-3);
                 ctx.fill();
  
-                ctx.beginPath();
                 ctx.lineWidth = lw+1;
                 ctx.lineJoin = 'round';
+                ctx.beginPath();
                 ctx.moveTo(0, -lw-2);
                 ctx.lineTo(0, -len);
                 ctx.stroke();
               } else if (this.useBarbs) {
                 let fiveScale = Math.round(wind.knots / 5);
                 const hemi = windPoint.lat > 0 ? 1 : -1;
-                ctx.beginPath();
                 ctx.lineWidth = 1;
+                ctx.beginPath();
                 if (fiveScale > 0) {
                   ctx.moveTo(0, 0);
                   ctx.lineTo(0, -16 - Math.floor(fiveScale / 10) * 6);
                   ctx.stroke();
                   if (fiveScale >= 10) {
-                    ctx.beginPath();
                     ctx.lineWidth = 1;
                     ctx.lineJoin = 'miter';
+                    ctx.beginPath();
                     ctx.moveTo(0, -18);
                     if (fiveScale >= 20) {
                       ctx.lineTo(0, -30);
