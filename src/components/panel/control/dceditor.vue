@@ -4,7 +4,7 @@
     :z-index = "1000"
     close-button-label = "Cancel"
     @close = "$emit('close')"
-    submit-button-label = "Change"
+    submit-button-label = "Update"
     @submit = "onChange"
     :can-submit = "canSend"
   >
