@@ -202,9 +202,13 @@ export default {
     },
     formatOffset (value) {
       const h = msecToH(value);
-      const d = msecToDays(value);
-      return (d < 1 ? '' : (Math.floor(d) + 'd')) +
-             roundToFixed(h - Math.floor(d) * 24, 1) + 'h';
+      let d = msecToDays(value);
+      let hTxt = roundToFixed(h - Math.floor(d) * 24, 1);
+      if (hTxt === '24.0') {
+        d += 1;
+        hTxt = '0.0';
+      }
+      return (d < 1 ? '' : (Math.floor(d) + 'd')) + hTxt + 'h';
     }
   },
 
