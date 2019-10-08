@@ -6,7 +6,7 @@
         <select
           id = "chat-channel-selector"
           :value="roomId"
-          @input="selectRoom"
+          @change="selectRoom"
         >
           <option disabled value="">
             Please select channel
