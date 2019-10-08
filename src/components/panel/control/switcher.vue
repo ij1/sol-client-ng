@@ -2,16 +2,16 @@
   <div id="control-panel">
     <div class="tabs">
       <a @click="activeTab=0" :class="activeTab === 0 ? 'active' : ''">
-        <img src="../../../images/wheel.png"/>
+        <img src="../../../images/wheel.png" alt="Steering"/>
       </a>
       <a @click="activeTab=1" :class="activeTab === 1 ? 'active' : ''">
-        <img src="../../../images/clock.png"/>
+        <img src="../../../images/clock.png" alt="Delayed Commands"/>
       </a>
       <a @click="activeTab=2" :class="activeTab === 2 ? 'active' : ''">
-        <img src="../../../images/podium.png"/>
+        <img src="../../../images/podium.png" alt="Boatlists"/>
       </a>
       <a @click="activeTab=3" :class="activeTab === 3 ? 'active' : ''">
-        <img src="../../../images/chat.png"/>
+        <img src="../../../images/chat.png" alt="Chat"/>
       </a>
       <a
         v-if = "racemessages.length > 0"

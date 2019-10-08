@@ -7,7 +7,7 @@
         href = "http://www.sailonline.org/blog/2008/mar/10/sailonline-yacht-club-launched/"
         target = "_blank"
       >
-        <img src="../images/joinsyc.png">
+        <img src="../images/joinsyc.png" alt="Join Sailonline Yacht Club">
       </a>
     </div>
   </div>
