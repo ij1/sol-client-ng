@@ -32,6 +32,12 @@ export function msecToUTCTimeString (msec) {
          ('00' + d.getUTCSeconds()).slice(-2);
 }
 
+export function msecToUTCHourMinString (msec) {
+  const d = new Date(msec);
+  return ('00' + d.getUTCHours()).slice(-2) + ':' +
+         ('00' + d.getUTCMinutes()).slice(-2);
+}
+
 export function msecToUTCDateString (msec) {
   const d = new Date(msec);
   return d.getUTCFullYear() + '/' +

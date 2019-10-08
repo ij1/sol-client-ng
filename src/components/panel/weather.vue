@@ -63,7 +63,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../../lib/utils.js';
+import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin, msecToUTCHourMinString } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import L from 'leaflet';
 
@@ -196,9 +196,7 @@ export default {
     formatTime (value) {
       const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const d = new Date(value);
-      return days[d.getUTCDay()] + " " +
-             ("0" + d.getUTCHours()).slice(-2) + ":" +
-             ("0" + d.getUTCMinutes()).slice(-2) + "utc";
+      return days[d.getUTCDay()] + " " + msecToUTCHourMinString(d) + "utc";
     },
     formatOffset (value) {
       const h = msecToH(value);

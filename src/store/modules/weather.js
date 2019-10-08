@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { store } from '../../store/index.js';
-import { UTCToMsec, hToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
+import { UTCToMsec, hToMsec, secToMsec, msecToUTCHourMinString, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
 import { UVToWind } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
 import { lowPrioTask } from '../../lib/lowprio.js';
@@ -480,9 +480,8 @@ export default {
         commit('updateFetchTime', now);
         if (!firstWeather) {
           const d = new Date(state.data.updated);
-          const time = d.getUTCHours() + ':' + d.getUTCMinutes();
           dispatch('notifications/add', {
-            text: 'Weather updated at ' + time,
+            text: 'Weather updated at ' + msecToUTCHourMinString(d),
           }, {root: true});
         }
       } catch(err) {
