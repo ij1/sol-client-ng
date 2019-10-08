@@ -4,7 +4,7 @@
     :z-index = 1015
     close-button-label = "Cancel"
     @close = "onCancel"
-    submit-button-label = "Change"
+    submit-button-label = "Save"
     @submit = "onSubmit"
     :can-submit = "canSubmit"
     v-if = "$store.state.ui.config.showEditor"
