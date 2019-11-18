@@ -28,6 +28,7 @@ export let coordinateMixin = {
     },
     ...mapGetters({
       signToHemisphere: 'ui/coordinateSignToHemisphere',
+      noDegSymbol: 'ui/coordinateNoDegSymbol',
     }),
   },
   methods: {
@@ -45,7 +46,8 @@ export let coordinateMixin = {
         }
         text = degs + '\xb0' + minutes + "'";
       } else {
-        text = roundToFixed(absValue, this.precision) + '\xb0';
+        text = roundToFixed(absValue, this.precision) +
+               (this.noDegSymbol ? '' : '\xb0');
       }
 
       if (this.signToHemisphere) {

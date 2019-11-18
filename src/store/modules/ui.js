@@ -32,6 +32,7 @@ export default {
           ['degmin', "DD\xb0MM.mmm'H"],
           ['deg', 'DD.ddddd\xb0H'],
           ['signdeg', '+/-DD.ddddd\xb0'],
+          ['signdegnosym', '+/-DD.ddddd'],
         ],
         type: 'values',
         cfgText: 'Lat/Lon format',
@@ -87,7 +88,11 @@ export default {
       return state.uiModeCancel === null;
     },
     coordinateSignToHemisphere: (state) => {
-      return state.cfg.coordinateFormat.value !== 'signdeg';
+      return (state.cfg.coordinateFormat.value !== 'signdeg') &&
+             (state.cfg.coordinateFormat.value !== 'signdegnosym');
+    },
+    coordinateNoDegSymbol: (state) => {
+      return state.cfg.coordinateFormat.value === 'signdegnosym';
     },
   },
   actions: {
