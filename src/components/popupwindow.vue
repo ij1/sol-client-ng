@@ -30,6 +30,7 @@
           v-if = "submitButtonLabel !== null"
           type = "submit"
           :disabled = "!canSubmit"
+          @keydown.enter.prevent = "$emit('submit')"
         >
           {{submitButtonLabel}}
         </button>
