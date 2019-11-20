@@ -42,7 +42,12 @@ export default {
         type: 'values',
         values: ['current', 'both', 'none'],
         cfgText: 'Show predictor(s):',
-      }
+      },
+      preserveSteeringType: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Steering tool retains steering type',
+      },
     }
   },
 

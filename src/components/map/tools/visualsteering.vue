@@ -39,7 +39,7 @@ import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
-import { speedTowardsBearing, cogTwdToTwa, loxoCalc, pixelDistanceCalc } from '../../../lib/nav.js';
+import { speedTowardsBearing, cogTwdToTwa, loxoCalc, pixelDistanceCalc, twaTextPrefix } from '../../../lib/nav.js';
 import SailBoat from '../sailboat.vue';
 import { uiModeMixin } from '../../mixins/uimode.js';
 
@@ -111,6 +111,8 @@ export default {
       showPolar: state => state.boat.steering.visualSteering.showPolar,
       hoverLatLng: state => state.map.hoverLatLng,
       zoom: state => state.map.zoom,
+      plottedSteering: state => state.boat.steering.plottedSteering,
+      cfgPreserveSteeringType: state => state.boat.steering.cfg.preserveSteeringType,
     }),
     ...mapGetters({
       visualPosition: 'boat/visualPosition',
@@ -122,9 +124,20 @@ export default {
       if (this.maxPixelDistance(e.latlng) < this.minSteeringDistance) {
         return;
       }
+      let type = 'cc';
+      if (this.cfgPreserveSteeringType.value) {
+        type = this.plottedSteering.type;
+      }
+      let val;
+      if (type === 'cc') {
+        val = roundToFixed(radToDeg(res.startBearing), 3);
+      } else {
+        val = roundToFixed(radToDeg(cogTwdToTwa(res.startBearing, this.twd)), 3);
+        val = twaTextPrefix(val) + val;
+      }
       this.$store.commit('boat/steering/setSteering', {
-        type: 'cc',
-        value: roundToFixed(radToDeg(res.startBearing), 3),
+        type: type,
+        value: val,
       });
       this.map.off('click', this.onClick, this);
       this.$store.dispatch('ui/cancelUiMode');
