@@ -13,7 +13,10 @@
       >X</span>
     </div>
     <form @submit.prevent="$emit('submit')" >
-      <div class = "popup-content">
+      <div
+        class = "popup-content"
+        :style = "{'overflow-y' : contentOverflow}"
+      >
         <slot></slot>
       </div>
       <div class = "popup-buttons">
@@ -63,6 +66,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    contentOverflow: {
+      type: String,
+      default: 'auto',
+    },
   },
 }
 </script>
@@ -101,7 +108,6 @@ export default {
 .popup-content {
   min-height: 0px;
   flex: auto;
-  overflow-y: auto;
 }
 .popup-buttons {
  margin-top: 10px;

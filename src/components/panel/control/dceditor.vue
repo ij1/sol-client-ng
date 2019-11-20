@@ -7,6 +7,7 @@
     submit-button-label = "Update"
     @submit = "onChange"
     :can-submit = "canSend"
+    content-overflow = "visible"
   >
     <div>
       <label class="dc-editor-label">Date</label>
