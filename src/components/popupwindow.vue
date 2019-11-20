@@ -12,7 +12,10 @@
         @click.prevent = "$emit('close')"
       >X</span>
     </div>
-    <form @submit.prevent="$emit('submit')" >
+    <form
+      @keydown.enter.prevent = "doFormEnter"
+      @submit.prevent = "$emit('submit')"
+    >
       <div
         class = "popup-content"
         :style = "{'overflow-y' : contentOverflow}"
@@ -23,8 +26,8 @@
         <button
           v-if = "closeButtonLabel !== null"
           type = "close"
-          @click.prevent = "$emit('close')"
           @keydown.enter.prevent = "$emit('close')"
+          @click.prevent = "$emit('close')"
         >
           {{closeButtonLabel}}
         </button>
@@ -69,6 +72,17 @@ export default {
     contentOverflow: {
       type: String,
       default: 'auto',
+    },
+  },
+  methods: {
+    doFormEnter () {
+      if (this.submitButtonLabel !== null) {
+        if (this.canSubmit) {
+          this.$emit('submit');
+        }
+      } else {
+        this.$emit('close');
+      }
     },
   },
 }
