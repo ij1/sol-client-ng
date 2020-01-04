@@ -42,6 +42,7 @@ export default {
   state: {
     loaded: false,
     time: 0,
+    mode: 'time',
     fetchTime: 0,
     fetchPeriod: {
       hot: {
@@ -120,15 +121,20 @@ export default {
         state.time = boundedTime;
       }
     },
-    minTime(state, minTime) {
+    boatTimeUpdated(state, timeData) {
+      let newTime = timeData.newTime;
+
+      if ((state.mode === 'offset') && (state.time > 0) && (timeData.delta !== null)) {
+        newTime = state.time + timeData.delta;
+      }
       if (state.loaded) {
-        const boundedMinTime = boundTime(state, minTime);
+        const boundedMinTime = boundTime(state, newTime);
         if (boundedMinTime !== null) {
-          minTime = boundedMinTime;
+          newTime = boundedMinTime;
         }
       }
-      if (state.time < minTime) {
-        state.time = minTime;
+      if ((state.mode === 'offset') || (state.time < newTime)) {
+        state.time = newTime;
       }
     },
     setTime(state, time) {
@@ -139,6 +145,9 @@ export default {
         }
         state.time = time;
       }
+    },
+    setMode(state, mode) {
+      state.mode = mode;
     },
     setUpdateTimes(state, updateTimes) {
       state.updateTimes = updateTimes;

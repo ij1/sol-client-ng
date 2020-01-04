@@ -35,9 +35,19 @@
           {{ timescale.range | formatTimescale(fullTimescale) }}
         </option>
       </select>
-      <span>(Issued
-        {{ wxUpdated | formatTime }}):
+      <span>
+        (Issued {{ wxUpdated | formatTime }}):
+      </span>
+      <span
+        :style = "{'font-weight': wxMode === 'time' ? 'bold' : 'normal'}"
+        @click = "setMode('time')"
+      >
         {{ wxTime | formatTime }}
+      </span>
+      <span
+        :style = "{'font-weight': wxMode === 'offset' ? 'bold' : 'normal'}"
+        @click = "setMode('offset')"
+      >
         (+{{ timeOffset | formatOffset }})
       </span>
       <button v-if = "playTimer === null" @click="onPlay">&#9654;</button>
@@ -164,6 +174,7 @@ export default {
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       wxTime: state => state.weather.time,
+      wxMode: state => state.weather.mode,
       wxUpdated: state => state.weather.data.updated,
     }),
     ...mapGetters({
@@ -242,6 +253,9 @@ export default {
     },
     setTime (value) {
       this.$store.commit('weather/setTime', this.boatTime + value);
+    },
+    setMode (value) {
+      this.$store.commit('weather/setMode', value);
     },
     changeTime (delta) {
       let value = this.timeOffset + delta;

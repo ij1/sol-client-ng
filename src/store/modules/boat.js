@@ -134,6 +134,7 @@ export default {
           id: nextChatroom,
           chatData: boatData.chats,
         };
+        const oldTime = state.instruments.time.value;
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
@@ -141,7 +142,10 @@ export default {
         commit('updateBoat', boatData.boat);
         commit('updateLngOffset', rootState.map.center.lng);
         await dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
-        commit('weather/minTime', state.instruments.time.value, {root: true});
+        commit('weather/boatTimeUpdated', {
+          newTime: state.instruments.time.value,
+          delta: oldTime > 0 ? state.instruments.time.value - oldTime : null,
+        }, {root: true});
 
         if (typeof boatData.lmi !== 'undefined') {
           let lmi = parseInt(boatData.lmi);
