@@ -5,7 +5,7 @@
     <div
       class = "tool-button"
       ref = "steer-button"
-      :style = "{color: visualSteeringEnabled ? 'red' : 'black'}"
+      :style = "{color: color}"
       @click.prevent = "onClick"
     >
       Steer
@@ -24,6 +24,14 @@ export default {
     'l-control': LControl,
   },
   computed: {
+    color () {
+      if (this.visualSteeringEnabled) {
+        return 'red';
+      } else if (!this.allowControl) {
+        return 'rgba(96, 96, 96, 0.6)';
+      }
+      return 'black';
+    },
     ...mapState({
       visualShowPolar: state => state.boat.steering.cfg.showPolarImmediately.value,
       alwaysShowPolar: state => state.boat.instruments.cfg.visualizePolar.value,
