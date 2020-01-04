@@ -107,8 +107,9 @@ export default {
     update(state, weatherData) {
       state.data = weatherData;
       state.loaded = true;
-      /* wx begins only after our current timestamp, fix the wx time index
-       * to avoid issues
+      /* wx begins only after our current timestamp or the new wx had an
+       * error that truncated it such that the current wx time is beyond
+       * the tail of the wx, fix the wx time index to avoid issues
        */
       const boundedTime = boundTime(state, state.time);
       if (boundedTime !== null) {
