@@ -407,7 +407,7 @@ export default {
       }
       let errorMsg = "Enter -180.0 \u2013 +180.0!";
       if (!this.twaHasSign) {
-        errorMsg += "  Non-zero TWA requires sign!";
+        errorMsg += "  Non-zero requires sign!";
       }
       return errorMsg;
     },
