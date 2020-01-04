@@ -474,9 +474,20 @@ export default {
 .steering-input {
   text-align: left;
 }
+input[type=checkbox], input[type=radio] {
+  vertical-align: middle;
+  position: relative;
+  bottom: 2px;
+}
+input[type=radio] {
+  bottom: 3px;
+}
 .steering-input-box {
   font-size: 12px;
   font-weight: bold;
+  background-color: white;
+  margin: 2px;
+  margin-left: 6px;
 }
 .flex-space {
   flex: auto;
