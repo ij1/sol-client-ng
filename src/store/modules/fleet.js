@@ -59,7 +59,7 @@ export default {
     boatTypesCount: 0,       /* works around lack of reactivity */
     selected: {},
     hover: {},
-    maxSelectedBoats: 5,
+    maxSelectedBoats: 10,
     maxHoverBoats: 3,
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
     playerBoatIdx: 0,
