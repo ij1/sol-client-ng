@@ -22,9 +22,13 @@
           >&deg;
           <div class = "input-error">
             <transition name = "fade">
-              <span v-if = "ccError !== null">
+              <a
+                v-if = "ccError !== null"
+                href = "http://www.sailonline.org/wiki/show/Manual/"
+                target = "_blank"
+              >
                 {{ccError}}
-              </span>
+              </a>
             </transition>
           </div>
         </div>
@@ -49,9 +53,13 @@
           >&deg;
           <div class = "input-error">
             <transition name = "fade">
-              <span v-if = "twaError !== null">
+              <a
+                v-if = "twaError !== null"
+                href = "http://www.sailonline.org/wiki/show/Manual/"
+                target = "_blank"
+              >
                 {{twaError}}
-              </span>
+              </a>
             </transition>
           </div>
         </div>
@@ -73,9 +81,13 @@
           >
           <div class = "input-error">
             <transition name = "fade">
-              <span v-if = "delayError !== null">
+              <a
+                v-if = "delayError !== null"
+                href = "http://www.sailonline.org/wiki/show/Manual/"
+                target = "_blank"
+              >
                 {{delayError}}
-              </span>
+              </a>
             </transition>
           </div>
         </div>
@@ -567,6 +579,18 @@ input[type=radio] {
   margin-left: 5px;
   color: red;
   overflow: hidden;
+}
+.input-error a:link {
+  color: red;
+  text-decoration: none;
+}
+.input-error a:visited {
+  color: red;
+  text-decoration: none;
+}
+.input-error a:hover {
+  color: red;
+  text-decoration: underline;
 }
 .fade-enter-active {
   transition: opacity 0.1s linear 0.3s;
