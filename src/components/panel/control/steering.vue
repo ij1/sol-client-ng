@@ -395,7 +395,7 @@ export default {
       if (this.isCcValid) {
         return null;
       }
-      if (this.cc === '') {
+      if ((this.cc === '') || (this.type !== 'cc')) {
         return null;
       }
       return "Enter 0.0 \u2013 360.0!"
@@ -408,7 +408,7 @@ export default {
       if (this.isTwaValid) {
         return null;
       }
-      if (this.twa === '') {
+      if ((this.twa === '') || (this.type !== 'twa')) {
         return null;
       }
       let errorMsg = "Enter -180.0 \u2013 +180.0!";
