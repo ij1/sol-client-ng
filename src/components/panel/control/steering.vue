@@ -580,20 +580,12 @@ input[type=radio] {
   color: red;
   overflow: hidden;
 }
-.input-error a:link {
+.input-error a:link, .input-error a:visited {
   color: red;
   text-decoration: none;
   outline: 0;
 }
-.input-error a:visited {
-  color: red;
-  text-decoration: none;
-}
-.input-error a:hover {
-  color: red;
-  text-decoration: underline;
-}
-.input-error a:active {
+.input-error a:hover, .input-error a:active, .input-error a:focus {
   color: red;
   text-decoration: underline;
 }
