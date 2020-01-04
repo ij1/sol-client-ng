@@ -16,7 +16,7 @@
             id = "cc"
             @click="type = 'cc'"
             @input = "type = 'cc'"
-            v-model.trim = "cc"
+            v-model.trim = "ccRaw"
             maxlength = 7
             size = 7
           >&deg;
@@ -43,7 +43,7 @@
             id = "twa"
             @click = "type = 'twa'"
             @input = "type = 'twa'"
-            v-model.trim = "twa"
+            v-model.trim = "twaRaw"
             maxlength = 8
             size = 8
           >&deg;
@@ -67,7 +67,7 @@
             class = "steering-input-box"
             ref = "delay"
             id = "delay"
-            v-model.trim = "delay"
+            v-model.trim = "delayRaw"
             maxlength = 12
             size = 12
           >
@@ -149,7 +149,7 @@ export default {
         this.$store.commit('boat/steering/setType', value);
       },
     },
-    cc: {
+    ccRaw: {
       get () {
         return this.plottedSteering.cc;
       },
@@ -157,7 +157,7 @@ export default {
         this.$store.commit('boat/steering/setCc', value);
       },
     },
-    twa: {
+    twaRaw: {
       get () {
         return this.plottedSteering.twa;
       },
@@ -173,13 +173,22 @@ export default {
         this.$store.commit('boat/steering/setDelayOn', value);
       },
     },
-    delay: {
+    delayRaw: {
       get () {
         return this.plottedSteering.delay;
       },
       set (value) {
         this.$store.commit('boat/steering/setDelay', value);
       },
+    },
+    cc () {
+      return this.ccRaw.replace(',', '.');
+    },
+    twa () {
+      return this.twaRaw.replace(',', '.');
+    },
+    delay () {
+      return this.delayRaw.replace(',', '.');
     },
     prevCopyDecimals () {
       return this.plottedSteering.prevCopyDecimals;
@@ -431,13 +440,13 @@ export default {
       if ((this.type === 'cc') || (value === null)) {
         return;
       }
-      this.cc = value;
+      this.ccRaw = value;
     },
     toTwa (value) {
       if ((this.type === 'twa') || (value === null)) {
         return;
       }
-      this.twa = twaTextPrefix(value) + value;
+      this.twaRaw = twaTextPrefix(value) + value;
     },
     delayTime (value) {
       /* Don't show the DC dot when "start" is used as the delay */
@@ -495,10 +504,10 @@ export default {
       const currentType = this.$store.state.boat.currentSteering;
       this.type = currentType;
       if (currentType === 'cc') {
-        this.cc = roundToFixed(radToDeg(this.$store.state.boat.instruments.course.value), 3);
+        this.ccRaw = roundToFixed(radToDeg(this.$store.state.boat.instruments.course.value), 3);
       } else if (currentType === 'twa') {
         const twaVal = this.$store.state.boat.instruments.twa.value;
-        this.twa = twaTextPrefix(twaVal) + roundToFixed(radToDeg(twaVal), 3);
+        this.twaRaw = twaTextPrefix(twaVal) + roundToFixed(radToDeg(twaVal), 3);
       }
     },
     debugIsDelayNumber () {

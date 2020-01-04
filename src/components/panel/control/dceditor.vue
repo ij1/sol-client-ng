@@ -43,7 +43,7 @@
       <input
         :style = "{'background-color': twaColor}"
         id = "value"
-        v-model.trim = "value"
+        v-model.trim = "valueRaw"
         size = 8
         maxlength = 8
       >&deg;
@@ -75,13 +75,16 @@ export default {
       time: this.dcToEdit.time,
       hours: msecToUTCTimeString(this.dcToEdit.time),
       type: this.dcToEdit.type,
-      value: dcTwaTextPrefix(this.dcToEdit) +
-             roundToFixed(radToDeg(this.dcToEdit.value), 3),
+      valueRaw: dcTwaTextPrefix(this.dcToEdit) +
+                roundToFixed(radToDeg(this.dcToEdit.value), 3),
       origDc: Object.assign({}, this.dcToEdit),
       sending: false,
     }
   },
   computed: {
+    value () {
+      return this.valueRaw.replace(',', '.');
+    },
     newTime () {
       const date = msecToUTCDateString(this.time) + ' ' + this.hours;
       return UTCToMsec(date);
