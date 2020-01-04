@@ -395,7 +395,7 @@ export default {
       if (this.isCcValid || (this.cc === '') || (this.type !== 'cc')) {
         return null;
       }
-      return "Enter 0.0 \u2013 360.0!"
+      return "Enter 0.0 \u2013 360.0"
     },
     twaHasSign () {
       const firstChar = this.twa.charAt(0);
@@ -418,7 +418,7 @@ export default {
       if (this.delay === '') {
         return null;
       }
-      return "Enter decimal (hours) or as components 0h00m00s!";
+      return "Enter decimal hours or 00h00m00s";
     },
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
