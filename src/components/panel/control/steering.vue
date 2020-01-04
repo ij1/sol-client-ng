@@ -20,6 +20,13 @@
             maxlength = 7
             size = 7
           >&deg;
+          <div class = "input-error">
+            <transition name = "fade">
+              <span v-if = "ccError !== null">
+                {{ccError}}
+              </span>
+            </transition>
+          </div>
         </div>
         <div class = "steering-input">
           <input
@@ -40,6 +47,13 @@
             maxlength = 8
             size = 8
           >&deg;
+          <div class = "input-error">
+            <transition name = "fade">
+              <span v-if = "twaError !== null">
+                {{twaError}}
+              </span>
+            </transition>
+          </div>
         </div>
         <div class = "steering-input">
           <input
@@ -57,6 +71,13 @@
             maxlength = 12
             size = 12
           >
+          <div class = "input-error">
+            <transition name = "fade">
+              <span v-if = "delayError !== null">
+                {{delayError}}
+              </span>
+            </transition>
+          </div>
         </div>
         <div id = "steering-buttons">
           <button type = "submit" :disabled = "!canSend">
@@ -361,6 +382,41 @@ export default {
       }
       return 'Set Boat Course';
     },
+    ccError () {
+      if (this.isCcValid) {
+        return null;
+      }
+      if (this.cc === '') {
+        return null;
+      }
+      return "Enter 0.0 \u2013 360.0!"
+    },
+    twaHasSign () {
+      const firstChar = this.twa.charAt(0);
+      return (firstChar === '-') || (firstChar === '+');
+    },
+    twaError () {
+      if (this.isTwaValid) {
+        return null;
+      }
+      if (this.twa === '') {
+        return null;
+      }
+      let errorMsg = "Enter -180.0 \u2013 +180.0!";
+      if (!this.twaHasSign) {
+        errorMsg += "  Non-zero TWA requires sign!";
+      }
+      return errorMsg;
+    },
+    delayError () {
+      if (this.isDelayValid) {
+        return null;
+      }
+      if (this.delay === '') {
+        return null;
+      }
+      return "Enter decimal (hours) or as components 0h00m00s!";
+    },
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
       cfgExtraDebug: state => state.diagnostics.cfg.extraDebug.value,
@@ -500,5 +556,22 @@ input[type=radio] {
 #steering-buttons button {
   margin-left: 4px;
   padding: 0px;
+}
+.input-error {
+  text-align: left;
+  font-size: 11px;
+  height: 20px;
+  margin-left: 5px;
+  color: red;
+  overflow: hidden;
+}
+.fade-enter-active {
+  transition: opacity 0.1s linear 0.3s;
+}
+.fade-leave-active {
+  transition: opacity 0.1s linear;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
