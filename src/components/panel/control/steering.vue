@@ -392,10 +392,7 @@ export default {
       return 'Set Boat Course';
     },
     ccError () {
-      if (this.isCcValid) {
-        return null;
-      }
-      if ((this.cc === '') || (this.type !== 'cc')) {
+      if (this.isCcValid || (this.cc === '') || (this.type !== 'cc')) {
         return null;
       }
       return "Enter 0.0 \u2013 360.0!"
@@ -405,10 +402,7 @@ export default {
       return (firstChar === '-') || (firstChar === '+');
     },
     twaError () {
-      if (this.isTwaValid) {
-        return null;
-      }
-      if ((this.twa === '') || (this.type !== 'twa')) {
+      if (this.isTwaValid || (this.twa === '') || (this.type !== 'twa')) {
         return null;
       }
       let errorMsg = "Enter -180.0 \u2013 +180.0!";
