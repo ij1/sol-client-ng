@@ -563,7 +563,7 @@ input[type=radio] {
 .input-error {
   text-align: left;
   font-size: 11px;
-  height: 20px;
+  min-height: 20px;
   margin-left: 5px;
   color: red;
   overflow: hidden;
