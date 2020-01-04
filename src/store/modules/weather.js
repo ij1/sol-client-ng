@@ -81,6 +81,15 @@ export default {
         type: 'boolean',
         cfgText: 'Start with 24h weather',
       },
+      startMode: {
+        value: 'time',
+        type: 'values',
+        values: [
+          ['time', 'keep time constant'],
+          ['offset', 'keep offset constant'],
+        ],
+        cfgText: 'Start with time/offset mode',
+      },
       gridInterval: {
         value: 48,
         type: 'range',

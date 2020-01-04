@@ -176,6 +176,7 @@ export default {
       wxTime: state => state.weather.time,
       wxMode: state => state.weather.mode,
       wxUpdated: state => state.weather.data.updated,
+      wxStartMode: state => state.weather.cfg.startMode.value,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
@@ -302,6 +303,7 @@ export default {
   mounted () {
     window.addEventListener('mouseup', this.onMouseUp);
     window.addEventListener('touchend', this.onMouseUp);
+    this.$store.commit('weather/setMode', this.wxStartMode);
   },
   beforeDestroy () {
     window.removeEventListener('mouseup', this.onMouseUp);
