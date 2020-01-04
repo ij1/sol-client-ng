@@ -583,12 +583,17 @@ input[type=radio] {
 .input-error a:link {
   color: red;
   text-decoration: none;
+  outline: 0;
 }
 .input-error a:visited {
   color: red;
   text-decoration: none;
 }
 .input-error a:hover {
+  color: red;
+  text-decoration: underline;
+}
+.input-error a:active {
   color: red;
   text-decoration: underline;
 }
