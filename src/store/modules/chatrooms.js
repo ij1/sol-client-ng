@@ -3,6 +3,17 @@ import { orderBy } from 'lodash';
 import { secToMsec, UTCToMsec } from '../../lib/utils.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
 
+function updateLocalStorageRooms(state) {
+  for (let i = 0; i < state.maxOpenRooms; i++) {
+    const key = state.localStorageKeyPrefix + i;
+    if (i < state.activeRooms.length) {
+      localStorage.setItem(key, state.rooms[state.activeRooms[i].id].name);
+    } else {
+      localStorage.removeItem(key);
+    }
+  }
+}
+
 
 export default {
   namespaced: true,
@@ -18,6 +29,8 @@ export default {
     fetchCounter: 0,
     retryTimer: 1000,
     chatMsgId: 0,       /* Add unique ID to chat messages */
+
+    localStorageKeyPrefix: 'sol-chatroom:',
   },
 
   mutations: {
@@ -37,12 +50,30 @@ export default {
       }
       state.activeRooms = [];
 
+      for (let i = 0; i < state.maxOpenRooms; i++) {
+        const val = localStorage.getItem(state.localStorageKeyPrefix + i);
+        if (val === null) {
+          break;
+        }
+
+        for (const roomId of state.roomList) {
+          if (val === state.rooms[roomId].name) {
+            state.activeRooms.push({
+              roomKey: state.roomKey++,
+              id: roomId,
+              messageDraft: '',
+            });
+          }
+        }
+      }
+
       if (state.activeRooms.length === 0) {
         state.activeRooms.push({
           roomKey: state.roomKey++,
           id: '1',
           messageDraft: '',
         });
+        updateLocalStorageRooms(state);
       }
     },
 
@@ -96,11 +127,13 @@ export default {
         id: room,
         messageDraft: '',
       });
+      updateLocalStorageRooms(state);
     },
     closeRoom(state, roomKey) {
       for (let i = 0; i < state.activeRooms.length; i++) {
         if (state.activeRooms[i].roomKey === roomKey) {
           state.activeRooms.splice(i, 1);
+          updateLocalStorageRooms(state);
           return;
         }
       }
@@ -109,6 +142,7 @@ export default {
       for (let i = 0; i < state.activeRooms.length; i++) {
         if (state.activeRooms[i].roomKey === roomInfo.roomKey) {
           state.activeRooms[i].id = roomInfo.newRoom;
+          updateLocalStorageRooms(state);
           return;
         }
       }
