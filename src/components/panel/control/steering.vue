@@ -115,7 +115,7 @@ import PolarContainer from './polarcontainer.vue';
 import SycBanner from '../../sycbanner.vue';
 import { radToDeg, degToRad, msecToH } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
-import { isCcValid, isTwaValid, twaTextPrefix } from '../../../lib/nav.js';
+import { isCcValid, isTwaValid, twaTextPrefix, minTurnAngle } from '../../../lib/nav.js';
 
 const dayHourMinSecRegex = /^([1-9][0-9]*d)?([0-9][0-9]*h)?([0-9][0-9]*m)?([0-9][0-9]*s)?$/;
 
@@ -397,8 +397,11 @@ export default {
       } else if (this.isSteeringValid) {
         if ((Math.abs(this.oldTwa) > 0) && (Math.abs(this.twa) > 0) &&
             (Math.sign(this.oldTwa) !== Math.sign(this.twa))) {
-          // ADDME: for 'Tack'/'Gybe' angles need to figured out
-          return 'Tack/Gybe';
+          if (Math.abs(this.oldTwa + minTurnAngle(this.oldTwa, this.twaRad)) > Math.PI) {
+            return 'Gybe';
+          } else {
+            return 'Tack';
+          }
         }
       }
       return 'Set Boat Course';
