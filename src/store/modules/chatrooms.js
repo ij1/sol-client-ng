@@ -35,11 +35,15 @@ export default {
         });
         state.roomList.push(chatroom.id);
       }
-      state.activeRooms = [{
-        roomKey: state.roomKey++,
-        id: '1',
-        messageDraft: '',
-      }];
+      state.activeRooms = [];
+
+      if (state.activeRooms.length === 0) {
+        state.activeRooms.push({
+          roomKey: state.roomKey++,
+          id: '1',
+          messageDraft: '',
+        });
+      }
     },
 
     updateRoom (state, data) {
