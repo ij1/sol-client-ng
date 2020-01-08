@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import ControlChat from './chat.vue';
 
 export default {
@@ -27,12 +28,13 @@ export default {
   },
 
   computed: {
-    roomCount () {
-      return this.$store.state.chatrooms.activeRooms.length;
-    },
     allowAdd () {
-      return this.roomCount < 3;
-    }
+      return this.roomCount < this.maxOpenRooms;
+    },
+    ...mapState({
+      roomCount: state => state.chatrooms.activeRooms.length,
+      maxOpenRooms: state => state.chatrooms.maxOpenRooms,
+    }),
   },
 
   methods: {

@@ -11,6 +11,7 @@ export default {
     rooms: {},
     roomList: [],
     activeRooms: [],
+    maxOpenRooms: 3,
     roomKey: 0,
     pendingMessages: [],
     lastSentStamp: 0,
