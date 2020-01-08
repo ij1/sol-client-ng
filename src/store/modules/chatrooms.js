@@ -99,7 +99,7 @@ export default {
     },
 
     mapBoatIds (state, name2boatId) {
-      for (let c of Object.keys(state.rooms)) {
+      for (let c of state.roomList) {
         if (state.rooms[c].boatIdsMapped) {
           continue;
         }
