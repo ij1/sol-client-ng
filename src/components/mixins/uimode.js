@@ -61,7 +61,7 @@ export let uiModeMixin = {
         this.uiModeCancelClickTimer();
         if (!this.uiModeHandlingDblClicks) {
           /* dblclick without mouseup?!? */
-          this.uiModeOnMouseUp();
+          this.uiModeFinishClick();
         } else {
           this.$emit('doubleclick', e);
         }
