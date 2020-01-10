@@ -112,18 +112,8 @@
 import { mapState, mapGetters } from 'vuex';
 import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin, msecToUTCHourMinString } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
+import { eventMap } from '../../lib/events.js';
 import L from 'leaflet';
-
-const eventMap = {
-  mousedown: {
-    move: 'mousemove',
-    end: 'mouseup',
-  },
-  touchstart: {
-    move: 'touchmove',
-    end: 'touchend',
-  },
-};
 
 export default {
   name: 'WeatherPanel',
