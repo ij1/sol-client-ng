@@ -504,11 +504,6 @@ export default {
       });
     },
 
-    onSetCourse (e) {
-      this.cc = roundToFixed(radToDeg(e.course), 3);
-      this.type = 'cc';
-    },
-
     recallCurrent () {
       const currentType = this.$store.state.boat.currentSteering;
       this.type = currentType;
