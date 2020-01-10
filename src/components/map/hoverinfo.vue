@@ -16,8 +16,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
-import { radToDeg } from '../../lib/utils.js';
-import { roundToFixed } from '../../lib/quirks.js';
+import { windToText } from '../../lib/weather.js';
 import { gcCalc, loxoCalc, zeroPath } from '../../lib/nav.js';
 import MapCoordinate from '../coordinate.vue';
 import PathDistance from '../distance.vue';
@@ -31,12 +30,7 @@ export default {
   },
   computed: {
     wind () {
-      const wind = this.hoverWind;
-      if (wind === null) {
-        return '';
-      }
-      return roundToFixed(wind.knots, 2) + 'kn @' +
-             roundToFixed(radToDeg(wind.twd), 2) + '\xb0';
+      return windToText(this.hoverWind);
     },
     path () {
       if ((this.wrappedHoverLatLng === null) ||
