@@ -1,8 +1,9 @@
 <template>
   <form
     id = "weather-panel"
-    @keyup.left = "changeTime(-selectedStep)"
-    @keyup.right = "changeTime(selectedStep)"
+    @keydown.left.prevent = "changeTime(-selectedStep)"
+    @keydown.right.prevent = "changeTime(selectedStep)"
+    @click.prevent = "focusPanel"
   >
     <div id = "weather-slider-container">
       <div
@@ -40,6 +41,7 @@
         ref = "timescale-selector"
         :value = "selectedTimescale"
         @change = "onSelectTimescale($event.target.value)"
+        @click.stop
       >
         <option
           v-for = "timescale in activeTimescales"
@@ -81,6 +83,7 @@
         ref = "step-selector"
         :value = "selectedStep"
         @change = "onSelectStep($event.target.value)"
+        @click.stop
       >
         <option
           v-for = "step in weatherSteps"
@@ -277,6 +280,9 @@ export default {
         this.cancelPlay();
       }
     },
+    focusPanel () {
+      this.$refs['weatherslider'].focus();
+    },
     onSelectTimescale (value) {
       if (this.selectedTimescale !== parseInt(value)) {
         this.selectedStep = this.weatherTimescales[value].defaultStep;
@@ -286,22 +292,22 @@ export default {
         this.setTime(this.offsetMax);
       }
       this.$refs['timescale-selector'].blur();
-      this.$refs['weatherslider'].focus();
+      this.focusPanel();
     },
     onSelectStep (value) {
       if (this.selectedStep !== parseInt(value)) {
         this.selectedStep = parseInt(value);
       }
       this.$refs['step-selector'].blur();
-      this.$refs['weatherslider'].focus();
+      this.focusPanel();
     },
     setTime (value) {
       this.$store.commit('weather/setTime', this.boatTime + value);
-      this.$refs['weatherslider'].focus();
+      this.focusPanel();
     },
     setMode (value) {
       this.$store.commit('weather/setMode', value);
-      this.$refs['weatherslider'].focus();
+      this.focusPanel();
     },
     changeTime (delta) {
       if (!this.wxLoaded || !this.wxValidTimeseries) {
