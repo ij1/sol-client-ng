@@ -31,11 +31,19 @@ export let uiModeMixin = {
       }
       if (!this.uiModeData.inClick) {
         this.$emit('singleclick-committed', e);
+      } else {
+        this.removeEndHandler();
+        this.uiModeData.inClick = false;
       }
-      this.uiModeData.inClick = false;
       this.uiModeData.clickTimer = null;
     },
-    uiModeOnMouseUp (e) {
+    addEndHandler () {
+      window.addEventListener('mouseup', this.uiModeOnEnd);
+    },
+    removeEndHandler () {
+      window.removeEventListener('mouseup', this.uiModeOnEnd);
+    },
+    uiModeOnEnd (e) {
       if (!this.checkLeftButton(e)) {
         return;
       }
@@ -51,6 +59,7 @@ export let uiModeMixin = {
       } else {
         this.$emit('singleclick-early', this.uiModeData.eventData);
       }
+      this.removeEndHandler();
       this.uiModeData.inClick = false;
     },
     uiModeOnClick (e) {
@@ -68,6 +77,7 @@ export let uiModeMixin = {
       } else {
         this.uiModeData.eventData = e;
         this.uiModeData.inClick = true;
+        this.addEndHandler();
         this.uiModeData.clickTimer = setTimeout(this.uiModeOnCommitClick,
                                                 this.uiModeData.clickTimerDelay, e);
       }
@@ -85,7 +95,6 @@ export let uiModeMixin = {
     },
   },
   mounted () {
-    window.addEventListener('mouseup', this.uiModeOnMouseUp);
     this.map.on('mousedown', this.uiModeOnClick, this);
     window.addEventListener('keydown', this.uiModeOnKey);
     this.map.on('dragend', this.uiModeOnDragEnd, this);
@@ -93,7 +102,9 @@ export let uiModeMixin = {
   beforeDestroy () {
     window.removeEventListener('keydown', this.uiModeOnKey);
     this.map.off('mousedown', this.uiModeOnClick, this);
-    window.removeEventListener('mouseup', this.uiModeOnMouseUp);
+    if (this.uiModeData.inClick) {
+      this.removeEndHandler();
+    }
     this.map.on('dragend', this.uiModeOnDragEnd, this);
     if (this.uiModeData.clickTimer !== null) {
       this.uiModeCancelClickTimer();
