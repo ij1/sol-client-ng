@@ -1,9 +1,14 @@
 <template>
-  <div id="weather-panel">
+  <form
+    id = "weather-panel"
+    @keyup.left = "changeTime(-selectedStep)"
+    @keyup.right = "changeTime(selectedStep)"
+  >
     <div id = "weather-slider-container">
       <div
         id = "weather-slider"
         ref = "weatherslider"
+        tabindex = 0
         @mousedown = "onMouseDown"
         @touchstart = "onMouseDown"
       >
@@ -20,10 +25,19 @@
       Weather information is truncated...
     </div>
     <div id="weather-panel-control" v-if="wxLoaded && wxValidTimeseries">
-      <button @click="setTime(0)">&#124;&#9664;</button>
-      <button @click="changeTime(-selectedStep)">&#9664;&#9664;</button>
+      <button
+        @click.prevent = "setTime(0)"
+      >
+        &#124;&#9664;
+      </button>
+      <button
+        @click.prevent = "changeTime(-selectedStep)"
+      >
+        &#9664;&#9664;
+      </button>
       <span>Weather forecasted for</span>
       <select
+        ref = "timescale-selector"
         :value = "selectedTimescale"
         @change = "onSelectTimescale($event.target.value)"
       >
@@ -40,21 +54,33 @@
       </span>
       <span
         :style = "{'font-weight': wxMode === 'time' ? 'bold' : 'normal'}"
-        @click = "setMode('time')"
+        @click.prevent = "setMode('time')"
       >
         {{ wxTime | formatTime }}
       </span>
       <span
         :style = "{'font-weight': wxMode === 'offset' ? 'bold' : 'normal'}"
-        @click = "setMode('offset')"
+        @click.prevent = "setMode('offset')"
       >
         (+{{ timeOffset | formatOffset }})
       </span>
-      <button v-if = "playTimer === null" @click="onPlay">&#9654;</button>
-      <button v-if = "playTimer !== null" @click="cancelPlay">&#9642;</button>
+      <button
+        v-if = "playTimer === null"
+        @click.prevent = "onPlay"
+      >
+        &#9654;
+      </button>
+      <button
+        v-if = "playTimer !== null"
+        @click.prevent = "cancelPlay"
+      >
+        &#9642;
+      </button>
       <span>Use</span>
       <select
-        v-model="selectedStep"
+        ref = "step-selector"
+        :value = "selectedStep"
+        @change = "onSelectStep($event.target.value)"
       >
         <option
           v-for = "step in weatherSteps"
@@ -65,10 +91,18 @@
         </option>
       </select>
       <span>steps.</span>
-      <button @click="changeTime(selectedStep)">&#9654;&#9654;</button>
-      <button @click="setTime(offsetMax)">&#9654;&#124;</button>
+      <button
+        @click.prevent = "changeTime(selectedStep)"
+      >
+        &#9654;&#9654;
+      </button>
+      <button
+        @click.prevent = "setTime(offsetMax)"
+      >
+        &#9654;&#124;
+      </button>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -251,14 +285,28 @@ export default {
       if (this.timeOffset > this.offsetMax) {
         this.setTime(this.offsetMax);
       }
+      this.$refs['timescale-selector'].blur();
+      this.$refs['weatherslider'].focus();
+    },
+    onSelectStep (value) {
+      if (this.selectedStep !== parseInt(value)) {
+        this.selectedStep = parseInt(value);
+      }
+      this.$refs['step-selector'].blur();
+      this.$refs['weatherslider'].focus();
     },
     setTime (value) {
       this.$store.commit('weather/setTime', this.boatTime + value);
+      this.$refs['weatherslider'].focus();
     },
     setMode (value) {
       this.$store.commit('weather/setMode', value);
+      this.$refs['weatherslider'].focus();
     },
     changeTime (delta) {
+      if (!this.wxLoaded || !this.wxValidTimeseries) {
+        return;
+      }
       let value = this.timeOffset + delta;
       if (value < 0) {
         value = 0;
