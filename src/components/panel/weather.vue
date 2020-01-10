@@ -8,7 +8,7 @@
       <div
         id = "weather-slider"
         ref = "weatherslider"
-        tabindex = 0
+        tabindex = "0"
         @mousedown = "onMouseDown"
         @touchstart = "onMouseDown"
       >
