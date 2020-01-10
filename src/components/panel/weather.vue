@@ -389,6 +389,9 @@ export default {
 #weather-slider, #weather-slider-fg {
   height: 9px;
 }
+#weather-slider:focus {
+  outline: none;
+}
 #weather-panel-control, #weather-panel-placeholder {
   background: rgba(200, 200, 200, 0.8);
 }
