@@ -32,6 +32,11 @@ export default {
     viewUpdateStamp: 0,
 
     cfg: {
+      highlightLeader: {
+        value: true,
+        type: 'boolean',
+        cfgText: 'Highlight race leader'
+      },
       ownBoatColor: {
         value: 'magenta',
         type: 'values',

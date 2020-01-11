@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup } from 'vue2-leaflet';
 import BoatTrace from './trace.vue';
 
@@ -32,7 +32,8 @@ export default {
       return this.$store.state.race.fleet.leader;
     },
     showLeaderTrace () {
-      if ((this.leaderId === null) ||
+      if (!this.cfgHighlightLeader ||
+          (this.leaderId === null) ||
           (this.leaderId === this.playerId)) {
         return false;
       }
@@ -44,6 +45,9 @@ export default {
       }
       return true;
     },
+    ...mapState({
+      cfgHighlightLeader: state => state.map.cfg.highlightLeader.value,
+    }),
     ...mapGetters({
       'showIds': 'race/fleet/combinedIds',
       currentFilter: 'ui/boatlists/currentFilter',
