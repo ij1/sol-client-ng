@@ -266,10 +266,10 @@ export default {
 .chat-channel-input-box {
   width: 100%;
   font-size: 12px;
-  height: 4em;
+  height: 4.8em;
   box-sizing: border-box;
   resize: none;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 .chat-channel-input-btn {
   text-align: right;
