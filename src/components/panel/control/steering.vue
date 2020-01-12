@@ -1,6 +1,6 @@
 <template>
   <div id="steering">
-    <form @submit.prevent = "sendSteeringCommand">
+    <form @submit.prevent = "sendSteeringCommand" autocomplete = "off">
       <fieldset :disabled="!allowControl">
         <div class = "steering-input">
           <input

@@ -7,6 +7,7 @@
       submit-button-label = "Login"
       @submit = "doLogin"
       :can-submit = "canSend"
+      :auto-completion = "true"
     >
       <div>
         <select v-model = "authParams.race_id">

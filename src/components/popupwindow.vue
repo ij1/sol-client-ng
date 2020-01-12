@@ -15,6 +15,7 @@
     <form
       @keydown.enter.prevent = "doFormEnter"
       @submit.prevent = "$emit('submit')"
+      :autocomplete = "autoComplete ? 'on' : 'off'"
     >
       <div
         class = "popup-content"
@@ -72,6 +73,10 @@ export default {
     contentOverflow: {
       type: String,
       default: 'auto',
+    },
+    autoComplete: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {
