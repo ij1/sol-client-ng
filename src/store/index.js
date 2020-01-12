@@ -38,3 +38,4 @@ export const store = new Vuex.Store({
  */
 store.commit('time/update');
 store.dispatch('time/init');
+store.commit('ui/boatlists/init');
