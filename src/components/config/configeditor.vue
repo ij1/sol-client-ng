@@ -1,5 +1,6 @@
 <template>
   <popup-window
+    class = "config-editor"
     title = "Edit Configuration"
     :z-index = 1015
     close-button-label = "Cancel"
@@ -283,6 +284,9 @@ export default {
 </script>
 
 <style scoped>
+.config-editor {
+  width: 470px;
+}
 .config-content {
   font-size: 12px;
   text-align: left;
