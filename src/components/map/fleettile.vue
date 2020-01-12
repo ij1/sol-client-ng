@@ -3,7 +3,7 @@ import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { degToRad } from '../../lib/utils.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
-import { drawBoat } from '../../lib/boatshape.js';
+import { boatScaleDivisor, drawBoat } from '../../lib/boatshape.js';
 
 export default {
   name: 'FleetTile',
@@ -25,6 +25,7 @@ export default {
     ...mapState({
       zoom: state => state.map.zoom,
       fleetTime: state => state.race.fleet.fleetTime,
+      cfgBoatScale: state => state.map.cfg.boatScale.value,
     }),
   },
   methods: {
@@ -35,11 +36,14 @@ export default {
     },
     _redraw (ctx) {
       let map = this.$parent.$parent.map;
-      const descale = map.getZoomScale(this.zoom, this.coords.z);
-      const scale = 1 / descale;
+      let descale = map.getZoomScale(this.zoom, this.coords.z);
+      let scale = 1 / descale;
+      const boatScale = this.cfgBoatScale / boatScaleDivisor;
       if (scale >= 2) {
         return;
       }
+      scale = scale * boatScale;
+      descale = descale / boatScale;
       /* Anything > 1/2 boat size is fine */
       const halfsize = Math.ceil(scale * 40 / 2);
 
@@ -49,6 +53,7 @@ export default {
       const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.zoom, halfsize);
 
       ctx.save();
+      ctx.lineWidth = 1.0 / boatScale;
       let prev = L.point(0, 0);
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);

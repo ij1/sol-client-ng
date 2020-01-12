@@ -2,7 +2,7 @@
   <l-layer-group>
     <sail-boat
       :lat-lng = "visualPosition"
-      :scale = "3"
+      :scale = "-3"
       :color = "color"
       :course = "cog"
       :twa = "twa"

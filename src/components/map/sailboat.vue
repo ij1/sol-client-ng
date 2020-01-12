@@ -8,7 +8,8 @@
 </template>
 
 <script>
-import { drawBoat } from '../../lib/boatshape.js';
+import { mapState } from 'vuex';
+import { boatScaleDivisor, drawBoat } from '../../lib/boatshape.js';
 import MarkerCanvas from './markercanvas.vue';
 
 export default {
@@ -34,6 +35,7 @@ export default {
       type: String,
       required: true,
     },
+    /* Negative scales do not alter the size of the boat */
     scale: {
       type: Number,
       default: 1,
@@ -46,7 +48,7 @@ export default {
 
   computed: {
     boatCenter () {
-      const size = 20 * this.scale;
+      const size = 20 * this.finalScale;
       return [size, size];
     },
     needsRedraw () {
@@ -54,15 +56,24 @@ export default {
       this.twa;
       return Date.now();
     },
+    finalScale () {
+      if (this.scale < 0) {
+        return -this.scale;
+      }
+      return this.scale * this.cfgBoatScale / boatScaleDivisor;
+    },
+    ...mapState({
+      cfgBoatScale: state => state.map.cfg.boatScale.value,
+    }),
   },
 
   methods: {
     draw (ctx) {
       ctx.strokeStyle = this.color;
-      ctx.lineWidth = this.strokeWidth / this.scale;
-      ctx.scale(this.scale, this.scale);
+      ctx.lineWidth = this.strokeWidth / this.finalScale;
+      ctx.scale(this.finalScale, this.finalScale);
       drawBoat(ctx, this.course, this.twa);
-      ctx.scale(1/this.scale, 1/this.scale);
+      ctx.scale(1/this.finalScale, 1/this.finalScale);
     },
   },
 }

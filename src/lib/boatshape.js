@@ -1,3 +1,5 @@
+export const boatScaleDivisor = 5.0;
+
 const sailOffset = -6;
 
 /* Edge doesn't support SVG string in Path2D constructor. Thus, create the

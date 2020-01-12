@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import { configSetValue } from '../../components/config/configstore.js';
 import { OLD_CLIENT_MAXZOOM } from '../../lib/sol.js';
+import { boatScaleDivisor } from '../../lib/boatshape.js';
 
 function updateWrapList (state) {
   const mapMinWrap = Math.floor((state.bounds.getWest() + 180) / 360) * 360;
@@ -45,6 +46,13 @@ export default {
           ['server', 'use server color'],
         ],
         cfgText: 'Color for own trace and fleet boat',
+      },
+      boatScale: {
+        value: boatScaleDivisor,	/* divided by boatScaleDivisor */
+        type: 'range',
+        low: 3,
+        high: 7,
+        cfgText: 'Boat scale',
       },
       tinyIslands: {
         value: 'default',
@@ -99,6 +107,7 @@ export default {
       rootState.weather.data.updated;
       state.zoom;
       state.cfg.ownBoatColor.value;
+      state.cfg.boatScale.value;
       if (rootState.ui.boatlists.filterList !== null) {
         rootGetters['ui/boatlists/currentFilter'].filterStamp;
       }
