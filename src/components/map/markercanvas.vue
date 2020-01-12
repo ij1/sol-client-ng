@@ -1,5 +1,6 @@
 <template>
   <l-marker
+    v-if = "!recreateHack"
     ref = "marker-container"
     :lat-lng = "latLng"
     :options = "markerOptions"
@@ -53,6 +54,7 @@ export default {
       markerOptions: {
         className: 'marker-nopointer',
       },
+      recreateHack: false,
     }
   },
 
@@ -88,6 +90,22 @@ export default {
                       this.canvas.width, this.canvas.height);
         this.$emit('draw', ctx);
       }
+    },
+    /*
+     * When canvas size changes, limitations in Vue2Leaflet marker
+     * handling prevent the canvas from working. Thus we need to
+     * discard the marker and recreate.
+     */
+    iconSize () {
+      this.canvasReady = false;
+      this.canvas = null;
+
+      this.$nextTick(() => {
+        this.recreateHack = true;
+        this.$nextTick(() => {
+          this.recreateHack = false;
+        });
+      });
     },
   }
 }
