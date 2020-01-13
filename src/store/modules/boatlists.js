@@ -49,11 +49,56 @@ export default {
     nextBoatlistKey: 0,       /* Used to produce unique keys for the lists */
     nextFilterStamp: 1,       /* Unique filter stamps generator */
     localStoragePrefix: 'sol-boatlist:',
-    localStorageComponents: [
-      'boats:',
-      'distance:',
-      'country:',
-    ],
+    localStorageComponents: {
+      boats: {
+        decode: function (data) {
+          if (data !== null) {
+            const res = data.split(/;/);
+            if (res.length > 0) {
+              return new Set(res);
+            }
+          }
+          return null;
+        },
+        encode: function (data) {
+          if (data !== null) {
+            return [...data].join(';');
+          }
+          return null;
+        },
+      },
+      distance: {
+        decode: function (data) {
+          if (data !== null) {
+            const res = parseFloat(data);
+            if (!isNaN(res)) {
+              return res;
+            }
+          }
+          return null;
+        },
+        encode: function (data) {
+          return data;
+        },
+      },
+      country: {
+        decode: function (data) {
+          if (data !== null) {
+            const res = data.split(/;/);
+            if (res.length > 0) {
+              return new Set(res);
+            }
+          }
+          return null;
+        },
+        encode: function (data) {
+          if (data !== null) {
+            return [...data].join(';');
+          }
+          return null;
+        },
+      },
+    },
   },
 
   mutations: {
@@ -62,11 +107,12 @@ export default {
         const key = localStorage.key(i);
         let listName;
         if (key.startsWith(state.localStoragePrefix)) {
-          for (let comp of state.localStorageComponents) {
-            if (key.startsWith(state.localStoragePrefix + comp)) {
+          const comps = Object.keys(state.localStorageComponents);
+          for (let comp of comps) {
+            if (key.startsWith(state.localStoragePrefix + comp + ':')) {
               /* Found an useful key */
               listName = key.substring(state.localStoragePrefix.length +
-                                       comp.length);
+                                       comp.length + 1);
               break;
             }
           }
@@ -74,45 +120,22 @@ export default {
             continue;
           }
 
-          const boatsKey = state.localStoragePrefix + 'boats:' + listName;
-          const distanceKey = state.localStoragePrefix + 'distance:' + listName;
-          const countryKey = state.localStoragePrefix + 'country:' + listName;
-          let listBoats = localStorage.getItem(boatsKey);
-          let distance = localStorage.getItem(distanceKey);
-          let listCountry = localStorage.getItem(countryKey);
-
-          if (listBoats !== null) {
-            listBoats = listBoats.split(/;/);
-            if (listBoats.length === 0) {
-              listBoats = null;
-            }
-          }
-          if (distance !== null) {
-            distance = parseFloat(distance);
-            if (isNaN(distance)) {
-              distance = null;
+          let filter = {};
+          let filterOk = false;
+          for (let comp of comps) {
+            const filterKey = state.localStoragePrefix + comp + ':' + listName;
+            const filterData = localStorage.getItem(filterKey);
+            filter[comp] = state.localStorageComponents[comp].decode(filterData);
+            if (filter[comp] !== null) {
+              filterOk = true;
             }
           }
 
-          if (listCountry !== null) {
-            listCountry = listCountry.split(/;/);
-            if (listCountry.length === 0) {
-              listCountry = null;
-            }
-          }
-
-          if ((listBoats !== null) ||
-              (distance !== null) ||
-              (listCountry !== null)) {
-
+          if (filterOk) {
             __addOrEdit(state, {
               editListKey: null,
               name: listName,
-              filter: {
-                boats: listBoats !== null ? new Set(listBoats) : null,
-                distance: distance,
-                country: listCountry !== null ? new Set(listCountry) : null,
-              }
+              filter: filter,
             });
           }
         }
@@ -122,17 +145,13 @@ export default {
       const key = __addOrEdit(state, boatlist);
       state.activeList = key;
 
-      const boatsKey = state.localStoragePrefix + 'boats:' + boatlist.name;
-      const distanceKey = state.localStoragePrefix + 'distance:' + boatlist.name;
-      const countryKey = state.localStoragePrefix + 'country:' + boatlist.name;
-      if (boatlist.filter.boats !== null) {
-        localStorage.setItem(boatsKey, [...boatlist.filter.boats].join(';'));
-      }
-      if (boatlist.filter.distance !== null) {
-        localStorage.setItem(distanceKey, boatlist.filter.distance);
-      }
-      if (boatlist.filter.country !== null) {
-        localStorage.setItem(countryKey, [...boatlist.filter.country].join(';'));
+      for (let comp of Object.keys(state.localStorageComponents)) {
+        const filterKey = state.localStoragePrefix + comp + ':' +
+                          state.boatlists[key].name;
+        const filterData = state.localStorageComponents[comp].encode(boatlist.filter[comp]);
+        if (filterData !== null) {
+          localStorage.setItem(filterKey, filterData);
+        }
       }
     },
     delete (state, boatlistKey) {
