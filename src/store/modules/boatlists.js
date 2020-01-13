@@ -2,10 +2,12 @@ import Vue from 'vue';
 
 function __addOrEdit (state, boatlist) {
   let key;
+  let oldName = null;
 
   if ((boatlist.editListKey !== null) &&
       (typeof state.boatlists[boatlist.editListKey] !== 'undefined')) {
     key = boatlist.editListKey;
+    oldName = state.boatlists[key].name;
   } else {
     key = '' + state.nextBoatlistKey;
     state.nextBoatlistKey++;
@@ -23,9 +25,18 @@ function __addOrEdit (state, boatlist) {
     showOblyListBoats: false,
   });
 
-  return key;
+  return {
+    key: key,
+    oldName: oldName,
+  };
 }
 
+function deleteListFromLocalStorage (state, name) {
+  for (let comp of Object.keys(state.localStorageComponents)) {
+    const filterKey = state.localStoragePrefix + comp + ':' + name;
+    localStorage.removeItem(filterKey);
+  }
+}
 
 export default {
   namespaced: true,
@@ -142,12 +153,15 @@ export default {
       }
     },
     addOrEdit (state, boatlist) {
-      const key = __addOrEdit(state, boatlist);
-      state.activeList = key;
+      const res = __addOrEdit(state, boatlist);
+      state.activeList = res.key;
 
+      if (res.oldName !== null) {
+        deleteListFromLocalStorage(state, res.oldName);
+      }
       for (let comp of Object.keys(state.localStorageComponents)) {
         const filterKey = state.localStoragePrefix + comp + ':' +
-                          state.boatlists[key].name;
+                          state.boatlists[res.key].name;
         const filterData = state.localStorageComponents[comp].encode(boatlist.filter[comp]);
         if (filterData !== null) {
           localStorage.setItem(filterKey, filterData);
@@ -158,6 +172,7 @@ export default {
       if (state.activeList === boatlistKey) {
         state.activeList = state.defaultList;
       }
+      deleteListFromLocalStorage(state, state.boatlists[boatlistKey].name);
       Vue.delete(state.boatlists, boatlistKey);
     },
     setActive (state, boatlistKey) {
