@@ -58,6 +58,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import L from 'leaflet';
 import { radToDeg, tripleBounds } from '../../lib/utils.js';
 import LatCoordinate from '../latcoordinate.vue';
 import LonCoordinate from '../loncoordinate.vue';
@@ -77,6 +78,7 @@ export default {
   },
   data () {
     return {
+      inTouch: false,
       mousePos: null,
       cursorFreeCirclePx: '24px',
     }
@@ -125,14 +127,24 @@ export default {
   },
 
   mounted() {
-    this.map.on('mousemove', this.setHoverPos, this);
-    this.map.on('mouseout', this.clearHoverPos, this);
+    const container = this.map.getContainer();
+    container.addEventListener('touchstart', this.onTouchStart);
+    container.addEventListener('touchmove', this.onTouchMove);
+    container.addEventListener('touchend', this.onTouchEnd);
+    container.addEventListener('touchcancel', this.onTouchCancel);
+    this.addMouseHooks();
     this.map.on('move moveend zoom zoomend', this.updateView, this);
     this.updateView();
   },
   beforeDestroy () {
-    this.map.off('mousemove', this.setHoverPos, this);
-    this.map.off('mouseout', this.clearHoverPos, this);
+    const container = this.map.getContainer();
+    container.removeEventListener('touchstart', this.onTouchStart);
+    container.removeEventListener('touchmove', this.onTouchMove);
+    container.removeEventListener('touchend', this.onTouchEnd);
+    container.removeEventListener('touchcancel', this.onTouchCancel);
+    if (!this.inTouch) {
+      this.removeMouseHooks();
+    }
     this.map.off('move moveend zoom zoomend', this.updateView, this);
   },
 
@@ -160,6 +172,48 @@ export default {
     clearHoverPos () {
       this.$store.commit('map/setHover', null);
       this.mousePos = null;
+    },
+
+    addMouseHooks () {
+      this.map.on('mousemove', this.setHoverPos, this);
+      this.map.on('mouseout', this.clearHoverPos, this);
+    },
+    removeMouseHooks () {
+      this.map.off('mousemove', this.setHoverPos, this);
+      this.map.off('mouseout', this.clearHoverPos, this);
+    },
+
+    onTouchStart () {
+      if (!this.inTouch) {
+        this.removeMouseHooks();
+      }
+      this.inTouch = true;
+    },
+    onTouchEnd (e) {
+      if (e.touches.length > 0) {
+        return;
+      }
+      this.clearHoverPos();
+      this.addMouseHooks();
+      this.inTouch = false;
+    },
+    onTouchCancel () {
+      this.clearHoverPos();
+      this.addMouseHooks();
+      this.inTouch = false;
+    },
+    onTouchMove (e) {
+      if (e.touches.length > 1) {
+        return;
+      }
+      const tmpPt = L.DomEvent.getMousePosition(e.touches[0], this.map.getContainer());
+      const pt = L.point(Math.floor(tmpPt.x), Math.floor(tmpPt.y));
+      if (isNaN(pt.x) || isNaN(pt.y)) {
+        return;
+      }
+      const latLng = this.map.containerPointToLatLng(pt);
+      this.$store.commit('map/setHover', latLng);
+      this.mousePos = pt;
     },
   },
 }

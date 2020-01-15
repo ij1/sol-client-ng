@@ -148,10 +148,13 @@ export default {
     },
   },
   mounted () {
+    this.$store.commit('map/setHover', null);
     this.$on('singleclick-committed', this.onClick);
+    this.$on('touchend-committed', this.onClick);
   },
   beforeDestroy () {
     this.$off('singleclick-committed', this.onClick);
+    this.$off('touchend-committed', this.onClick);
   },
   watch: {
     twa (val) {

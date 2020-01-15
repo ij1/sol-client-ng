@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 export let uiModeMixin = {
   props: {
     map: Object,
@@ -6,10 +8,13 @@ export let uiModeMixin = {
   data () {
     return {
       uiModeData: {
+        mapContainer: null,
         clickTimer: null,
         clickTimerDelay: 250,
         clickDragLimit: 40,
         inClick: false,
+        inTouch: false,
+        touchEndTime: 0,
         eventData: null,
       },
       uiModeHandlingDblClicks: false,
@@ -66,6 +71,12 @@ export let uiModeMixin = {
       if (!this.checkLeftButton(e.originalEvent)) {
         return;
       }
+      if (this.uiModeData.inTouch) {
+        return;
+      }
+      if (this.uiModeData.touchEndTime + this.uiModeData.clickTimerDelay > Date.now()) {
+        return;
+      }
       if (this.uiModeData.clickTimer !== null) {
         this.uiModeCancelClickTimer();
         if (!this.uiModeHandlingDblClicks) {
@@ -93,15 +104,91 @@ export let uiModeMixin = {
         this.uiModeData.clickTimer = null;
       }
     },
+
+    touchPointToLatLng (touchEv) {
+      const tmpPt = L.DomEvent.getMousePosition(touchEv, this.map.getContainer());
+      const pt = L.point(Math.floor(tmpPt.x), Math.floor(tmpPt.y));
+      if (isNaN(pt.x) || isNaN(pt.y)) {
+        return null;
+      }
+      return this.map.containerPointToLatLng(pt);
+    },
+    uiModeOnTouchStart (e) {
+      if (e.touches.length > 1) {
+        return;
+      }
+      this.uiModeRemoveMouseHooks();
+      this.uiModeAddTouchHooks();
+      this.uiModeData.inTouch = true;
+
+      const latLng = this.touchPointToLatLng(e.touches[0]);
+      if (latLng !== null) {
+        this.$emit('touchstart-committed', {
+          latlng: latLng,
+        });
+      }
+    },
+    uiModeOnTouchEnd (e) {
+      if (e.touches.length > 0) {
+        return;
+      }
+
+      if (e.changedTouches.length === 1) {
+        const latLng = this.touchPointToLatLng(e.changedTouches[0]);
+        if (latLng !== null) {
+          this.$emit('touchend-committed', {
+            latlng: latLng,
+          });
+        }
+        this.uiModeData.touchEndTime = Date.now();
+      }
+
+      this.uiModeAddMouseHooks();
+      this.uiModeRemoveTouchHooks();
+      this.uiModeData.inTouch = false;
+    },
+    uiModeOnTouchCancel () {
+      this.uiModeAddMouseHooks();
+      this.uiModeRemoveTouchHooks();
+      this.uiModeData.inTouch = false;
+    },
+
+    uiModeAddMouseHooks () {
+      this.map.on('mousedown', this.uiModeOnClick, this);
+    },
+    uiModeRemoveMouseHooks () {
+      this.map.off('mousedown', this.uiModeOnClick, this);
+    },
+    uiModeAddTouchHooks () {
+      this.uiModeData.mapContainer.addEventListener('touchend',
+                                                    this.uiModeOnTouchEnd);
+      this.uiModeData.mapContainer.addEventListener('touchcancel',
+                                                    this.uiModeOnTouchCancel);
+    },
+    uiModeRemoveTouchHooks () {
+      this.uiModeData.mapContainer.removeEventListener('touchend',
+                                                       this.uiModeOnTouchEnd);
+      this.uiModeData.mapContainer.removeEventListener('touchcancel',
+                                                       this.uiModeOnTouchCancel);
+    },
   },
   mounted () {
-    this.map.on('mousedown', this.uiModeOnClick, this);
+    this.uiModeData.mapContainer = this.map.getContainer();
+    this.uiModeData.mapContainer.addEventListener('touchstart',
+                                                  this.uiModeOnTouchStart);
+    this.uiModeAddMouseHooks();
     window.addEventListener('keydown', this.uiModeOnKey);
     this.map.on('dragend', this.uiModeOnDragEnd, this);
   },
   beforeDestroy () {
+    this.uiModeData.mapContainer.removeEventListener('touchstart',
+                                                     this.uiModeOnTouchStart);
     window.removeEventListener('keydown', this.uiModeOnKey);
-    this.map.off('mousedown', this.uiModeOnClick, this);
+    if (!this.uiModeData.inTouch) {
+      this.uiModeRemoveMouseHooks();
+    } else {
+      this.uiModeRemoveTouchHooks();
+    }
     if (this.uiModeData.inClick) {
       this.removeEndHandler();
     }

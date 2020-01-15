@@ -111,6 +111,11 @@ export default {
       }
       this.$store.commit('ui/ruler/setPendingPosition', target);
     },
+    onTouchStart (e) {
+      if (this.pendingPosition === null) {
+        this.onSingleClick(e);
+      }
+    },
     onDoubleClick () {
       this.$store.dispatch('ui/cancelUiMode');
     },
@@ -142,14 +147,19 @@ export default {
     }
   },
   mounted () {
+    this.$store.commit('map/setHover', null);
     window.addEventListener('keydown', this.onCancelKey);
     this.$on('doubleclick', this.onDoubleClick);
     this.$on('singleclick-early', this.onSingleClick);
+    this.$on('touchend-committed', this.onSingleClick);
+    this.$on('touchstart-committed', this.onTouchStart);
   },
   beforeDestroy () {
     window.removeEventListener('keydown', this.onCancelKey);
     this.$off('doubleclick', this.onDoubleClick);
     this.$off('singleclick-early', this.onSingleClick);
+    this.$off('touchend-committed', this.onSingleClick);
+    this.$off('touchstart-committed', this.onTouchStart);
   },
 }
 </script>
