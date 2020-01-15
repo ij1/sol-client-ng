@@ -8,6 +8,7 @@
         ref = "ruler-button"
         :style = "{color: rulerEnabled ? 'red' : 'black'}"
         @click.prevent = "onClick"
+        @touchend.prevent = "onClick"
       >
         Ruler
       </div>

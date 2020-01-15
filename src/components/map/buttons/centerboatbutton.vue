@@ -6,7 +6,8 @@
     <div
       class = "tool-button"
       ref = "center-boat-button"
-      @click = "onClick"
+      @click.prevent = "onClick"
+      @touchend.prevent = "onClick"
     >
       Center<br>Boat
     </div>

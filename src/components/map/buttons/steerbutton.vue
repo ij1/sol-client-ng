@@ -7,6 +7,7 @@
       ref = "steer-button"
       :style = "{color: color}"
       @click.prevent = "onClick"
+      @touchend.prevent = "onClick"
     >
       Steer
     </div>
