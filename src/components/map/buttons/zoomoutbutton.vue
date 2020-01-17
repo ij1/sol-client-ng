@@ -39,8 +39,8 @@ export default {
   methods: {
     onClick (ev) {
       if (!ev.altKey) {
-        this.map.zoomOut();
         this.mouseDownRepeatOnMouseDown();
+        this.map.zoomOut();
       } else {
         this.map.flyTo(this.map.getCenter(), this.minZoom);
       }

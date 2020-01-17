@@ -34,8 +34,8 @@ export default {
   methods: {
     onClick (ev) {
       if (!ev.altKey) {
-        this.map.zoomIn();
         this.mouseDownRepeatOnMouseDown();
+        this.map.zoomIn();
       } else {
         this.map.flyTo(this.map.getCenter(), OLD_CLIENT_MAXZOOM);
       }
