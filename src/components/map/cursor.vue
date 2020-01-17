@@ -58,8 +58,8 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import L from 'leaflet';
 import { radToDeg, tripleBounds } from '../../lib/utils.js';
+import { touchPositionOnElement } from '../../lib/events.js';
 import LatCoordinate from '../latcoordinate.vue';
 import LonCoordinate from '../loncoordinate.vue';
 
@@ -206,9 +206,8 @@ export default {
       if (e.touches.length > 1) {
         return;
       }
-      const tmpPt = L.DomEvent.getMousePosition(e.touches[0], this.map.getContainer());
-      const pt = L.point(Math.floor(tmpPt.x), Math.floor(tmpPt.y));
-      if (isNaN(pt.x) || isNaN(pt.y)) {
+      const pt = touchPositionOnElement(e.touches[0], this.map.getContainer());
+      if (pt === null) {
         return;
       }
       const latLng = this.map.containerPointToLatLng(pt);

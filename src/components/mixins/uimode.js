@@ -1,4 +1,4 @@
-import L from 'leaflet';
+import { touchPositionOnElement } from '../../lib/events.js';
 
 export let uiModeMixin = {
   props: {
@@ -106,9 +106,8 @@ export let uiModeMixin = {
     },
 
     touchPointToLatLng (touchEv) {
-      const tmpPt = L.DomEvent.getMousePosition(touchEv, this.map.getContainer());
-      const pt = L.point(Math.floor(tmpPt.x), Math.floor(tmpPt.y));
-      if (isNaN(pt.x) || isNaN(pt.y)) {
+      const pt = touchPositionOnElement(touchEv, this.map.getContainer());
+      if (pt === null) {
         return null;
       }
       return this.map.containerPointToLatLng(pt);
