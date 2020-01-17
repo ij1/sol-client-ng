@@ -46,10 +46,10 @@ export default {
   },
   mounted () {
     L.DomEvent.disableClickPropagation(this.$refs['zoom-in-button']);
-    this.$on('clickrepeat', this.onRepeat);
+    this.$on('holdrepeat', this.onRepeat);
   },
   beforeDestroy () {
-    this.$off('clickrepeat', this.onRepeat);
+    this.$off('holdrepeat', this.onRepeat);
   },
 }
 </script>

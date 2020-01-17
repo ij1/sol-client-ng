@@ -7,7 +7,7 @@ export let holdRepeatMixin = {
   methods: {
     holdRepeatOnRepeat () {
       if (this.holdRepeatEv !== null) {
-        this.$emit('clickrepeat', this.holdRepeatEv);
+        this.$emit('holdrepeat', this.holdRepeatEv);
       }
     },
     holdRepeatStart (e) {
