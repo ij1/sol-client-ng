@@ -18,18 +18,23 @@ export let holdRepeatMixin = {
       window.addEventListener(eventMap[this.holdRepeatEv.type].end,
                               this.holdRepeatStop);
     },
-    holdRepeatStop () {
+    __holdRepeatStop () {
       this.map.off('zoomend', this.holdRepeatOnRepeat);
       window.removeEventListener(eventMap[this.holdRepeatEv.type].end,
                                  this.holdRepeatStop);
       this.holdRepeatEv = null;
+    },
+    holdRepeatStop (e) {
+      if (e.type === eventMap[this.holdRepeatEv.type].end) {
+        this.__holdRepeatStop();
+      }
     },
   },
   mounted () {
   },
   beforeDestroy () {
     if (this.holdRepeatEv !== null) {
-      this.holdRepeatStop();
+      this.__holdRepeatStop();
     }
   },
 }

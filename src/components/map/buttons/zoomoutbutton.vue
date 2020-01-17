@@ -7,6 +7,8 @@
        class = "tool-button"
        ref = "zoom-out-button"
        @mousedown.prevent = "onClick"
+       @touchstart.prevent = "onClick"
+       @touchend.prevent = "holdRepeatStop"
     >
       &#x2013;
     </div>
