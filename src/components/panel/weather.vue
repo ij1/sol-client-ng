@@ -354,6 +354,8 @@ export default {
       this.draggingSlider = ev.type;
       window.addEventListener(eventMap[this.draggingSlider].move,
                               this.onDragTo);
+      window.addEventListener(eventMap[this.draggingSlider].end,
+                              this.onDragStop);
       this.onDragTo(ev);
     },
     onDragStop (ev) {
@@ -365,17 +367,15 @@ export default {
     endDragging () {
       window.removeEventListener(eventMap[this.draggingSlider].move,
                                  this.onDragTo);
+      window.removeEventListener(eventMap[this.draggingSlider].end,
+                                 this.onDragStop);
       this.draggingSlider = null;
     }
   },
   mounted () {
-    window.addEventListener('mouseup', this.onDragStop);
-    window.addEventListener('touchend', this.onDragStop);
     this.$store.commit('weather/setMode', this.wxStartMode);
   },
   beforeDestroy () {
-    window.removeEventListener('mouseup', this.onDragStop);
-    window.removeEventListener('touchend', this.onDragStop);
     if (this.draggingSlider !== null) {
       this.endDragging();
     }
