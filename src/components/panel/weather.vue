@@ -409,6 +409,9 @@ export default {
 #weather-panel-control, #weather-panel-placeholder {
   background: rgba(200, 200, 200, 0.8);
 }
+#weather-panel-placeholder {
+  min-width: 600px;
+}
 .weather-panel-control-padding {
   display: inline-block;
   min-width: 10px;
