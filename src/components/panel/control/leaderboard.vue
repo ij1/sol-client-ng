@@ -183,9 +183,11 @@ export default {
 }
 .leaderboard-buttons {
   text-align: right;
+  padding-top: 4px;
 }
 .leaderboard-buttons button {
   font-size: 11px;
-  margin: 2px;
+  margin-left: 4px;
+  padding: 0px;
 }
 </style>

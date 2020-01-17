@@ -79,6 +79,7 @@ export default {
   font-size: 11px;
   display: flex;
   flex-direction: row;
+  padding-top: 4px;
 }
 #leaderboard-createbuttons-label {
   flex: none;
