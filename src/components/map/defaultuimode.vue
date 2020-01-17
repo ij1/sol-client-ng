@@ -42,10 +42,12 @@ export default {
   mounted () {
     this.$on('doubleclick', this.onDoubleClick);
     this.$on('singleclick-committed', this.onSingleClick);
+    this.$on('touchend-committed', this.onSingleClick);
   },
   beforeDestroy () {
     this.$off('doubleclick', this.onDoubleClick);
     this.$off('singleclick-commited', this.onSingleClick);
+    this.$off('touchend-committed', this.onSingleClick);
   },
 }
 </script>
