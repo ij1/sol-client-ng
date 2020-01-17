@@ -329,7 +329,13 @@ export default {
       }
       this.setTime(value);
     },
-    onDragTo (ev) {
+    onMove (ev) {
+      if (ev.type.startsWith('touch')) {
+        if (ev.touches.length > 1) {
+          return;
+        }
+        ev = ev.touches[0];
+      }
       const pt = L.DomEvent.getMousePosition(ev, this.$refs.weatherslider);
       const x = Math.floor(pt.x) - this.sliderZeroPx / 2;
       let frac = x / (this.$refs.weatherslider.offsetWidth - this.sliderZeroPx);
@@ -340,15 +346,6 @@ export default {
       frac = Math.max(0, frac);
       this.setTime(Math.round(frac * this.offsetMax));
     },
-    onMove (ev) {
-      if (ev.type.startsWith('touch')) {
-        if (ev.touches.length > 1) {
-          return;
-        }
-        ev = ev.touches[0];
-      }
-      this.onDragTo(ev);
-    },
     onMouseDown (ev) {
       ev.preventDefault();
       if (!this.wxLoaded) {
@@ -357,7 +354,7 @@ export default {
       this.draggingSlider = ev.type;
       window.addEventListener(eventMap[this.draggingSlider].move,
                               this.onMove);
-      this.onDragTo(ev);
+      this.onMove(ev);
     },
     onMouseUp (ev) {
       if ((this.draggingSlider !== null) &&
