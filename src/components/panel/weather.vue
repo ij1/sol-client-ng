@@ -329,7 +329,7 @@ export default {
       }
       this.setTime(value);
     },
-    onMove (ev) {
+    onDragTo (ev) {
       if (ev.type.startsWith('touch')) {
         if (ev.touches.length > 1) {
           return;
@@ -353,8 +353,8 @@ export default {
       }
       this.draggingSlider = ev.type;
       window.addEventListener(eventMap[this.draggingSlider].move,
-                              this.onMove);
-      this.onMove(ev);
+                              this.onDragTo);
+      this.onDragTo(ev);
     },
     onDragStop (ev) {
       if ((this.draggingSlider !== null) &&
@@ -364,7 +364,7 @@ export default {
     },
     endDragging () {
       window.removeEventListener(eventMap[this.draggingSlider].move,
-                                 this.onMove);
+                                 this.onDragTo);
       this.draggingSlider = null;
     }
   },
