@@ -162,6 +162,7 @@ export default {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  padding-bottom: 2px;
 }
 .leaderboard-header {
   flex: none;
