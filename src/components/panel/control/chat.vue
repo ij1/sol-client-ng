@@ -233,10 +233,10 @@ export default {
   text-align: left;
   padding: 2px;
 }
-.chat-block:nth-child(even) {
+.chat-block:nth-last-child(even) {
   background: #ffffff;
 }
-.chat-block:nth-child(odd) {
+.chat-block:nth-last-child(odd) {
   background: #e0e0e0;
 }
 .chat-flag {
