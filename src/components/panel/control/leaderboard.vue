@@ -163,6 +163,7 @@ export default {
   font-size: 11px;
   text-align: left;
   overflow: hidden;
+  min-height: 0;
 }
 .leaderboard-header {
   background-image: linear-gradient(#f0f0f0, #a0a0a0, #909090, #c0c0c0, #f0f0f0);
