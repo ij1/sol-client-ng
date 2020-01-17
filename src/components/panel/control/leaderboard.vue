@@ -8,9 +8,6 @@
     </div>
     <div
       class = "leaderboard-boatlist-container"
-      :style = "{
-        height: 'calc(100% - 68px - ' + (listEditable ? 41 : 0) + 'px)'
-      }"
       v-if = "active"
     >
       <div v-if = "listEditable" style="text-align: right">
@@ -158,30 +155,41 @@ export default {
 
 <style scoped>
 #leaderboard {
-  position: relative;
   width: 100%;
   font-size: 11px;
   text-align: left;
   overflow: hidden;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 .leaderboard-header {
+  flex: none;
   background-image: linear-gradient(#f0f0f0, #a0a0a0, #909090, #c0c0c0, #f0f0f0);
   padding: 5px;
   font-weight: bold;
 }
 .leaderboard-boatlist-container {
-  position: relative;
+  flex: auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.leaderboard-search {
+  flex: none;
   width: 100%;
 }
 .leaderboard-search input {
   font-size: 11px;
 }
 #leaderboard-boatlist {
+  flex: auto;
+  min-height: 0;
   width: 100%;
-  height: 100%;
 }
 .leaderboard-buttons {
+  flex: none;
   text-align: right;
   padding-top: 4px;
 }
