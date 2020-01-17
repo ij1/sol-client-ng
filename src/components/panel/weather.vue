@@ -373,7 +373,7 @@ export default {
 
 <style scoped>
 #weather-panel {
-  width: 630px;
+  width: 680px;
   border: 1px solid rgba(220, 220, 220, 0.8);
   border-bottom: 0px;
   border-radius: 5px 5px 0 0;
