@@ -9,9 +9,11 @@
       />
       <div id = "leaderboard-createbuttons">
         <span id = "leaderboard-createbuttons-label">Create new list by:</span>
-        <button @click = "editorType = 'boat'">Boat</button>
-        <button @click = "editorType = 'distance'">Distance</button>
-        <button @click = "editorType = 'country'">Country</button>
+        <div id = "leaderboard-createbuttons-buttoncontainer">
+          <button @click = "editorType = 'boat'">Boat</button>
+          <button @click = "editorType = 'distance'">Distance</button>
+          <button @click = "editorType = 'country'">Country</button>
+        </div>
       </div>
     </div>
     <portal to = "boatlist-editor-dest" v-if = "editorType !== null">
@@ -80,6 +82,12 @@ export default {
   display: flex;
   flex-direction: row;
   padding-top: 4px;
+}
+#leaderboard-createbuttons-buttoncontainer {
+  min-width: 90px;
+  flex: auto;
+  display: inline-block;
+  text-align: left;
 }
 #leaderboard-createbuttons-label {
   flex: none;
