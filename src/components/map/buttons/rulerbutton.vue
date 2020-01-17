@@ -8,7 +8,8 @@
         ref = "ruler-button"
         :style = "{color: rulerEnabled ? 'red' : 'black'}"
         @click.prevent = "onClick"
-        @touchend.prevent = "onClick"
+        @touchstart.prevent = "onClick"
+        @touchend.prevent
       >
         Ruler
       </div>
@@ -19,6 +20,8 @@
           key = "last-button"
           v-if = "canDel"
           @click.prevent = "onDelLast"
+          @touchstart.prevent = "onDelLast"
+          @touchend.prevent
         >
           Delete Last
         </div>
@@ -28,6 +31,8 @@
           key = "all-button"
           v-if = "canDel"
           @click.prevent = "onDelAll"
+          @touchstart.prevent = "onDelAll"
+          @touchend.prevent
         >
           Delete All
         </div>
