@@ -193,7 +193,7 @@ export default {
 }
 .leaderboard-buttons {
   flex: none;
-  text-align: right;
+  text-align: center;
   padding-top: 4px;
 }
 .leaderboard-buttons button {
