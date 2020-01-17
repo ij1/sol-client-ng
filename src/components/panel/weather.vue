@@ -10,8 +10,8 @@
         id = "weather-slider"
         ref = "weatherslider"
         tabindex = "0"
-        @mousedown = "onMouseDown"
-        @touchstart = "onMouseDown"
+        @mousedown = "onDragStart"
+        @touchstart = "onDragStart"
       >
         <div
           id = "weather-slider-fg"
@@ -346,7 +346,7 @@ export default {
       frac = Math.max(0, frac);
       this.setTime(Math.round(frac * this.offsetMax));
     },
-    onMouseDown (ev) {
+    onDragStart (ev) {
       ev.preventDefault();
       if (!this.wxLoaded) {
         return;
@@ -356,7 +356,7 @@ export default {
                               this.onMove);
       this.onMove(ev);
     },
-    onMouseUp (ev) {
+    onDragStop (ev) {
       if ((this.draggingSlider !== null) &&
           (eventMap[this.draggingSlider].end === ev.type)) {
         this.endDragging();
@@ -369,13 +369,13 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('touchend', this.onMouseUp);
+    window.addEventListener('mouseup', this.onDragStop);
+    window.addEventListener('touchend', this.onDragStop);
     this.$store.commit('weather/setMode', this.wxStartMode);
   },
   beforeDestroy () {
-    window.removeEventListener('mouseup', this.onMouseUp);
-    window.removeEventListener('touchend', this.onMouseUp);
+    window.removeEventListener('mouseup', this.onDragStop);
+    window.removeEventListener('touchend', this.onDragStop);
     if (this.draggingSlider !== null) {
       this.endDragging();
     }
