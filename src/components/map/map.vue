@@ -319,5 +319,6 @@ export default {
   font-weight: bold;
   overflow: hidden;
   cursor: auto;
+  user-select: none;
 }
 </style>
