@@ -443,6 +443,9 @@ export default {
 }
 #weather-panel-control button {
   background: #ffffff;
+  min-width: 10px;
+  margin-left: 1px;
+  margin-right: 1px;
   touch-action: none;
 }
 #weather-panel-control select option {
