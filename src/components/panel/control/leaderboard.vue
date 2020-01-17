@@ -10,7 +10,7 @@
       class = "leaderboard-boatlist-container"
       v-if = "active"
     >
-      <div v-if = "listEditable" style="text-align: right">
+      <div v-if = "listEditable" class = "leaderboard-showonly">
         <input
           type = "checkbox"
           :checked = "showOnly"
@@ -169,6 +169,9 @@ export default {
   background-image: linear-gradient(#f0f0f0, #a0a0a0, #909090, #c0c0c0, #f0f0f0);
   padding: 5px;
   font-weight: bold;
+}
+.leaderboard-showonly {
+  text-align: right;
 }
 .leaderboard-boatlist-container {
   flex: auto;
