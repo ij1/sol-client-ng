@@ -124,6 +124,7 @@ export let uiModeMixin = {
       const latLng = this.touchPointToLatLng(e.touches[0]);
       if (latLng !== null) {
         this.$emit('touchstart-committed', {
+          originalEvent: e,
           latlng: latLng,
         });
       }
@@ -137,6 +138,7 @@ export let uiModeMixin = {
         const latLng = this.touchPointToLatLng(e.changedTouches[0]);
         if (latLng !== null) {
           this.$emit('touchend-committed', {
+            originalEvent: e,
             latlng: latLng,
           });
         }
