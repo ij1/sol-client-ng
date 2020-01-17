@@ -333,6 +333,9 @@ export default {
       const pt = L.DomEvent.getMousePosition(ev, this.$refs.weatherslider);
       const x = Math.floor(pt.x) - this.sliderZeroPx / 2;
       let frac = x / (this.$refs.weatherslider.offsetWidth - this.sliderZeroPx);
+      if (isNaN(frac)) {
+        return;
+      }
       frac = Math.min(1, frac);
       frac = Math.max(0, frac);
       this.setTime(Math.round(frac * this.offsetMax));
