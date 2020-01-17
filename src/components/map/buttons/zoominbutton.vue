@@ -16,12 +16,12 @@
 <script>
 import L from 'leaflet';
 import { LControl } from 'vue2-leaflet';
-import { mouseDownRepeatMixin } from './mousedownrepeat.js';
+import { holdRepeatMixin } from './holdrepeat.js';
 import { OLD_CLIENT_MAXZOOM } from '../../../lib/sol.js';
 
 export default {
   name: 'ZoomInButton',
-  mixins: [ mouseDownRepeatMixin ],
+  mixins: [ holdRepeatMixin ],
   components: {
     'l-control': LControl,
   },
@@ -34,7 +34,7 @@ export default {
   methods: {
     onClick (ev) {
       if (!ev.altKey) {
-        this.mouseDownRepeatOnMouseDown();
+        this.holdRepeatStart();
         this.map.zoomIn();
       } else {
         this.map.flyTo(this.map.getCenter(), OLD_CLIENT_MAXZOOM);

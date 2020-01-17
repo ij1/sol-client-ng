@@ -16,12 +16,12 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
-import { mouseDownRepeatMixin } from './mousedownrepeat.js';
+import { holdRepeatMixin } from './holdrepeat.js';
 import { LControl } from 'vue2-leaflet';
 
 export default {
   name: 'ZoomOutButton',
-  mixins: [ mouseDownRepeatMixin ],
+  mixins: [ holdRepeatMixin ],
   components: {
     'l-control': LControl,
   },
@@ -39,7 +39,7 @@ export default {
   methods: {
     onClick (ev) {
       if (!ev.altKey) {
-        this.mouseDownRepeatOnMouseDown();
+        this.holdRepeatStart();
         this.map.zoomOut();
       } else {
         this.map.flyTo(this.map.getCenter(), this.minZoom);
