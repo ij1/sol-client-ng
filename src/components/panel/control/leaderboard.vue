@@ -182,6 +182,9 @@ export default {
 }
 .leaderboard-search input {
   font-size: 11px;
+  background-color: unset;
+  margin: 2px;
+  margin-left: 6px;
 }
 #leaderboard-boatlist {
   flex: auto;
