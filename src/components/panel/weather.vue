@@ -20,12 +20,17 @@
       </div>
     </div>
     <div id="weather-panel-placeholder" v-if="!wxLoaded">
+      <span class = "weather-panel-control-padding"/>
       Waiting for the weather information to load...
+      <span class = "weather-panel-control-padding"/>
     </div>
     <div id="weather-panel-placeholder" v-if="wxLoaded && !wxValidTimeseries">
+      <span class = "weather-panel-control-padding"/>
       Weather information is truncated...
+      <span class = "weather-panel-control-padding"/>
     </div>
     <div id="weather-panel-control" v-if="wxLoaded && wxValidTimeseries">
+      <span class = "weather-panel-control-padding"/>
       <button
         @click.prevent = "setTime(0)"
       >
@@ -116,6 +121,7 @@
       >
         &#9654;&#124;
       </button>
+      <span class = "weather-panel-control-padding"/>
     </div>
   </form>
 </template>
@@ -373,7 +379,7 @@ export default {
 
 <style scoped>
 #weather-panel {
-  width: 680px;
+  position: relative;
   border: 1px solid rgba(220, 220, 220, 0.8);
   border-bottom: 0px;
   border-radius: 5px 5px 0 0;
@@ -402,6 +408,10 @@ export default {
 }
 #weather-panel-control, #weather-panel-placeholder {
   background: rgba(200, 200, 200, 0.8);
+}
+.weather-panel-control-padding {
+  display: inline-block;
+  min-width: 10px;
 }
 #weather-panel-control span {
   font-size: 11px;
