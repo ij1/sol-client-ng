@@ -6,9 +6,9 @@
     <div
       class = "tool-button"
       ref = "center-boat-button"
-      @click.prevent = "onClick"
-      @touchstart.prevent = "onClick"
-      @touchend.prevent
+      @click.stop.prevent = "onClick"
+      @touchstart.stop.prevent = "onClick"
+      @touchend.stop.prevent
     >
       Center<br>Boat
     </div>

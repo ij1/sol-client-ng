@@ -7,9 +7,9 @@
         class = "tool-button"
         ref = "ruler-button"
         :style = "{color: rulerEnabled ? 'red' : 'black'}"
-        @click.prevent = "onClick"
-        @touchstart.prevent = "onClick"
-        @touchend.prevent
+        @click.stop.prevent = "onClick"
+        @touchstart.stop.prevent = "onClick"
+        @touchend.stop.prevent
       >
         Ruler
       </div>
@@ -19,9 +19,9 @@
           ref = "del-last-button"
           key = "last-button"
           v-if = "canDel"
-          @click.prevent = "onDelLast"
-          @touchstart.prevent = "onDelLast"
-          @touchend.prevent
+          @click.stop.prevent = "onDelLast"
+          @touchstart.stop.prevent = "onDelLast"
+          @touchend.stop.prevent
         >
           Delete Last
         </div>
@@ -30,9 +30,9 @@
           ref = "del-all-button"
           key = "all-button"
           v-if = "canDel"
-          @click.prevent = "onDelAll"
-          @touchstart.prevent = "onDelAll"
-          @touchend.prevent
+          @click.stop.prevent = "onDelAll"
+          @touchstart.stop.prevent = "onDelAll"
+          @touchend.stop.prevent
         >
           Delete All
         </div>

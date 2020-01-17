@@ -6,9 +6,9 @@
        id = "zoom-button"
        class = "tool-button"
        ref = "zoom-in-button"
-       @mousedown.prevent = "onClick"
-       @touchstart.prevent = "onClick"
-       @touchend.prevent = "holdRepeatStop"
+       @mousedown.stop.prevent = "onClick"
+       @touchstart.stop.prevent = "onClick"
+       @touchend.stop.prevent = "holdRepeatStop"
     >
       +
     </div>
