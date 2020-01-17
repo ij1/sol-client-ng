@@ -341,7 +341,7 @@ export default {
       this.setTime(Math.round(frac * this.offsetMax));
     },
     onMove (ev) {
-      if (ev.type === 'touchmove') {
+      if (ev.type.startsWith('touch')) {
         if (ev.touches.length > 1) {
           return;
         }
