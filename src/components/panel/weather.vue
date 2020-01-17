@@ -337,7 +337,13 @@ export default {
       frac = Math.max(0, frac);
       this.setTime(Math.round(frac * this.offsetMax));
     },
-    onMouseMove (ev) {
+    onMove (ev) {
+      if (ev.type === 'touchmove') {
+        if (ev.touches.length > 1) {
+          return;
+        }
+        ev = ev.touches[0];
+      }
       this.onDragTo(ev);
     },
     onMouseDown (ev) {
@@ -347,7 +353,7 @@ export default {
       }
       this.draggingSlider = ev.type;
       window.addEventListener(eventMap[this.draggingSlider].move,
-                              this.onMouseMove);
+                              this.onMove);
       this.onDragTo(ev);
     },
     onMouseUp (ev) {
@@ -358,7 +364,7 @@ export default {
     },
     endDragging () {
       window.removeEventListener(eventMap[this.draggingSlider].move,
-                                 this.onMouseMove);
+                                 this.onMove);
       this.draggingSlider = null;
     }
   },
