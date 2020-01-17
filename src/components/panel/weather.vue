@@ -356,6 +356,10 @@ export default {
                               this.onDragTo);
       window.addEventListener(eventMap[this.draggingSlider].end,
                               this.onDragStop);
+      if (eventMap[this.draggingSlider].cancel !== null) {
+        window.addEventListener(eventMap[this.draggingSlider].cancel,
+                                this.onDragStop);
+      }
       this.onDragTo(ev);
     },
     onDragStop (ev) {
@@ -369,6 +373,10 @@ export default {
                                  this.onDragTo);
       window.removeEventListener(eventMap[this.draggingSlider].end,
                                  this.onDragStop);
+      if (eventMap[this.draggingSlider].cancel !== null) {
+        window.removeEventListener(eventMap[this.draggingSlider].cancel,
+                                   this.onDragStop);
+      }
       this.draggingSlider = null;
     }
   },

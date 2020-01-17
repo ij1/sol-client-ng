@@ -4,10 +4,12 @@ export const eventMap = {
   mousedown: {
     move: 'mousemove',
     end: 'mouseup',
+    cancel: null,
   },
   touchstart: {
     move: 'touchmove',
     end: 'touchend',
+    cancel: 'touchcancel',
   },
 };
 
