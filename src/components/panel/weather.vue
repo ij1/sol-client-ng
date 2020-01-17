@@ -54,17 +54,29 @@
       <span>
         (Issued {{ wxUpdated | formatTime }}):
       </span>
-      <span
-        :style = "{'font-weight': wxMode === 'time' ? 'bold' : 'normal'}"
-        @click.prevent = "setMode('time')"
-      >
-        {{ wxTime | formatTime }}
+      <span class = "text-placeholder-container">
+        <span class = "text-dummy">
+          Wed 29:59utc
+        </span>
+        <span
+          class = "text-real"
+          :style = "{'font-weight': wxMode === 'time' ? 'bold' : 'normal'}"
+          @click.prevent = "setMode('time')"
+        >
+          {{ wxTime | formatTime }}
+        </span>
       </span>
-      <span
-        :style = "{'font-weight': wxMode === 'offset' ? 'bold' : 'normal'}"
-        @click.prevent = "setMode('offset')"
-      >
-        (+{{ timeOffset | formatOffset }})
+      <span class = "text-placeholder-container">
+        <span class = "text-dummy">
+          (+9d29.9h)
+        </span>
+        <span
+          class = "text-real"
+          :style = "{'font-weight': wxMode === 'offset' ? 'bold' : 'normal'}"
+          @click.prevent = "setMode('offset')"
+        >
+          (+{{ timeOffset | formatOffset }})
+        </span>
       </span>
       <button
         v-if = "playTimer === null"
@@ -411,5 +423,19 @@ export default {
   padding: 0px;
   margin: 0px;
   font-size: 11px;
+}
+.text-placeholder-container {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.text-dummy {
+  opacity: 0;
+  text-weight: bold;
+}
+.text-real {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 </style>
