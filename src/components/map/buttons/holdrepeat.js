@@ -1,3 +1,5 @@
+import { eventMap } from '../../../lib/events.js';
+
 export let holdRepeatMixin = {
   data () {
     return {
@@ -13,12 +15,14 @@ export let holdRepeatMixin = {
     holdRepeatStart (e) {
       this.holdRepeatEv = e;
       this.map.on('zoomend', this.holdRepeatOnRepeat);
-      window.addEventListener('mouseup', this.holdRepeatStop);
+      window.addEventListener(eventMap[this.holdRepeatEv.type].end,
+                              this.holdRepeatStop);
     },
     holdRepeatStop () {
-      this.holdRepeatEv = null;
       this.map.off('zoomend', this.holdRepeatOnRepeat);
-      window.removeEventListener('mouseup', this.holdRepeatStop);
+      window.removeEventListener(eventMap[this.holdRepeatEv.type].end,
+                                 this.holdRepeatStop);
+      this.holdRepeatEv = null;
     },
   },
   mounted () {
