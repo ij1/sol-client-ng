@@ -106,7 +106,7 @@ export let uiModeMixin = {
     },
 
     touchPointToLatLng (touchEv) {
-      const pt = touchPositionOnElement(touchEv, this.map.getContainer());
+      const pt = touchPositionOnElement(touchEv, this.uiModeData.mapContainer);
       if (pt === null) {
         return null;
       }

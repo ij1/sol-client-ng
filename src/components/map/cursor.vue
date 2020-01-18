@@ -81,6 +81,7 @@ export default {
       inTouch: false,
       mousePos: null,
       cursorFreeCirclePx: '24px',
+      mapContainer: null,
     }
   },
   computed: {
@@ -127,21 +128,20 @@ export default {
   },
 
   mounted() {
-    const container = this.map.getContainer();
-    container.addEventListener('touchstart', this.onTouchStart);
-    container.addEventListener('touchmove', this.onTouchMove);
-    container.addEventListener('touchend', this.onTouchEnd);
-    container.addEventListener('touchcancel', this.onTouchCancel);
+    this.mapContainer = this.map.getContainer();
+    this.mapContainer.addEventListener('touchstart', this.onTouchStart);
+    this.mapContainer.addEventListener('touchmove', this.onTouchMove);
+    this.mapContainer.addEventListener('touchend', this.onTouchEnd);
+    this.mapContainer.addEventListener('touchcancel', this.onTouchCancel);
     this.addMouseHooks();
     this.map.on('move moveend zoom zoomend', this.updateView, this);
     this.updateView();
   },
   beforeDestroy () {
-    const container = this.map.getContainer();
-    container.removeEventListener('touchstart', this.onTouchStart);
-    container.removeEventListener('touchmove', this.onTouchMove);
-    container.removeEventListener('touchend', this.onTouchEnd);
-    container.removeEventListener('touchcancel', this.onTouchCancel);
+    this.mapContainer.removeEventListener('touchstart', this.onTouchStart);
+    this.mapContainer.removeEventListener('touchmove', this.onTouchMove);
+    this.mapContainer.removeEventListener('touchend', this.onTouchEnd);
+    this.mapContainer.removeEventListener('touchcancel', this.onTouchCancel);
     if (!this.inTouch) {
       this.removeMouseHooks();
     }
@@ -206,7 +206,7 @@ export default {
       if (e.touches.length > 1) {
         return;
       }
-      const pt = touchPositionOnElement(e.touches[0], this.map.getContainer());
+      const pt = touchPositionOnElement(e.touches[0], this.mapContainer);
       if (pt === null) {
         return;
       }
