@@ -79,6 +79,8 @@ export default {
   data () {
     return {
       inTouch: false,
+      lastTouch: 0,
+      touchDelay: 250,
       mousePos: null,
       cursorFreeCirclePx: '24px',
       mapContainer: null,
@@ -165,6 +167,9 @@ export default {
     },
 
     setHoverPos (e) {
+      if (this.lastTouch + this.touchDelay > Date.now()) {
+        return;
+      }
       /* For some reason it's not camel-cased in the event! */
       this.$store.commit('map/setHover', e.latlng);
       this.mousePos = e.containerPoint;
@@ -196,6 +201,7 @@ export default {
       this.clearHoverPos();
       this.addMouseHooks();
       this.inTouch = false;
+      this.lastTouch = Date.now();
     },
     onTouchCancel () {
       this.clearHoverPos();
