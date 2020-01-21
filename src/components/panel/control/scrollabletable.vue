@@ -7,7 +7,7 @@
         </thead>
       </table>
     </div>
-    <div class = "scrollable-table">
+    <div class = "scrollable-table-wrapper">
       <table cellspacing = "0" cellpadding = "1px">
         <thead class = "fakehead" ref = "fakehead">
           <tr><slot name = "headers"></slot></tr>
@@ -57,7 +57,7 @@ export default {
   flex: none;
   overflow: hidden;
 }
-.scrollable-table {
+.scrollable-table-wrapper {
   flex: auto;
   white-space: nowrap;
   overflow-y: scroll;
