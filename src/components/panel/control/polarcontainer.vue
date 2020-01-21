@@ -65,6 +65,7 @@ export default {
   padding-top: 10px;
   text-align: left;
   display: flex;
+  min-height: 30px;
   flex-direction: column;
 }
 #boat-type {
@@ -75,5 +76,7 @@ export default {
 }
 #polar-max-area {
   flex: auto;
+  min-height: 1px;
+  width: 100%;
 }
 </style>

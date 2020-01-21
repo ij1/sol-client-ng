@@ -63,7 +63,6 @@ export default {
   }
 }
 #banner {
-  position: relative;
   z-index: 2;
 }
 </style>

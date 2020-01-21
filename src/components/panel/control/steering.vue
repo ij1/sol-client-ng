@@ -562,9 +562,8 @@ input[type=radio] {
   flex: auto;
 }
 .bottom-banner {
+  flex: none;
   position: relative;
-  bottom: 0px;
-  left: 0px;
 }
 #steering-buttons button {
   margin-left: 4px;
