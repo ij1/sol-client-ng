@@ -28,23 +28,25 @@
         Close
       </button>
     </div>
-    <div class="chat-block-list">
-      <div class="chat-block"
-        v-for = "msg in msgs"
-        :key = "msg.id"
-      >
-        <div class="chat-block-header">
-          <country-flag :country = "msg.boat.country"/>
-          <syc-flag :syc = "msg.boat.syc"/>
-          <span class="chat-name">
-            <span v-html="msg.name"/>
-          </span>
-          <span class="chat-time">
-            {{ timeOnlyForToday(msg.timestamp) }}
-          </span>
-        </div>
-        <div class="chat-msg">
-          <span v-html="msg.msg"/>
+    <div class="chat-block-wrapper">
+      <div class="chat-block-list">
+        <div class="chat-block"
+          v-for = "msg in msgs"
+          :key = "msg.id"
+        >
+          <div class="chat-block-header">
+            <country-flag :country = "msg.boat.country"/>
+            <syc-flag :syc = "msg.boat.syc"/>
+            <span class="chat-name">
+              <span v-html="msg.name"/>
+            </span>
+            <span class="chat-time">
+              {{ timeOnlyForToday(msg.timestamp) }}
+            </span>
+          </div>
+          <div class="chat-msg">
+            <span v-html="msg.msg"/>
+          </div>
         </div>
       </div>
     </div>
@@ -192,9 +194,10 @@ export default {
 
 <style scoped>
 .chat-channel {
-  height: 100%;
-  max-height: 100%;
   font-size: 11px;
+  flex: auto;
+  min-height: 30px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -210,6 +213,7 @@ export default {
 
 .chat-channel-header span {
   display: flex;
+  flex-direction: row;
 }
 
 #chat-channel-selector {
@@ -221,12 +225,18 @@ export default {
   right: 0px;
 }
 
+.chat-block-wrapper {
+  flex: auto;
+  overflow-y: scroll;
+  position: relative;
+}
+
 .chat-block-list {
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
   border: solid 1px;
   border-color: #a0a0a0;
-  overflow-y: scroll;
-  flex: auto;
 }
 
 .chat-block {
@@ -266,6 +276,7 @@ export default {
 .chat-channel-input-box {
   width: 100%;
   font-size: 12px;
+  line-height: 1.1em;
   height: 4.8em;
   box-sizing: border-box;
   resize: none;

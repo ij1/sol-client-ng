@@ -1,16 +1,11 @@
 <template>
   <div id="chat-channels" v-if="$store.state.race.loaded">
-    <div
-      class = "chat-channel"
+    <chat-channel
       v-for = "channel in $store.state.chatrooms.activeRooms"
       v-bind:key = "channel.key"
-      v-bind:style = "{ height: 'calc((100% - ' + (allowAdd ? 32 : 0) + 'px) / ' + roomCount + ')' }"
-    >
-      <chat-channel
-        :room-key = "channel.roomKey"
-        :room-id = "channel.id"
-      />
-    </div>
+      :room-key = "channel.roomKey"
+      :room-id = "channel.id"
+    />
     <div v-if="allowAdd">
       <button @click="addChannel">+</button>
     </div>
@@ -49,6 +44,9 @@ export default {
 <style scoped>
 #chat-channels {
   height: 100%;
+  width: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>
