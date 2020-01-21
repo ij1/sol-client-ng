@@ -8,7 +8,7 @@
       </table>
     </div>
     <div class = "scrollable-table-wrapper">
-      <table cellspacing = "0" cellpadding = "1px">
+      <table cellspacing = "0" cellpadding = "1px" class = "scrollable-table">
         <thead class = "fakehead" ref = "fakehead">
           <tr><slot name = "headers"></slot></tr>
           <tr><slot name = "dummydata"></slot></tr>
@@ -59,8 +59,14 @@ export default {
 }
 .scrollable-table-wrapper {
   flex: auto;
-  white-space: nowrap;
   overflow-y: scroll;
+  position: relative;
+}
+.scrollable-table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
 }
 .visualhead, .visualhead th {
   padding: 0px;
