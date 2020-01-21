@@ -229,14 +229,14 @@ export default {
   flex: auto;
   overflow-y: scroll;
   position: relative;
+  border: solid 1px;
+  border-color: #a0a0a0;
 }
 
 .chat-block-list {
   position: absolute;
   top: 0;
   left: 0;
-  border: solid 1px;
-  border-color: #a0a0a0;
 }
 
 .chat-block {
