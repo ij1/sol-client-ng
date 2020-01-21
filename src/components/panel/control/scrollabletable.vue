@@ -48,6 +48,7 @@ export default {
 
 <style>
 .scrollable-table-container {
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -58,7 +59,6 @@ export default {
 }
 .scrollable-table {
   flex: auto;
-  min-height: 0;
   white-space: nowrap;
   overflow-y: scroll;
 }
