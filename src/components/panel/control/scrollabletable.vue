@@ -53,7 +53,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.scrollabel-table-header {
+.scrollable-table-header {
   flex: none;
   overflow: hidden;
 }
