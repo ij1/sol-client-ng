@@ -114,6 +114,7 @@ export default {
   margin-bottom: -1px;
   overflow: hidden;
   font-size: 11px;
+  height: 26px;
 }
 
 .tabs a {
@@ -143,6 +144,6 @@ export default {
   padding: 5px;
   border: 1px solid #c0c0c0;
   border-radius: 10px;
-  height: calc(100vh - 32px - 10px);
+  height: calc(100vh - 28px - 10px);
 }
 </style>
