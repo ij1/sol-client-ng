@@ -61,7 +61,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
-import { LMap, LCircleMarker, LMarker, LRectangle, LTooltip } from 'vue2-leaflet';
+import { LMap } from 'vue2-leaflet';
 import { EventBus } from '../../lib/event-bus.js';
 import { PROJECTION } from '../../lib/sol.js';
 import { tripleBounds } from '../../lib/utils.js';
@@ -104,10 +104,6 @@ export default {
   name: 'Map',
   components: {
     'l-map': LMap,
-    'l-circle-marker': LCircleMarker,
-    'l-marker': LMarker,
-    'l-rectangle': LRectangle,
-    'l-tooltip': LTooltip,
 
     'map-tiles': MapTiles,
     'time-of-day': TimeOfDay,
