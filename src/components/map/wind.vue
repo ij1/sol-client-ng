@@ -289,6 +289,9 @@ export default {
         for (let latCell = latCells.x; latCell < latCells.y; latCell++) {
           let cell = this.$store.getters['weather/idxToCell'](latCell, lngCell);
           if (cell === null) {
+            if (this.count++ < 100) {
+              console.log('skipped cell ' + latCell + ' ' + lngCell);
+            }
             continue;
           }
           let latStart = latCell * this.wxCellSize[0] + this.wxOrigo[0];
@@ -352,7 +355,14 @@ export default {
             if (yToLat[y] > cellEndLat) {
               break;
             }
-            const yInCell = (yToLat[y] - latStart) / this.wxCellSize[0];
+            let yInCell = (yToLat[y] - latStart) / this.wxCellSize[0];
+            /* Deal with computational inaccuracies */
+            if (yInCell < 0 && yInCell > 0.00001) {
+              yInCell = 0;
+            }
+            if (yInCell > 1 && yInCell < 1.00001) {
+              yInCell = 1;
+            }
             if (yInCell < 0 || yInCell > 1) {
               if (this.count++ < 100) {
                 console.log('y scaling error ' + yInCell + ' ' + yToLat[y] +
@@ -408,7 +418,7 @@ export default {
                     const windPoint = L.latLng(yToLat[y],
                                                roots[r] * this.wxCellSize[1] + lngStart);
                     const wind = this.$store.getters['weather/latLngWind'](windPoint);
-                    if (wind.knots - this.twsContours[twsIdx] > 0.02) {
+                    if (Math.abs(wind.knots - this.twsContours[twsIdx]) > 0.00001) {
                       if (this.count++ < 100) {
                         console.log('contours calc error ' + wind.knots + ' vs ' + this.twsContours[twsIdx]);
                       }
