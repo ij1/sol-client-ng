@@ -315,6 +315,49 @@ export default {
       ));
     },
 
+    idxToCell: (state, getters) => (latIdx, lonIdx) => {
+      let timeIdx = getters.timeIndex;
+      let timeVal = state.time;
+
+      /* Sanity check wx data */
+      if ((timeIdx === null) ||
+          (state.data.windMap.length < timeIdx+1 + 1) ||
+          (state.data.timeSeries[timeIdx+1] < timeVal)) {
+        return null;
+      }
+
+      if ((lonIdx < 0) || (lonIdx >= state.data.cells[1]) ||
+          (latIdx < 0) || (latIdx >= state.data.cells[0])) {
+        return null;
+      }
+
+      let cell = {
+        idx: L.point(latIdx, lonIdx),
+        origo: L.latLng(lonIdx * state.data.increment[1] + state.data.origo[1],
+                         latIdx * state.data.increment[0] + state.data.origo[0]),
+        wind: [],
+      };
+
+      /* time (z) solution */
+      const timeFactor = interpolateFactor(
+        state.data.timeSeries[timeIdx],
+        timeVal,
+        state.data.timeSeries[timeIdx+1],
+      );
+
+      for (let y = 0; y <= 1; y++) {
+        for (let x = 0; x <= 1; x++) {
+          cell.wind.push(wxTimeInterpolate(
+            timeFactor,
+            state.data.windMap[timeIdx][lonIdx+x][latIdx+y],
+            state.data.windMap[timeIdx+1][lonIdx+x][latIdx+y]
+          ));
+        }
+      }
+
+      return cell;
+    },
+
     nextTimeToFetch: (state, getters, rootState, rootGetters) => {
       const now = rootGetters['time/now']();
       let fetchPeriod = state.fetchPeriod.cold;
