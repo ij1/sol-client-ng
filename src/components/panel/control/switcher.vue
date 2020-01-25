@@ -27,7 +27,7 @@
         :class="activeTab === 7 ? 'active' : ''"
       >Diag</a>
     </div>
-    <div>
+    <div class = "control-panel-content-wrapper">
       <div v-if="activeTab === 0" class="control-panel-content">
         <control-steering/>
       </div>
@@ -138,6 +138,9 @@ export default {
   z-index: 1;
 }
 
+.control-panel-content-wrapper {
+  height: calc(100vh - 28px);
+}
 .control-panel-content {
   position: relative;
   overflow: hidden;
