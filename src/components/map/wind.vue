@@ -263,6 +263,14 @@ export default {
       for (let y = yStart; y >= yEnd; y--) {
         yToLat[y] = this.$parent.map.containerPointToLatLng(L.point(0, y)).lat;
       }
+      if ((yToLat[yStart] < this.wxOrigo[0]) ||
+          (yToLat[yEnd] > this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0])) {
+        console.log('contour y ' + yToLat[yStart] + '-' + yToLat[yEnd] +
+                    ' exceeding wx boundaries ' +
+                    this.wxOrigo[0] + '-' +
+                    (this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0]));
+        return;
+      }
 
       let lng = sw.wrap().lng;
       if (lng >= this.wxBoundary.getEast()) {
