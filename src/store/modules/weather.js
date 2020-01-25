@@ -62,6 +62,7 @@ export default {
       timeSeries: [],
       origo: [],
       increment: [],
+      cells: [],
       windMap: [],      /* format: [time][lon][lat][u,v] */
     },
     cfg: {
@@ -410,6 +411,9 @@ export default {
           return;
         }
 
+        let cells = [parseInt(weatherData.$.lat_n_points),
+                     parseInt(weatherData.$.lon_n_points)];
+
         let timeSeries = [];
         let windMap = [];
         /* FIXME: It takes quite long time to parse&mangle the arrays here,
@@ -432,10 +436,11 @@ export default {
 
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
-          if (u.length !== v.length) {
+          if ((u.length !== cells[1] + 1) || (u.length !== v.length)) {
             dispatch(
               'diagnostics/add',
-              'DATA ERROR: Inconsistent weather lengths: ' + u.length + ' ' + v.length,
+              'DATA ERROR: Inconsistent weather lengths: ' +
+              (cells[1] + 1) + ' ' + u.length + ' ' + v.length,
               {root: true}
             );
             return;
@@ -450,10 +455,11 @@ export default {
             let uu = u[i].trim().split(/\s+/);
             let vv = v[i].trim().split(/\s+/);
 
-            if (uu.length !== vv.length) {
+            if ((uu.length !== cells[0] + 1) && (uu.length !== vv.length)) {
               dispatch(
                 'diagnostics/add',
-                'DATA ERROR: Inconsistent weather lengths: ' + uu.length + ' ' + vv.length,
+                'DATA ERROR: Inconsistent weather lengths: ' +
+                (cells[0] + 1) + ' ' + uu.length + ' ' + vv.length,
                 {root: true}
               );
               return;
@@ -483,6 +489,7 @@ export default {
         timeSeries = Object.freeze(timeSeries);
         origo = Object.freeze(origo);
         increment = Object.freeze(increment);
+        cells = Object.freeze(cells);
         boundary = Object.freeze(boundary);
 
         let weatherInfo = {
@@ -492,6 +499,7 @@ export default {
           timeSeries: timeSeries,
           origo: origo,
           increment: increment,
+          cells: cells,
           windMap: windMap,
         };
         commit('update', weatherInfo);
