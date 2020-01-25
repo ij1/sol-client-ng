@@ -326,8 +326,8 @@ export default {
         return null;
       }
 
-      if ((lonIdx < 0) || (lonIdx >= state.data.cells[1]) ||
-          (latIdx < 0) || (latIdx >= state.data.cells[0])) {
+      if ((lonIdx < 0) || (lonIdx >= state.data.cells[1] - 1) ||
+          (latIdx < 0) || (latIdx >= state.data.cells[0] - 1)) {
         return null;
       }
 
