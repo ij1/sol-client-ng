@@ -247,17 +247,17 @@ export default {
 
       let lat = latCells.x * this.wxCellSize[0] + this.wxOrigo[0];
       let yStart;
-      if (lat <= sw.lat) {
+      if (lat < sw.lat) {
         yStart = this.mapSize.y;
       } else {
-        yStart = Math.ceil(this.$parent.map.latLngToContainerPoint(L.latLng(lat, 0)).y);
+        yStart = Math.floor(this.$parent.map.latLngToContainerPoint(L.latLng(lat, 0)).y) - 1;
       }
       lat = (latCells.y + 1) * this.wxCellSize[0] + this.wxOrigo[0];
       let yEnd;
-      if (lat >= ne.lat) {
+      if (lat > ne.lat) {
         yEnd = 0;
       } else {
-        yEnd = Math.floor(this.$parent.map.latLngToContainerPoint(L.latLng(lat, 0)).y);
+        yEnd = Math.ceil(this.$parent.map.latLngToContainerPoint(L.latLng(lat, 0)).y) + 1;
       }
       /* Precalculate y-to-latitude */
       for (let y = yStart; y >= yEnd; y--) {
