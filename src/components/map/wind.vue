@@ -359,6 +359,7 @@ export default {
             prevRoots[twsIdx] = [null, null];
           }
 
+          let firstIter = true;
           while (y >= yEnd) {
             if (yToLat[y] > cellEndLat) {
               break;
@@ -378,6 +379,7 @@ export default {
                 console.log(cell);
               }
               y--;
+              firstIter = false;
               continue;
             }
             const squarey = yInCell * yInCell;
@@ -439,6 +441,11 @@ export default {
                         const x2 = Math.round(cellStep * tmp + xStart);
                         twsPaths[twsIdx][r].moveTo(x2, y);
                         twsPaths[twsIdx][r].lineTo(x, y);
+                      } else if (!firstIter) {
+                        const tmp = Math.max(Math.min(roots[r ^ 1], 1), 0);
+                        const x2 = Math.round(cellStep * tmp + xStart);
+                        twsPaths[twsIdx][r].moveTo(x2, y);
+                        twsPaths[twsIdx][r].lineTo(x, y);
                       } else {
                         twsPaths[twsIdx][r].moveTo(x, y);
                       }
@@ -477,6 +484,7 @@ export default {
               }
             }
             y--;
+            firstIter = false;
           }
           /* Flush the remaining ones. ADDME: draw to boundary/across? */
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
