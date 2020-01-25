@@ -243,7 +243,7 @@ export default {
                         .divideBy(this.wxCellSize[0])
                         .floor();
       latCells = L.point(Math.max(latCells.x, 0),
-                         Math.min(latCells.y, this.wxCells[0]) + 1);
+                         Math.min(latCells.y + 1, this.wxCells[0] - 1));
 
       let lat = latCells.x * this.wxCellSize[0] + this.wxOrigo[0];
       let yStart;
@@ -280,7 +280,7 @@ export default {
       }
       let cellDelta = Math.ceil((ne.lng - sw.lng) / this.wxCellSize[1]);
       // FIXME: likely broken when wrapping wx bounds
-      const maxCell = Math.min(cellDelta + minCell, this.wxCells[1]) + 1;
+      const maxCell = Math.min(cellDelta + minCell + 1, this.wxCells[1] - 1);
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
