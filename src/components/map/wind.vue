@@ -362,6 +362,10 @@ export default {
           let firstIter = true;
           while (y >= yEnd) {
             if (yToLat[y] > cellEndLat) {
+              if (firstIter && (this.count++ < 100)) {
+                console.log('first iteration end ' + y + ' ' +
+                            yToLat[y] + '>' + cellEndLat);
+              }
               break;
             }
             let yInCell = (yToLat[y] - latStart) / this.wxCellSize[0];
