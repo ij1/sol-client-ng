@@ -56,9 +56,11 @@ export default {
 .scrollable-table-header {
   flex: none;
   overflow: hidden;
+  height: 17px;
 }
 .scrollable-table-wrapper {
-  flex: auto;
+  flex: 1 1;
+  flex-basis: calc(100% - 17px);
   overflow-y: scroll;
   position: relative;
 }
