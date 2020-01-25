@@ -360,7 +360,7 @@ export default {
                 console.log(cell);
               }
               y--;
-              break;
+              continue;
             }
             const squarey = yInCell * yInCell;
             /*
