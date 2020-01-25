@@ -268,9 +268,6 @@ export default {
       if (lng >= this.wxBoundary.getEast()) {
         lng -= 360;
       }
-      if (lng < this.wxOrigo[1]) {
-        lng += 360;
-      }
       let minCell;
       if (lng <= this.wxOrigo[1]) {
         lng = this.wxOrigo[1];
