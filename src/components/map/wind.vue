@@ -230,6 +230,7 @@ export default {
       let yToLat = [];
       let twsPaths = [];
       let prevRoots = [];
+      let roots = [];
 
       if (!this.wxLoaded) {
         return;
@@ -421,8 +422,6 @@ export default {
               const discr = qc[1] * qc[1] - 4 * qc[2] * c;
 
               if (discr >= 0.0) {
-                let roots = [];
-
                 if (discr === 0.0) {
                   /* Exactly at the root boundary */
                   roots[0] = -qc[1] / (2 * qc[2]);
