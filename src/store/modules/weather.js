@@ -36,6 +36,24 @@ function boundTime(state, time) {
   return null;
 }
 
+const contourDefs = [
+  [],
+  [6, 12, 20, 30, 40, 50],
+  [3, 6, 9, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100],
+  [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16, 18, 19, 20,
+    22.5, 25, 27.5, 30, 32.5, 35, 37.5, 40, 45, 50, 55, 60, 70, 80, 90, 100
+  ],
+  [
+    0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5,
+    5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5,
+    10, 11, 12, 13, 14, 15, 16, 16, 18, 19, 20,
+    21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+    32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50,
+    55, 60, 65, 70, 75, 80, 85, 90, 95, 100
+  ],
+];
+
 export default {
   namespaced: true,
 
@@ -97,6 +115,13 @@ export default {
         low: 24,
         high: 128,
         cfgText: 'Wind grid density',
+      },
+      twsDensity: {
+        value: 0,
+        type: 'range',
+        low: 0,
+        high: 4,
+        cfgText: 'Wind speed contours density',
       },
       twsTxt: {
         value: false,
@@ -175,6 +200,11 @@ export default {
     dataTimescale: (state, getters, rootState, rootGetters) => {
       return getters.lastTimestamp - rootGetters['boat/time'];
     },
+
+    twsContours: (state) => {
+      return contourDefs[state.cfg.twsDensity.value];
+    },
+
     timeIndex: (state) => {
       let idx;
       /* Short-circuit for the common case near the beginning of the wx series */

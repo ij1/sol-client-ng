@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { windToColor, MS_TO_KNT } from '../../lib/sol.js';
 import { radToDeg, bsearchLeft } from '../../lib/utils.js';
@@ -10,8 +10,6 @@ export default {
   data () {
     return {
       count: 0,
-      // FIXME: move to vuex & add cfg & make many of them
-      twsContours: [3, 6, 9, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100],
     }
   },
   computed: {
@@ -35,6 +33,7 @@ export default {
       this.useArrows;
       this.cfgTwsTxt;
       this.cfgTwdTxt;
+      this.cfgTwsContours;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
@@ -53,8 +52,12 @@ export default {
       cfgArrowsBarbs: state => state.weather.cfg.arrowsBarbs.value,
       cfgTwsTxt: state => state.weather.cfg.twsTxt.value,
       cfgTwdTxt: state => state.weather.cfg.twdTxt.value,
+      cfgTwsContours: state => state.weather.cfg.twsDensity.value,
       mapBounds: state => state.map.bounds,
       mapSize: state => state.map.size,
+    }),
+    ...mapGetters({
+      twsContours: 'weather/twsContours',
     }),
   },
   methods: {
@@ -227,6 +230,10 @@ export default {
      * hit the exact value).
      */
     drawContours (ctx) {
+      if (!this.wxLoaded || (this.twsContours.length === 0)) {
+        return;
+      }
+
       let c = [
         [[], [], []],
         [[], [], []],
@@ -238,10 +245,6 @@ export default {
       let twsUseMove = [];
       let twsDraw = [];
       let roots = [];
-
-      if (!this.wxLoaded) {
-        return;
-      }
 
       const bounds = this.$parent.map.getBounds();
       const sw = bounds.getSouthWest();
