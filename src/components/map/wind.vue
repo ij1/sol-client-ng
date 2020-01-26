@@ -38,6 +38,9 @@ export default {
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
+    twsContourColor () {
+      return this.twsContours.map(windToColor);
+    },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       wxTime: state => state.weather.time,
@@ -490,7 +493,7 @@ export default {
     },
     drawContourPath(ctx, twsPaths, twsIdx, root) {
       twsPaths[twsIdx][root].moveTo(0, 0);
-      const color = windToColor(this.twsContours[twsIdx]);
+      const color = this.twsContourColor[twsIdx];
       ctx.strokeStyle = color;
       ctx.stroke(twsPaths[twsIdx][root]);
     },
