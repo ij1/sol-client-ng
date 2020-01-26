@@ -322,7 +322,7 @@ export default {
         for (let latCell = latCells.x; latCell < latCells.y; latCell++) {
           let cell = this.$store.getters['weather/idxToCell'](latCell, lngCell);
           if (cell === null) {
-            this.errorLog('skipped contour cell ' + latCell + ' ' + lngCell);
+            this.logError('skipped contour cell ' + latCell + ' ' + lngCell);
             return;
           }
           let latStart = latCell * this.wxCellSize[0] + this.wxOrigo[0];
