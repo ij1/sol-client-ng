@@ -456,7 +456,7 @@ export default {
                     twsUseMove[twsIdx][r] = true;
                   }
                 }
-               } else {
+              } else {
                 twsUseMove[twsIdx][0] = true;
                 twsUseMove[twsIdx][1] = true;
               }
