@@ -401,7 +401,8 @@ export default {
 
               /* Deal with computational inaccuracies */
               if (yInCell < 0 && yInCell > -0.00001) {
-                yInCell = 0;
+                y--;
+                continue;
               }
               if (yInCell > 1 && yInCell < 1.00001) {
                 yInCell = 1;
