@@ -310,6 +310,13 @@ export default {
         let lngStart = lngCell * this.wxCellSize[1] + this.wxOrigo[1];
         const xStart = this.$parent.map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
 
+        for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
+          twsPaths[twsIdx] = [new Path2D(), new Path2D()];
+          twsUseMove[twsIdx] = [true, true];
+          twsDraw[twsIdx] = [false, false];
+        }
+
+
         for (let latCell = latCells.x; latCell < latCells.y; latCell++) {
           let cell = this.$store.getters['weather/idxToCell'](latCell, lngCell);
           if (cell === null) {
@@ -370,12 +377,6 @@ export default {
 
           let minTwsIdx = bsearchLeft(this.twsContours, minTwsMs * MS_TO_KNT);
           let maxTwsIdx = bsearchLeft(this.twsContours, maxTwsMs * MS_TO_KNT);
-          for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
-            twsPaths[twsIdx] = [new Path2D(), new Path2D()];
-            twsUseMove[twsIdx] = [true, true];
-            twsDraw[twsIdx] = [false, false];
-          }
-
           let firstIter = true;
           let lastIter = false;
           while (y >= yEnd) {
@@ -483,12 +484,12 @@ export default {
             }
             y = nextY;
           }
-          /* Flush the remaining ones. */
-          for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
-            for (let r = 0; r <= 1; r++) {
-              if (twsDraw[twsIdx][r]) {
-                this.drawContourPath(ctx, twsPaths, twsIdx, r);
-              }
+        }
+        /* Flush the full column of contours */
+        for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
+          for (let r = 0; r <= 1; r++) {
+            if (twsDraw[twsIdx][r]) {
+              this.drawContourPath(ctx, twsPaths, twsIdx, r);
             }
           }
         }
