@@ -232,7 +232,7 @@ export default {
       let qc = [];
       let yToLat = [];
       let twsPaths = [];
-      let prevRoots = [];
+      let twsUseMove = [];
       let roots = [];
 
       if (!this.wxLoaded) {
@@ -370,8 +370,8 @@ export default {
           let minTwsIdx = bsearchLeft(this.twsContours, minTwsMs * MS_TO_KNT);
           let maxTwsIdx = bsearchLeft(this.twsContours, maxTwsMs * MS_TO_KNT);
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
-            twsPaths[twsIdx] = [null, null];
-            prevRoots[twsIdx] = [null, null];
+            twsPaths[twsIdx] = [new Path2D(), new Path2D()];
+            twsUseMove[twsIdx] = [true, true];
           }
 
           let firstIter = true;
@@ -463,58 +463,25 @@ export default {
                       }
                     }
                     let x = Math.round(cellStep * roots[r] + xStart);
-                    if (twsPaths[twsIdx][r] === null) {
+                    if (twsUseMove[twsIdx][r]) {
                       twsPaths[twsIdx][r] = new Path2D();
-                      if (prevRoots[twsIdx][r] !== null) {
-                        const tmp = Math.max(Math.min(prevRoots[r], 1), 0);
-                        const x2 = Math.round(cellStep * tmp + xStart);
-                        twsPaths[twsIdx][r].moveTo(x2, y);
-                        twsPaths[twsIdx][r].lineTo(x, y);
-                      } else if (!firstIter) {
-                        const tmp = Math.max(Math.min(roots[r ^ 1], 1), 0);
-                        const x2 = Math.round(cellStep * tmp + xStart);
-                        twsPaths[twsIdx][r].moveTo(x2, y);
-                        twsPaths[twsIdx][r].lineTo(x, y);
-                      } else {
-                        twsPaths[twsIdx][r].moveTo(x, y);
-                      }
+                      twsPaths[twsIdx][r].moveTo(x, y);
+                      twsUseMove[twsIdx][r] = false;
                     } else {
                       twsPaths[twsIdx][r].lineTo(x, y);
                     }
                   } else {
-                    if (twsPaths[twsIdx][r] !== null) {
-                      let x;
-                      if (roots[r] < 0) {
-                        x = Math.round(xStart);
-                      } else {
-                        x = Math.round(cellStep + xStart);
-                      }
-                      twsPaths[twsIdx][r].lineTo(x, y);
-                      this.drawContourPath(ctx, twsPaths, twsIdx, r);
-                    }
+                    twsUseMove[twsIdx][r] = true;
                   }
                 }
-                prevRoots[twsIdx][0] = roots[0];
-                prevRoots[twsIdx][1] = roots[1];
-              } else {
-                for (let r = 0; r <= 1; r++) {
-                  if (twsPaths[twsIdx][r] !== null) {
-                    if (prevRoots[twsIdx][r ^ 1] !== null) {
-                      const tmp = Math.max(Math.min(prevRoots[r ^ 1], 1), 0);
-                      const x = Math.round(cellStep * tmp + xStart);
-                      prevRoots[twsIdx][r ^ 1] = null;
-                      twsPaths[twsIdx][r].lineTo(x, y-1);
-                    }
-                    this.drawContourPath(ctx, twsPaths, twsIdx, r);
-                  }
-                }
-                prevRoots[twsIdx][0] = null;
-                prevRoots[twsIdx][1] = null;
+               } else {
+                twsUseMove[twsIdx][0] = true;
+                twsUseMove[twsIdx][1] = true;
               }
             }
             y = nextY;
           }
-          /* Flush the remaining ones. ADDME: draw to boundary/across? */
+          /* Flush the remaining ones. */
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
             for (let r = 0; r <= 1; r++) {
               if (twsPaths[twsIdx][r] !== null) {
