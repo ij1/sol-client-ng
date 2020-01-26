@@ -445,14 +445,6 @@ export default {
                 /* Prepare paths */
                 for (let r = 0; r <= 1; r++) {
                   if (roots[r] >= 0 && roots[r] <= 1) {
-                    const windPoint = L.latLng(lat,
-                                               roots[r] * this.wxCellSize[1] + lngStart);
-                    const wind = this.$store.getters['weather/latLngWind'](windPoint);
-                    if (Math.abs(wind.knots - this.twsContours[twsIdx]) > 0.00001) {
-                      if (this.count++ < 100) {
-                        console.log('contours calc error ' + wind.knots + ' vs ' + this.twsContours[twsIdx]);
-                      }
-                    }
                     let x = Math.round(cellStep * roots[r] + xStart);
                     if (twsUseMove[twsIdx][r]) {
                       twsPaths[twsIdx][r].moveTo(x, y);
