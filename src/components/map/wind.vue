@@ -379,7 +379,9 @@ export default {
           const cellEndLat = (latCell + 1) * this.wxCellSize[0] + this.wxOrigo[0];
 
           let minTwsIdx = bsearchLeft(this.twsContours, minTwsMs * MS_TO_KNT);
-          let maxTwsIdx = bsearchLeft(this.twsContours, maxTwsMs * MS_TO_KNT);
+          let maxTwsIdx = Math.min(bsearchLeft(this.twsContours,
+                                               maxTwsMs * MS_TO_KNT),
+                                   this.twsContours.length - 1);
           let firstIter = true;
           while (y >= yEnd) {
             let yInCell;
