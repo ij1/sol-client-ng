@@ -378,7 +378,6 @@ export default {
           let minTwsIdx = bsearchLeft(this.twsContours, minTwsMs * MS_TO_KNT);
           let maxTwsIdx = bsearchLeft(this.twsContours, maxTwsMs * MS_TO_KNT);
           let firstIter = true;
-          let lastIter = false;
           while (y >= yEnd) {
             let yInCell;
             let lat;
@@ -391,13 +390,7 @@ export default {
               firstIter = false;
 
             } else if (yToLat[y] > cellEndLat) {
-              if (lastIter) {
-                break;
-              }
-              lat = this.wxCellSize[0] + latStart;
-              yInCell = 1;
-              nextY = y;
-              lastIter = true;
+              break;
 
             } else {
               lat = yToLat[y];
