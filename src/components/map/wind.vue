@@ -325,7 +325,7 @@ export default {
             /* u,v limits for TWS upper and lower bound calculations */
             let minComp = Number.MAX_VALUE;
             let maxComp = -Number.MAX_VALUE;
-            for (let j = 0; j < 3; j++) {
+            for (let j = 0; j < 4; j++) {
                minComp = Math.min(minComp, wind[j][i]);
                maxComp = Math.max(maxComp, wind[j][i]);
             }
