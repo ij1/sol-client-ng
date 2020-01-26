@@ -289,6 +289,17 @@ export default {
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
+      this.$store.commit('diagnostics/contours', {
+        minLngCell: minCell,
+        maxLngCell: maxCell,
+        minLatCell: latCells.x,
+        maxLatCell: latCells.y,
+        yStart: yStart,
+        yEnd: yEnd,
+        yStartLat: yToLat[yStart],
+        yEndLat: yToLat[yEnd],
+      });
+
       for (let lngCell = minCell; lngCell < maxCell; lngCell++) {
         let y = yStart;
         let lngStart = lngCell * this.wxCellSize[1] + this.wxOrigo[1];

@@ -4,6 +4,16 @@ export default {
   namespaced: true,
 
   state: {
+    contoursDebug: {
+      minLngCell: -1,
+      maxLngCell: -1,
+      minLatCell: -1,
+      maxLatCell: -1,
+      yStart: -1,
+      yEnd: -1,
+      yStartLat: -1,
+      yEndLat: -1,
+    },
     messages: [],
     idCount: 0,
 
@@ -29,6 +39,9 @@ export default {
       if (state.messages.length > 200) {
         state.messages.shift();
       }
+    },
+    contours (state, data) {
+      state.contoursDebug = data;
     },
 
     configSetValue,
