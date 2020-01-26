@@ -438,7 +438,7 @@ export default {
                 }
 
                 /* Prepare paths */
-                for (let r = 0; r < 1; r++) {
+                for (let r = 0; r <= 1; r++) {
                   if (roots[r] >= 0 && roots[r] <= 1) {
                     const windPoint = L.latLng(yToLat[y],
                                                roots[r] * this.wxCellSize[1] + lngStart);
@@ -483,7 +483,7 @@ export default {
                 prevRoots[twsIdx][0] = roots[0];
                 prevRoots[twsIdx][1] = roots[1];
               } else {
-                for (let r = 0; r < 1; r++) {
+                for (let r = 0; r <= 1; r++) {
                   if (twsPaths[twsIdx][r] !== null) {
                     if (prevRoots[twsIdx][r ^ 1] !== null) {
                       const tmp = Math.max(Math.min(prevRoots[r ^ 1], 1), 0);
@@ -503,7 +503,7 @@ export default {
           }
           /* Flush the remaining ones. ADDME: draw to boundary/across? */
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
-            for (let r = 0; r < 1; r++) {
+            for (let r = 0; r <= 1; r++) {
               if (twsPaths[twsIdx][r] !== null) {
                 this.drawContourPath(ctx, twsPaths, twsIdx, r);
               }
