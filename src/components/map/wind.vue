@@ -233,6 +233,7 @@ export default {
       let yToLat = [];
       let twsPaths = [];
       let twsUseMove = [];
+      let twsDraw = [];
       let roots = [];
 
       if (!this.wxLoaded) {
@@ -372,6 +373,7 @@ export default {
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
             twsPaths[twsIdx] = [new Path2D(), new Path2D()];
             twsUseMove[twsIdx] = [true, true];
+            twsDraw[twsIdx] = [false, false];
           }
 
           let firstIter = true;
@@ -464,9 +466,9 @@ export default {
                     }
                     let x = Math.round(cellStep * roots[r] + xStart);
                     if (twsUseMove[twsIdx][r]) {
-                      twsPaths[twsIdx][r] = new Path2D();
                       twsPaths[twsIdx][r].moveTo(x, y);
                       twsUseMove[twsIdx][r] = false;
+                      twsDraw[twsIdx][r] = true;
                     } else {
                       twsPaths[twsIdx][r].lineTo(x, y);
                     }
@@ -484,7 +486,7 @@ export default {
           /* Flush the remaining ones. */
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
             for (let r = 0; r <= 1; r++) {
-              if (twsPaths[twsIdx][r] !== null) {
+              if (twsDraw[twsIdx][r]) {
                 this.drawContourPath(ctx, twsPaths, twsIdx, r);
               }
             }
@@ -497,7 +499,6 @@ export default {
       const color = windToColor(this.twsContours[twsIdx]);
       ctx.strokeStyle = color;
       ctx.stroke(twsPaths[twsIdx][root]);
-      twsPaths[twsIdx][root] = null;
     },
   },
   render () {
