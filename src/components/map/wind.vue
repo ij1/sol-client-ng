@@ -176,6 +176,9 @@ export default {
         ctx.translate(xUndo, this.gridInterval);
       }
     },
+    logError (error) {
+      this.$store.dispatch('diagnostics/add', 'WX contours calc error: ' + error);
+    },
     /*
      * TWS contour calculation
      *
@@ -246,19 +249,19 @@ export default {
       latCells = L.point(Math.max(latCells.x, 0),
                          Math.min(latCells.y + 1, this.wxCells[0] - 1));
 
-      let lat = latCells.x * this.wxCellSize[0] + this.wxOrigo[0];
+      let boundLat = latCells.x * this.wxCellSize[0] + this.wxOrigo[0];
       let yStart;
-      if (lat < sw.lat) {
+      if (boundLat < sw.lat) {
         yStart = this.mapSize.y;
       } else {
-        yStart = Math.floor(this.$parent.map.latLngToContainerPoint(L.latLng(lat, 0)).y) - 1;
+        yStart = Math.floor(this.$parent.map.latLngToContainerPoint(L.latLng(boundLat, 0)).y) - 1;
       }
-      lat = (latCells.y + 1) * this.wxCellSize[0] + this.wxOrigo[0];
+      boundLat = (latCells.y + 1) * this.wxCellSize[0] + this.wxOrigo[0];
       let yEnd;
-      if (lat > ne.lat) {
+      if (boundLat > ne.lat) {
         yEnd = 0;
       } else {
-        yEnd = Math.ceil(this.$parent.map.latLngToContainerPoint(L.latLng(lat, 0)).y) + 1;
+        yEnd = Math.ceil(this.$parent.map.latLngToContainerPoint(L.latLng(boundLat, 0)).y) + 1;
       }
       /* Precalculate y-to-latitude */
       for (let y = yStart; y >= yEnd; y--) {
@@ -372,31 +375,43 @@ export default {
           }
 
           let firstIter = true;
+          let lastIter = false;
           while (y >= yEnd) {
-            if (yToLat[y] > cellEndLat) {
-              if (firstIter && (this.count++ < 100)) {
-                console.log('first iteration end ' + y + ' ' +
-                            yToLat[y] + '>' + cellEndLat);
-              }
-              break;
-            }
-            let yInCell = (yToLat[y] - latStart) / this.wxCellSize[0];
-            /* Deal with computational inaccuracies */
-            if (yInCell < 0 && yInCell > 0.00001) {
+            let yInCell;
+            let lat;
+            let nextY = y - 1;
+
+            if (firstIter && y > yStart) {
+              lat = latStart;
               yInCell = 0;
-            }
-            if (yInCell > 1 && yInCell < 1.00001) {
-              yInCell = 1;
-            }
-            if (yInCell < 0 || yInCell > 1) {
-              if (this.count++ < 100) {
-                console.log('y scaling error ' + yInCell + ' ' + yToLat[y] +
-                            ' - ' + latStart + ' in cell ');
-                console.log(cell);
-              }
-              y--;
+              nextY = y;
               firstIter = false;
-              continue;
+
+            } else if (yToLat[y] > cellEndLat) {
+              if (lastIter) {
+                break;
+              }
+              lat = this.wxCellSize[0] + latStart;
+              yInCell = 1;
+              nextY = y;
+              lastIter = true;
+
+            } else {
+              lat = yToLat[y];
+              yInCell = (lat - latStart) / this.wxCellSize[0];
+
+              /* Deal with computational inaccuracies */
+              if (yInCell < 0 && yInCell > -0.00001) {
+                yInCell = 0;
+              }
+              if (yInCell > 1 && yInCell < 1.00001) {
+                yInCell = 1;
+              }
+              if (yInCell < 0 || yInCell > 1) {
+                this.logError('y scaling error for lat ' + lat + ' - ' +
+                              latStart + ' = ' + yInCell + ' in cell ');
+                return;
+              }
             }
             const squarey = yInCell * yInCell;
             /*
@@ -439,7 +454,7 @@ export default {
                 /* Prepare paths */
                 for (let r = 0; r <= 1; r++) {
                   if (roots[r] >= 0 && roots[r] <= 1) {
-                    const windPoint = L.latLng(yToLat[y],
+                    const windPoint = L.latLng(lat,
                                                roots[r] * this.wxCellSize[1] + lngStart);
                     const wind = this.$store.getters['weather/latLngWind'](windPoint);
                     if (Math.abs(wind.knots - this.twsContours[twsIdx]) > 0.00001) {
@@ -497,8 +512,7 @@ export default {
                 prevRoots[twsIdx][1] = null;
               }
             }
-            y--;
-            firstIter = false;
+            y = nextY;
           }
           /* Flush the remaining ones. ADDME: draw to boundary/across? */
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
