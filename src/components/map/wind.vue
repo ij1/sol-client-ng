@@ -273,10 +273,9 @@ export default {
       }
       if ((yToLat[yStart] < this.wxOrigo[0]) ||
           (yToLat[yEnd] > this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0])) {
-        console.log('contour y ' + yToLat[yStart] + '-' + yToLat[yEnd] +
-                    ' exceeding wx boundaries ' +
-                    this.wxOrigo[0] + '-' +
-                    (this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0]));
+        this.logError('contour lat ' + yToLat[yStart] + '-' + yToLat[yEnd] +
+                      ' exceeding wx boundaries ' + this.wxOrigo[0] + '-' +
+                      (this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0]));
         return;
       }
 
@@ -323,10 +322,8 @@ export default {
         for (let latCell = latCells.x; latCell < latCells.y; latCell++) {
           let cell = this.$store.getters['weather/idxToCell'](latCell, lngCell);
           if (cell === null) {
-            if (this.count++ < 100) {
-              console.log('skipped cell ' + latCell + ' ' + lngCell);
-            }
-            continue;
+            this.errorLog('skipped contour cell ' + latCell + ' ' + lngCell);
+            return;
           }
           let latStart = latCell * this.wxCellSize[0] + this.wxOrigo[0];
 
