@@ -251,7 +251,7 @@ export default {
                         .divideBy(this.wxCellSize[0])
                         .floor();
       latCells = L.point(Math.max(latCells.x, 0),
-                         Math.min(latCells.y + 1, this.wxCells[0] - 1));
+                         Math.min(latCells.y, this.wxCells[0] - 2));
 
       let boundLat = latCells.x * this.wxCellSize[0] + this.wxOrigo[0];
       let yStart;
@@ -292,7 +292,7 @@ export default {
       }
       let cellDelta = Math.ceil((ne.lng - sw.lng) / this.wxCellSize[1]);
       // FIXME: likely broken when wrapping wx bounds
-      const maxCell = Math.min(cellDelta + minCell + 1, this.wxCells[1] - 1);
+      const maxCell = Math.min(cellDelta + minCell, this.wxCells[1] - 2);
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
@@ -307,7 +307,7 @@ export default {
         yEndLat: yToLat[yEnd],
       });
 
-      for (let lngCell = minCell; lngCell < maxCell; lngCell++) {
+      for (let lngCell = minCell; lngCell <= maxCell; lngCell++) {
         let y = yStart;
         let lngStart = lngCell * this.wxCellSize[1] + this.wxOrigo[1];
         const xStart = this.$parent.map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
@@ -319,7 +319,7 @@ export default {
         }
 
 
-        for (let latCell = latCells.x; latCell < latCells.y; latCell++) {
+        for (let latCell = latCells.x; latCell <= latCells.y; latCell++) {
           let cell = this.$store.getters['weather/idxToCell'](latCell, lngCell);
           if (cell === null) {
             this.logError('skipped contour cell ' + latCell + ' ' + lngCell);
