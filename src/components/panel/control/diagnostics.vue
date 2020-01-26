@@ -4,46 +4,6 @@
       <div>Browser id:{{browserId}}</div>
     </div>
     <div>
-      <div>
-        <div>wx:</div>
-        <div>
-          Origo
-          lat {{$store.state.weather.data.origo[0]}}
-          lng {{$store.state.weather.data.origo[1]}}
-        </div>
-        <div>
-          Cell size
-          {{$store.state.weather.data.increment[0]}}
-          {{$store.state.weather.data.increment[1]}}
-        </div>
-      </div>
-      <div>
-        lat:
-        {{$store.state.diagnostics.contoursDebug.minLatCell}} -
-        {{$store.state.diagnostics.contoursDebug.maxLatCell}}
-      </div>
-      <div>
-        lng:
-        {{$store.state.diagnostics.contoursDebug.minLngCell}} -
-        {{$store.state.diagnostics.contoursDebug.maxLngCell}}
-      </div>
-      <div>
-        map bounds:
-        {{$store.state.map.bounds.getSouth()}}
-        {{$store.state.map.bounds.getWest()}}
-        {{$store.state.map.bounds.getNorth()}}
-        {{$store.state.map.bounds.getEast()}}
-      </div>
-      <div>
-        y:
-        {{$store.state.diagnostics.contoursDebug.yStart}} -
-        {{$store.state.diagnostics.contoursDebug.yEnd}}
-        {{$store.state.diagnostics.contoursDebug.yStartLat}} -
-        {{$store.state.diagnostics.contoursDebug.yEndLat}}
-
-      </div>
-    </div>
-    <div>
       <div>Errors:</div>
       <div
          v-for = "apiCall in erroredApiCalls"
