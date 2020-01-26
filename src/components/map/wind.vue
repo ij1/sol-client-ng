@@ -312,8 +312,8 @@ export default {
 
 
         for (let latCell = latCells.x; latCell <= latCells.y; latCell++) {
-          let cell = this.$store.getters['weather/idxToCell'](latCell, lngCell);
-          if (cell === null) {
+          let wind = this.$store.getters['weather/idxToCell'](latCell, lngCell);
+          if (wind === null) {
             this.logError('skipped contour cell ' + latCell + ' ' + lngCell);
             return;
           }
@@ -321,7 +321,6 @@ export default {
 
           let minTwsMs = 0;
           let maxTwsMs = 0;
-          const wind = cell.wind;
 
           /* Lets do some simple contour math first. */
           for (let i = 0; i <= 1; i++) {

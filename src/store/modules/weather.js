@@ -361,12 +361,7 @@ export default {
         return null;
       }
 
-      let cell = {
-        idx: L.point(latIdx, lonIdx),
-        origo: L.latLng(lonIdx * state.data.increment[1] + state.data.origo[1],
-                         latIdx * state.data.increment[0] + state.data.origo[0]),
-        wind: [],
-      };
+      let wind = [];
 
       /* time (z) solution */
       const timeFactor = interpolateFactor(
@@ -377,7 +372,7 @@ export default {
 
       for (let y = 0; y <= 1; y++) {
         for (let x = 0; x <= 1; x++) {
-          cell.wind.push(wxTimeInterpolate(
+          wind.push(wxTimeInterpolate(
             timeFactor,
             state.data.windMap[timeIdx][lonIdx+x][latIdx+y],
             state.data.windMap[timeIdx+1][lonIdx+x][latIdx+y]
@@ -385,7 +380,7 @@ export default {
         }
       }
 
-      return cell;
+      return wind;
     },
 
     nextTimeToFetch: (state, getters, rootState, rootGetters) => {
