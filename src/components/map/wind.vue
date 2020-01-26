@@ -481,20 +481,18 @@ export default {
             y = nextY;
           }
         }
+
         /* Flush the full column of contours */
         for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
           for (let r = 0; r <= 1; r++) {
             if (twsDraw[twsIdx][r]) {
-              this.drawContourPath(ctx, twsPaths, twsIdx, r);
+              twsPaths[twsIdx][r].moveTo(0, 0);
+              ctx.strokeStyle = this.twsContourColor[twsIdx];
+              ctx.stroke(twsPaths[twsIdx][r]);
             }
           }
         }
       }
-    },
-    drawContourPath(ctx, twsPaths, twsIdx, root) {
-      twsPaths[twsIdx][root].moveTo(0, 0);
-      ctx.strokeStyle = this.twsContourColor[twsIdx];
-      ctx.stroke(twsPaths[twsIdx][root]);
     },
   },
   render () {
