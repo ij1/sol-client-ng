@@ -493,8 +493,7 @@ export default {
     },
     drawContourPath(ctx, twsPaths, twsIdx, root) {
       twsPaths[twsIdx][root].moveTo(0, 0);
-      const color = this.twsContourColor[twsIdx];
-      ctx.strokeStyle = color;
+      ctx.strokeStyle = this.twsContourColor[twsIdx];
       ctx.stroke(twsPaths[twsIdx][root]);
     },
   },
