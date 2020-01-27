@@ -241,9 +241,7 @@ export default {
       ];
       let qc = [];
       let yToLat = [];
-      let twsPaths = [];
-      let twsUseMove = [];
-      let twsDraw = [];
+      let twsDatas = [];
       let roots = [];
 
       const bounds = this.$parent.map.getBounds();
@@ -305,9 +303,11 @@ export default {
         const xStart = this.$parent.map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
 
         for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
-          twsPaths[twsIdx] = [new Path2D(), new Path2D()];
-          twsUseMove[twsIdx] = [true, true];
-          twsDraw[twsIdx] = [false, false];
+          twsDatas[twsIdx] = {
+            paths: [new Path2D(), new Path2D()],
+            useMove: [true, true],
+            draw: [false, false],
+          };
         }
 
 
@@ -415,6 +415,7 @@ export default {
             }
 
             for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
+              let twsData = twsDatas[twsIdx];
               let twsms = this.twsContours[twsIdx] / MS_TO_KNT;
               let c = qc[0] - twsms * twsms;
 
@@ -445,20 +446,20 @@ export default {
                 for (let r = 0; r <= 1; r++) {
                   if (roots[r] >= 0 && roots[r] <= 1) {
                     let x = Math.round(cellStep * roots[r] + xStart);
-                    if (twsUseMove[twsIdx][r]) {
-                      twsPaths[twsIdx][r].moveTo(x, y);
-                      twsUseMove[twsIdx][r] = false;
-                      twsDraw[twsIdx][r] = true;
+                    if (twsData.useMove[r]) {
+                      twsData.paths[r].moveTo(x, y);
+                      twsData.useMove[r] = false;
+                      twsData.draw[r] = true;
                     } else {
-                      twsPaths[twsIdx][r].lineTo(x, y);
+                      twsData.paths[r].lineTo(x, y);
                     }
                   } else {
-                    twsUseMove[twsIdx][r] = true;
+                    twsData.useMove[r] = true;
                   }
                 }
               } else {
-                twsUseMove[twsIdx][0] = true;
-                twsUseMove[twsIdx][1] = true;
+                twsData.useMove[0] = true;
+                twsData.useMove[1] = true;
               }
             }
             y = nextY;
@@ -468,10 +469,11 @@ export default {
         /* Flush the full column of contours */
         for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
           for (let r = 0; r <= 1; r++) {
-            if (twsDraw[twsIdx][r]) {
-              twsPaths[twsIdx][r].moveTo(0, 0);
+            let twsData = twsDatas[twsIdx];
+            if (twsData.draw[r]) {
+              twsData.paths[r].moveTo(0, 0);
               ctx.strokeStyle = this.twsContourColor[twsIdx];
-              ctx.stroke(twsPaths[twsIdx][r]);
+              ctx.stroke(twsData.paths[r]);
             }
           }
         }
