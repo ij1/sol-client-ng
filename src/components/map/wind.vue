@@ -307,6 +307,7 @@ export default {
             paths: [new Path2D(), new Path2D()],
             useMove: [true, true],
             draw: [false, false],
+            edgeCrossing: null,
           };
         }
 
@@ -370,7 +371,57 @@ export default {
           let maxTwsIdx = Math.min(bsearchLeft(this.twsContours,
                                                maxTwsMs * MS_TO_KNT),
                                    this.twsContours.length - 1);
+
+          for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
+            let twsData = twsDatas[twsIdx];
+            twsData.edgeCrossing = [];
+
+            for (let e = 0; e <= 1; e++) {
+              let twsms = this.twsContours[twsIdx] / MS_TO_KNT;
+              let a = 0;
+              let b = 0;
+              let c = -(twsms * twsms);
+              if (e === 0) {
+                a = coeffs[0][2][0] + coeffs[0][2][1];
+                b = coeffs[0][1][0] + coeffs[0][1][1];
+                c = coeffs[0][0][0] + coeffs[0][0][1];
+              } else {
+                for (let i = 0; i <= 1; i++) {
+                  let bsubd = wind[1][i] - wind[3][i];
+                  a += bsubd * bsubd;
+                  b += -2 * wind[1][i] * bsubd;
+                  c += wind[1][i] * wind[1][i];
+                }
+              }
+              let discr = b * b - 4 * a * c;
+
+              if (a === 0) {
+                /* bx + c = 0 => x = -c/b */
+                if (b !== 0) {
+                  const res = -c / b;
+                  if (res >= 0 && res <= 1) {
+                    twsData.edgeCrossing.push(res);
+                  }
+                }
+              } else if (discr >= 0) {
+                const tmp = Math.sqrt(discr);
+                const res = (-b - tmp) / (2 * a);
+                if (res >= 0 && res <= 1) {
+                  twsData.edgeCrossing.push(res);
+                }
+                if (discr > 0) {
+                  const res2 = (-b + tmp) / (2 * a);
+                  if (res2 >= 0 && res2 <= 1) {
+                    twsData.edgeCrossing.push(res2);
+                  }
+                }
+              }
+            }
+            twsData.edgeCrossing.sort();
+          }
+
           let firstIter = true;
+          let nextIsEdge = null;
           while (y >= yEnd) {
             let yInCell;
             let lat;
@@ -381,6 +432,11 @@ export default {
               yInCell = 0;
               nextY = y;
               firstIter = false;
+
+            } else if (nextIsEdge !== null) {
+              yInCell = nextIsEdge;
+              nextY = y;
+              nextIsEdge = null;
 
             } else if (yToLat[y] > cellEndLat) {
               break;
@@ -416,6 +472,17 @@ export default {
 
             for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
               let twsData = twsDatas[twsIdx];
+
+              while ((twsData.edgeCrossing.length > 0) &&
+                     (y >= twsData.edgeCrossing[0])) {
+                twsData.edgeCrossing.shift();
+              }
+              if (twsData.edgeCrossing.length > 0) {
+                if (nextY > twsData.edgeCrossing[0]) {
+                  nextIsEdge = twsData.edgeCrossing[0];
+                }
+              }
+
               let twsms = this.twsContours[twsIdx] / MS_TO_KNT;
               let c = qc[0] - twsms * twsms;
 
