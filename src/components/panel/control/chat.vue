@@ -243,6 +243,8 @@ export default {
 .chat-block {
   text-align: left;
   padding: 2px;
+  width: inherit;
+  box-sizing: border-box;
 }
 .chat-block:nth-last-child(even) {
   background: #ffffff;
@@ -265,6 +267,8 @@ export default {
 .chat-msg {
   padding-left: 2px;
   padding-top: 2px;
+  width: inherit;
+  box-sizing: border-box;
   overflow-wrap: break-word;
   font-size: 12px;
 }
