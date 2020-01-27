@@ -234,7 +234,7 @@ export default {
         return;
       }
 
-      let c = [
+      let coeffs = [
         [[], [], []],
         [[], [], []],
         [[], [], []],
@@ -347,18 +347,18 @@ export default {
             let abcd = asubb - wind[2][i] + wind[3][i];
             let squarea = wind[0][i] * wind[0][i];
 
-            c[0][0][i] = squarea;
-            c[0][1][i] = -2 * wind[0][i] * asubc;
-            c[0][2][i] = asubc * asubc;
-            c[1][0][i] = -2 * wind[0][i] * asubb;
-            c[1][1][i] = 4 * (squarea -
-                                  wind[0][i] * (wind[1][i] + wind[2][i])) +
-                             2 * (wind[1][i] * wind[2][i] +
-                                  wind[0][i] * wind[3][i]);
-            c[1][2][i] = -2 * asubc * abcd;
-            c[2][0][i] = asubb * asubb;
-            c[2][1][i] = -2 * asubb * abcd;
-            c[2][2][i] = abcd * abcd;
+            coeffs[0][0][i] = squarea;
+            coeffs[0][1][i] = -2 * wind[0][i] * asubc;
+            coeffs[0][2][i] = asubc * asubc;
+            coeffs[1][0][i] = -2 * wind[0][i] * asubb;
+            coeffs[1][1][i] = 4 * (squarea -
+                                   wind[0][i] * (wind[1][i] + wind[2][i])) +
+                              2 * (wind[1][i] * wind[2][i] +
+                                   wind[0][i] * wind[3][i]);
+            coeffs[1][2][i] = -2 * asubc * abcd;
+            coeffs[2][0][i] = asubb * asubb;
+            coeffs[2][1][i] = -2 * asubb * abcd;
+            coeffs[2][2][i] = abcd * abcd;
           }
 
           maxTwsMs = Math.sqrt(maxTwsMs);
@@ -409,9 +409,9 @@ export default {
              *   qc[2] * x^2 + qc[1] * x + qc[0] - TWS_ms^2 = 0
              */
             for (let i = 0; i <= 2; i++) {
-              qc[i] = (c[i][0][0] + c[i][0][1]) +
-                      (c[i][1][0] + c[i][1][1]) * yInCell +
-                      (c[i][2][0] + c[i][2][1]) * squarey;
+              qc[i] = (coeffs[i][0][0] + coeffs[i][0][1]) +
+                      (coeffs[i][1][0] + coeffs[i][1][1]) * yInCell +
+                      (coeffs[i][2][0] + coeffs[i][2][1]) * squarey;
             }
 
             for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
