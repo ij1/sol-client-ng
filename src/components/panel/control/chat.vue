@@ -270,7 +270,7 @@ export default {
   width: inherit;
   box-sizing: border-box;
   overflow-wrap: break-word;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .chat-channel-input {
