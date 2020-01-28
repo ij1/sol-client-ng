@@ -496,7 +496,7 @@ export default {
               rootForced[1] = false;
 
               while ((twsData.edgeCrossing.length > 0) &&
-                     (yInCell >= twsData.edgeCrossing[0][0])) {
+                     (yInCell + 1e-10 >= twsData.edgeCrossing[0][0])) {
                 let tmp = twsData.edgeCrossing.shift();
                 forceNumStability[tmp[1]] = true;
                 if (Math.abs(tmp[0] - yInCell) > 0.05) {
