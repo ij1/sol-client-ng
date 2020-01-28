@@ -317,6 +317,7 @@ export default {
             useMove: [true, true],
             draw: [false, false],
             edgeCrossing: null,
+            prevYInCell: -1,
           };
         }
 
@@ -501,9 +502,11 @@ export default {
                 forceNumStability[tmp[1]] = true;
                 if (Math.abs(tmp[0] - yInCell) > 0.05) {
                   this.logError('consumed ' + tmp[0] +
-                                ' at y ' + yInCell + ' px=' + y);
+                                ' at y ' + yInCell + ' px=' + y +
+                                ' prev ' + twsData.prevYInCell);
                 }
               }
+              twsData.prevYInCell = yInCell;
               if (twsData.edgeCrossing.length > 0) {
                 if ((nextEdge === null) ||
                     (nextEdge > twsData.edgeCrossing[0][0])) {
