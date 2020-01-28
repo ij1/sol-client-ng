@@ -36,6 +36,24 @@ function boundTime(state, time) {
   return null;
 }
 
+const contourDefs = [
+  [],
+  [6, 12, 20, 30, 40, 50],
+  [3, 6, 9, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100],
+  [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16, 18, 19, 20,
+    22.5, 25, 27.5, 30, 32.5, 35, 37.5, 40, 45, 50, 55, 60, 70, 80, 90, 100
+  ],
+  [
+    0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5,
+    5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5,
+    10, 11, 12, 13, 14, 15, 16, 16, 18, 19, 20,
+    21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+    32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50,
+    55, 60, 65, 70, 75, 80, 85, 90, 95, 100
+  ],
+];
+
 export default {
   namespaced: true,
 
@@ -62,6 +80,7 @@ export default {
       timeSeries: [],
       origo: [],
       increment: [],
+      cells: [],
       windMap: [],      /* format: [time][lon][lat][u,v] */
     },
     cfg: {
@@ -96,6 +115,13 @@ export default {
         low: 24,
         high: 128,
         cfgText: 'Wind grid density',
+      },
+      twsDensity: {
+        value: 0,
+        type: 'range',
+        low: 0,
+        high: 4,
+        cfgText: 'Wind speed contours density (EXPERIMENTAL)',
       },
       twsTxt: {
         value: false,
@@ -174,6 +200,11 @@ export default {
     dataTimescale: (state, getters, rootState, rootGetters) => {
       return getters.lastTimestamp - rootGetters['boat/time'];
     },
+
+    twsContours: (state) => {
+      return contourDefs[state.cfg.twsDensity.value];
+    },
+
     timeIndex: (state) => {
       let idx;
       /* Short-circuit for the common case near the beginning of the wx series */
@@ -314,6 +345,44 @@ export default {
       ));
     },
 
+    idxToCell: (state, getters) => (latIdx, lonIdx) => {
+      let timeIdx = getters.timeIndex;
+      let timeVal = state.time;
+
+      /* Sanity check wx data */
+      if ((timeIdx === null) ||
+          (state.data.windMap.length < timeIdx+1 + 1) ||
+          (state.data.timeSeries[timeIdx+1] < timeVal)) {
+        return null;
+      }
+
+      if ((lonIdx < 0) || (lonIdx >= state.data.cells[1] - 1) ||
+          (latIdx < 0) || (latIdx >= state.data.cells[0] - 1)) {
+        return null;
+      }
+
+      let wind = [];
+
+      /* time (z) solution */
+      const timeFactor = interpolateFactor(
+        state.data.timeSeries[timeIdx],
+        timeVal,
+        state.data.timeSeries[timeIdx+1],
+      );
+
+      for (let y = 0; y <= 1; y++) {
+        for (let x = 0; x <= 1; x++) {
+          wind.push(wxTimeInterpolate(
+            timeFactor,
+            state.data.windMap[timeIdx][lonIdx+x][latIdx+y],
+            state.data.windMap[timeIdx+1][lonIdx+x][latIdx+y]
+          ));
+        }
+      }
+
+      return wind;
+    },
+
     nextTimeToFetch: (state, getters, rootState, rootGetters) => {
       const now = rootGetters['time/now']();
       let fetchPeriod = state.fetchPeriod.cold;
@@ -410,6 +479,9 @@ export default {
           return;
         }
 
+        let cells = [parseInt(weatherData.$.lat_n_points),
+                     parseInt(weatherData.$.lon_n_points)];
+
         let timeSeries = [];
         let windMap = [];
         /* FIXME: It takes quite long time to parse&mangle the arrays here,
@@ -432,10 +504,11 @@ export default {
 
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
-          if (u.length !== v.length) {
+          if ((u.length !== cells[1] + 1) || (u.length !== v.length)) {
             dispatch(
               'diagnostics/add',
-              'DATA ERROR: Inconsistent weather lengths: ' + u.length + ' ' + v.length,
+              'DATA ERROR: Inconsistent weather lengths: ' +
+              (cells[1] + 1) + ' ' + u.length + ' ' + v.length,
               {root: true}
             );
             return;
@@ -450,10 +523,11 @@ export default {
             let uu = u[i].trim().split(/\s+/);
             let vv = v[i].trim().split(/\s+/);
 
-            if (uu.length !== vv.length) {
+            if ((uu.length !== cells[0] + 1) && (uu.length !== vv.length)) {
               dispatch(
                 'diagnostics/add',
-                'DATA ERROR: Inconsistent weather lengths: ' + uu.length + ' ' + vv.length,
+                'DATA ERROR: Inconsistent weather lengths: ' +
+                (cells[0] + 1) + ' ' + uu.length + ' ' + vv.length,
                 {root: true}
               );
               return;
@@ -483,6 +557,7 @@ export default {
         timeSeries = Object.freeze(timeSeries);
         origo = Object.freeze(origo);
         increment = Object.freeze(increment);
+        cells = Object.freeze(cells);
         boundary = Object.freeze(boundary);
 
         let weatherInfo = {
@@ -492,6 +567,7 @@ export default {
           timeSeries: timeSeries,
           origo: origo,
           increment: increment,
+          cells: cells,
           windMap: windMap,
         };
         commit('update', weatherInfo);
