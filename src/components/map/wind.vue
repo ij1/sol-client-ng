@@ -251,6 +251,7 @@ export default {
        * force expected x = 0 or x = 1.
        */
       let forceNumStability = [ false, false ];
+      let rootForced = [ false, false ];
       let count = 0;
 
       const bounds = this.$parent.map.getBounds();
@@ -492,6 +493,8 @@ export default {
               let whichEdge = null;
               forceNumStability[0] = false;
               forceNumStability[1] = false;
+              rootForced[0] = false;
+              rootForced[1] = false;
 
               while ((twsData.edgeCrossing.length > 0) &&
                      (yInCell >= twsData.edgeCrossing[0][0])) {
@@ -544,12 +547,14 @@ export default {
                   const useMove = twsData.useMove[r];
                   if (forceNumStability[0] && (Math.abs(roots[r] - 0) < 0.0001)) {
                     roots[r] = 0;
+                    rootForced[0] = true;
                     if (!useMove) {
                       twsData.useMove[r] = true;
                     }
                   }
                   if (forceNumStability[1] && (Math.abs(roots[r] - 1) < 0.0001)) {
                     roots[r] = 1;
+                    rootForced[1] = true;
                     if (!useMove) {
                       twsData.useMove[r] = true;
                     }
@@ -567,9 +572,26 @@ export default {
                     twsData.useMove[r] = true;
                   }
                 }
+                for (let i = 0; i <= 1; i++) {
+                  if (forceNumStability[i] !== rootForced[i]) {
+                    this.logError('Numerical stability failure for ' + i +
+                                  ', roots: ' +
+                                  roots[0] + ' ' + roots[1] +
+                                  ' qc[2]=' + qc[2] +
+                                  ' at y ' + yInCell + ' px=' + y);
+                  }
+                }
               } else {
                 twsData.useMove[0] = true;
                 twsData.useMove[1] = true;
+                for (let i = 0; i <= 1; i++) {
+                  if (forceNumStability[i]) {
+                    this.logError('Numerical stability failure for ' + i +
+                                  ', discriminant: ' + discr +
+                                  ' qc[2]=' + qc[2] +
+                                  ' at y ' + yInCell + ' px=' + y);
+                  }
+                }
               }
             }
             y = nextY;
