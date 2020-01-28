@@ -5,6 +5,10 @@ import { windToColor, MS_TO_KNT } from '../../lib/sol.js';
 import { radToDeg, bsearchLeft } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 
+function compareCrossing(a, b) {
+  return a[0] - b[0];
+}
+
 export default {
   name: 'WindMap',
   data () {
@@ -243,6 +247,7 @@ export default {
       let yToLat = [];
       let twsDatas = [];
       let roots = [];
+      let count = 0;
 
       const bounds = this.$parent.map.getBounds();
       const sw = bounds.getSouthWest();
@@ -372,6 +377,8 @@ export default {
                                                maxTwsMs * MS_TO_KNT),
                                    this.twsContours.length - 1);
 
+          const yInCellStart = (yToLat[y] - latStart) / this.wxCellSize[0];
+
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
             let twsData = twsDatas[twsIdx];
             twsData.edgeCrossing = [];
@@ -384,7 +391,7 @@ export default {
               if (e === 0) {
                 a = coeffs[0][2][0] + coeffs[0][2][1];
                 b = coeffs[0][1][0] + coeffs[0][1][1];
-                c = coeffs[0][0][0] + coeffs[0][0][1];
+                c += coeffs[0][0][0] + coeffs[0][0][1];
               } else {
                 for (let i = 0; i <= 1; i++) {
                   let bsubd = wind[1][i] - wind[3][i];
@@ -399,29 +406,29 @@ export default {
                 /* bx + c = 0 => x = -c/b */
                 if (b !== 0) {
                   const res = -c / b;
-                  if (res >= 0 && res <= 1) {
-                    twsData.edgeCrossing.push(res);
+                  if (res >= 0 && res >= yInCellStart && res <= 1) {
+                    twsData.edgeCrossing.push([res, e]);
                   }
                 }
               } else if (discr >= 0) {
                 const tmp = Math.sqrt(discr);
                 const res = (-b - tmp) / (2 * a);
-                if (res >= 0 && res <= 1) {
-                  twsData.edgeCrossing.push(res);
+                if (res >= 0 && res >= yInCellStart && res <= 1) {
+                  twsData.edgeCrossing.push([res, e]);
                 }
                 if (discr > 0) {
                   const res2 = (-b + tmp) / (2 * a);
-                  if (res2 >= 0 && res2 <= 1) {
-                    twsData.edgeCrossing.push(res2);
+                  if (res2 >= 0 && res2 >= yInCellStart && res2 <= 1) {
+                    twsData.edgeCrossing.push([res2, e]);
                   }
                 }
               }
             }
-            twsData.edgeCrossing.sort();
+            twsData.edgeCrossing.sort(compareCrossing);
           }
 
           let firstIter = true;
-          let nextIsEdge = null;
+          let nextEdge = null;
           while (y >= yEnd) {
             let yInCell;
             let lat;
@@ -433,17 +440,23 @@ export default {
               nextY = y;
               firstIter = false;
 
-            } else if (nextIsEdge !== null) {
-              yInCell = nextIsEdge;
-              nextY = y;
-              nextIsEdge = null;
-
-            } else if (yToLat[y] > cellEndLat) {
-              break;
-
             } else {
+              if ((yToLat[y] > cellEndLat) && (nextEdge === null)) {
+                break;
+              }
+
+              if ((nextEdge !== null) && (nextEdge > 1)) {
+                console.log('nextEdge > 1: ' + nextEdge);
+                return;
+              }
+
               lat = yToLat[y];
               yInCell = (lat - latStart) / this.wxCellSize[0];
+              if ((nextEdge !== null) && nextEdge < yInCell) {
+                yInCell = nextEdge;
+                nextY = y;
+                nextEdge = null;
+              }
 
               /* Deal with computational inaccuracies */
               if (yInCell < 0 && yInCell > -0.00001) {
@@ -472,14 +485,23 @@ export default {
 
             for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
               let twsData = twsDatas[twsIdx];
+              let whichEdge = null;
 
               while ((twsData.edgeCrossing.length > 0) &&
-                     (y >= twsData.edgeCrossing[0])) {
-                twsData.edgeCrossing.shift();
+                     (yInCell >= twsData.edgeCrossing[0][0])) {
+                if (whichEdge !== null && count++ < 20) {
+                  console.log('many edges, old ' + whichEdge);
+                }
+                let tmp = twsData.edgeCrossing.shift();
+                whichEdge = tmp[1];
+                if (Math.abs(tmp[0] - yInCell) > 0.05) {
+                  console.log('consumed ' + tmp[0] + ' at y ' + y + ' / ' + yInCell);
+                }
               }
               if (twsData.edgeCrossing.length > 0) {
-                if (nextY > twsData.edgeCrossing[0]) {
-                  nextIsEdge = twsData.edgeCrossing[0];
+                if ((nextEdge === null) ||
+                    (nextEdge > twsData.edgeCrossing[0][0])) {
+                  nextEdge = twsData.edgeCrossing[0][0];
                 }
               }
 
@@ -511,7 +533,9 @@ export default {
 
                 /* Prepare paths */
                 for (let r = 0; r <= 1; r++) {
-                  if (roots[r] >= 0 && roots[r] <= 1) {
+                  if (((roots[r] >= 0) && (roots[r] <= 1)) ||
+                      ((whichEdge !== null) &&
+                       (Math.abs(roots[r] - whichEdge) < 0.0001))) {
                     let x = Math.round(cellStep * roots[r] + xStart);
                     if (twsData.useMove[r]) {
                       twsData.paths[r].moveTo(x, y);
