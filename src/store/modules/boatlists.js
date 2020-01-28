@@ -172,6 +172,9 @@ export default {
       if (state.activeList === boatlistKey) {
         state.activeList = state.defaultList;
       }
+      if (state.filterList === boatlistKey) {
+        state.filterList = null;
+      }
       deleteListFromLocalStorage(state, state.boatlists[boatlistKey].name);
       Vue.delete(state.boatlists, boatlistKey);
     },
