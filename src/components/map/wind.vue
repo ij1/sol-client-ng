@@ -381,7 +381,8 @@ export default {
                                                maxTwsMs * MS_TO_KNT),
                                    this.twsContours.length - 1);
 
-          const yInCellStart = (yToLat[y] - latStart) / this.wxCellSize[0];
+          const yInCellStart = (y > yStart) ? 0 :
+                               (yToLat[y] - latStart) / this.wxCellSize[0];
 
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
             let twsData = twsDatas[twsIdx];
