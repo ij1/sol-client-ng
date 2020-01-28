@@ -450,7 +450,7 @@ export default {
               }
 
               if ((nextEdge !== null) && (nextEdge > 1)) {
-                console.log('nextEdge > 1: ' + nextEdge);
+                this.logError('nextEdge > 1: ' + nextEdge);
                 return;
               }
 
@@ -502,7 +502,8 @@ export default {
                 forceNumStability[tmp[1]] = true;
                 whichEdge = tmp[1];
                 if (Math.abs(tmp[0] - yInCell) > 0.05) {
-                  console.log('consumed ' + tmp[0] + ' at y ' + y + ' / ' + yInCell);
+                  this.logError('consumed ' + tmp[0] +
+                                ' at y ' + yInCell + ' px=' + y);
                 }
               }
               if (twsData.edgeCrossing.length > 0) {
