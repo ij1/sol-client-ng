@@ -564,9 +564,9 @@ export default {
                     if (useMove) {
                       twsData.paths[r].moveTo(x, y);
                       twsData.useMove[r] = false;
-                      twsData.draw[r] = true;
                     } else {
                       twsData.paths[r].lineTo(x, y);
+                      twsData.draw[r] = true;
                     }
                   } else {
                     twsData.useMove[r] = true;
