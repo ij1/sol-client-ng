@@ -246,7 +246,7 @@ export default {
       let qc = [];
       let yToLat = [];
       let twsDatas = [];
-      let roots = [];
+      let roots = [0, 0];
       /* Boundary conditions are not stable enough numerically, flag and
        * force expected x = 0 or x = 1.
        */
