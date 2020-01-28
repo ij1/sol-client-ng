@@ -516,6 +516,22 @@ export default {
                 }
               }
 
+              /* Horizontal or nearly horizontal lines, mostly occurs
+               * on WRF dummy extension but might occur elsewhere very
+               * infrequently.
+               */
+              if (forceNumStability[0] && forceNumStability[1] &&
+                  Math.abs(qc[2]) < 1e-10 && Math.abs(qc[1]) < 1e-10)
+              {
+                twsData.paths[0].moveTo(xStart, y);
+                let x = Math.round(cellStep * 1 + xStart);
+                twsData.paths[0].lineTo(x, y);
+                twsData.useMove[0] = true;
+                twsData.useMove[1] = true;
+                twsData.draw[0] = true;
+                continue;
+              }
+
               let twsms = this.twsContours[twsIdx] / MS_TO_KNT;
               let c = qc[0] - twsms * twsms;
 
