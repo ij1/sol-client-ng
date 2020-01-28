@@ -599,7 +599,7 @@ export default {
         }
 
         /* Flush the full column of contours */
-        for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
+        for (let twsIdx = this.twsContours.length - 1; twsIdx >= 0; twsIdx--) {
           for (let r = 0; r <= 1; r++) {
             let twsData = twsDatas[twsIdx];
             if (twsData.draw[r]) {
