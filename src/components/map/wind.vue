@@ -252,7 +252,6 @@ export default {
        */
       let forceNumStability = [ false, false ];
       let rootForced = [ false, false ];
-      let count = 0;
 
       const bounds = this.$parent.map.getBounds();
       const sw = bounds.getSouthWest();
@@ -490,7 +489,6 @@ export default {
 
             for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
               let twsData = twsDatas[twsIdx];
-              let whichEdge = null;
               forceNumStability[0] = false;
               forceNumStability[1] = false;
               rootForced[0] = false;
@@ -498,12 +496,8 @@ export default {
 
               while ((twsData.edgeCrossing.length > 0) &&
                      (yInCell >= twsData.edgeCrossing[0][0])) {
-                if (whichEdge !== null && count++ < 20) {
-                  console.log('many edges, old ' + whichEdge);
-                }
                 let tmp = twsData.edgeCrossing.shift();
                 forceNumStability[tmp[1]] = true;
-                whichEdge = tmp[1];
                 if (Math.abs(tmp[0] - yInCell) > 0.05) {
                   this.logError('consumed ' + tmp[0] +
                                 ' at y ' + yInCell + ' px=' + y);
