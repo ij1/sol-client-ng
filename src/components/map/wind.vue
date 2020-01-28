@@ -247,6 +247,10 @@ export default {
       let yToLat = [];
       let twsDatas = [];
       let roots = [];
+      /* Boundary conditions are not stable enough numerically, flag and
+       * force expected x = 0 or x = 1.
+       */
+      let forceNumStability = [ false, false ];
       let count = 0;
 
       const bounds = this.$parent.map.getBounds();
@@ -486,6 +490,8 @@ export default {
             for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
               let twsData = twsDatas[twsIdx];
               let whichEdge = null;
+              forceNumStability[0] = false;
+              forceNumStability[1] = false;
 
               while ((twsData.edgeCrossing.length > 0) &&
                      (yInCell >= twsData.edgeCrossing[0][0])) {
@@ -493,6 +499,7 @@ export default {
                   console.log('many edges, old ' + whichEdge);
                 }
                 let tmp = twsData.edgeCrossing.shift();
+                forceNumStability[tmp[1]] = true;
                 whichEdge = tmp[1];
                 if (Math.abs(tmp[0] - yInCell) > 0.05) {
                   console.log('consumed ' + tmp[0] + ' at y ' + y + ' / ' + yInCell);
@@ -533,11 +540,22 @@ export default {
 
                 /* Prepare paths */
                 for (let r = 0; r <= 1; r++) {
-                  if (((roots[r] >= 0) && (roots[r] <= 1)) ||
-                      ((whichEdge !== null) &&
-                       (Math.abs(roots[r] - whichEdge) < 0.0001))) {
+                  const useMove = twsData.useMove[r];
+                  if (forceNumStability[0] && (Math.abs(roots[r] - 0) < 0.0001)) {
+                    roots[r] = 0;
+                    if (!useMove) {
+                      twsData.useMove[r] = true;
+                    }
+                  }
+                  if (forceNumStability[1] && (Math.abs(roots[r] - 1) < 0.0001)) {
+                    roots[r] = 1;
+                    if (!useMove) {
+                      twsData.useMove[r] = true;
+                    }
+                  }
+                  if ((roots[r] >= 0) && (roots[r] <= 1)) {
                     let x = Math.round(cellStep * roots[r] + xStart);
-                    if (twsData.useMove[r]) {
+                    if (useMove) {
                       twsData.paths[r].moveTo(x, y);
                       twsData.useMove[r] = false;
                       twsData.draw[r] = true;
