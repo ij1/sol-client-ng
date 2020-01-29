@@ -103,7 +103,7 @@ export default {
 #control-panel {
   position: relative;
   top: 0;
-  min-height: 100%;
+  height: 100%;
   width: 100%;
   overflow: hidden;
 }
@@ -139,7 +139,7 @@ export default {
 }
 
 .control-panel-content-wrapper {
-  height: calc(100vh - 28px);
+  height: calc(100% - 28px);
 }
 .control-panel-content {
   position: relative;
@@ -147,6 +147,7 @@ export default {
   padding: 5px;
   border: 1px solid #c0c0c0;
   border-radius: 10px;
-  height: calc(100vh - 28px - 10px);
+  box-sizing: border-box;
+  height: 100%;
 }
 </style>

@@ -89,7 +89,7 @@ html, body {
   top: 0;
   left: 0;
   width: inherit;
-  height: inherit;
+  height: 100%;
   overflow: hidden;
 }
 #right-div {
@@ -97,7 +97,7 @@ html, body {
   top: 0;
   right: 0;
   width: inherit;
-  height: inherit;
+  height: 100%;
   overflow: hidden;
   background-color: #fff;
 }
