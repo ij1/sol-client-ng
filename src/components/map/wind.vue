@@ -628,7 +628,7 @@ export default {
                   if (tmp !== tmp2) {
                     const x = Math.round(cellStep * tmp + xStart);
                     const x2 = Math.round(cellStep * tmp2 + xStart);
-                    twsData.paths[0].moveTo(x, twsData.prevDiscY);
+                    twsData.paths[0].moveTo(x, twsData.prevDiscrY);
                     twsData.paths[0].lineTo(x2, twsData.prevDiscrY);
                     twsData.draw[0] = true;
                   }
