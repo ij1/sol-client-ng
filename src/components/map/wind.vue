@@ -438,6 +438,7 @@ export default {
 
           let firstIter = true;
           let nextEdge = null;
+          let lastIter = false;
           while (y >= yEnd) {
             let yInCell;
             let lat;
@@ -449,11 +450,14 @@ export default {
               nextY = y;
               firstIter = false;
 
-            } else {
-              if ((yToLat[y] > cellEndLat) && (nextEdge === null)) {
+            } else if ((yToLat[y] > cellEndLat) && (nextEdge === null)) {
+              if (lastIter) {
                 break;
               }
-
+              lastIter = true;
+              yInCell = 1;
+              nextY = y;
+            } else {
               if ((nextEdge !== null) && (nextEdge > 1)) {
                 this.logError('nextEdge > 1: ' + nextEdge);
                 return;
