@@ -318,6 +318,9 @@ export default {
             draw: [false, false],
             edgeCrossing: null,
             prevYInCell: -1,
+            prevDiscr: null,
+            prevDiscrY: null,
+            prevRoots: [0, 0],
           };
         }
 
@@ -527,6 +530,8 @@ export default {
                 twsData.useMove[0] = true;
                 twsData.useMove[1] = true;
                 twsData.draw[0] = true;
+                twsData.prevDiscr = null;
+                twsData.prevDiscrY = y;
                 continue;
               }
 
@@ -582,9 +587,22 @@ export default {
                       twsData.paths[r].lineTo(x, y);
                       twsData.draw[r] = true;
                     }
+
+                    /* Discriminant sign change - to + */
+                    if ((twsData.prevDiscr !== null) &&
+                        (twsData.prevDiscr < 0) &&
+                        (twsData.prevDiscrY - y <= 1) &&
+                        (r === 0)) {
+                      const tmp = Math.min(Math.max(roots[1], 0), 1);
+                      const x2 = Math.round(cellStep * tmp + xStart);
+                      twsData.paths[0].lineTo(x2, y);
+                      twsData.paths[0].moveTo(x, y);
+                      twsData.draw[0] = true;
+                    }
                   } else {
                     twsData.useMove[r] = true;
                   }
+                  twsData.prevRoots[r] = roots[r];
                 }
                 for (let i = 0; i <= 1; i++) {
                   if (forceNumStability[i] !== rootForced[i]) {
@@ -596,6 +614,22 @@ export default {
                   }
                 }
               } else {
+                /* Discriminant sign change + to - */
+                if ((twsData.prevDiscr !== null) &&
+                    (twsData.prevDiscr >= 0) &&
+                    (twsData.prevDiscrY - y <= 1)) {
+                  const tmp = Math.min(Math.max(twsData.prevRoots[0], 0), 1);
+                  const tmp2 = Math.min(Math.max(twsData.prevRoots[1], 0), 1);
+                  /* Spanning the wx cell? */
+                  if (tmp !== tmp2) {
+                    const x = Math.round(cellStep * tmp + xStart);
+                    const x2 = Math.round(cellStep * tmp2 + xStart);
+                    twsData.paths[0].moveTo(x, twsData.prevDiscY);
+                    twsData.paths[0].lineTo(x2, twsData.prevDiscrY);
+                    twsData.draw[0] = true;
+                  }
+                }
+
                 twsData.useMove[0] = true;
                 twsData.useMove[1] = true;
                 for (let i = 0; i <= 1; i++) {
@@ -607,6 +641,8 @@ export default {
                   }
                 }
               }
+              twsData.prevDiscr = discr;
+              twsData.prevDiscrY = y;
             }
             y = nextY;
           }
