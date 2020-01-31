@@ -31,7 +31,7 @@
         'boatlist-last': boat.id === lastClicked
       }"
       @mousedown.prevent
-      @click.prevent = "selectBoat(index, $event)"
+      @mouseup.prevent = "selectBoat(index, $event)"
       @mouseover = "hoverBoat(index, $event)"
       @mouseout = "clearHover()"
     >
