@@ -81,6 +81,20 @@ html, body {
   overflow: hidden;
 }
 
+.splitpanes--vertical > .splitpanes__splitter {
+  min-width: 9px;
+}
+
+.splitpanes--vertical > .splitpanes__splitter:after,
+.splitpanes--vertical > .splitpanes__splitter:before {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.splitpanes--vertical > .splitpanes__splitter:hover:after,
+.splitpanes--vertical > .splitpanes__splitter:hover:before {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
 </style>
 
 <style scoped>
