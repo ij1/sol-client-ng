@@ -1,5 +1,5 @@
 <template>
-  <div id="leaderboard" :style="{flex: active ? 'auto' : 'none'}">
+  <div id="leaderboard" :style="{flex: active ? '1 1' : 'none'}">
     <div
       class = "leaderboard-header"
       @click = "onActivate"
@@ -26,7 +26,12 @@
           v-model = "search"
         >
       </div>
-      <div id = "leaderboard-boatlist">
+      <div
+        id = "leaderboard-boatlist"
+        :style = "{
+          height: 'calc(100% - 31px - ' + (listEditable ? 23+4+27 : 0) + 'px)'
+        }"
+      >
         <boat-list
           :search = "search"
           :boat-list = "boatList"
@@ -155,34 +160,31 @@ export default {
 
 <style scoped>
 #leaderboard {
+  position: relative;
   width: 100%;
   font-size: 11px;
   text-align: left;
   overflow: hidden;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 2px;
 }
 .leaderboard-header {
-  flex: none;
   background-image: linear-gradient(#f0f0f0, #a0a0a0, #909090, #c0c0c0, #f0f0f0);
   padding: 5px;
+  height: 15px;
   font-weight: bold;
 }
 .leaderboard-showonly {
   text-align: right;
+  height: 23px;
 }
 .leaderboard-boatlist-container {
-  flex: auto;
-  min-height: 0;
+  position: relative;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  height: calc(100% - 27px);
 }
 .leaderboard-search {
-  flex: none;
-  width: 100%;
+  position: relative;
+  height: 25px;
 }
 .leaderboard-search input {
   font-size: 11px;
@@ -191,14 +193,13 @@ export default {
   margin-left: 6px;
 }
 #leaderboard-boatlist {
-  flex: auto;
-  min-height: 0;
+  position: relative;
   width: 100%;
 }
 .leaderboard-buttons {
-  flex: none;
   text-align: center;
   padding-top: 4px;
+  height: 27px;
 }
 .leaderboard-buttons button {
   font-size: 11px;
