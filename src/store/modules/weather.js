@@ -117,11 +117,11 @@ export default {
         cfgText: 'Wind grid density',
       },
       twsDensity: {
-        value: 0,
+        value: 2,
         type: 'range',
         low: 0,
         high: 4,
-        cfgText: 'Wind speed contours density (EXPERIMENTAL)',
+        cfgText: 'Wind speed contours density',
       },
       twsTxt: {
         value: false,
