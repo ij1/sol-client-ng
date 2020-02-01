@@ -55,6 +55,7 @@ export default {
 }
 .scrollable-table-header {
   flex: none;
+  white-space: nowrap;
   overflow: hidden;
   height: 17px;
 }
