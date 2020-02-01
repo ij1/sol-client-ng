@@ -133,6 +133,11 @@ export default {
         type: 'boolean',
         cfgText: 'Show wind direction',
       },
+      quickAccessButtons: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Quick-access buttons for TWS/TWD'
+      },
     },
   },
 
