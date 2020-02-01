@@ -307,7 +307,7 @@ export default {
   cursor: crosshair;
 }
 
-.leaflet-top {
+.leaflet-top, .leaflet-right {
   mix-blend-mode: multiply;
 }
 
