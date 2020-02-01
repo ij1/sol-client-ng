@@ -172,10 +172,14 @@ export default {
   padding: 5px;
   height: 15px;
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .leaderboard-showonly {
   text-align: right;
   height: 23px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .leaderboard-boatlist-container {
   position: relative;
@@ -184,26 +188,40 @@ export default {
 }
 .leaderboard-search {
   position: relative;
+  display: flex;
+  flex-direction: row;
   height: 25px;
+  overflow: hidden;
+}
+.leaderboard-search label {
+  flex: none;
 }
 .leaderboard-search input {
+  flex: auto;
   font-size: 11px;
   background-color: unset;
   margin: 2px;
   margin-left: 6px;
+  min-width: 50px;
 }
 #leaderboard-boatlist {
   position: relative;
   width: 100%;
 }
 .leaderboard-buttons {
-  text-align: center;
+  display: flex;
+  flex-direction: row;
   padding-top: 4px;
   height: 27px;
+  overflow: hidden;
 }
 .leaderboard-buttons button {
+  flex: auto;
   font-size: 11px;
   margin-left: 4px;
   padding: 0px;
+  min-width: 40px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
