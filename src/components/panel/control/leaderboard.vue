@@ -29,7 +29,7 @@
       <div
         id = "leaderboard-boatlist"
         :style = "{
-          height: 'calc(100% - 31px - ' + (listEditable ? 23+4+27 : 0) + 'px)'
+          height: 'calc(100% - 29px - ' + (listEditable ? 23+4+23 : 0) + 'px)'
         }"
       >
         <boat-list
@@ -184,13 +184,13 @@ export default {
 .leaderboard-boatlist-container {
   position: relative;
   width: 100%;
-  height: calc(100% - 27px);
+  height: calc(100% - 25px);
 }
 .leaderboard-search {
   position: relative;
   display: flex;
   flex-direction: row;
-  height: 25px;
+  height: 23px;
   overflow: hidden;
 }
 .leaderboard-search label {
@@ -212,7 +212,7 @@ export default {
   display: flex;
   flex-direction: row;
   padding-top: 4px;
-  height: 27px;
+  height: 23px;
   overflow: hidden;
 }
 .leaderboard-buttons button {
