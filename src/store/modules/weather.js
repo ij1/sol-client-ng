@@ -114,6 +114,8 @@ export default {
         type: 'range',
         low: 24,
         high: 128,
+        lowText: 'low',
+        highText: 'high',
         reverse: true,
         cfgText: 'Wind grid density',
       },
@@ -122,6 +124,8 @@ export default {
         type: 'range',
         low: 0,
         high: 4,
+        lowText: 'off',
+        highText: 'high',
         cfgText: 'Wind speed contours density',
       },
       twsTxt: {

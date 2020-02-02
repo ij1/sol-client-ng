@@ -52,6 +52,8 @@ export default {
         type: 'range',
         low: 3,
         high: 7,
+        lowText: 'small',
+        highText: 'large',
         cfgText: 'Boat scale',
       },
       tinyIslands: {
