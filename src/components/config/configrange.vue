@@ -6,6 +6,7 @@
       :min = "cfg.low"
       :max = "cfg.high"
       :value = "value"
+      :class = "{ 'reverse-range': isReverse } "
       @input = "$emit('update:value', Number($event.target.value))"
     />
   </div>
@@ -39,5 +40,16 @@ export default {
       required: true,
     },
   },
+  computed: {
+    isReverse () {
+      return (typeof this.cfg.reverse !== 'undefined') && this.cfg.reverse;
+    }
+  },
 }
 </script>
+
+<style scoped>
+.reverse-range {
+  direction: rtl;
+}
+</style>

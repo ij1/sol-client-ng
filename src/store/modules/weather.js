@@ -114,6 +114,7 @@ export default {
         type: 'range',
         low: 24,
         high: 128,
+        reverse: true,
         cfgText: 'Wind grid density',
       },
       twsDensity: {
