@@ -16,7 +16,7 @@ export default {
       hourRadius: 3,
       quarterRadius: 2,
       first15minRadius: 1,
-      plottedDelayRadius: 3,
+      plottedDelayRadius: 5,
       otherDelayRadius: 2,
 
       cog: {
