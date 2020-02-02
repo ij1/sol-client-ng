@@ -191,7 +191,7 @@ export default {
         type: 'range',
         low: 1,
         high: 3,
-        cfgText: 'Maximum number of decimals in instrument',
+        cfgText: 'Number of decimals in instrument',
       },
       visualizePolar: {
         value: false,
