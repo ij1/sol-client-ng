@@ -48,13 +48,19 @@ export default {
     isReverse () {
       return (typeof this.cfg.reverse !== 'undefined') && this.cfg.reverse;
     },
-    leftText () {
+    lowText () {
       return (typeof this.cfg.lowText !== 'undefined') ?
         this.cfg.lowText : this.cfg.low;
     },
-    rightText () {
+    highText () {
       return (typeof this.cfg.highText !== 'undefined') ?
         this.cfg.highText : this.cfg.high;
+    },
+    leftText () {
+      return this.isReverse ? this.highText : this.lowText;
+    },
+    rightText () {
+      return !this.isReverse ? this.highText : this.lowText;
     },
   },
 }
