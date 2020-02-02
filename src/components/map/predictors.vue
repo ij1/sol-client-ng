@@ -163,7 +163,6 @@ export default {
       this.twa;
       this.wxUpdated;
       this.plottedDcDelay;
-      this.plottedType;
       this.cfgPredictors;
 
       /* Monotonically increasing value to trigger watch reliably every time */
@@ -186,7 +185,6 @@ export default {
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
-      plottedType: state => state.boat.steering.plottedSteering.type,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
       cfgPredictors: state => state.boat.steering.cfg.predictors.value,
@@ -258,7 +256,7 @@ export default {
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.fillStyle = 'orange';
         ctx.beginPath();
-        const radius = (this.plottedType === pt.type) ?
+        const radius = (this.currentSteering === pt.type) ?
                        this.plottedDelayRadius : this.otherDelayRadius;
         ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
         ctx.fill();
