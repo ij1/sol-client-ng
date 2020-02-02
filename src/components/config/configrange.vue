@@ -10,8 +10,8 @@
         :class = "{ 'reverse-range': isReverse } "
         @input = "$emit('update:value', Number($event.target.value))"
       />
-      <span class = "range-tic range-low-tic">{{lowText}}</span>
-      <span class = "range-tic range-high-tic">{{highText}}</span>
+      <span class = "range-tic range-left-tic">{{leftText}}</span>
+      <span class = "range-tic range-right-tic">{{rightText}}</span>
     </span>
   </div>
 </template>
@@ -48,11 +48,11 @@ export default {
     isReverse () {
       return (typeof this.cfg.reverse !== 'undefined') && this.cfg.reverse;
     },
-    lowText () {
+    leftText () {
       return (typeof this.cfg.lowText !== 'undefined') ?
         this.cfg.lowText : this.cfg.low;
     },
-    highText () {
+    rightText () {
       return (typeof this.cfg.highText !== 'undefined') ?
         this.cfg.highText : this.cfg.high;
     },
@@ -80,10 +80,10 @@ export default {
   font-size: 9px;
   z-index: 1;
 }
-.range-low-tic {
+.range-left-tic {
   left: 1px;
 }
-.range-high-tic {
+.range-right-tic {
   right: 1px;
 }
 .reverse-range {
