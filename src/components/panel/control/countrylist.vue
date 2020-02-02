@@ -125,7 +125,8 @@ export default {
 
       return this.countryList.filter(country => {
         return (this.search.length === 0) ||
-               country.country.toLowerCase().includes(needle);
+               country.country.toLowerCase().includes(needle) ||
+               country.name.toLowerCase().includes(needle);
       }).sort((a, b) => {
         if (!this.localeSort) {
           if (a[this.sortKey] < b[this.sortKey]) {
