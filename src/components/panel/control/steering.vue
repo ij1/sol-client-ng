@@ -8,7 +8,7 @@
             value = "cc"
             v-model = "type"
             @click = "$refs.cc.focus()"
-          >
+          />
           <label for = "cc" @click = "type = 'cc'">COG</label>
           <input
             class = "steering-input-box"
@@ -19,7 +19,7 @@
             v-model.trim = "ccRaw"
             maxlength = 7
             size = 7
-          >&deg;
+          />&deg;
           <div class = "input-error">
             <transition name = "fade">
               <a
@@ -38,7 +38,7 @@
             value = "twa"
             v-model = "type"
             @click = "$refs.twa.focus()"
-          >
+          />
           <label for = "twa" @click = "type = 'twa'">TWA</label>
           <input
             class = "steering-input-box"
@@ -50,7 +50,7 @@
             v-model.trim = "twaRaw"
             maxlength = 8
             size = 8
-          >&deg;
+          />&deg;
           <div class = "input-error">
             <transition name = "fade">
               <a
@@ -69,7 +69,7 @@
             id = "delayOn"
             v-model = "delayOn"
             @click = "$refs.delay.focus()"
-          >
+          />
           <label for = "delay" @click = "delayOn = true">Delay for</label>
           <input
             class = "steering-input-box"
@@ -78,7 +78,7 @@
             v-model.trim = "delayRaw"
             maxlength = 12
             size = 12
-          >
+          />
           <div class = "input-error">
             <transition name = "fade">
               <a

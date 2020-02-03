@@ -34,7 +34,7 @@
           id = "username"
           ref = "username"
           v-model = "authParams.username"
-        >
+        />
       </div>
       <div>
         <label
@@ -48,7 +48,7 @@
           ref = "password"
           v-model = "authParams.password"
           type = "password"
-        >
+        />
       </div>
       <div v-if="$store.state.auth.status !== 'Unauthenticated'">
         {{ $store.state.auth.status }}

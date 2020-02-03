@@ -11,11 +11,11 @@
   >
     <div class="listname">
       <label for="name">List name:</label>
-      <input id="name" v-model.trim = "listname">
+      <input id="name" v-model.trim = "listname"/>
     </div>
     <div v-if = "editorMode === 'distance'">
       <label for="name">Distance:</label>
-      <input id="name" v-model.trim = "distance">
+      <input id="name" v-model.trim = "distance"/>
     </div>
     <div v-if = "editorMode === 'country'">
       
@@ -27,7 +27,7 @@
           id = "search"
           class = "boatlist-search-box"
           v-model = "search"
-        >
+        />
       </div>
       <div class = "offlist">
         <boat-list

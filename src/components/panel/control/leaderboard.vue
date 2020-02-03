@@ -24,7 +24,7 @@
           id = "search"
           class = "leadeboard-search-box"
           v-model = "search"
-        >
+        />
       </div>
       <div
         id = "leaderboard-boatlist"

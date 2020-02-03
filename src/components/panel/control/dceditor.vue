@@ -27,14 +27,14 @@
         v-model = "hours"
         maxlength = 8
         size = 8
-      >
+      />
     </div>
     <div>
       <label class="dc-editor-label">Type</label>
       <span>
-        <input type="radio" id="cog" value="cc" v-model="type">
+        <input type="radio" id="cog" value="cc" v-model="type"/>
         <label for="cog">COG</label>
-        <input type="radio" id="twa" value="twa" v-model="type">
+        <input type="radio" id="twa" value="twa" v-model="type"/>
         <label for="twa">TWA</label>
       </span>
     </div>
@@ -46,7 +46,7 @@
         v-model.trim = "valueRaw"
         size = 8
         maxlength = 8
-      >&deg;
+      />&deg;
     </div>
   </popup-window>
 </template>
