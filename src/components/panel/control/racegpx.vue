@@ -56,8 +56,10 @@ export default {
       return this.markGpx.toString();
     },
     linkHref () {
-      return 'data:text/plain;charset=utf-8,' +
-        encodeURIComponent(this.markFile);
+      const blob = new Blob([this.markFile], {
+        type: 'text/xml;charset=utf-8',
+      });
+      return URL.createObjectURL(blob);
     },
     linkFilename () {
       return 'race_' + this.raceId + '.gpx';
