@@ -40,15 +40,7 @@ export default {
               },
               name: wp.name
             }
-          }).concat(this.raceFinish.map((wp, idx) => {
-            return {
-              $: {
-                lat: wp.lat,
-                lon: wp.lng,
-              },
-              name: 'Finish ' + (idx === 0 ? 'A' : 'B'),
-            }
-          })),
+          }),
         },
       });
     },
