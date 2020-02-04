@@ -10,6 +10,9 @@
           {{link.name}}
         </a>
       </div>
+      <div>
+        <race-gpx/>
+      </div>
     </div>
     <div>
       <button
@@ -43,11 +46,13 @@
 
 <script>
 import { mapState } from 'vuex';
+import RaceGpx from './racegpx.vue';
 import SycBanner from '../../sycbanner.vue';
 
 export default {
   name: 'ControlMisc',
   components: {
+    'race-gpx': RaceGpx,
     'syc-banner': SycBanner,
   },
   data () {
