@@ -1,3 +1,4 @@
+import { mapState } from 'vuex';
 import { touchPositionOnElement } from '../../lib/events.js';
 
 export let uiModeMixin = {
@@ -20,6 +21,11 @@ export let uiModeMixin = {
       uiModeHandlingDblClicks: false,
     }
   },
+  computed: {
+    ...mapState({
+      cfgExtraDebug: state => state.diagnostics.cfg.extraDebug.value,
+    }),
+  },
   methods: {
     uiModeOnKey (e) {
       if (e.which === 27) {
@@ -34,6 +40,7 @@ export let uiModeMixin = {
       if (!this.checkLeftButton(e.originalEvent)) {
         return;
       }
+      this.uiModeLog('mousecommit');
       if (!this.uiModeData.inClick) {
         this.$emit('singleclick-committed', e);
       } else {
@@ -52,12 +59,14 @@ export let uiModeMixin = {
       if (!this.checkLeftButton(e)) {
         return;
       }
+      this.uiModeLog('mouseup');
       this.uiModeFinishClick();
     },
     uiModeFinishClick () {
       if (!this.uiModeData.inClick) {
         return;
       }
+      this.uiModeLog('mousefinish');
       if (!this.uiModeHandlingDblClicks) {
         this.uiModeCancelClickTimer();
         this.$emit('singleclick-committed', this.uiModeData.eventData);
@@ -72,9 +81,12 @@ export let uiModeMixin = {
         return;
       }
       if (this.uiModeData.inTouch) {
+        this.uiModeLog('mousedownbutintouch');
         return;
       }
+      this.uiModeLog('mousedown');
       if (this.uiModeData.touchEndTime + this.uiModeData.clickTimerDelay > Date.now()) {
+        this.uiModeLog('mousetouchblock');
         return;
       }
       if (this.uiModeData.clickTimer !== null) {
@@ -83,6 +95,7 @@ export let uiModeMixin = {
           /* dblclick without mouseup?!? */
           this.uiModeFinishClick();
         } else {
+          this.uiModeLog('mousedouble');
           this.$emit('doubleclick', e);
         }
       } else {
@@ -95,6 +108,7 @@ export let uiModeMixin = {
     },
     uiModeOnDragEnd (e) {
       if (e.distance <= this.uiModeData.clickDragLimit) {
+        this.uiModeLog('dragend')
         this.uiModeFinishClick();
       }
     },
@@ -116,6 +130,7 @@ export let uiModeMixin = {
       if (e.touches.length > 1) {
         return;
       }
+      this.uiModeLog('touchstart');
       this.uiModeRemoveMouseHooks();
       this.uiModeAddTouchHooks();
       this.uiModeData.inTouch = true;
@@ -132,6 +147,7 @@ export let uiModeMixin = {
       if (e.touches.length > 0) {
         return;
       }
+      this.uiModeLog('touchend');
 
       if (e.changedTouches.length === 1) {
         const latLng = this.touchPointToLatLng(e.changedTouches[0]);
@@ -149,6 +165,7 @@ export let uiModeMixin = {
       this.uiModeData.inTouch = false;
     },
     uiModeOnTouchCancel () {
+      this.uiModeLog('touchcancel');
       this.uiModeAddMouseHooks();
       this.uiModeRemoveTouchHooks();
       this.uiModeData.inTouch = false;
@@ -172,6 +189,14 @@ export let uiModeMixin = {
       this.uiModeData.mapContainer.removeEventListener('touchcancel',
                                                        this.uiModeOnTouchCancel);
     },
+    uiModeLog (message) {
+      if (this.cfgExtraDebug) {
+        this.$store.commit('diagnostics/__add', {
+          time: this.$store.getters['time/now'](),
+          message: 'uimode: ' + message,
+        });
+      }
+    }
   },
   mounted () {
     this.uiModeData.mapContainer = this.map.getContainer();
