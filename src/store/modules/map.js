@@ -38,6 +38,7 @@ export default {
         type: 'values',
         values: [
           ['default', 'Draw entire course'],
+          ['oldfade', 'De-emphasize old legs'],
           ['fade', 'De-emphasize distant legs'],
         ],
         cfgText: 'Race course draw mode',

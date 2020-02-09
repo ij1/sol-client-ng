@@ -308,7 +308,10 @@ export default {
       if (this.cfgCourseDrawMode === 'default') {
         return '1';
       }
-      const markIdxDist = Math.abs(mark - this.lastRoundedMark);
+      let markIdxDist = this.lastRoundedMark - mark;
+      markIdxDist = this.cfgCourseDrawMode === 'oldfade' ?
+                    Math.max(markIdxDist, 0) :
+                    Math.abs(markIdxDist);
       return 1.0 - 0.2 * Math.min(Math.max(markIdxDist - 2, 0), 3);
     },
     wpArcLatLng (wpLatLng, angle) {
