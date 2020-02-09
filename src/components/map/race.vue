@@ -210,7 +210,7 @@ export default {
             line.push(latLngAddOffset(this.raceRoute[i].latLng, offset));
             res.push({
               key: 'l_' + offset + '_' + i,
-              color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
+              color: this.raceRoute[i].color,
               line: line,
             });
             line = [];
@@ -222,7 +222,7 @@ export default {
             line.push(this.wpArcLatLng(wpLatLng, prevAngle));
             res.push({
               key: 'l_' + offset + '_' + i,
-              color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
+              color: this.raceRoute[i].color,
               line: line,
             });
             line = [this.wpArcLatLng(wpLatLng, turnAngle + prevAngle)];
@@ -255,7 +255,7 @@ export default {
             res.push({
               key: 'a_' + offset + '_' + i,
               arc: arc,
-              color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
+              color: this.raceRoute[i].color,
               midPoint: {
                 latLng: this.wpArcLatLng(wpLatLng, turnAngle / 2 + prevAngle),
                 angle: turnAngle / 2 + prevAngle,
