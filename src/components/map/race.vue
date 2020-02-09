@@ -14,19 +14,27 @@
       :lat-lng = "waypoint.latLng"
       :rounding-arrow-angle = "waypoint.arc.midAngle"
       :rounding-side = "waypoint.arc.side"
+      :color = "waypoint.color"
       :mark-radius = "waypoint.radius"
     >
       <l-tooltip
         :options="wpTooltipOptions"
       >
-        <span v-html="waypoint.name"/><br>
-        {{waypoint.info}}
+        <span
+          :style = "{color: waypoint.color}"
+          v-html="waypoint.name"
+        /><br>
+        <span
+          :style = "{color: waypoint.color}"
+        >{{waypoint.info}}
+        </span>
       </l-tooltip>
     </route-mark>
     <route-mark
       v-for = "mark in wrappedFinishLineMarks"
       :key = "mark.key"
       :lat-lng = "mark.latLng"
+      :color = "finishLineColor"
       :mark-radius="finishPointRadius"
     />
     <l-polyline
@@ -34,7 +42,7 @@
       :key = "line.key"
       :lat-lngs = "line.line"
       :fill="false"
-      :color="wpColor"
+      :color="finishLineColor"
       :weight="1"
     />
     <l-polyline
@@ -42,7 +50,7 @@
       :key = "line.key"
       :lat-lngs = "line.line"
       :fill="false"
-      :color="wpColor"
+      :color="line.color"
       :weight="1"
     />
     <l-polyline
@@ -50,7 +58,7 @@
       :key = "line.key"
       :lat-lngs = "line.arc"
       :fill="false"
-      :color="wpColor"
+      :color="line.color"
       :weight="1"
       :smooth-factor="0.1"
     />
@@ -144,6 +152,7 @@ export default {
           latLng: this.race.route[i].latLng,
           name: this.race.route[i].name,
           info: this.markInfoText(i),
+          color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
           arc: arc,
           radius: !this.isFinishMark(i) ? 4 : this.finishPointRadius,
         });
@@ -184,6 +193,12 @@ export default {
       }
       return res;
     },
+    finishLineColor () {
+      if (this.cfgCourseDrawMode === 'default') {
+        return 'red';
+      }
+      return 'rgba(255,0,0,' + this.wpAlpha(this.raceRoute.length - 1) + ')';
+    },
     wrappedLines () {
       let res = [];
       let line = [];
@@ -195,6 +210,7 @@ export default {
             line.push(latLngAddOffset(this.raceRoute[i].latLng, offset));
             res.push({
               key: 'l_' + offset + '_' + i,
+              color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
               line: line,
             });
             line = [];
@@ -206,6 +222,7 @@ export default {
             line.push(this.wpArcLatLng(wpLatLng, prevAngle));
             res.push({
               key: 'l_' + offset + '_' + i,
+              color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
               line: line,
             });
             line = [this.wpArcLatLng(wpLatLng, turnAngle + prevAngle)];
@@ -238,6 +255,7 @@ export default {
             res.push({
               key: 'a_' + offset + '_' + i,
               arc: arc,
+              color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
               midPoint: {
                 latLng: this.wpArcLatLng(wpLatLng, turnAngle / 2 + prevAngle),
                 angle: turnAngle / 2 + prevAngle,
@@ -254,6 +272,7 @@ export default {
       finishTime: state => state.boat.finishTime,
       zoom: state => state.map.zoom,
       mapWrapList: state => state.map.wrapList,
+      cfgCourseDrawMode: state => state.map.cfg.courseDrawMode.value,
     }),
   },
 
@@ -284,6 +303,13 @@ export default {
       }
 
       return this.finishTime === null ? "Cross line to Finish" : "Finished.";
+    },
+    wpAlpha (mark) {
+      if (this.cfgCourseDrawMode === 'default') {
+        return '1';
+      }
+      const markIdxDist = Math.abs(mark - this.lastRoundedMark);
+      return 1.0 - 0.2 * Math.min(Math.max(markIdxDist - 2, 0), 3);
     },
     wpArcLatLng (wpLatLng, angle) {
       let pt = PROJECTION.latLngToPoint(wpLatLng, this.zoom);

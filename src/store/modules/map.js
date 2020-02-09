@@ -33,6 +33,15 @@ export default {
     viewUpdateStamp: 0,
 
     cfg: {
+      courseDrawMode: {
+        value: 'default',
+        type: 'values',
+        values: [
+          ['default', 'Draw entire course'],
+          ['fade', 'De-emphasize distant legs'],
+        ],
+        cfgText: 'Race course draw mode',
+      },
       highlightLeader: {
         value: true,
         type: 'boolean',
