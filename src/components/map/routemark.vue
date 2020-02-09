@@ -3,6 +3,7 @@
     @draw = "draw"
     :lat-lng = "latLng"
     :icon-center = "iconCenter"
+    :needs-redraw = "needsRedraw"
   >
     <slot></slot>
   </marker-canvas>
@@ -55,6 +56,16 @@ export default {
         size = this.roundingArrowRadius + this.roundingArrowSize;
       }
       return [size, size];
+    },
+    needsRedraw () {
+      this.color;
+      this.markRadius;
+      this.roundingSide;
+      this.roundingArrowAngle;
+      this.roundingArrowRadius;
+      this.roundingArrowSize;
+
+      return Date.now();
     },
   },
 
