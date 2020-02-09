@@ -21,7 +21,7 @@
         v-for = "message in diagnosticsMessages"
         :key = "message.id"
       >
-        {{message.time | msecToUTCString}} {{message.message}}
+        {{message.time | msecFormat}} {{message.message}}
       </div>
     </div>
   </div>
@@ -35,7 +35,9 @@ import { msecToUTCString } from '../../../lib/utils.js';
 export default {
   name: 'ClientDiagnostics',
   filters: {
-    msecToUTCString,
+    msecFormat (msec) {
+      return msecToUTCString(msec) + '.' + ('000' + (msec % 1000)).slice(-3);
+    },
   },
   computed: {
     lockedApiCalls () {
