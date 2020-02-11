@@ -308,11 +308,11 @@ export default {
       if (this.cfgCourseDrawMode === 'default') {
         return '1';
       }
-      let markIdxDist = this.lastRoundedMark - mark;
+      let markIdxDist = this.lastRoundedMark - mark + 1;
       markIdxDist = this.cfgCourseDrawMode === 'oldfade' ?
                     Math.max(markIdxDist, 0) :
                     Math.abs(markIdxDist);
-      return 1.0 - 0.2 * Math.min(Math.max(markIdxDist - 2, 0), 3);
+      return 1.0 - 0.2 * Math.min(Math.max(markIdxDist - 1, 0), 3);
     },
     wpArcLatLng (wpLatLng, angle) {
       let pt = PROJECTION.latLngToPoint(wpLatLng, this.zoom);
