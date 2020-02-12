@@ -11,7 +11,7 @@
         </a>
       </div>
       <div>
-        <race-gpx/>
+        <race-gpx v-if = "raceLoaded"/>
       </div>
     </div>
     <div>
