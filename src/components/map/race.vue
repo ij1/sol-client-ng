@@ -110,22 +110,24 @@ export default {
        */
       return this.mapWrapList.concat(this.mapWrapList[0] - 360);
     },
-    boundaryPolyline () {
-      return [
+    boundaryPolylines () {
+      return [[
         this.raceBoundary[0],
         L.latLng(this.raceBoundary[0].lat, this.raceBoundary[1].lng),
         this.raceBoundary[1],
         L.latLng(this.raceBoundary[1].lat, this.raceBoundary[0].lng),
         this.raceBoundary[0],
-      ];
+      ]];
     },
     wrappedBoundaries () {
       let res = [];
       for (const offset of this.mapWrapList) {
-        res.push({
-          key: 'b_' + offset,
-          boundary: latLngArrayAddOffset(this.boundaryPolyline, offset),
-        });
+        for (let i = 0; i < this.boundaryPolylines.length; i++) {
+          res.push({
+            key: 'b_' + i + '_' + offset,
+            boundary: latLngArrayAddOffset(this.boundaryPolylines[i], offset),
+          });
+        }
       }
       return res;
     },
