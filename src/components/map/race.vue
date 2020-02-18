@@ -1,9 +1,9 @@
 <template>
   <l-layer-group v-if="race.loaded">
-    <l-rectangle
+    <l-polyline
        v-for = "boundary in wrappedBoundaries"
        :key = "boundary.key"
-       :bounds = "boundary.boundary"
+       :lat-lngs = "boundary.boundary"
        :fill="false"
        :weight="2"
        color="magenta"
@@ -68,9 +68,9 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
-import { LLayerGroup, LPolyline, LRectangle, LTooltip } from 'vue2-leaflet';
+import { LLayerGroup, LPolyline, LTooltip } from 'vue2-leaflet';
 import RouteMark from './routemark.vue';
-import { latLngAddOffset } from '../../lib/utils.js';
+import { latLngAddOffset, latLngArrayAddOffset } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
 import { degToRad } from '../../lib/utils.js';
 
@@ -79,7 +79,6 @@ export default {
   components: {
     'l-layer-group': LLayerGroup,
     'l-polyline': LPolyline,
-    'l-rectangle': LRectangle,
     'l-tooltip': LTooltip,
     'route-mark': RouteMark,
   },
@@ -101,7 +100,7 @@ export default {
 
   computed: {
     extraWrapList () {
-      if (this.race.boundary[1].lng < 180) {
+      if (this.raceBoundary[1].lng < 180) {
         return this.mapWrapList;
       }
       /*
@@ -111,13 +110,21 @@ export default {
        */
       return this.mapWrapList.concat(this.mapWrapList[0] - 360);
     },
+    boundaryPolyline () {
+      return [
+        this.raceBoundary[0],
+        L.latLng(this.raceBoundary[0].lat, this.raceBoundary[1].lng),
+        this.raceBoundary[1],
+        L.latLng(this.raceBoundary[1].lat, this.raceBoundary[0].lng),
+        this.raceBoundary[0],
+      ];
+    },
     wrappedBoundaries () {
       let res = [];
       for (const offset of this.mapWrapList) {
         res.push({
           key: 'b_' + offset,
-          boundary: [latLngAddOffset(this.race.boundary[0], offset),
-                     latLngAddOffset(this.race.boundary[1], offset)],
+          boundary: latLngArrayAddOffset(this.boundaryPolyline, offset),
         });
       }
       return res;
@@ -268,6 +275,7 @@ export default {
     },
     ...mapState({
       race: state => state.race,
+      raceBoundary: state => state.race.boundary,
       lastRoundedMark: state => state.boat.lastRoundedMark,
       finishTime: state => state.boat.finishTime,
       zoom: state => state.map.zoom,
