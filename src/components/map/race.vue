@@ -111,6 +111,18 @@ export default {
       return this.mapWrapList.concat(this.mapWrapList[0] - 360);
     },
     boundaryPolylines () {
+      /* Spanning the whole Earth? */
+      if (this.raceBoundary[0].lng + 360 <= this.raceBoundary[1].lng) {
+        return [
+          [
+            this.raceBoundary[0],
+            L.latLng(this.raceBoundary[0].lat, this.raceBoundary[1].lng),
+          ], [
+            this.raceBoundary[1],
+            L.latLng(this.raceBoundary[1].lat, this.raceBoundary[0].lng),
+          ]
+        ];
+      }
       return [[
         this.raceBoundary[0],
         L.latLng(this.raceBoundary[0].lat, this.raceBoundary[1].lng),
