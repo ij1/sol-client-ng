@@ -238,20 +238,7 @@ export default {
         return;
       }
 
-      let coeffs = [
-        [[], [], []],
-        [[], [], []],
-        [[], [], []],
-      ];
-      let qc = [];
       let yToLat = [];
-      let twsDatas = [];
-      let roots = [0, 0];
-      /* Boundary conditions are not stable enough numerically, flag and
-       * force expected x = 0 or x = 1.
-       */
-      let forceNumStability = [ false, false ];
-      let rootForced = [ false, false ];
 
       const bounds = this.$parent.map.getBounds();
       const sw = bounds.getSouthWest();
@@ -306,7 +293,26 @@ export default {
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
-      for (let lngCell = minCell; lngCell <= maxCell; lngCell++) {
+      this.__drawContours(ctx, minCell, maxCell, latCells.x, latCells.y,
+                          yToLat, yStart, yEnd, cellStep);
+    },
+    __drawContours (ctx, minLngCell, maxLngCell, minLatCell, maxLatCell,
+                    yToLat, yStart, yEnd, cellStep) {
+      let coeffs = [
+        [[], [], []],
+        [[], [], []],
+        [[], [], []],
+      ];
+      let qc = [];
+      let twsDatas = [];
+      let roots = [0, 0];
+      /* Boundary conditions are not stable enough numerically, flag and
+       * force expected x = 0 or x = 1.
+       */
+      let forceNumStability = [ false, false ];
+      let rootForced = [ false, false ];
+
+      for (let lngCell = minLngCell; lngCell <= maxLngCell; lngCell++) {
         let y = yStart;
         let lngStart = lngCell * this.wxCellSize[1] + this.wxOrigo[1];
         const xStart = this.$parent.map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
@@ -325,7 +331,7 @@ export default {
         }
 
 
-        for (let latCell = latCells.x; latCell <= latCells.y; latCell++) {
+        for (let latCell = minLatCell; latCell <= maxLatCell; latCell++) {
           let wind = this.$store.getters['weather/idxToCell'](latCell, lngCell);
           if (wind === null) {
             this.logError('skipped contour cell ' + latCell + ' ' + lngCell);
