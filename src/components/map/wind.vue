@@ -289,8 +289,7 @@ export default {
         minCell = Math.floor((lng - this.wxOrigo[1]) / this.wxCellSize[1]);
       }
       let cellDelta = Math.ceil((ne.lng - sw.lng) / this.wxCellSize[1]);
-      // FIXME: likely broken when wrapping wx bounds
-      const maxCell = Math.min(cellDelta + minCell, this.wxCells[1] - 2);
+      let maxCell = Math.min(cellDelta + minCell, this.wxCells[1] - 2);
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
@@ -298,6 +297,15 @@ export default {
       const maxWrap = Math.floor((ne.lng - this.wxOrigo[1]) / 360.0);
       this.__drawContours(ctx, minCell, maxCell, latCells.x, latCells.y,
                           yToLat, yStart, yEnd, cellStep, minWrap, maxWrap);
+
+      /* Handle right-edge partial (/rest) drawing */
+      if (minWrap !== maxWrap && minCell > 0) {
+        maxCell = Math.min(minCell - 1,
+                           Math.floor((ne.lng - this.wxOrigo[1]) / this.wxCellSize[1]));
+        this.__drawContours(ctx, 0, maxCell, latCells.x, latCells.y,
+                            yToLat, yStart, yEnd, cellStep,
+                            minWrap + 1, maxWrap);
+      }
     },
     __drawContours (ctx, minLngCell, maxLngCell, minLatCell, maxLatCell,
                     yToLat, yStart, yEnd, cellStep, minWrap, maxWrap) {
