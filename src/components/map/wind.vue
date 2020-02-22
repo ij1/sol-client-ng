@@ -59,6 +59,7 @@ export default {
       cfgTwsContours: state => state.weather.cfg.twsDensity.value,
       mapBounds: state => state.map.bounds,
       mapSize: state => state.map.size,
+      zoom: state => state.map.zoom,
     }),
     ...mapGetters({
       twsContours: 'weather/twsContours',
@@ -293,11 +294,13 @@ export default {
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
+      const minWrap = Math.ceil((sw.lng - this.wxBoundary.getEast()) / 360.0);
+      const maxWrap = Math.floor((ne.lng - this.wxOrigo[1]) / 360.0);
       this.__drawContours(ctx, minCell, maxCell, latCells.x, latCells.y,
-                          yToLat, yStart, yEnd, cellStep);
+                          yToLat, yStart, yEnd, cellStep, minWrap, maxWrap);
     },
     __drawContours (ctx, minLngCell, maxLngCell, minLatCell, maxLatCell,
-                    yToLat, yStart, yEnd, cellStep) {
+                    yToLat, yStart, yEnd, cellStep, minWrap, maxWrap) {
       let coeffs = [
         [[], [], []],
         [[], [], []],
@@ -665,7 +668,14 @@ export default {
             if (twsData.draw[r]) {
               twsData.paths[r].moveTo(0, 0);
               ctx.strokeStyle = this.twsContourColor[twsIdx];
-              ctx.stroke(twsData.paths[r]);
+              for (let i = minWrap; i <= maxWrap; i++) {
+                if (i === minWrap) {
+                  ctx.translate(i * 256 * 2 ** this.zoom, 0);
+                }
+                ctx.stroke(twsData.paths[r]);
+
+                ctx.translate((i === maxWrap ? -i : 1) * 256 * 2 ** this.zoom, 0);
+              }
             }
           }
         }
