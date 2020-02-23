@@ -326,6 +326,10 @@ export default {
     },
     __drawContours (ctx, minLngCell, maxLngCell, minLatCell, maxLatCell,
                     yToLat, yStart, yEnd, cellStep, minWrap, maxWrap) {
+      const baseWrap = minWrap === maxWrap ? minWrap : 0;
+      const wrapOffset = 256 * 2 ** this.zoom;
+      const baseOffset = baseWrap * wrapOffset;
+
       let coeffs = [
         [[], [], []],
         [[], [], []],
@@ -562,9 +566,9 @@ export default {
               if (forceNumStability[0] && forceNumStability[1] &&
                   Math.abs(qc[2]) < 1e-10 && Math.abs(qc[1]) < 1e-10)
               {
-                twsData.paths[0].moveTo(xStart, y);
+                twsData.paths[0].moveTo(baseOffset + xStart, y);
                 let x = Math.round(cellStep * 1 + xStart);
-                twsData.paths[0].lineTo(x, y);
+                twsData.paths[0].lineTo(baseOffset + x, y);
                 twsData.useMove[0] = true;
                 twsData.useMove[1] = true;
                 twsData.draw[0] = true;
@@ -619,10 +623,10 @@ export default {
                   if ((roots[r] >= 0) && (roots[r] <= 1)) {
                     let x = Math.round(cellStep * roots[r] + xStart);
                     if (useMove) {
-                      twsData.paths[r].moveTo(x, y);
+                      twsData.paths[r].moveTo(baseOffset + x, y);
                       twsData.useMove[r] = false;
                     } else {
-                      twsData.paths[r].lineTo(x, y);
+                      twsData.paths[r].lineTo(baseOffset + x, y);
                       twsData.draw[r] = true;
                     }
 
@@ -633,8 +637,8 @@ export default {
                         (r === 0)) {
                       const tmp = Math.min(Math.max(roots[1], 0), 1);
                       const x2 = Math.round(cellStep * tmp + xStart);
-                      twsData.paths[0].lineTo(x2, y);
-                      twsData.paths[0].moveTo(x, y);
+                      twsData.paths[0].lineTo(baseOffset + x2, y);
+                      twsData.paths[0].moveTo(baseOffset + x, y);
                       twsData.draw[0] = true;
                     }
                   } else {
@@ -662,8 +666,8 @@ export default {
                   if (tmp !== tmp2) {
                     const x = Math.round(cellStep * tmp + xStart);
                     const x2 = Math.round(cellStep * tmp2 + xStart);
-                    twsData.paths[0].moveTo(x, twsData.prevDiscrY);
-                    twsData.paths[0].lineTo(x2, twsData.prevDiscrY);
+                    twsData.paths[0].moveTo(baseOffset + x, twsData.prevDiscrY);
+                    twsData.paths[0].lineTo(baseOffset + x2, twsData.prevDiscrY);
                     twsData.draw[0] = true;
                   }
                 }
@@ -694,12 +698,14 @@ export default {
               twsData.paths[r].moveTo(0, 0);
               ctx.strokeStyle = this.twsContourColor[twsIdx];
               for (let i = minWrap; i <= maxWrap; i++) {
+                const offset = (i - baseWrap) * wrapOffset;
                 if (i === minWrap) {
-                  ctx.translate(i * 256 * 2 ** this.zoom, 0);
+                  ctx.translate(offset, 0);
                 }
                 ctx.stroke(twsData.paths[r]);
 
-                ctx.translate((i === maxWrap ? -i : 1) * 256 * 2 ** this.zoom, 0);
+                /* Last one undoes all wraps, otherwise step one wrap */
+                ctx.translate(i === maxWrap ? -offset : wrapOffset, 0);
               }
             }
           }
