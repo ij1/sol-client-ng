@@ -297,8 +297,8 @@ export default {
         return;
       }
 
-      let minCell = Math.floor(minFrac / maxWxFrac * this.wxCells[1]);
-      let maxCell = Math.min(Math.floor(maxFrac / maxWxFrac * this.wxCells[1]),
+      let minCell = Math.floor(minFrac / maxWxFrac * (this.wxCells[1] - 1));
+      let maxCell = Math.min(Math.floor(maxFrac / maxWxFrac * (this.wxCells[1] - 1)),
                              this.wxCells[1] - 2);
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
