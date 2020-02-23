@@ -270,10 +270,10 @@ export default {
         yToLat[y] = this.$parent.map.containerPointToLatLng(L.point(0, y)).lat;
       }
       if ((yToLat[yStart] < this.wxOrigo[0]) ||
-          (yToLat[yEnd] > this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0])) {
+          (yToLat[yEnd] > (this.wxCells[0] - 1) * this.wxCellSize[0] + this.wxOrigo[0])) {
         this.logError('contour lat ' + yToLat[yStart] + '-' + yToLat[yEnd] +
                       ' exceeding wx boundaries ' + this.wxOrigo[0] + '-' +
-                      (this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0]));
+                      ((this.wxCells[0] - 1) * this.wxCellSize[0] + this.wxOrigo[0]));
         return;
       }
 
