@@ -277,31 +277,48 @@ export default {
         return;
       }
 
-      let lng = sw.wrap().lng;
-      if (lng >= this.wxBoundary.getEast()) {
-        lng -= 360;
+      let minFrac = (sw.lng - this.wxOrigo[1]) / 360.0;
+      let maxFrac = (ne.lng - this.wxOrigo[1]) / 360.0;
+      let maxWxFrac = (this.wxBoundary.getEast() - this.wxOrigo[1]) / 360.0;
+
+      let minWrap = Math.floor(minFrac);
+      const maxWrap = Math.floor(maxFrac);
+
+      minFrac -= minWrap;
+      maxFrac -= maxWrap;
+
+      if (minFrac >= maxWxFrac) {
+        minFrac = 0;
+        minWrap += 1;
       }
-      let minCell;
-      if (lng <= this.wxOrigo[1]) {
-        lng = this.wxOrigo[1];
-        minCell = 0;
-      } else {
-        minCell = Math.floor((lng - this.wxOrigo[1]) / this.wxCellSize[1]);
+
+      /* No WX in view */
+      if (maxWrap < minWrap || (minWrap === maxWrap && minFrac >= maxFrac)) {
+        return;
       }
-      let cellDelta = Math.ceil((ne.lng - sw.lng) / this.wxCellSize[1]);
-      let maxCell = Math.min(cellDelta + minCell, this.wxCells[1] - 2);
+
+      let minCell = Math.floor(minFrac / maxWxFrac * this.wxCells[1]);
+      let maxCell = Math.min(Math.floor(maxFrac / maxWxFrac * this.wxCells[1]),
+                             this.wxCells[1] - 2);
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
-      const minWrap = Math.ceil((sw.lng - this.wxBoundary.getEast()) / 360.0);
-      const maxWrap = Math.floor((ne.lng - this.wxOrigo[1]) / 360.0);
-      this.__drawContours(ctx, minCell, maxCell, latCells.x, latCells.y,
-                          yToLat, yStart, yEnd, cellStep, minWrap, maxWrap);
+      /* WX wrapping? */
+      let firstMaxCell = maxCell;
+      if (maxWrap > minWrap) {
+        firstMaxCell = this.wxCells[1] - 2;
+      }
+
+      this.__drawContours(ctx, minCell, firstMaxCell, latCells.x, latCells.y,
+                          yToLat, yStart, yEnd, cellStep,
+                          minWrap, maxWrap);
 
       /* Handle right-edge partial (/rest) drawing */
       if (minWrap !== maxWrap && minCell > 0) {
-        maxCell = Math.min(minCell - 1,
-                           Math.floor((ne.lng - this.wxOrigo[1]) / this.wxCellSize[1]));
+        /* Full area visible at least once so draw all remaining parts */
+        if (maxWrap - minWrap > 1) {
+          maxCell = minCell;
+        }
         this.__drawContours(ctx, 0, maxCell, latCells.x, latCells.y,
                             yToLat, yStart, yEnd, cellStep,
                             minWrap + 1, maxWrap);
