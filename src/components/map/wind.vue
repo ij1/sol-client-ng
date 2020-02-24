@@ -249,7 +249,7 @@ export default {
                         .divideBy(this.wxCellSize[0])
                         .floor();
       latCells = L.point(Math.max(latCells.x, 0),
-                         Math.min(latCells.y, this.wxCells[0] - 2));
+                         Math.min(latCells.y, this.wxCells[0] - 1));
 
       let boundLat = latCells.x * this.wxCellSize[0] + this.wxOrigo[0];
       let yStart;
@@ -270,10 +270,10 @@ export default {
         yToLat[y] = this.$parent.map.containerPointToLatLng(L.point(0, y)).lat;
       }
       if ((yToLat[yStart] < this.wxOrigo[0]) ||
-          (yToLat[yEnd] > (this.wxCells[0] - 1) * this.wxCellSize[0] + this.wxOrigo[0])) {
+          (yToLat[yEnd] > this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0])) {
         this.logError('contour lat ' + yToLat[yStart] + '-' + yToLat[yEnd] +
                       ' exceeding wx boundaries ' + this.wxOrigo[0] + '-' +
-                      ((this.wxCells[0] - 1) * this.wxCellSize[0] + this.wxOrigo[0]));
+                      (this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0]));
         return;
       }
 
@@ -297,16 +297,16 @@ export default {
         return;
       }
 
-      let minCell = Math.floor(minFrac / maxWxFrac * (this.wxCells[1] - 1));
-      let maxCell = Math.min(Math.floor(maxFrac / maxWxFrac * (this.wxCells[1] - 1)),
-                             this.wxCells[1] - 2);
+      let minCell = Math.floor(minFrac / maxWxFrac * this.wxCells[1]);
+      let maxCell = Math.min(Math.floor(maxFrac / maxWxFrac * this.wxCells[1]),
+                             this.wxCells[1] - 1);
 
       const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
 
       /* WX wrapping? */
       let firstMaxCell = maxCell;
       if (maxWrap > minWrap) {
-        firstMaxCell = this.wxCells[1] - 2;
+        firstMaxCell = this.wxCells[1] - 1;
       }
 
       this.__drawContours(ctx, minCell, firstMaxCell, latCells.x, latCells.y,

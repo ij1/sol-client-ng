@@ -366,8 +366,8 @@ export default {
         return null;
       }
 
-      if ((lonIdx < 0) || (lonIdx >= state.data.cells[1] - 1) ||
-          (latIdx < 0) || (latIdx >= state.data.cells[0] - 1)) {
+      if ((lonIdx < 0) || (lonIdx >= state.data.cells[1]) ||
+          (latIdx < 0) || (latIdx >= state.data.cells[0])) {
         return null;
       }
 
@@ -489,8 +489,8 @@ export default {
           return;
         }
 
-        let cells = [parseInt(weatherData.$.lat_n_points),
-                     parseInt(weatherData.$.lon_n_points)];
+        let cells = [parseInt(weatherData.$.lat_n_points) - 1,
+                     parseInt(weatherData.$.lon_n_points) - 1];
 
         let timeSeries = [];
         let windMap = [];
@@ -514,11 +514,11 @@ export default {
 
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
-          if ((u.length !== cells[1] + 1) || (u.length !== v.length)) {
+          if ((u.length !== cells[1] + 2) || (u.length !== v.length)) {
             dispatch(
               'diagnostics/add',
               'DATA ERROR: Inconsistent weather lengths: ' +
-              (cells[1] + 1) + ' ' + u.length + ' ' + v.length,
+              (cells[1] + 2) + ' ' + u.length + ' ' + v.length,
               {root: true}
             );
             return;
@@ -533,11 +533,11 @@ export default {
             let uu = u[i].trim().split(/\s+/);
             let vv = v[i].trim().split(/\s+/);
 
-            if ((uu.length !== cells[0] + 1) && (uu.length !== vv.length)) {
+            if ((uu.length !== cells[0] + 2) && (uu.length !== vv.length)) {
               dispatch(
                 'diagnostics/add',
                 'DATA ERROR: Inconsistent weather lengths: ' +
-                (cells[0] + 1) + ' ' + uu.length + ' ' + vv.length,
+                (cells[0] + 2) + ' ' + uu.length + ' ' + vv.length,
                 {root: true}
               );
               return;
