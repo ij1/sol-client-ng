@@ -79,7 +79,7 @@ export default {
       boundary: null,
       timeSeries: [],
       origo: [],
-      increment: [],
+      cellSize: [],
       cells: [],
       windMap: [],      /* format: [time][lon][lat][u,v] */
     },
@@ -293,8 +293,8 @@ export default {
         return null;
       }
 
-      const lonIdx = Math.floor((wxLng - state.data.origo[1]) / state.data.increment[1]);
-      const latIdx = Math.floor((wxLat - state.data.origo[0]) / state.data.increment[0]);
+      const lonIdx = Math.floor((wxLng - state.data.origo[1]) / state.data.cellSize[1]);
+      const latIdx = Math.floor((wxLat - state.data.origo[0]) / state.data.cellSize[0]);
       let timeIdx = getters.timeIndex;
       let timeVal = state.time;
 
@@ -313,9 +313,9 @@ export default {
       /* latitude (y) solution */
       let firstRes = [[], []];
       const firstFactor = interpolateFactor(
-        latIdx * state.data.increment[0] + state.data.origo[0],
+        latIdx * state.data.cellSize[0] + state.data.origo[0],
         wxLat,
-        (latIdx + 1) * state.data.increment[0] + state.data.origo[0]
+        (latIdx + 1) * state.data.cellSize[0] + state.data.origo[0]
       );
       for (let t = 0; t <= 1; t++) {
         for (let x = 0; x <= 1; x++) {
@@ -330,9 +330,9 @@ export default {
       /* longitude (x) solution */
       let secondRes = [];
       const secondFactor = interpolateFactor(
-        lonIdx * state.data.increment[1] + state.data.origo[1],
+        lonIdx * state.data.cellSize[1] + state.data.origo[1],
         wxLng,
-        (lonIdx + 1) * state.data.increment[1] + state.data.origo[1]
+        (lonIdx + 1) * state.data.cellSize[1] + state.data.origo[1]
       );
       for (let t = 0; t <= 1; t++) {
           secondRes[t] = wxLinearInterpolate(
@@ -558,7 +558,7 @@ export default {
 
         let origo = [parseFloat(weatherData.$.lat_min),
                      parseFloat(weatherData.$.lon_min)];
-        let increment = [parseFloat(weatherData.$.lat_increment),
+        let cellSize = [parseFloat(weatherData.$.lat_increment),
                          parseFloat(weatherData.$.lon_increment)];
 
         /* Improve performance by freezing all interpolation related
@@ -566,7 +566,7 @@ export default {
          */
         timeSeries = Object.freeze(timeSeries);
         origo = Object.freeze(origo);
-        increment = Object.freeze(increment);
+        cellSize = Object.freeze(cellSize);
         cells = Object.freeze(cells);
         boundary = Object.freeze(boundary);
 
@@ -576,7 +576,7 @@ export default {
           boundary: boundary,
           timeSeries: timeSeries,
           origo: origo,
-          increment: increment,
+          cellSize: cellSize,
           cells: cells,
           windMap: windMap,
         };

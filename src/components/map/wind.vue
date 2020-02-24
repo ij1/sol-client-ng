@@ -48,7 +48,7 @@ export default {
       wxLoaded: state => state.weather.loaded,
       wxTime: state => state.weather.time,
       wxOrigo: state => state.weather.data.origo,
-      wxCellSize: state => state.weather.data.increment,
+      wxCellSize: state => state.weather.data.cellSize,
       wxCells: state => state.weather.data.cells,
       wxBoundary: state => state.weather.data.boundary,
       center: state => state.map.center,
