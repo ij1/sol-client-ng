@@ -6,6 +6,7 @@ import { MS_TO_KNT } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
 const API_DOWN_DELAY = minToMsec(1);
+const activeSteeringColor = 'rgba(255, 255, 0, 0.6)';
 
 function defaultFormat (instrument, state) {
   const decimals = Math.max(instrument.minDecimals,
@@ -67,7 +68,7 @@ export default {
       format: defaultFormat,
       bgColor: function (instrument, state) {
         if (instrument.value !== null && state.boat.currentSteering === 'cc') {
-          return 'yellow';
+          return activeSteeringColor;
         }
         return null;
       },
@@ -82,7 +83,7 @@ export default {
       format: twaFormat,
       bgColor: function (instrument, state) {
         if (instrument.value !== null && state.boat.currentSteering === 'twa') {
-          return 'yellow';
+          return activeSteeringColor;
         }
         return null;
       },
