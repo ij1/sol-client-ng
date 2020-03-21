@@ -65,6 +65,12 @@ export default {
       mult: 180 / Math.PI,
       minDecimals: 1,
       format: defaultFormat,
+      bgColor: function (instrument, state) {
+        if (instrument.value !== null && state.boat.currentSteering === 'cc') {
+          return 'yellow';
+        }
+        return null;
+      },
     },
     twa: {
       value: null,
@@ -74,6 +80,12 @@ export default {
       mult: 180 / Math.PI,
       minDecimals: 1,
       format: twaFormat,
+      bgColor: function (instrument, state) {
+        if (instrument.value !== null && state.boat.currentSteering === 'twa') {
+          return 'yellow';
+        }
+        return null;
+      },
     },
     twd: {
       value: null,

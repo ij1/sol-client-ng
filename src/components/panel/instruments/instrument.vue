@@ -2,6 +2,7 @@
   <div
     class = "boat-instrument"
     v-if = "enabled"
+    :style = '{"background-color": bgColor}'
   >
     <div class="boat-instrument-label">
       {{ instrument.name }} [{{ instrument.unit }}]
@@ -37,7 +38,13 @@ export default {
         }
       }
       return '#000000';
-    }
+    },
+    bgColor () {
+      if (typeof this.instrument.bgColor !== 'undefined') {
+        return this.instrument.bgColor(this.instrument, this.$store.state);
+      }
+      return null;
+    },
   },
   filters: {
     format (instrument, state) {
