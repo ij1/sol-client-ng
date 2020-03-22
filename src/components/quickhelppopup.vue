@@ -1,5 +1,6 @@
 <template>
   <popup-window
+    class = "quick-help"
     title = "Quick Help"
     :z-index = "1005"
     close-button-label = "Close"
@@ -37,12 +38,15 @@ export default {
 </script>
 
 <style scoped>
+.quick-help {
+  width: 35%;
+}
 .help-header {
   font-size: 14px;
   font-weight: bold;
 }
 
 .help-content {
-
+  font-size: 12px;
 }
 </style>
