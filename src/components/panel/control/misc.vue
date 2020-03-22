@@ -20,6 +20,11 @@
       >
         Settings
       </button>
+      <button
+        @click = "$store.commit('ui/showQuickHelp')"
+      >
+        Quick Help
+      </button>
     </div>
     <div id = "banner-container">
       <syc-banner/>

@@ -4,6 +4,7 @@
     <notifications-popup/>
     <config-editor/>
     <race-messages-popup/>
+    <quick-help-popup/>
     <portal-target name="dc-editor-dest"/>
     <portal-target name="boatlist-editor-dest"/>
     <splitpanes
@@ -32,6 +33,7 @@ import LoginPopup from './components/loginpopup.vue';
 import NotificationsPopup from './components/notificationspopup.vue';
 import ConfigEditor from './components/config/configeditor.vue';
 import RaceMessagesPopup from './components/racemessagespopup.vue';
+import QuickHelpPopup from './components/quickhelppopup.vue';
 import Map from './components/map/map.vue';
 import BottomPanel from './components/panel/bottompanel.vue';
 import ControlPanelSwitcher from './components/panel/control/switcher.vue';
@@ -45,6 +47,7 @@ export default {
     'notifications-popup': NotificationsPopup,
     'config-editor': ConfigEditor,
     'race-messages-popup': RaceMessagesPopup,
+    'quick-help-popup': QuickHelpPopup,
     'map-view': Map,
     'bottom-panel': BottomPanel,
     'control-panel-switcher': ControlPanelSwitcher,

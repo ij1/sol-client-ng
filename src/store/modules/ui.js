@@ -20,6 +20,7 @@ export default {
       loaded: false,
       showEditor: false,
     },
+    showHelp: false,
     cfg: {
       gcMode: {
         value: true,
@@ -77,6 +78,12 @@ export default {
     },
     closeConfigEditor(state) {
       state.config.showEditor = false;
+    },
+    showQuickHelp(state) {
+      state.showHelp = true;
+    },
+    closeQuickHelp(state) {
+      state.showHelp = false;
     },
     configLoaded(state) {
       state.config.loaded = true;
