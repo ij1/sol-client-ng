@@ -39,6 +39,23 @@ function sortedIdList (boatIdsObj, getters) {
   });
 }
 
+function addToSearchData(searchData, boatId, boatName, latLng, rootGetters) {
+  if (rootGetters['solapi/isProductionServer'] &&
+      !solBoatPolicy(boatName, rootGetters)) {
+    return;
+  }
+
+  for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
+    let searchItem = {
+      lng: latLng.lng + ddeg,
+      lat: latLng.lat,
+      id: boatId,
+    };
+    Object.freeze(searchItem);
+    searchData.push(searchItem);
+  }
+}
+
 export default {
   namespaced: true,
 
@@ -62,6 +79,8 @@ export default {
     maxSelectedBoats: 10,
     maxHoverBoats: 3,
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
+    searchTreeStamp: 0,
+    commandBoatItems: [],
     playerBoatIdx: 0,
   },
 
@@ -168,6 +187,8 @@ export default {
 
       state.searchTree.clear();
       state.searchTree.load(update.searchData);
+      state.searchTreeStamp++;
+      state.commandBoatItems = [];
 
       for (let boatType of update.boatTypes) {
         if (!state.boatTypes.has(boatType)) {
@@ -175,6 +196,23 @@ export default {
         }
       }
       state.boatTypesCount = state.boatTypes.length;
+    },
+    updateCommandBoat(state, updateData) {
+      const ownBoat = state.boat[state.playerBoatIdx];
+
+      if (updateData.oldPosition !== null &&
+          !ownBoat.latLng.equals(updateData.oldPosition)) {
+        for (let i of state.commandBoatItems) {
+          state.searchTree.remove(i);
+        }
+      }
+      state.commandBoatItems = [];
+      if (!ownBoat.latLng.equals(updateData.newPosition)) {
+        addToSearchData(state.commandBoatItems, ownBoat.id, ownBoat.name,
+                        updateData.newPosition, updateData.rootGetters);
+        state.searchTree.load(state.commandBoatItems);
+      }
+      state.searchTreeStamp++;
     },
     updateFleetMeta (state, metadata) {
       state.metadataTime = metadata.time;
@@ -342,18 +380,9 @@ export default {
             boat.latLng = L.latLng(boat.lat, boat.lon);
             boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boat.latLng);
 
-            if (!rootGetters['solapi/isProductionServer'] ||
-                solBoatPolicy(boat.name, rootGetters)) {
-              for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
-                let searchItem = {
-                  lng: boat.latLng.lng + ddeg,
-                  lat: boat.latLng.lat,
-                  id: boat.id,
-                };
-                Object.freeze(searchItem);
-                searchData.push(searchItem);
-              }
-            }
+            addToSearchData(searchData, boat.id, boat.name, boat.latLng,
+                            rootGetters);
+
             delete boat.lat;
             delete boat.lon;
 
@@ -414,6 +443,11 @@ export default {
             leaderId: leaderId,
             boatTypes: boatTypes,
             searchData: searchData,
+          });
+          commit('updateCommandBoat', {
+            oldPosition: null,
+            newPosition: rootState.boat.position,
+            rootGetters: rootGetters,
           });
           commit('chatrooms/mapBoatIds', state.name2id, {root: true});
 

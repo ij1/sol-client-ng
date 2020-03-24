@@ -19,7 +19,7 @@ export default {
       return this.currentFilter !== null ? this.currentFilter.filterStamp : null;
     },
     ...mapState({
-      fleetTime: state => state.race.fleet.fleetTime,
+      searchTreeStamp: state => state.race.fleet.searchTreeStamp,
       zoom: state => state.map.zoom,
     }),
     ...mapGetters({
@@ -70,7 +70,7 @@ export default {
     wrappedHoverLatLng () {
       this.updateHover();
     },
-    fleetTime () {
+    searchTreeStamp () {
       this.updateHover();
     },
     filterNeedsUpdate () {

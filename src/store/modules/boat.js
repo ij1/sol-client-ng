@@ -135,11 +135,17 @@ export default {
           chatData: boatData.chats,
         };
         const oldTime = state.instruments.time.value;
+        const oldPosition = state.position;
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
         commit('race/fleet/initMyBoat', boatData.boat, {root: true});
         commit('updateBoat', boatData.boat);
+        commit('race/fleet/updateCommandBoat', {
+          oldPosition: oldPosition,
+          newPosition: state.position,
+          rootGetters: rootGetters,
+        }, {root: true});
         commit('updateLngOffset', rootState.map.center.lng);
         await dispatch('boat/instruments/updateInstruments', boatData.boat, {root: true});
         commit('weather/boatTimeUpdated', {
