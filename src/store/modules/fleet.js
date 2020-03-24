@@ -40,8 +40,7 @@ function sortedIdList (boatIdsObj, getters) {
 }
 
 function addToSearchData(searchData, boatId, boatName, latLng, rootGetters) {
-  if (rootGetters['solapi/isProductionServer'] &&
-      !solBoatPolicy(boatName, rootGetters)) {
+  if (!solBoatPolicy(boatName, rootGetters)) {
     return;
   }
 
