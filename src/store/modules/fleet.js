@@ -342,7 +342,8 @@ export default {
             boat.latLng = L.latLng(boat.lat, boat.lon);
             boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boat.latLng);
 
-            if (solBoatPolicy(boat.name, rootGetters)) {
+            if (!rootGetters['solapi/isProductionServer'] ||
+                solBoatPolicy(boat.name, rootGetters)) {
               for (let ddeg = -360; ddeg <= 360; ddeg += 360) {
                 let searchItem = {
                   lng: boat.latLng.lng + ddeg,
