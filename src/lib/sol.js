@@ -23,6 +23,25 @@ export function solBoatPolicy(boatname, rootGetters) {
 
 }
 
+export function ownBoatVisibleFilter(store, lat, lng) {
+  const ownBoatId = store.state.boat.id;
+
+  if ((store.state.boat.position.lat === lat) ||
+      (store.state.boat.position.lng === lng)) {
+    return true;
+  }
+
+  const cfgFleetBoatMode = store.state.map.cfg.fleetBoatMode.value;
+  if (cfgFleetBoatMode === 'off') {
+    return false;
+  }
+  if (cfgFleetBoatMode === 'select' &&
+      !store.getters['race/fleet/selectedFiltered'].hasOwnProperty('' + ownBoatId)) {
+    return false;
+  }
+  return true;
+}
+
 export function UVToWind(uv) {
   /* u,v are negated because u,v points "to", whereas TWD is wind "from" */
   let twd = atan2Bearing(-uv[0], uv[1]);

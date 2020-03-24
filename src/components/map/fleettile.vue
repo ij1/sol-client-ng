@@ -4,6 +4,7 @@ import L from 'leaflet';
 import { degToRad } from '../../lib/utils.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
 import { boatScaleDivisor, drawBoat } from '../../lib/boatshape.js';
+import { ownBoatVisibleFilter } from '../../lib/sol.js';
 
 export default {
   name: 'FleetTile',
@@ -55,10 +56,16 @@ export default {
       ctx.save();
       ctx.lineWidth = 1.0 / boatScale;
       let prev = L.point(0, 0);
+      const ownBoatId = this.$store.state.boat.id;
       for (let i of res) {
         const boat = this.fleetBoatFromId(i.id);
         if (this.currentFilter !== null) {
           if (!this.applyFilterToBoat(boat)) {
+            continue;
+          }
+        }
+        if (i.id === ownBoatId) {
+          if (!ownBoatVisibleFilter(this.$store, i.id, i.lat, i.lng)) {
             continue;
           }
         }

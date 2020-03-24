@@ -111,6 +111,9 @@ export default {
       activeBoatlist: state => state.ui.boatlists.activeList,
       filterListKey: state => state.ui.boatlists.filterList,
       hoverList: state => state.race.fleet.hover,
+      ownBoatId: state => state.boat.id,
+      commandBoatPosition: state => state.boat.position,
+      cfgFleetBoatMode: state => state.map.cfg.fleetBoatMode.value,
     }),
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
@@ -133,7 +136,10 @@ export default {
       if (this.currentFilter && !this.applyFilterToBoat(boat)) {
         return;
       }
-      const position = boat.latLng;
+      let position = boat.latLng;
+      if (this.cfgFleetBoatMode === 'off' && boat.id === this.ownBoatId) {
+        position = this.commandBoatPosition;
+      }
       EventBus.$emit('map-highlight', {
         latLng: position,
         keepMapPosition: e.altModifier,

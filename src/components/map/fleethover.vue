@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
+import { ownBoatVisibleFilter } from '../../lib/sol.js';
 
 export default {
   name: 'FleetHover',
@@ -21,12 +22,14 @@ export default {
     ...mapState({
       searchTreeStamp: state => state.race.fleet.searchTreeStamp,
       zoom: state => state.map.zoom,
+      ownBoatId: state => state.boat.id,
     }),
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
       currentFilter: 'ui/boatlists/currentFilter',
       applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
       fleetBoatFromId: 'race/fleet/boatFromId',
+      selectedFiltered: 'race/fleet/selectedFiltered',
     }),
   },
   mounted () {
@@ -46,7 +49,16 @@ export default {
         res = this.$store.getters['race/fleet/searchAt'](this.wrappedHoverLatLng, this.zoom, distance);
 
         if (this.currentFilter !== null) {
-          res = res.filter(i => this.applyFilterToBoat(this.fleetBoatFromId(i.id)));
+          res = res.filter(i => {
+            return this.applyFilterToBoat(this.fleetBoatFromId(i.id)) &&
+                   (i.id !== this.ownBoatId ||
+                    ownBoatVisibleFilter(this.$store, i.lat, i.lng));
+          });
+        } else {
+          res = res.filter(i => {
+            return i.id !== this.ownBoatId ||
+                   ownBoatVisibleFilter(this.$store, i.lat, i.lng);
+          });
         }
         if (res.length > 0) {
           break;
@@ -71,6 +83,9 @@ export default {
       this.updateHover();
     },
     searchTreeStamp () {
+      this.updateHover();
+    },
+    selectedFiltered () {
       this.updateHover();
     },
     filterNeedsUpdate () {

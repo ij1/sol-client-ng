@@ -48,6 +48,16 @@ export default {
         type: 'boolean',
         cfgText: 'Highlight race leader'
       },
+      fleetBoatMode: {
+        value: 'select',
+        type: 'values',
+        values: [
+          ['off', 'Always invisible'],
+          ['select', 'Visible when selected'],
+          ['on', 'Always visible'],
+        ],
+        cfgText: 'Visibility of own fleet boat'
+      },
       ownBoatColor: {
         value: 'magenta',
         type: 'values',
@@ -118,6 +128,8 @@ export default {
       rootState.race.fleet.searchTreeStamp;
       rootState.weather.data.updated;
       state.zoom;
+      state.cfg.fleetBoatMode.value;
+      rootGetters['race/fleet/selectedFiltered'];
       state.cfg.ownBoatColor.value;
       state.cfg.boatScale.value;
       if (rootState.ui.boatlists.filterList !== null) {
