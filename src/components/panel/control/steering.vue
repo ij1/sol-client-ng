@@ -433,7 +433,11 @@ export default {
       if (this.delay === '') {
         return null;
       }
-      return "Enter decimal hours or 00h00m00s";
+      if (this.$store.getters['race/isRaceStarted']) {
+        return "Enter decimal hours or 00h00m00s";
+      } else {
+        return "Enter decimal hours, 00h00m00s, or \"start\"";
+      }
     },
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
