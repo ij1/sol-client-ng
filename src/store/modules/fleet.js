@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import L from 'leaflet';
 import rbush from 'rbush';
-import { minToMsec, secToMsec } from '../../lib/utils.js';
-import { gcCalc } from '../../lib/nav.js';
+import { minToMsec, secToMsec, radToDeg } from '../../lib/utils.js';
+import { gcCalc, loxoCalc, minTurnAngle } from '../../lib/nav.js';
 import { PROJECTION, EARTH_R, solBoatPolicy, PR_MARK_BOAT } from '../../lib/sol.js';
+
+const nearDistance = 0.0001 * 1852 / EARTH_R;
 
 function addToName2id (state, name, id) {
   if (state.name2id.has(name)) {
@@ -254,9 +256,19 @@ export default {
           const newLastPos = traceData.trace[traceData.trace.length - 1];
           let tailarr = null;
 
-          for (i = boat.lastTraceIdx; i < boat.trace.length; i++) {
+          for (i = boat.lastTraceIdx; i < boat.trace.length - 1; i++) {
             if (boat.trace[i].equals(newLastPos)) {
-              if (i + 1 < boat.trace.length) {
+              tailarr = boat.trace.slice(i + 1);
+              break;
+            } else {
+              let path = loxoCalc(boat.trace[i], boat.trace[i + 1]);
+              let path2 = loxoCalc(boat.trace[i], newLastPos);
+              if (path2.distance < nearDistance) {
+                tailarr = boat.trace.slice(i + 1);
+                break;
+              }
+              if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.01 &&
+                  path2.distance < path.distance - nearDistance) {
                 tailarr = boat.trace.slice(i + 1);
                 break;
               }
