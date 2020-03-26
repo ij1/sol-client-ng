@@ -618,6 +618,10 @@ export default {
             trace.push(latLng);
           }
 
+          if (trace.length === 0) {
+            continue;
+          }
+
           commit('updateBoatTrace', {
             id: id,
             trace: trace,
