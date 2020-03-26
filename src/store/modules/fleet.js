@@ -39,7 +39,7 @@ function sortedIdList (boatIdsObj, getters) {
   });
 }
 
-function addToSearchData(searchData, boatId, boatName, latLng, rootGetters) {
+function addToSearchData(searchData, boatId, boatName, latLng, commandBoat, rootGetters) {
   if (!solBoatPolicy(boatName, rootGetters)) {
     return;
   }
@@ -49,6 +49,7 @@ function addToSearchData(searchData, boatId, boatName, latLng, rootGetters) {
       lng: latLng.lng + ddeg,
       lat: latLng.lat,
       id: boatId,
+      commandBoat: commandBoat,
     };
     Object.freeze(searchItem);
     searchData.push(searchItem);
@@ -210,7 +211,7 @@ export default {
       state.commandBoatItems = [];
       if (!ownBoat.latLng.equals(updateData.newPosition)) {
         addToSearchData(state.commandBoatItems, ownBoat.id, ownBoat.name,
-                        updateData.newPosition, updateData.rootGetters);
+                        updateData.newPosition, true, updateData.rootGetters);
         state.searchTree.load(state.commandBoatItems);
         ownBoat.trace.push(updateData.newPosition);
       }
@@ -398,7 +399,7 @@ export default {
             boat.latLng = L.latLng(boat.lat, boat.lon);
             boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boat.latLng);
 
-            addToSearchData(searchData, boat.id, boat.name, boat.latLng,
+            addToSearchData(searchData, boat.id, boat.name, boat.latLng, false,
                             rootGetters);
 
             delete boat.lat;

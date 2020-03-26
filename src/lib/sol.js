@@ -23,11 +23,10 @@ export function solBoatPolicy(boatname, rootGetters) {
 
 }
 
-export function ownBoatVisibleFilter(store, lat, lng) {
+export function ownBoatVisibleFilter(store, lat, lng, commandBoat) {
   const ownBoatId = store.state.boat.id;
 
-  if ((store.state.boat.position.lat === lat) ||
-      (store.state.boat.position.lng === lng)) {
+  if (commandBoat) {
     return true;
   }
 
