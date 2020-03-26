@@ -250,9 +250,23 @@ export default {
 
         if (boat.lastTraceIdx === 0 ||
             !boat.trace[boat.lastTraceIdx - 1].equals(traceData.trace[traceData.trace.length - 1])) {
+          let i;
+          const newLastPos = traceData.trace[traceData.trace.length - 1];
+          let tailarr = null;
+
+          for (i = boat.lastTraceIdx; i < boat.trace.length; i++) {
+            if (boat.trace[i].equals(newLastPos)) {
+              if (i + 1 < boat.trace.length) {
+                tailarr = boat.trace.slice(i + 1);
+                break;
+              }
+            }
+          }
           boat.trace = traceData.trace;
           boat.lastTraceIdx = traceData.trace.length;
-          if (!lastPos.equals(boat.trace[boat.trace.length - 1])) {
+          if (tailarr !== null) {
+            boat.trace.push(...tailarr);
+          } else if (!lastPos.equals(newLastPos)) {
             boat.trace.push(lastPos);
           }
         }
