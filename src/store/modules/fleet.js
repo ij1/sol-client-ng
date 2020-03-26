@@ -296,10 +296,15 @@ export default {
           boat.lastTraceIdx = traceData.trace.length;
           if (tailarr !== null) {
             boat.trace.push(...tailarr);
+            if (tailarr.length < 2) {
+              state.traceContinue = false;
+            }
           } else if (!lastPos.equals(newLastPos)) {
             boat.trace.push(lastPos);
+            state.traceContinue = false;
+          } else {
+            state.traceContinue = false;
           }
-          state.traceContinue = false;
         }
       }
     },
