@@ -11,6 +11,7 @@
       Introduction
     </div>
     <div class = "help-content">
+      TBA. See <a href="/wiki/show/Manual/">Full Manual</a>.
     </div>
   </popup-window>
 </template>
