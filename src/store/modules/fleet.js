@@ -301,8 +301,10 @@ export default {
           }
           state.traceContinue = false;
         }
-        state.tracesTime = traceData.time;
       }
+    },
+    allTracesUpdated(state, time) {
+      state.tracesTime = time;
     },
     setSelected (state, ids) {
       state.selected = ids;
@@ -591,7 +593,6 @@ export default {
 
       dispatch('solapi/get', getDef, {root: true})
       .then(traces => {
-        const now = rootGetters['time/now']();
         let boatList = traces.boat;
         if (typeof boatList === 'undefined') {
           return;
@@ -619,10 +620,11 @@ export default {
 
           commit('updateBoatTrace', {
             id: id,
-            time: now,
             trace: trace,
           });
         }
+        const now = rootGetters['time/now']();
+        commit('allTracesUpdated', now);
       })
       .catch(err => {
         commit('solapi/logError', {
