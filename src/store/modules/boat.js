@@ -136,6 +136,7 @@ export default {
         };
         const oldTime = state.instruments.time.value;
         const oldPosition = state.position;
+        const oldCog = state.cog;
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
@@ -145,6 +146,8 @@ export default {
           oldPosition: oldPosition,
           newPosition: state.position,
           wrappedNewPosition: boatData.boat.wrappedLatLng,
+          sameCog: oldCog === state.cog,
+          move: true,
           rootGetters: rootGetters,
         }, {root: true});
         commit('updateLngOffset', rootState.map.center.lng);

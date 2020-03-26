@@ -120,6 +120,7 @@ export default {
         country: null,
         trace: [boatData.wrappedLatLng],
         lastTraceIdx: 0,
+        traceContinue: false,
       });
       state.flaglessBoats++;
       addToName2id(state, boatData.name, boatData.id);
@@ -141,11 +142,18 @@ export default {
 
           state.boat[idx].latLng = boat.latLng;
           /* Store position to trace if moved. */
-          if (!state.boat[idx].wrappedLatLng.equals(boat.wrappedLatLng)) {
+          if (!state.boat[idx].wrappedLatLng.equals(boat.wrappedLatLng) &&
+              (idx !== state.playerBoatIdx)) {
             // ADDME: if cog changed a lot, calculate an intersection too?
-            // FIXME: What if traces API fails, this could grow very large.
-            // ADDME: constant cog reduction logic, the prev one was flawed
-            state.boat[idx].trace.push(boat.wrappedLatLng);
+            const sameCog = state.boat[idx].cog === boat.cog;
+            if (sameCog && state.boat[idx].traceContinue) {
+              Vue.set(state.boat[idx].trace, state.boat[idx].trace.length - 1,
+                      boat.wrappedLatLng);
+            } else {
+              // FIXME: What if traces API fails, this could grow very large.
+              state.boat[idx].trace.push(boat.wrappedLatLng);
+              state.boat[idx].traceContinue = sameCog;
+            }
           }
           state.boat[idx].cog = boat.cog;
           state.boat[idx].ranking = boat.ranking;
@@ -179,6 +187,7 @@ export default {
             country: null,
             trace: [boat.wrappedLatLng],
             lastTraceIdx: 0,
+            traceContinue: false,
           });
 
           state.flaglessBoats++;
@@ -215,7 +224,16 @@ export default {
         addToSearchData(state.commandBoatItems, ownBoat.id, ownBoat.name,
                         updateData.newPosition, true, updateData.rootGetters);
         state.searchTree.load(state.commandBoatItems);
-        ownBoat.trace.push(updateData.wrappedNewPosition);
+
+        if (updateData.move) {
+          if (updateData.sameCog && ownBoat.traceContinue) {
+            Vue.set(ownBoat.trace, ownBoat.trace.length - 1,
+                    updateData.wrappedNewPosition);
+          } else {
+            ownBoat.trace.push(updateData.wrappedNewPosition);
+            ownBoat.traceContinue = updateData.sameCog;
+          }
+        }
       }
       state.searchTreeStamp++;
     },
@@ -281,6 +299,7 @@ export default {
           } else if (!lastPos.equals(newLastPos)) {
             boat.trace.push(lastPos);
           }
+          state.traceContinue = false;
         }
         state.tracesTime = traceData.time;
       }
@@ -490,6 +509,7 @@ export default {
             oldPosition: null,
             newPosition: rootState.boat.position,
             wrappedNewPosition: rootGetters['race/latLngToRaceBounds'](rootState.boat.position),
+            move: false,
             rootGetters: rootGetters,
           });
           commit('chatrooms/mapBoatIds', state.name2id, {root: true});
