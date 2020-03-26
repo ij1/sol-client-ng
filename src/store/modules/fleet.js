@@ -116,6 +116,7 @@ export default {
         syc: null,
         country: null,
         trace: [boatData.wrappedLatLng],
+        lastTraceIdx: 0,
       });
       state.flaglessBoats++;
       addToName2id(state, boatData.name, boatData.id);
@@ -174,6 +175,7 @@ export default {
             syc: false,
             country: null,
             trace: [boat.wrappedLatLng],
+            lastTraceIdx: 0,
           });
 
           state.flaglessBoats++;
@@ -210,6 +212,7 @@ export default {
         addToSearchData(state.commandBoatItems, ownBoat.id, ownBoat.name,
                         updateData.newPosition, updateData.rootGetters);
         state.searchTree.load(state.commandBoatItems);
+        ownBoat.trace.push(updateData.newPosition);
       }
       state.searchTreeStamp++;
     },
@@ -236,9 +239,25 @@ export default {
     },
     updateBoatTrace (state, traceData) {
       const id = traceData.id;
+      if (traceData.trace.length === 0) {
+        return;
+      }
       if (typeof state.id2idx[id] !== 'undefined') {
         const idx = state.id2idx[traceData.id];
-        state.boat[idx].trace = traceData.trace;
+        let boat = state.boat[idx];
+        const lastPos = boat.trace[boat.trace.length - 1];
+
+        if (boat.lastTraceIdx === 0 ||
+            !boat.trace[boat.lastTraceIdx - 1].equals(traceData.trace[traceData.trace.length - 1])) {
+          boat.trace = traceData.trace;
+          boat.lastTraceIdx = traceData.trace.length;
+          if (!boat.latLng.equals(boat.trace[boat.trace.length - 1])) {
+            boat.trace.push(boat.latLng);
+          }
+          if (!lastPos.equals(boat.trace[boat.trace.length - 1])) {
+            boat.trace.push(lastPos);
+          }
+        }
         state.tracesTime = traceData.time;
       }
     },

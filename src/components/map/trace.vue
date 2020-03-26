@@ -8,14 +8,6 @@
       :weight = "1"
       :fill = "false"
     />
-    <l-polyline
-      v-for = "offset in mapWrapList"
-      :key = "'lt' + offset"
-      :lat-lngs = "latLngArrayAddOffset(lastMileTrace, offset)"
-      :color = "color"
-      :weight = "1"
-      :fill = "false"
-    />
   </l-layer-group>
 </template>
 
@@ -56,28 +48,6 @@ export default {
         return '#ff00ff';
       }
       return this.boatColor(this.boat);
-    },
-    lastMileTrace () {
-      if (this.boat.trace.length === 0) {
-        return [];
-      }
-
-      let res = [
-        this.boat.trace[this.boat.trace.length - 1],
-        this.$store.getters['race/latLngToRaceBounds'](this.boat.latLng)
-      ];
-
-      /* Own boat extends beyond the fleet update 
-       * FIXME: perhaps run dead-reckoning for the whole fleet, then this
-       * can be removed.
-       */
-      if (this.isPlayerBoat) {
-        res.push(this.$store.getters['race/latLngToRaceBounds'](
-          this.$store.state.boat.position
-        ));
-      }
-
-      return res;
     },
     ...mapState({
       mapWrapList: state => state.map.wrapList,
