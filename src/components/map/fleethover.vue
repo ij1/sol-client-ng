@@ -52,12 +52,12 @@ export default {
           res = res.filter(i => {
             return this.applyFilterToBoat(this.fleetBoatFromId(i.id)) &&
                    (i.id !== this.ownBoatId ||
-                    ownBoatVisibleFilter(this.$store, i.lat, i.lng, i.commandBoat));
+                    ownBoatVisibleFilter(this.$store, i.commandBoat));
           });
         } else {
           res = res.filter(i => {
             return i.id !== this.ownBoatId ||
-                   ownBoatVisibleFilter(this.$store, i.lat, i.lng, i.commandBoat);
+                   ownBoatVisibleFilter(this.$store, i.commandBoat);
           });
         }
         if (res.length > 0) {

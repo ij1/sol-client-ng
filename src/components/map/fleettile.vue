@@ -65,8 +65,7 @@ export default {
           }
         }
         if (i.id === ownBoatId) {
-          if (!ownBoatVisibleFilter(this.$store, i.id, i.lat, i.lng,
-                                    i.commandBoat) ||
+          if (!ownBoatVisibleFilter(this.$store, i.commandBoat) ||
               i.commandBoat) {
             continue;
           }

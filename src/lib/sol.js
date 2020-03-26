@@ -23,7 +23,7 @@ export function solBoatPolicy(boatname, rootGetters) {
 
 }
 
-export function ownBoatVisibleFilter(store, lat, lng, commandBoat) {
+export function ownBoatVisibleFilter(store, commandBoat) {
   const ownBoatId = store.state.boat.id;
 
   if (commandBoat) {
