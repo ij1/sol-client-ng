@@ -252,9 +252,6 @@ export default {
             !boat.trace[boat.lastTraceIdx - 1].equals(traceData.trace[traceData.trace.length - 1])) {
           boat.trace = traceData.trace;
           boat.lastTraceIdx = traceData.trace.length;
-          if (!boat.wrappedLatLng.equals(boat.trace[boat.trace.length - 1])) {
-            boat.trace.push(boat.wrappedLatLng);
-          }
           if (!lastPos.equals(boat.trace[boat.trace.length - 1])) {
             boat.trace.push(lastPos);
           }
