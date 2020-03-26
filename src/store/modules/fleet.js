@@ -213,7 +213,7 @@ export default {
         addToSearchData(state.commandBoatItems, ownBoat.id, ownBoat.name,
                         updateData.newPosition, true, updateData.rootGetters);
         state.searchTree.load(state.commandBoatItems);
-        ownBoat.trace.push(updateData.newPosition);
+        ownBoat.trace.push(updateData.wrappedNewPosition);
       }
       state.searchTreeStamp++;
     },
@@ -463,6 +463,7 @@ export default {
           commit('updateCommandBoat', {
             oldPosition: null,
             newPosition: rootState.boat.position,
+            wrappedNewPosition: rootGetters['race/latLngToRaceBounds'](rootState.boat.position),
             rootGetters: rootGetters,
           });
           commit('chatrooms/mapBoatIds', state.name2id, {root: true});

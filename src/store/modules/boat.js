@@ -144,6 +144,7 @@ export default {
         commit('race/fleet/updateCommandBoat', {
           oldPosition: oldPosition,
           newPosition: state.position,
+          wrappedNewPosition: boatData.boat.wrappedLatLng,
           rootGetters: rootGetters,
         }, {root: true});
         commit('updateLngOffset', rootState.map.center.lng);
