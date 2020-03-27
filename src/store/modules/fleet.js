@@ -148,7 +148,7 @@ export default {
               (idx !== state.playerBoatIdx)) {
             // ADDME: if cog changed a lot, calculate an intersection too?
             const sameCog = Math.abs(radToDeg(minTurnAngle(toBoat.cog,
-                                                           boat.cog))) < 0.05;
+                                                           boat.cog))) < 0.2;
             if (sameCog && toBoat.traceContinue) {
               Vue.set(toBoat.trace, toBoat.trace.length - 1, boat.wrappedLatLng);
             } else {
