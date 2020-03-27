@@ -293,7 +293,7 @@ export default {
                 tailarr = boat.trace.slice(i + 1);
                 break;
               }
-              if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.01 &&
+              if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.05 &&
                   path2.distance < path.distance - nearDistance) {
                 tailarr = boat.trace.slice(i + 1);
                 break;
