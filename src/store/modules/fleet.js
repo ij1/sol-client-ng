@@ -133,43 +133,43 @@ export default {
 
         if (typeof state.id2idx[id] !== 'undefined') {
           const idx = state.id2idx[id];
-          if (state.boat[idx].name !== boat.name) {
-            state.boat[idx].name = boat.name;
+          let toBoat = state.boat[idx];
+
+          if (toBoat.name !== boat.name) {
+            toBoat.name = boat.name;
             addToName2id(state, boat.name, id);
-            state.boat[idx].buddy = boat.buddy;
-            state.boat[idx].practiceMark = boat.practiceMark;
+            toBoat.buddy = boat.buddy;
+            toBoat.practiceMark = boat.practiceMark;
           }
 
-          state.boat[idx].latLng = boat.latLng;
+          toBoat.latLng = boat.latLng;
           /* Store position to trace if moved. */
-          if (!state.boat[idx].wrappedLatLng.equals(boat.wrappedLatLng) &&
+          if (!toBoat.wrappedLatLng.equals(boat.wrappedLatLng) &&
               (idx !== state.playerBoatIdx)) {
             // ADDME: if cog changed a lot, calculate an intersection too?
-            const sameCog = state.boat[idx].cog === boat.cog;
-            if (sameCog && state.boat[idx].traceContinue) {
-              Vue.set(state.boat[idx].trace, state.boat[idx].trace.length - 1,
-                      boat.wrappedLatLng);
+            const sameCog = toBoat.cog === boat.cog;
+            if (sameCog && toBoat.traceContinue) {
+              Vue.set(toBoat.trace, toBoat.trace.length - 1, boat.wrappedLatLng);
             } else {
               /* Prevent very large array if traces API fails for some reason */
               const maxLen = 10;
-              const nonTraceLen = state.boat[idx].trace.length - state.boat[idx].lastTraceIdx;
+              const nonTraceLen = toBoat.trace.length - toBoat.lastTraceIdx;
               if (nonTraceLen > maxLen) {
-                state.boat[idx].trace.splice(state.boat[idx].lastTraceIdx,
-                                             nonTraceLen - maxLen);
+                toBoat.trace.splice(toBoat.lastTraceIdx, nonTraceLen - maxLen);
               }
 
-              state.boat[idx].trace.push(boat.wrappedLatLng);
-              state.boat[idx].traceContinue = sameCog;
+              toBoat.trace.push(boat.wrappedLatLng);
+              toBoat.traceContinue = sameCog;
             }
           }
-          state.boat[idx].cog = boat.cog;
-          state.boat[idx].ranking = boat.ranking;
-          state.boat[idx].dtg = boat.dtg;
-          state.boat[idx].dbl = boat.dbl;
-          state.boat[idx].log = boat.log;
-          state.boat[idx].distance = boat.distance;
-          state.boat[idx].lastRoundedMark = boat.lastRoundedMark;
-          state.boat[idx].color = boat.color;
+          toBoat.cog = boat.cog;
+          toBoat.ranking = boat.ranking;
+          toBoat.dtg = boat.dtg;
+          toBoat.dbl = boat.dbl;
+          toBoat.log = boat.log;
+          toBoat.distance = boat.distance;
+          toBoat.lastRoundedMark = boat.lastRoundedMark;
+          toBoat.color = boat.color;
 
         } else {
           Vue.set(state.id2idx, id, state.boat.length);
