@@ -289,10 +289,12 @@ export default {
             } else {
               let path = loxoCalc(boat.trace[i], boat.trace[i + 1]);
               let path2 = loxoCalc(boat.trace[i], newLastPos);
+              /* Nearly equal node? */
               if (path2.distance < nearDistance) {
                 tailarr = boat.trace.slice(i + 1);
                 break;
               }
+              /* On path */
               if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.05 &&
                   path2.distance < path.distance - nearDistance) {
                 tailarr = boat.trace.slice(i + 1);
