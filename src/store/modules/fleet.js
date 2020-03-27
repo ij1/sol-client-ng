@@ -295,6 +295,7 @@ export default {
           boat.trace = traceData.trace;
           boat.lastTraceIdx = traceData.trace.length;
           if (tailarr !== null) {
+            /* Prevent very large array if traces matching+cutting fails */
             const maxLen = idx === state.playerBoatIdx ? 60 : 10;
             if (tailarr.length > maxLen) {
               tailarr.splice(0, tailarr.length - maxLen);
