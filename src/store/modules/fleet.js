@@ -152,7 +152,7 @@ export default {
               Vue.set(toBoat.trace, toBoat.trace.length - 1, boat.wrappedLatLng);
             } else {
               /* Prevent very large array if traces API fails for some reason */
-              const maxLen = 10;
+              const maxLen = 20;
               const nonTraceLen = toBoat.trace.length - toBoat.lastTraceIdx;
               if (nonTraceLen > maxLen) {
                 toBoat.trace.splice(toBoat.lastTraceIdx, nonTraceLen - maxLen);
@@ -303,7 +303,7 @@ export default {
           boat.lastTraceIdx = traceData.trace.length;
           if (tailarr !== null) {
             /* Prevent very large array if traces matching+cutting fails */
-            const maxLen = idx === state.playerBoatIdx ? 60 : 10;
+            const maxLen = idx === state.playerBoatIdx ? 100 : 20;
             if (tailarr.length > maxLen) {
               tailarr.splice(0, tailarr.length - maxLen);
             }
