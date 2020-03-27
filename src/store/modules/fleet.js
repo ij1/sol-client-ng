@@ -150,7 +150,14 @@ export default {
               Vue.set(state.boat[idx].trace, state.boat[idx].trace.length - 1,
                       boat.wrappedLatLng);
             } else {
-              // FIXME: What if traces API fails, this could grow very large.
+              /* Prevent very large array if traces API fails for some reason */
+              const maxLen = 10;
+              const nonTraceLen = state.boat[idx].trace.length - state.boat[idx].lastTraceIdx;
+              if (nonTraceLen > maxLen) {
+                state.boat[idx].trace.splice(state.boat[idx].lastTraceIdx,
+                                             nonTraceLen - maxLen);
+              }
+
               state.boat[idx].trace.push(boat.wrappedLatLng);
               state.boat[idx].traceContinue = sameCog;
             }
