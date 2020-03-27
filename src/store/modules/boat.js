@@ -146,7 +146,7 @@ export default {
           oldPosition: oldPosition,
           newPosition: state.position,
           wrappedNewPosition: boatData.boat.wrappedLatLng,
-          sameCog: oldCog === state.cog,
+          sameCog: Math.abs(radToDeg(minTurnAngle(oldCog, state.cog))) < 0.05,
           move: true,
           rootGetters: rootGetters,
         }, {root: true});
