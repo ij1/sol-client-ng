@@ -126,8 +126,6 @@ export default {
       addToName2id(state, boatData.name, boatData.id);
     },
     updateFleet (state, update) {
-      state.fleetTime = update.timestamp;
-
       for (let boat of update.fleet) {
         const id = boat.id;
 
@@ -144,23 +142,31 @@ export default {
 
           toBoat.latLng = boat.latLng;
           /* Store position to trace if moved. */
-          if (!toBoat.wrappedLatLng.equals(boat.wrappedLatLng) &&
-              (idx !== state.playerBoatIdx)) {
-            // ADDME: if cog changed a lot, calculate an intersection too?
-            const sameCog = Math.abs(radToDeg(minTurnAngle(toBoat.cog,
-                                                           boat.cog))) < 0.2;
-            if (sameCog && toBoat.traceContinue) {
-              Vue.set(toBoat.lastMile, toBoat.lastMile.length - 1,
-                      boat.wrappedLatLng);
-            } else {
-              /* Prevent very large array if traces API fails for some reason */
-              const maxLen = 20;
-              if (toBoat.lastMile.length > maxLen) {
-                toBoat.lastMile.splice(1, toBoat.lastMile.length - maxLen);
-              }
+          if (idx !== state.playerBoatIdx) {
+            if (!toBoat.wrappedLatLng.equals(boat.wrappedLatLng)) {
+              // ADDME: if cog changed a lot, calculate an intersection too?
+              const sameCog = Math.abs(radToDeg(minTurnAngle(toBoat.cog,
+                                                             boat.cog))) < 0.2;
+              if (sameCog && toBoat.traceContinue) {
+                Vue.set(toBoat.lastMile, toBoat.lastMile.length - 1,
+                        boat.wrappedLatLng);
+              } else {
+                /* Prevent very large array if traces API fails for some reason */
+                const maxLen = 20;
+                if (toBoat.lastMile.length > maxLen) {
+                  toBoat.lastMile.splice(1, toBoat.lastMile.length - maxLen);
+                }
 
-              toBoat.lastMile.push(boat.wrappedLatLng);
-              toBoat.traceContinue = sameCog;
+                toBoat.lastMile.push(boat.wrappedLatLng);
+                toBoat.traceContinue = sameCog;
+              }
+            }
+          } else {
+            /* Connect fleet & command boats during init transient */
+            if (state.fleetTime === 0 && toBoat.trace.length === 0) {
+              if (!toBoat.lastMile[0].equals(boat.wrappedLatLng)) {
+                toBoat.lastMile.unshift(boat.wrappedLatLng);
+              }
             }
           }
           toBoat.cog = boat.cog;
@@ -217,6 +223,8 @@ export default {
         }
       }
       state.boatTypesCount = state.boatTypes.length;
+
+      state.fleetTime = update.timestamp;
     },
     updateCommandBoat(state, updateData) {
       const ownBoat = state.boat[state.playerBoatIdx];
