@@ -69,6 +69,7 @@ export default {
     metadataFetchInterval: minToMsec(10),
     tracesTime: 0,
     tracesFetchInterval: minToMsec(3),
+    towbackResetDone: false,
     boat: [],
     id2idx: {},
     name2id: new Map(),      /* Maps are not reactice! */
@@ -341,6 +342,13 @@ export default {
         }
       }
     },
+    towbackReset(state) {
+      for (let boat of state.boat) {
+        boat.trace = [];
+        boat.lastMile = [boat.lastMile[boat.lastMile.length - 1]];
+      }
+      state.towbackResetDone = true;
+    },
     allTracesUpdated(state, time) {
       state.tracesTime = time;
     },
@@ -445,6 +453,10 @@ export default {
 
   actions: {
     fetchRace({rootState, state, getters, rootGetters, commit, dispatch}) {
+      if (rootGetters['isTowBackPeriod'] && !state.towbackResetDone) {
+        commit('towbackReset');
+      }
+
       const getDef = {
         url: "/webclient/race_" + rootState.auth.raceId + ".xml",
         params: {
