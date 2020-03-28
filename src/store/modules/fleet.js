@@ -266,19 +266,19 @@ export default {
         }
       }
     },
-    updateBoatTrace (state, traceData) {
-      const id = traceData.id;
-      if (traceData.trace.length === 0) {
+    updateBoatTrace (state, newTrace) {
+      const id = newTrace.id;
+      if (newTrace.trace.length === 0) {
         return;
       }
       if (typeof state.id2idx[id] !== 'undefined') {
-        const idx = state.id2idx[traceData.id];
+        const idx = state.id2idx[newTrace.id];
         let boat = state.boat[idx];
 
         if (boat.trace.length === 0 ||
-            !boat.trace[boat.trace.length - 1].equals(traceData.trace[traceData.trace.length - 1])) {
+            !boat.trace[boat.trace.length - 1].equals(newTrace.trace[newTrace.trace.length - 1])) {
           let i;
-          const newLastPos = traceData.trace[traceData.trace.length - 1];
+          const newLastPos = newTrace.trace[newTrace.trace.length - 1];
           let tailarr = null;
 
           for (i = 0; i < boat.lastMile.length - 1; i++) {
@@ -303,7 +303,7 @@ export default {
               }
             }
           }
-          boat.trace = traceData.trace;
+          boat.trace = newTrace.trace;
           if (tailarr !== null) {
             /* Prevent very large array if traces matching+cutting fails */
             const maxLen = idx === state.playerBoatIdx ? 100 : 20;
