@@ -160,6 +160,7 @@ export default {
                 toBoat.lastMile.push(boat.wrappedLatLng);
                 toBoat.traceContinue = sameCog;
               }
+              toBoat.wrappedLatLng = boat.wrappedLatLng;
             }
           } else {
             /* Connect fleet & command boats during init transient */
@@ -167,6 +168,9 @@ export default {
               if (!toBoat.lastMile[0].equals(boat.wrappedLatLng)) {
                 toBoat.lastMile.unshift(boat.wrappedLatLng);
               }
+            }
+            if (!toBoat.wrappedLatLng.equals(boat.wrappedLatLng)) {
+              toBoat.wrappedLatLng = boat.wrappedLatLng;
             }
           }
           toBoat.cog = boat.cog;
