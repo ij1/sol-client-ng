@@ -302,14 +302,14 @@ export default {
               let path2 = loxoCalc(boat.lastMile[i], newLastPos);
               /* Nearly equal node? */
               if (path2.distance < nearDistance) {
-                boat.lastMile[i] = newLastPos;
+                Vue.set(boat.lastMile, i, newLastPos);
                 keepLastMile = i;
                 break;
               }
               /* On path */
               if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.05 &&
                   path2.distance < path.distance - nearDistance) {
-                boat.lastMile[i] = newLastPos;
+                Vue.set(boat.lastMile, i, newLastPos);
                 keepLastMile = i;
                 break;
               }
