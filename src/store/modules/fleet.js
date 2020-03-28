@@ -203,7 +203,7 @@ export default {
             practiceMark: boat.practiceMark,
             syc: false,
             country: null,
-            trace: [boat.wrappedLatLng],
+            trace: [],
             lastMile: [boat.wrappedLatLng],
             traceContinue: false,
           });
