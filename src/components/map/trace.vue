@@ -8,6 +8,14 @@
       :weight = "1"
       :fill = "false"
     />
+    <l-polyline
+      v-for = "offset in mapWrapList"
+      :key = "'l' + offset"
+      :lat-lngs = "latLngArrayAddOffset(boat.lastMile, offset)"
+      :color = "color"
+      :weight = "1"
+      :fill = "false"
+    />
   </l-layer-group>
 </template>
 

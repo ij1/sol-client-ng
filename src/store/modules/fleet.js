@@ -118,8 +118,8 @@ export default {
         practiceMark: boatData.name.startsWith(PR_MARK_BOAT),
         syc: null,
         country: null,
-        trace: [boatData.wrappedLatLng],
-        lastTraceIdx: 0,
+        trace: [],
+        lastMile: [boatData.wrappedLatLng],
         traceContinue: false,
       });
       state.flaglessBoats++;
@@ -150,16 +150,16 @@ export default {
             const sameCog = Math.abs(radToDeg(minTurnAngle(toBoat.cog,
                                                            boat.cog))) < 0.2;
             if (sameCog && toBoat.traceContinue) {
-              Vue.set(toBoat.trace, toBoat.trace.length - 1, boat.wrappedLatLng);
+              Vue.set(toBoat.lastMile, toBoat.lastMile.length - 1,
+                      boat.wrappedLatLng);
             } else {
               /* Prevent very large array if traces API fails for some reason */
               const maxLen = 20;
-              const nonTraceLen = toBoat.trace.length - toBoat.lastTraceIdx;
-              if (nonTraceLen > maxLen) {
-                toBoat.trace.splice(toBoat.lastTraceIdx, nonTraceLen - maxLen);
+              if (toBoat.lastMile.length > maxLen) {
+                toBoat.lastMile.splice(1, toBoat.lastMile.length - maxLen);
               }
 
-              toBoat.trace.push(boat.wrappedLatLng);
+              toBoat.lastMile.push(boat.wrappedLatLng);
               toBoat.traceContinue = sameCog;
             }
           }
@@ -194,7 +194,7 @@ export default {
             syc: false,
             country: null,
             trace: [boat.wrappedLatLng],
-            lastTraceIdx: 0,
+            lastMile: [boat.wrappedLatLng],
             traceContinue: false,
           });
 
@@ -235,10 +235,10 @@ export default {
 
         if (updateData.move) {
           if (updateData.sameCog && ownBoat.traceContinue) {
-            Vue.set(ownBoat.trace, ownBoat.trace.length - 1,
+            Vue.set(ownBoat.lastMile, ownBoat.lastMile.length - 1,
                     updateData.wrappedNewPosition);
           } else {
-            ownBoat.trace.push(updateData.wrappedNewPosition);
+            ownBoat.lastMile.push(updateData.wrappedNewPosition);
             ownBoat.traceContinue = updateData.sameCog;
           }
         }
@@ -274,50 +274,53 @@ export default {
       if (typeof state.id2idx[id] !== 'undefined') {
         const idx = state.id2idx[traceData.id];
         let boat = state.boat[idx];
-        const lastPos = boat.trace[boat.trace.length - 1];
 
-        if (boat.lastTraceIdx === 0 ||
-            !boat.trace[boat.lastTraceIdx - 1].equals(traceData.trace[traceData.trace.length - 1])) {
+        if (boat.trace.length === 0 ||
+            !boat.trace[boat.trace.length - 1].equals(traceData.trace[traceData.trace.length - 1])) {
           let i;
           const newLastPos = traceData.trace[traceData.trace.length - 1];
           let tailarr = null;
 
-          for (i = boat.lastTraceIdx; i < boat.trace.length - 1; i++) {
-            if (boat.trace[i].equals(newLastPos)) {
-              tailarr = boat.trace.slice(i + 1);
+          for (i = 0; i < boat.lastMile.length - 1; i++) {
+            if (boat.lastMile[i].equals(newLastPos)) {
+              tailarr = boat.lastMile.slice(i);
               break;
             } else {
-              let path = loxoCalc(boat.trace[i], boat.trace[i + 1]);
-              let path2 = loxoCalc(boat.trace[i], newLastPos);
+              let path = loxoCalc(boat.lastMile[i], boat.lastMile[i + 1]);
+              let path2 = loxoCalc(boat.lastMile[i], newLastPos);
               /* Nearly equal node? */
               if (path2.distance < nearDistance) {
-                tailarr = boat.trace.slice(i + 1);
+                tailarr = boat.lastMile.slice(i);
+                tailarr[0] = newLastPos;
                 break;
               }
               /* On path */
               if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.05 &&
                   path2.distance < path.distance - nearDistance) {
-                tailarr = boat.trace.slice(i + 1);
+                tailarr = boat.lastMile.slice(i);
+                tailarr[0] = newLastPos;
                 break;
               }
             }
           }
           boat.trace = traceData.trace;
-          boat.lastTraceIdx = traceData.trace.length;
           if (tailarr !== null) {
             /* Prevent very large array if traces matching+cutting fails */
             const maxLen = idx === state.playerBoatIdx ? 100 : 20;
             if (tailarr.length > maxLen) {
-              tailarr.splice(0, tailarr.length - maxLen);
+              tailarr.splice(1, tailarr.length - maxLen);
             }
-            boat.trace.push(...tailarr);
-            if (tailarr.length < 2) {
+            boat.lastMile = tailarr;
+            if (boat.lastMile.length < 2) {
               state.traceContinue = false;
             }
-          } else if (!lastPos.equals(newLastPos)) {
-            boat.trace.push(lastPos);
-            state.traceContinue = false;
           } else {
+            const lastMileEnd = boat.lastMile[boat.lastMile.length - 1];
+
+            boat.lastMile = [newLastPos];
+            if (!newLastPos.equals(lastMileEnd)) {
+              boat.lastMile.push(lastMileEnd);
+            }
             state.traceContinue = false;
           }
         }
