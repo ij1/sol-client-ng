@@ -291,38 +291,41 @@ export default {
             !boat.trace[boat.trace.length - 1].equals(newTrace.trace[newTrace.trace.length - 1])) {
           let i;
           const newLastPos = newTrace.trace[newTrace.trace.length - 1];
-          let tailarr = null;
+          let keepLastMile = -1;
 
           for (i = 0; i < boat.lastMile.length - 1; i++) {
             if (boat.lastMile[i].equals(newLastPos)) {
-              tailarr = boat.lastMile.slice(i);
+              keepLastMile = i;
               break;
             } else {
               let path = loxoCalc(boat.lastMile[i], boat.lastMile[i + 1]);
               let path2 = loxoCalc(boat.lastMile[i], newLastPos);
               /* Nearly equal node? */
               if (path2.distance < nearDistance) {
-                tailarr = boat.lastMile.slice(i);
-                tailarr[0] = newLastPos;
+                boat.lastMile[i] = newLastPos;
+                keepLastMile = i;
                 break;
               }
               /* On path */
               if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.05 &&
                   path2.distance < path.distance - nearDistance) {
-                tailarr = boat.lastMile.slice(i);
-                tailarr[0] = newLastPos;
+                boat.lastMile[i] = newLastPos;
+                keepLastMile = i;
                 break;
               }
             }
           }
           boat.trace = newTrace.trace;
-          if (tailarr !== null) {
+          if (keepLastMile >= 0) {
+            /* Optimize common case */
+            if (keepLastMile > 0) {
+              boat.lastMile.splice(0, keepLastMile);
+            }
             /* Prevent very large array if traces matching+cutting fails */
             const maxLen = idx === state.playerBoatIdx ? 100 : 20;
-            if (tailarr.length > maxLen) {
-              tailarr.splice(1, tailarr.length - maxLen);
+            if (boat.lastMile.length > maxLen) {
+              boat.lastMile.splice(1, boat.lastMile.length - maxLen);
             }
-            boat.lastMile = tailarr;
             if (boat.lastMile.length < 2) {
               state.traceContinue = false;
             }
