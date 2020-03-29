@@ -327,7 +327,7 @@ export default {
             if (boat.lastMile.length > maxLen) {
               boat.lastMile.splice(1, boat.lastMile.length - maxLen);
             }
-            if (boat.lastMile.length < 2) {
+            if (boat.lastMile.length < 3) {
               state.traceContinue = false;
             }
           } else {
