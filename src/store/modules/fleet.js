@@ -337,7 +337,7 @@ export default {
             if (!newLastPos.equals(lastMileEnd)) {
               boat.lastMile.push(lastMileEnd);
             }
-            state.traceContinue = false;
+            boat.traceContinue = false;
           }
         }
       }
