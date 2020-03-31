@@ -54,6 +54,7 @@
         >
           {{t | formatTime}}
         </span>
+        UTC
       </div>
     </div>
     <div id = "banner-container">
