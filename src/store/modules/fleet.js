@@ -308,7 +308,7 @@ export default {
                 break;
               }
               /* On path */
-              if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 0.05 &&
+              if (Math.abs(radToDeg(minTurnAngle(path.startBearing, path2.startBearing))) < 6 &&
                   path2.distance < path.distance - nearDistance) {
                 Vue.set(boat.lastMile, i, newLastPos);
                 keepLastMile = i;
