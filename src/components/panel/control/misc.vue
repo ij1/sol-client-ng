@@ -10,9 +10,6 @@
           {{link.name}}
         </a>
       </div>
-      <div>
-        <race-gpx v-if = "raceLoaded"/>
-      </div>
     </div>
     <div>
       <button
@@ -25,6 +22,39 @@
       >
         Quick Help
       </button>
+    </div>
+    <div>
+      <div class="misc-header">Race Information</div>
+      <div>
+        <race-gpx v-if = "raceLoaded"/>
+      </div>
+      <div>
+        Tile set:
+        <span
+          v-if = "raceLoaded"
+        >
+          {{raceTilemap === 'h' ? 'high' : 'intermediate'}}
+        </span>
+      </div>
+      <div>
+        Weather grid:
+        <span
+          v-if = "wxLoaded"
+        >
+          {{wxCellSize[0] | formatDeg}}&deg; x
+          {{wxCellSize[1] | formatDeg}}&deg;
+        </span>
+      </div>
+      <div>
+        Weather update times:
+        <span
+          v-if = "wxLoaded"
+          v-for = "(t, index) in wxUpdateTimes"
+          :key = "'t' + index"
+        >
+          {{t | formatTime}}
+        </span>
+      </div>
     </div>
     <div id = "banner-container">
       <syc-banner/>
@@ -99,6 +129,16 @@ export default {
       version: process.env.VUE_APP_GIT_REV,
     }
   },
+  filters: {
+    formatDeg (d) {
+      return d.toFixed(3).replace(/\.?0*$/,'');
+    },
+    formatTime (t) {
+      const h = Math.floor(t / 60);
+      return ('00' + h.toFixed(0)).slice(-2) + ':' +
+             ('00' + ((t - h * 60) % 60).toFixed(0)).slice(-2);
+    },
+  },
   computed: {
     links () {
       let res = [];
@@ -127,6 +167,10 @@ export default {
     ...mapState({
       raceLoaded: state => state.race.loaded,
       raceId: state => state.race.info.id,
+      raceTilemap: state => state.race.info.tilemap,
+      wxLoaded: state => state.weather.loaded,
+      wxCellSize: state => state.weather.data.cellSize,
+      wxUpdateTimes: state => state.weather.updateTimes,
     }),
   },
 }
