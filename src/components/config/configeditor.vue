@@ -44,6 +44,11 @@
             :cfg = "cfg.cfgObj"
             :value.sync = "config[cfg.idx]"
           />
+          <config-color
+            v-if = "cfg.cfgObj.type === 'color'"
+            :cfg = "cfg.cfgObj"
+            :value.sync = "config[cfg.idx]"
+          />
         </div>
       </div>
       <button @click.prevent = "onClear">Clear Local Storage</button>
@@ -59,6 +64,8 @@ import ConfigRange from './configrange.vue';
 import { configParseRange } from './configrange.vue';
 import ConfigValues from './configvalues.vue';
 import { configParseValues } from './configvalues.vue';
+import ConfigColor from './configcolor.vue';
+import { configParseColor } from './configcolor.vue';
 
 export default {
   name: 'ConfigEditor',
@@ -67,6 +74,7 @@ export default {
     'config-boolean': ConfigBoolean,
     'config-range': ConfigRange,
     'config-values': ConfigValues,
+    'config-color': ConfigColor,
   },
   data () {
     return {
@@ -77,6 +85,7 @@ export default {
         boolean: configParseBoolean,
         range: configParseRange,
         values: configParseValues,
+        color: configParseColor,
       }
     }
   },
