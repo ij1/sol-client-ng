@@ -70,7 +70,6 @@ export default {
   },
   data () {
     return {
-      configTree: [],
       default: [],
       config: [],
       committed: [],
@@ -134,6 +133,39 @@ export default {
         },
       ];
     },
+    configTree () {
+      let groups = [];
+      let cfgIdx = 0;
+      for (let cfggroup of this.configDef) {
+        let cfgs = [];
+
+        for (const cfg of cfggroup.cfgs) {
+          if (typeof cfg.multi !== 'undefined') {
+            for (let key of cfg.multi) {
+              cfgs.push({
+                base: cfg.base,
+                path: key,
+                cfgObj: this.getStoreObj(cfg.base, key),
+                idx: cfgIdx++,
+              });
+            }
+          } else {
+            let storeObj = this.getStoreObj(cfg.base, 'cfg');
+            for (let key of Object.keys(storeObj)) {
+              const relPath = 'cfg.' + key;
+              cfgs.push({
+                base: cfg.base,
+                path: relPath,
+                cfgObj: this.getStoreObj(cfg.base, relPath),
+                idx: cfgIdx++,
+              });
+            }
+          }
+        }
+        groups.push({ title: cfggroup.title, cfgs: cfgs });
+      }
+      return groups;
+    },
     configList () {
       let res = [];
       for (const i of this.configTree) {
@@ -144,7 +176,6 @@ export default {
   },
 
   created () {
-    this.createConfigTree();
     let def = [];
     let config = [];
     let committed = [];
@@ -220,39 +251,6 @@ export default {
         obj = obj[i];
       }
       return obj;
-    },
-    createConfigTree () {
-      let groups = [];
-      let cfgIdx = 0;
-      for (let cfggroup of this.configDef) {
-        let cfgs = [];
-
-        for (const cfg of cfggroup.cfgs) {
-          if (typeof cfg.multi !== 'undefined') {
-            for (let key of cfg.multi) {
-              cfgs.push({
-                base: cfg.base,
-                path: key,
-                cfgObj: this.getStoreObj(cfg.base, key),
-                idx: cfgIdx++,
-              });
-            }
-          } else {
-            let storeObj = this.getStoreObj(cfg.base, 'cfg');
-            for (let key of Object.keys(storeObj)) {
-              const relPath = 'cfg.' + key;
-              cfgs.push({
-                base: cfg.base,
-                path: relPath,
-                cfgObj: this.getStoreObj(cfg.base, relPath),
-                idx: cfgIdx++,
-              });
-            }
-          }
-        }
-        groups.push({ title: cfggroup.title, cfgs: cfgs });
-      }
-      this.configTree = groups;
     },
     localStorageKey(cfg) {
       return 'sol-cfg:' + cfg.base + ':' + cfg.path;
