@@ -49,12 +49,15 @@
         Weather update times:
         <span
           v-if = "wxLoaded"
-          v-for = "(t, index) in wxUpdateTimes"
-          :key = "'t' + index"
         >
-          {{t | formatTime}}
+          <span
+            v-for = "(t, index) in wxUpdateTimes"
+            :key = "'t' + index"
+          >
+            {{t | formatTime}}
+          </span>
+          UTC
         </span>
-        UTC
       </div>
     </div>
     <div id = "banner-container">
