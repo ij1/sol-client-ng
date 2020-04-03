@@ -75,9 +75,12 @@ export default {
   z-index: 2;
 }
 .config-color {
+  position: relative;
   display: inline-block;
-  width: 40px;
-  height: 15px;
+  width: 50px;
+  height: 16px;
+  top: 4px;
   margin-left: 7px;
+  border: solid 1px black;
 }
 </style>
