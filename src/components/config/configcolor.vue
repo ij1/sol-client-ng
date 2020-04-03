@@ -76,8 +76,9 @@ export default {
 }
 .config-color {
   display: inline-block;
-  width: 40px;
+  width: 50px;
   height: 15px;
   margin-left: 7px;
+  border: solid 1px black;
 }
 </style>
