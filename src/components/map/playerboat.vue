@@ -4,7 +4,7 @@
       :lat-lng="visualPosition"
       :course = "course"
       :twa = "twa"
-      :color = "'#ff00ff'"
+      :color = "commandBoatColor"
       :scale = "1"
       :strokeWidth = "2"
     />
@@ -38,6 +38,7 @@ export default {
     },
     ...mapState({
       boatId: state => state.boat.id,
+      commandBoatColor: state => state.map.cfg.commandBoatColor.value,
       course: state => state.boat.instruments.course.value,
       twa: state => state.boat.instruments.twa.value,
       twd: state => state.boat.instruments.twd.value,

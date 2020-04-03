@@ -54,6 +54,7 @@ export default {
     needsRedraw () {
       this.course;
       this.twa;
+      this.color;
       return Date.now();
     },
     finalScale () {

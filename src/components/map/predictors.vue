@@ -35,6 +35,15 @@ export default {
   },
 
   computed: {
+    inactiveColor () {
+      const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
+      return 'rgba(' +
+             (parseInt(rgba[0], 16) / 2).toFixed() + ',' +
+             (parseInt(rgba[1], 16) / 2).toFixed() + ',' +
+             (parseInt(rgba[2], 16) / 2).toFixed() + ',' +
+             (rgba.length < 4 ? '0.7' :
+              Math.min(parseInt(rgba[3], 16) / 255.0 * 0.75, 0.7)) + ')';
+    },
     viewOrigo () {
       this.viewUpdateStamp;
 
@@ -164,6 +173,7 @@ export default {
       this.wxUpdated;
       this.plottedDcDelay;
       this.cfgPredictors;
+      this.commandBoatColor;
 
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
@@ -188,6 +198,7 @@ export default {
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
       cfgPredictors: state => state.boat.steering.cfg.predictors.value,
+      commandBoatColor: state => state.map.cfg.commandBoatColor.value,
     }),
   },
   methods: {
@@ -201,7 +212,8 @@ export default {
       return this.cfgPredictors === 'both';
     },
     predictorColor (predictor) {
-      return this.currentSteering === predictor ? '#ff00ff' : 'rgba(134, 0, 134, 0.7)';
+      return this.currentSteering === predictor ?
+             this.commandBoatColor : this.inactiveColor;
     },
     redraw (ctx) {
       const z = this.zoom;

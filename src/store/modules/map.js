@@ -67,6 +67,11 @@ export default {
         ],
         cfgText: 'Color for own trace and fleet boat',
       },
+      commandBoatColor: {
+        value: '#FF00FF',
+        type: 'color',
+        cfgText: 'Command boat and predictor color',
+      },
       boatScale: {
         value: boatScaleDivisor,	/* divided by boatScaleDivisor */
         type: 'range',
