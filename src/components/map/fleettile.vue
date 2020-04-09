@@ -37,16 +37,16 @@ export default {
     },
     _redraw (ctx) {
       let map = this.$parent.$parent.map;
-      let descale = map.getZoomScale(this.zoom, this.coords.z);
-      let scale = 1 / descale;
-      const boatScale = this.cfgBoatScale / boatScaleDivisor;
-      if (scale >= 2) {
+      const zoomDescale = map.getZoomScale(this.zoom, this.coords.z);
+      const zoomScale = 1 / zoomDescale;
+      const boatSizeScale = this.cfgBoatScale / boatScaleDivisor;
+      if (zoomScale >= 2) {
         return;
       }
-      scale = scale * boatScale;
-      descale = descale / boatScale;
+      const boatScale = zoomScale * boatSizeScale;
+      const boatDescale = zoomDescale / boatSizeScale;
       /* Anything > 1/2 boat size is fine */
-      const halfsize = Math.ceil(scale * 40 / 2);
+      const halfsize = Math.ceil(boatScale * 40 / 2);
 
       const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
       const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
@@ -54,7 +54,7 @@ export default {
       const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.zoom, halfsize);
 
       ctx.save();
-      ctx.lineWidth = 1.0 / boatScale;
+      ctx.lineWidth = 1.0 / boatSizeScale;
       let prev = L.point(0, 0);
       const ownBoatId = this.$store.state.boat.id;
       for (let i of res) {
@@ -75,7 +75,6 @@ export default {
         const color = this.boatColor(boat);
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
-        ctx.scale(scale, scale);
         if (boat.dtg > 0) {
           const wind = this.$store.getters['weather/latLngWind'](boat.latLng,
                                                                  this.$store.state.race.fleet.fleetTime);
@@ -89,19 +88,24 @@ export default {
 
           /* Practice marks */
           if (boat.practiceMark) {
+            ctx.scale(zoomScale, zoomScale);
             ctx.arc(0, 0, 4, 0, Math.PI * 2);
             ctx.fillStyle = color;
             ctx.fill();
+            ctx.scale(zoomDescale, zoomDescale);
           } else {
+            ctx.scale(boatScale, boatScale);
             ctx.strokeStyle = color;
             drawBoat(ctx, boat.cog, twa);
+            ctx.scale(boatDescale, boatDescale);
           }
         } else {
+          ctx.scale(zoomScale, zoomScale);
           ctx.arc(0, 0, 2, 0, Math.PI * 2);
           ctx.fillStyle = color;
           ctx.fill();
+          ctx.scale(zoomDescale, zoomDescale);
         }
-        ctx.scale(descale, descale);
 
         prev = center;
       }
