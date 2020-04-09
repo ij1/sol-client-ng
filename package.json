@@ -21,6 +21,7 @@
     "util.promisify": "^1.0.0",
     "vue": "^2.6.11",
     "vue-color": "^2.7.1",
+    "vue-resizable": "git+https://github.com/ij1/vue-resizable.git#no-resize",
     "vue2-leaflet": "^2.1.1",
     "vuejs-datepicker": "git+https://github.com/ij1/vuejs-datepicker.git#typeable-utc-fix-dist",
     "vuex": "^3.0.1"

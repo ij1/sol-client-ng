@@ -1,9 +1,15 @@
 <template>
-  <div
+  <vue-resizable
     class = "popup-window"
     :style = "{
       'z-index': zIndex
     }"
+    :active = "resizeHandlers"
+    :dragSelector = "dragSelector"
+    top = "50%"
+    left = "50%"
+    height = ""
+    width = ""
   >
     <div class = "popup-titlebar">
       <span>{{title}}</span>
@@ -43,12 +49,17 @@
         </button>
       </div>
     </form>
-  </div>
+  </vue-resizable>
 </template>
 
 <script>
+import VueResizable from 'vue-resizable';
+
 export default {
   name: 'PopupWindow',
+  components: {
+    'vue-resizable': VueResizable,
+  },
   props: {
     title: {
       type: String,
@@ -79,6 +90,12 @@ export default {
       default: false,
     },
   },
+  data () {
+    return {
+      resizeHandlers: [],
+      dragSelector: '.popup-titlebar',
+    }
+  },
   methods: {
     doFormEnter () {
       if (this.submitButtonLabel !== null) {
@@ -96,9 +113,6 @@ export default {
 <style scoped>
 .popup-window {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-right: -50%;
   transform: translate(-50%, -50%);
   border: solid 3px;
   border-radius: 10px;
