@@ -10,7 +10,10 @@
       :auto-completion = "true"
     >
       <div>
-        <select v-model = "authParams.race_id">
+        <select
+          id = "race-selector"
+          v-model = "authParams.race_id"
+        >
           <option disabled value = "">
             {{ raceSelectorInfo }}
           </option>
@@ -158,5 +161,8 @@ export default {
   min-height: 100%;
   background: #e0e0e0c0;
   z-index: 100;
+}
+#race-selector {
+  width: 400px;
 }
 </style>
