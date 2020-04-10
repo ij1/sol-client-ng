@@ -17,6 +17,11 @@
       >
         Settings
       </button>
+      <button
+        @click = "$store.commit('ui/showQuickHelp')"
+      >
+        Quick Help
+      </button>
     </div>
     <div>
       <div class="misc-header">Race Information</div>
