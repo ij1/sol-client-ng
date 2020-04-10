@@ -1,7 +1,7 @@
 <template>
   <l-marker
-    v-if = "!recreateHack"
     ref = "marker-container"
+    :key = "recreateHack"
     :lat-lng = "latLng"
     :options = "markerOptions"
     @ready = "doReady"
@@ -54,7 +54,7 @@ export default {
       markerOptions: {
         className: 'marker-nopointer',
       },
-      recreateHack: false,
+      recreateHack: 0,
     }
   },
 
@@ -99,13 +99,7 @@ export default {
     iconSize () {
       this.canvasReady = false;
       this.canvas = null;
-
-      this.$nextTick(() => {
-        this.recreateHack = true;
-        this.$nextTick(() => {
-          this.recreateHack = false;
-        });
-      });
+      this.recreateHack++;
     },
   }
 }
