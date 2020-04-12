@@ -106,6 +106,18 @@ export default {
   },
 
   computed: {
+    room () {
+      return this.$store.state.chatrooms.rooms[this.roomId];
+    },
+    rawMsgs () {
+      return this.room.msgs;
+    },
+    viewStamp () {
+      return this.room.viewStamp;
+    },
+    updateStamp () {
+      return this.room.updateStamp;
+    },
     messageDraft: {
       get () {
         for (let room of this.$store.state.chatrooms.activeRooms) {
@@ -126,7 +138,7 @@ export default {
     msgs () {
       let res = [];
       /* Dummy dep */
-      for (let msg of this.$store.state.chatrooms.rooms[this.roomId].msgs) {
+      for (let msg of this.rawMsgs) {
         let msgcopy = Object.assign({}, msg);
         if (typeof msg.boatId !== 'undefined') {
           msgcopy.boat = this.$store.getters['race/fleet/boatFromId'](msg.boatId);
@@ -188,6 +200,24 @@ export default {
         this.$store.commit('chatrooms/closeRoom', this.roomKey);
       }
     },
+    updateViewStamp () {
+      this.$store.commit('chatrooms/updateViewStamp', {
+        id: this.roomId,
+        timestamp: this.$store.getters['time/now'](),
+      });
+    },
+  },
+
+  mounted () {
+    this.updateViewStamp();
+  },
+
+  watch: {
+    updateStamp (newVal) {
+      if ((this.rawMsgs.length > 0) && (newVal > this.viewStamp)) {
+        this.updateViewStamp();
+      }
+    }
   }
 }
 </script>

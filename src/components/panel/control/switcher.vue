@@ -12,6 +12,10 @@
       </a>
       <a @click="activeTab=3" :class="activeTab === 3 ? 'active' : ''">
         <img src="../../../images/chat.png" alt="Chat"/>
+        <alert-triangle
+          v-if = "chatNewMessagesToShow"
+          class = "tab-alert"
+        />
       </a>
       <a
         v-if = "racemessages.length > 0"
@@ -60,7 +64,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import ControlSteering from './steering.vue';
 import ControlDCs from './dcs.vue';
 import ControlLeaderboards from './leaderboards.vue';
@@ -69,6 +73,7 @@ import ControlRaceMessages from './racemessages.vue';
 import ControlMisc from './misc.vue';
 import ControlDiagnostics from './diagnostics.vue';
 import LimaFlag from '../../limaflag.vue';
+import AlertTriangle from '../../alerttriangle.vue';
 
 export default {
   name: 'ControlPanel',
@@ -81,6 +86,7 @@ export default {
     'control-misc': ControlMisc,
     'control-diagnostics': ControlDiagnostics,
     'lima-flag': LimaFlag,
+    'alert-triangle': AlertTriangle,
   },
   computed: {
     activeTab: {
@@ -94,6 +100,9 @@ export default {
     ...mapState({
       configShowDiagnostics: state => state.diagnostics.cfg.showDiagnostics.value,
       racemessages: state => state.race.messages.racemsgs,
+    }),
+    ...mapGetters({
+      chatNewMessagesToShow: 'chatrooms/newMessagesToShow',
     }),
   },
 }
@@ -118,6 +127,7 @@ export default {
 }
 
 .tabs a {
+  position: relative;
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
@@ -149,5 +159,15 @@ export default {
   border-radius: 10px;
   box-sizing: border-box;
   height: 100%;
+}
+
+.tab-alert {
+  position: absolute;
+  top: 0px;
+  right: 1px;
+  width: 14px;
+  height: 14px;
+  font-size: 9px;
+  pointer-events: none;
 }
 </style>

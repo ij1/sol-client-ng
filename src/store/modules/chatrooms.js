@@ -45,6 +45,8 @@ export default {
           timestamp: 0,
           lastFetched: 0,
           boatIdsMapped: true,
+          updateStamp: 0,
+          viewStamp: 0,
         });
         state.roomList.push(chatroom.id);
       }
@@ -85,6 +87,11 @@ export default {
         state.rooms[data.id].msgs = newMsgs;
         state.rooms[data.id].timestamp = data.timestamp;
         state.rooms[data.id].boatIdsMapped = false;
+        state.rooms[data.id].updateStamp = data.fetchTimestamp;
+        /* If not viewed at all, make viewStamp to match updateStamp */
+        if (state.rooms[data.id].viewStamp === 0) {
+          state.rooms[data.id].viewStamp = data.fetchTimestamp;
+        }
       }
 
       state.rooms[data.id].lastFetched = data.fetchTimestamp;
@@ -96,6 +103,9 @@ export default {
     },
     consumeMsgId (state) {
       state.chatMsgId++;
+    },
+    updateViewStamp (state, data) {
+      state.rooms[data.id].viewStamp = data.timestamp;
     },
 
     mapBoatIds (state, name2boatId) {
@@ -197,6 +207,18 @@ export default {
         }
       }
       return fetchId;
+    },
+
+    newMessagesToShow: (state) => {
+      let res = false;
+
+      for (let activeRoom of state.activeRooms) {
+        const room = state.rooms[activeRoom.id];
+        if (room.msgs.length > 0 && room.viewStamp < room.updateStamp) {
+          res = true;
+        }
+      }
+      return res;
     },
   },
 
