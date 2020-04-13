@@ -7,7 +7,7 @@
     :key = "Date.now()"
     :segment = "aimSegment"
     :index = "null"
-    :color = "'#333'"
+    :color = "color"
     :world-copy-wrap = "false"
   />
 </template>
@@ -37,6 +37,9 @@ export default {
     }
   },
   computed: {
+    color () {
+      return this.currentDayNight === 'white' ? '#666' : '#3a3';
+    },
     aimSegment () {
       if (this.pendingPosition === null) {
         return null;
@@ -59,6 +62,7 @@ export default {
       wrappedPendingPosition: 'ui/ruler/wrappedPendingPosition',
       lastSegment: 'ui/ruler/lastSegment',
       extendingPath: 'ui/ruler/extendingPath',
+      currentDayNight: 'ui/currentDayNight',
     }),
   },
   methods: {

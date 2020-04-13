@@ -197,3 +197,43 @@ export default {
   }
 }
 </script>
+
+<style>
+.leaflet-popup-content {
+  font-weight: bold;
+}
+
+.time-of-day-white .leaflet-popup-pane {
+  mix-blend-mode: multiply;
+}
+.time-of-day-white .leaflet-popup {
+  color: #333;
+}
+.time-of-day-white .leaflet-popup .leaflet-popup-content-wrapper,
+.time-of-day-white .leaflet-popup .leaflet-popup-tip {
+  background: #ddd;
+}
+.time-of-day-white .leaflet-popup .leaflet-popup-close-button {
+  color: #333;
+}
+.time-of-day-white .leaflet-popup .leaflet-popup-close-button:hover {
+  color: #000;
+}
+
+.time-of-day-dark .leaflet-popup-pane {
+  mix-blend-mode: screen;
+}
+.time-of-day-dark .leaflet-popup {
+  color: #0e0;
+}
+.time-of-day-dark .leaflet-popup .leaflet-popup-content-wrapper,
+.time-of-day-dark .leaflet-popup .leaflet-popup-tip {
+  background: #222;
+}
+.time-of-day-dark .leaflet-popup .leaflet-popup-close-button {
+  color: #0c0;
+}
+.time-of-day-dark .leaflet-popup .leaflet-popup-close-button:hover {
+  color: #0f0;
+}
+</style>

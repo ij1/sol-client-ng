@@ -62,9 +62,16 @@ export default {
 <style scoped>
 #map-scale {
   pointer-events: none;
-  color: #000;
-  border: 1px solid #000;
+  border: 1px solid;
   border-top: 0px;
   font-size: 11px;
+}
+.time-of-day-white #map-scale {
+  color: #000;
+  border-color: #000;
+}
+.time-of-day-dark #map-scale {
+  color: #0f0;
+  border-color: #0f0;
 }
 </style>

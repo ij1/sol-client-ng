@@ -95,6 +95,7 @@ export default {
       this.$parent.zoom;
 
       this.$store.state.map.cfg.tinyIslands.value;
+      this.$store.getters['ui/currentDayNight'];
       // Return dummy value
       return Date.now();
     }
@@ -150,12 +151,15 @@ export default {
       const boundE = this.maxBounds.getEast();
       const boundW = this.maxBounds.getWest();
 
+      const landColor = this.$store.getters['ui/currentDayNight'] === 'white' ?
+                         '#ffddbb' : '#3d2b1f'
+
       ctx.save();
       let l = 1;
       while (typeof this.geoms['l' + l] !== 'undefined') {
         ctx.globalCompositeOperation = (l % 2 === 1) ?
           'source-over' : 'destination-out';
-        ctx.fillStyle = '#ffddbb';
+        ctx.fillStyle = landColor;
         for (let poly of this.geoms['l' + l]) {
           let first = true;
           ctx.beginPath();

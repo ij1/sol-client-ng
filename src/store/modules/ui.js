@@ -43,6 +43,7 @@ export default {
         values: [
           ['day', 'Daylight only'],
           ['white', 'White, no terminator'],
+          ['dark', 'Dark only'],
         ],
         type: 'values',
         cfgText: 'Day/night mode',
@@ -100,6 +101,12 @@ export default {
     },
     coordinateNoDegSymbol: (state) => {
       return state.cfg.coordinateFormat.value === 'signdegnosym';
+    },
+    currentDayNight: (state) => {
+      if (state.cfg.dayNightMode.value === 'dark') {
+        return 'dark';
+      }
+      return 'white';
     },
   },
   actions: {

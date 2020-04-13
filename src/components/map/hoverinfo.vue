@@ -64,4 +64,10 @@ export default {
   text-align: right;
   font-size: 12px;
 }
+.time-of-day-white #hover-info {
+  color: #000;
+}
+.time-of-day-dark #hover-info {
+  color: #0f0;
+}
 </style>

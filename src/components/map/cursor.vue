@@ -228,15 +228,25 @@ export default {
 #aimline-container {
   position: absolute;
   pointer-events: none;
-  mix-blend-mode: multiply;
   z-index: 999;
+}
+.time-of-day-white #aimline-container {
+  mix-blend-mode: multiply;
+}
+.time-of-day-dark #aimline-container {
+  mix-blend-mode: screen;
 }
 .aimline {
   position: absolute;
-  background: #ddd;
   cursor: crosshair;
   width: 1px;
   height: 1px;
+}
+.time-of-day-white .aimline {
+  background: #ddd;
+}
+.time-of-day-dark .aimline {
+  background: #333;
 }
 </style>
 

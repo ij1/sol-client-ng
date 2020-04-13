@@ -65,4 +65,10 @@ export default {
   text-align: right;
   cursor: crosshair;
 }
+.time-of-day-white #dc-bar {
+  color: #000;
+}
+.time-of-day-dark #dc-bar {
+  color: #0f0;
+}
 </style>

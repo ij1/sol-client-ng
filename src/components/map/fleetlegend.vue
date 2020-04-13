@@ -77,6 +77,12 @@ export default {
   pointer-events: none;
   margin: 2px;
 }
+.time-of-day-white #legend-info-ctrl {
+  color: #000;
+}
+.time-of-day-dark #legend-info-ctrl {
+  color: #0f0;
+}
 #legend-info {
   text-align: left;
   margin: 2px;

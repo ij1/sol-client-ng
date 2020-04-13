@@ -130,8 +130,13 @@ export default {
   top: 0px;
   left: 0px;
   z-index: 550;
-  mix-blend-mode: multiply;
   cursor: crosshair;
   pointer-events: none;
+}
+.time-of-day-white .canvas-overlay {
+   mix-blend-mode: multiply;
+}
+.time-of-day-dark .canvas-overlay {
+   mix-blend-mode: screen;
 }
 </style>

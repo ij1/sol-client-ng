@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     labelCol () {
-      return '#000';
+      return this.currentDayNight === 'white' ? '#000' : '#0f0';
     },
     gridOrigo () {
       const centerPoint = this.$parent.map.latLngToContainerPoint(this.center);
@@ -66,6 +66,7 @@ export default {
     }),
     ...mapGetters({
       twsContours: 'weather/twsContours',
+      currentDayNight: 'ui/currentDayNight',
     }),
   },
   methods: {

@@ -67,4 +67,10 @@ export default {
   font-size: 12px;
   cursor: crosshair;
 }
+.time-of-day-white #race-status {
+  color: #000;
+}
+.time-of-day-dark #race-status {
+  color: #0f0;
+}
 </style>

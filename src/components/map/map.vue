@@ -254,34 +254,36 @@ export default {
 .steering-tooltip {
   text-align: left;
 }
+.time-of-day-white .steering-tooltip {
+  color: #000;
+  background-color: #ddd;
+}
+.time-of-day-dark .steering-tooltip {
+  color: #0f0;
+  background-color: #333;
+  border-color: #0f0;
+}
 .steering-tooltip::before {
   all: unset;
 }
 
-.leaflet-popup-pane {
-  mix-blend-mode: multiply;
-}
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  background: #ddd;
-}
-.leaflet-container a.leaflet-popup-close-button {
-  color: #333;
-}
-.leaflet-container a.leaflet-popup-close-button:hover {
-  color: #000;
-}
-.leaflet-popup-content {
-  color: #333;
-  font-weight: bold;
+  background: unset;
+  color: unset;
 }
 
 .ruler-line-tooltip {
   background: transparent;
   border: 0px;
-  color: black;
   padding: 0px;
   box-shadow: unset;
   line-height: 1.05;
+}
+.time-of-day-white .ruler-line-tooltip {
+  color: #000;
+}
+.time-of-day-dark .ruler-line-tooltip {
+  color: #0f0;
 }
 
 .ruler-line-tooltip::before {
@@ -307,19 +309,34 @@ export default {
   cursor: crosshair;
 }
 
-.leaflet-top, .leaflet-right {
+.time-of-day-white .leaflet-top,
+.time-of-day-white .leaflet-right {
   mix-blend-mode: multiply;
+}
+.time-of-day-dark .leaflet-top,
+.time-of-day-dark .leaflet-right {
+  mix-blend-mode: screen;
 }
 
 .tool-button {
   padding: 5px;
-  border: 1px solid rgba(48, 48, 48, 0.6);
   border-radius: 3px;
-  background-color: #ddd;
   font-weight: bold;
   overflow: hidden;
   cursor: auto;
   user-select: none;
+}
+.time-of-day-white .tool-button,
+.time-of-day-white .tool-button {
+  border: 1px solid rgba(48, 48, 48, 0.6);
+  background-color: #ddd;
+  color: #000;
+}
+.time-of-day-dark .tool-button,
+.time-of-day-dark .tool-button {
+  border: 1px solid rgba(0, 200, 0, 0.6);
+  background-color: #333;
+  color: #0f0;
 }
 .tool-button-enabled {
   color: #f00 !important;
