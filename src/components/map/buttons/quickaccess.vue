@@ -5,11 +5,10 @@
     <div id = "quick-access-container">
       <transition-group name = "fade" tag = "div">
         <div
-          class = "tool-button tool-subbutton"
+          :class = "twsClasses"
           ref = "quick-access-tws"
           key = "qa-tws"
           v-if = "cfgQuickAccessButtons"
-          :style = "{color: cfgTwsTxt ? 'red' : 'black'}"
           @click.stop.prevent = "onTwsClick"
           @touchstart.stop.prevent = "onTwsClick"
           @touchend.stop.prevent
@@ -17,11 +16,10 @@
           TWS
         </div>
         <div
-          class = "tool-button tool-subbutton"
+          :class = "twdClasses"
           ref = "quick-access-twd"
           key = "qa-twd"
           v-if = "cfgQuickAccessButtons"
-          :style = "{color: cfgTwdTxt ? 'red' : 'black'}"
           @click.stop.prevent = "onTwdClick"
           @touchstart.stop.prevent = "onTwdClick"
           @touchend.stop.prevent
@@ -44,6 +42,20 @@ export default {
     'l-control': LControl,
   },
   computed: {
+    twsClasses () {
+      return [
+        'tool-button',
+        'tool-subbutton',
+        this.cfgTwsTxt ? 'tool-button-enabled' : '',
+      ];
+    },
+    twdClasses () {
+      return [
+        'tool-button',
+        'tool-subbutton',
+        this.cfgTwdTxt ? 'tool-button-enabled' : '',
+      ];
+    },
     ...mapState({
       cfgQuickAccessButtons: state => state.weather.cfg.quickAccessButtons.value,
       cfgTwsTxt: state => state.weather.cfg.twsTxt.value,

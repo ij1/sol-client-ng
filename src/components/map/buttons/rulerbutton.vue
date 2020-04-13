@@ -4,9 +4,8 @@
   >
     <div id = "ruler-container">
       <div
-        class = "tool-button"
+        :class = "classes"
         ref = "ruler-button"
-        :style = "{color: rulerEnabled ? 'red' : 'black'}"
         @click.stop.prevent = "onClick"
         @touchstart.stop.prevent = "onClick"
         @touchend.stop.prevent
@@ -52,6 +51,12 @@ export default {
     'l-control': LControl,
   },
   computed: {
+    classes () {
+      return [
+        'tool-button',
+        this.rulerEnabled ? 'tool-button-enabled' : ''
+      ];
+    },
     canDel () {
       return (this.rulerSegments.length > 0) ||
              (this.rulerPendingPosition !== null);

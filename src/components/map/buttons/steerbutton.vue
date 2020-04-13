@@ -3,9 +3,8 @@
     :position = "'topleft'"
   >
     <div
-      class = "tool-button"
+      :class = "classes"
       ref = "steer-button"
-      :style = "{color: color}"
       @click.stop.prevent = "onClick"
       @touchstart.stop.prevent = "onClick"
       @touchend.stop.prevent
@@ -26,13 +25,12 @@ export default {
     'l-control': LControl,
   },
   computed: {
-    color () {
-      if (this.visualSteeringEnabled) {
-        return 'red';
-      } else if (!this.allowControl) {
-        return 'rgba(96, 96, 96, 0.6)';
-      }
-      return 'black';
+    classes () {
+      return [
+        'tool-button',
+        this.visualSteeringEnabled ? 'tool-button-enabled' :
+          (!this.allowControl ? 'tool-button-disabled' : '')
+      ];
     },
     ...mapState({
       visualShowPolar: state => state.boat.steering.cfg.showPolarImmediately.value,

@@ -321,4 +321,10 @@ export default {
   cursor: auto;
   user-select: none;
 }
+.tool-button-enabled {
+  color: #f00 !important;
+}
+.tool-button-disabled {
+  color: rgba(96, 96, 96, 0.6) !important;
+}
 </style>
