@@ -151,8 +151,9 @@ export default {
       const boundE = this.maxBounds.getEast();
       const boundW = this.maxBounds.getWest();
 
-      const landColor = this.$store.getters['ui/currentDayNight'] === 'white' ?
-                         '#ffddbb' : '#3d2b1f'
+      const isDark = this.$store.getters['ui/currentDayNight'] === 'dark';
+      const landColor = !isDark ? '#ffddbb' : '#3d2b1f';
+      const outlineColor = !isDark ? '#000000' : '#6f5f4f';
 
       ctx.save();
       let l = 1;
@@ -177,8 +178,8 @@ export default {
 
         /* Draw outline */
         ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = '#000';
-        ctx.fillStyle = '#000';
+        ctx.strokeStyle = outlineColor;
+        ctx.fillStyle = outlineColor;
         for (let poly of this.geoms['l' + l]) {
           let first = true;
           let prevAtBorder = 0;
