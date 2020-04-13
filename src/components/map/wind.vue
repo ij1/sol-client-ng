@@ -17,6 +17,9 @@ export default {
     }
   },
   computed: {
+    labelCol () {
+      return '#000';
+    },
     gridOrigo () {
       const centerPoint = this.$parent.map.latLngToContainerPoint(this.center);
 
@@ -66,6 +69,99 @@ export default {
     }),
   },
   methods: {
+    drawArrow (ctx, knots) {
+      const lw = knots < 50 ? knots / 10 : 5;
+      const len = (knots < 20 ? Math.floor(knots) : 20) + 6;
+
+      ctx.lineWidth = 1;
+      ctx.lineJoin = 'miter';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(lw+2, -lw-3);
+      ctx.lineTo(-lw-2, -lw-3);
+      ctx.fill();
+
+      ctx.lineWidth = lw+1;
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(0, -lw-2);
+      ctx.lineTo(0, -len);
+      ctx.stroke();
+    },
+    drawBarb (ctx, knots, lat) {
+      let fiveScale = Math.round(knots / 5);
+      const hemi = lat > 0 ? 1 : -1;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      if (fiveScale > 0) {
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -16 - Math.floor(fiveScale / 10) * 6);
+        ctx.stroke();
+        if (fiveScale >= 10) {
+          ctx.lineWidth = 1;
+          ctx.lineJoin = 'miter';
+          ctx.beginPath();
+          ctx.moveTo(0, -18);
+          if (fiveScale >= 20) {
+            ctx.lineTo(0, -30);
+            ctx.lineTo(7 * hemi, -29);
+            fiveScale -= 10;
+          }
+          ctx.lineTo(0, -24);
+          ctx.lineTo(7 * hemi, -23);
+          ctx.lineTo(0, -18);
+          ctx.fill();
+          fiveScale -= 10;
+        }
+        /* Limits the scale to 145 knots */
+        fiveScale = Math.min(fiveScale, 9);
+        let y = -16;
+        while (fiveScale >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(7 * hemi, y-3);
+          ctx.stroke();
+          y += 3;
+          fiveScale -= 2;
+        }
+        if (fiveScale > 0) {
+          if (y === -16) {
+            y += 3;
+          }
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(4 * hemi, y-2);
+          ctx.stroke();
+        }
+      } else {
+        ctx.arc(0, 0, 3, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        if (knots < 0.5) {
+          ctx.arc(0, 0, 1, 0, 2 * Math.PI);
+          ctx.fill();
+        } else {
+          ctx.moveTo(0, -4);
+          ctx.lineTo(0, -10);
+          ctx.stroke();
+        }
+      }
+    },
+    drawWindLabels (ctx, twd, knots) {
+      ctx.fillStyle = this.labelCol;
+      let twdDeg = radToDeg(twd);
+      let y = 7;
+      if (90 <= twdDeg && twdDeg <= 180) {
+        y = this.cfgTwsTxt && this.cfgTwdTxt ? -11 : -2;
+      }
+      if (this.cfgTwsTxt) {
+        ctx.fillText(roundToFixed(knots, 2), 3, y);
+        y += 9;
+      }
+      if (this.cfgTwdTxt) {
+        ctx.fillText(roundToFixed(twdDeg, 2) + '\xb0', 3, y);
+      }
+    },
     redraw (ctx) {
       ctx.save();
       this.drawContours(ctx);
@@ -87,98 +183,13 @@ export default {
               ctx.fillStyle = color;
 
               if (this.useArrows) {
-                const lw = wind.knots < 50 ? wind.knots / 10 : 5;
-                const len = (wind.knots < 20 ? Math.floor(wind.knots) : 20) + 6;
-
-                ctx.lineWidth = 1;
-                ctx.lineJoin = 'miter';
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(lw+2, -lw-3);
-                ctx.lineTo(-lw-2, -lw-3);
-                ctx.fill();
- 
-                ctx.lineWidth = lw+1;
-                ctx.lineJoin = 'round';
-                ctx.beginPath();
-                ctx.moveTo(0, -lw-2);
-                ctx.lineTo(0, -len);
-                ctx.stroke();
+                this.drawArrow(ctx, wind.knots);
               } else if (this.useBarbs) {
-                let fiveScale = Math.round(wind.knots / 5);
-                const hemi = windPoint.lat > 0 ? 1 : -1;
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                if (fiveScale > 0) {
-                  ctx.moveTo(0, 0);
-                  ctx.lineTo(0, -16 - Math.floor(fiveScale / 10) * 6);
-                  ctx.stroke();
-                  if (fiveScale >= 10) {
-                    ctx.lineWidth = 1;
-                    ctx.lineJoin = 'miter';
-                    ctx.beginPath();
-                    ctx.moveTo(0, -18);
-                    if (fiveScale >= 20) {
-                      ctx.lineTo(0, -30);
-                      ctx.lineTo(7 * hemi, -29);
-                      fiveScale -= 10;
-                    }
-                    ctx.lineTo(0, -24);
-                    ctx.lineTo(7 * hemi, -23);
-                    ctx.lineTo(0, -18);
-                    ctx.fill();
-                    fiveScale -= 10;
-                  }
-                  /* Limits the scale to 145 knots */
-                  fiveScale = Math.min(fiveScale, 9);
-                  let y = -16;
-                  while (fiveScale >= 2) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(7 * hemi, y-3);
-                    ctx.stroke();
-                    y += 3;
-                    fiveScale -= 2;
-                  }
-                  if (fiveScale > 0) {
-                    if (y === -16) {
-                      y += 3;
-                    }
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(4 * hemi, y-2);
-                    ctx.stroke();
-                  }
-                } else {
-                  ctx.arc(0, 0, 3, 0, 2 * Math.PI);
-                  ctx.stroke();
-                  ctx.beginPath();
-                  if (wind.knots < 0.5) {
-                    ctx.arc(0, 0, 1, 0, 2 * Math.PI);
-                    ctx.fill();
-                  } else {
-                    ctx.moveTo(0, -4);
-                    ctx.lineTo(0, -10);
-                    ctx.stroke();
-                  }
-                }
+                this.drawBarb(ctx, wind.knots, windPoint.lat);
               }
-
               ctx.rotate(-wind.twd);
 
-              ctx.fillStyle = '#000';
-              let twdDeg = radToDeg(wind.twd);
-              let y = 7;
-              if (90 <= twdDeg && twdDeg <= 180) {
-                y = this.cfgTwsTxt && this.cfgTwdTxt ? -11 : -2;
-              }
-              if (this.cfgTwsTxt) {
-                ctx.fillText(roundToFixed(wind.knots, 2), 3, y);
-                y += 9;
-              }
-              if (this.cfgTwdTxt) {
-                ctx.fillText(roundToFixed(twdDeg, 2) + '\xb0', 3, y);
-              }
+              this.drawWindLabels(ctx, wind.twd, wind.knots);
             }
           }
           ctx.translate(this.gridInterval, 0);
@@ -699,18 +710,21 @@ export default {
               ctx.strokeStyle = this.twsContourColor[twsIdx];
               for (let i = minWrap; i <= maxWrap; i++) {
                 const offset = (i - baseWrap) * wrapOffset;
-                if (i === minWrap) {
-                  ctx.translate(offset, 0);
-                }
-                ctx.stroke(twsData.paths[r]);
-
-                /* Last one undoes all wraps, otherwise step one wrap */
-                ctx.translate(i === maxWrap ? -offset : wrapOffset, 0);
+                this.drawContour(ctx, twsData.paths[r], offset, i,
+                                  minWrap, maxWrap, wrapOffset);
               }
             }
           }
         }
       }
+    },
+    drawContour(ctx, path, offset, i, minWrap, maxWrap, wrapOffset) {
+      if (i === minWrap) {
+        ctx.translate(offset, 0);
+      }
+      ctx.stroke(path);
+      /* Last one undoes all wraps, otherwise step one wrap */
+      ctx.translate(i === maxWrap ? -offset : wrapOffset, 0);
     },
   },
   render () {
