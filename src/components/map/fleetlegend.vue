@@ -79,9 +79,11 @@ export default {
 }
 .time-of-day-white #legend-info-ctrl {
   color: #000;
+  background: rgba(200, 200, 200, 0.6);
 }
 .time-of-day-dark #legend-info-ctrl {
   color: #0f0;
+  background: rgba(60, 60, 60, 0.8);
 }
 #legend-info {
   text-align: left;
@@ -102,5 +104,6 @@ export default {
 }
 .boat-ranking, .boat-name {
   margin: 2px;
+  font-weight: bold;
 }
 </style>
