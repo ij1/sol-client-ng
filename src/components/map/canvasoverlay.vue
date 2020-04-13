@@ -28,6 +28,7 @@ export default {
     return {
       ready: false,
       canvas: null,
+      canvas2: null,
       animFrame: null,
     }
   },
@@ -57,15 +58,21 @@ export default {
     redraw () {
       let ctx = this.canvas.getContext('2d');
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      let ctx2 = this.canvas2.getContext('2d');
+      ctx2.clearRect(0, 0, this.canvas2.width, this.canvas2.height);
 
       if (this.ready) {
         ctx.save();
-        canvasAlignToPixelCenter(ctx);
-        this.$refs['wind-map'].redraw(ctx);
+        ctx2.save();
+        canvasAlignToPixelCenter(ctx, ctx2);
+        this.$refs['wind-map'].redraw(ctx, ctx2);
+        ctx2.restore();
         ctx.restore();
         ctx.save();
-        canvasAlignToPixelCenter(ctx);
-        this.$refs['steering-predictors'].redraw(ctx);
+        ctx2.save();
+        canvasAlignToPixelCenter(ctx, ctx2);
+        this.$refs['steering-predictors'].redraw(ctx, ctx2);
+        ctx2.restore();
         ctx.restore();
       }
 
@@ -74,6 +81,8 @@ export default {
     setCanvasSize () {
       this.canvas.width = this.size.x;
       this.canvas.height = this.size.y;
+      this.canvas2.width = this.size.x;
+      this.canvas2.height = this.size.y;
     },
     requestRedraw() {
       if (this.animFrame === null) {
@@ -95,8 +104,10 @@ export default {
     this.zoom = this.map.getZoom();
 
     this.canvas = L.DomUtil.create('canvas', 'canvas-overlay');
+    this.canvas2 = L.DomUtil.create('canvas', 'canvas-overlay2');
     this.setCanvasSize();
     this.map.getContainer().appendChild(this.canvas);
+    this.map.getContainer().appendChild(this.canvas2);
 
     this.map.on('move', this.onMove, this);
     this.map.on('moveend', this.onMove, this);
@@ -118,6 +129,7 @@ export default {
     this.map.off('moveend', this.onMove, this);
     this.map.off('move', this.onMove, this);
 
+    this.map.getContainer().removeChild(this.canvas2);
     this.map.getContainer().removeChild(this.canvas);
     this.canvas = null;
   },
@@ -130,13 +142,17 @@ export default {
   top: 0px;
   left: 0px;
   z-index: 550;
+   mix-blend-mode: multiply;
   cursor: crosshair;
   pointer-events: none;
 }
-.time-of-day-white .canvas-overlay {
-   mix-blend-mode: multiply;
-}
-.time-of-day-dark .canvas-overlay {
+.canvas-overlay2 {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 550;
    mix-blend-mode: screen;
+  cursor: crosshair;
+  pointer-events: none;
 }
 </style>

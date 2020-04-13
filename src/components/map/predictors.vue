@@ -35,6 +35,9 @@ export default {
   },
 
   computed: {
+    isDark () {
+      return this.currentDayNight === 'dark';
+    },
     inactiveColor () {
       const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
       return 'rgba(' +
@@ -174,6 +177,7 @@ export default {
       this.plottedDcDelay;
       this.cfgPredictors;
       this.commandBoatColor;
+      this.isDark;
 
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
@@ -188,6 +192,7 @@ export default {
       visualPosition: 'boat/visualPosition',
       isTowbackPeriod: 'race/isTowbackPeriod',
       allowControl: 'boat/allowControl',
+      currentDayNight: 'ui/currentDayNight',
     }),
     ...mapState({
       wxLoaded: state => state.weather.loaded,
@@ -215,7 +220,10 @@ export default {
       return this.currentSteering === predictor ?
              this.commandBoatColor : this.inactiveColor;
     },
-    redraw (ctx) {
+    redraw (ctx, ctx2) {
+      this.__redraw(!this.isDark ? ctx : ctx2);
+    },
+    __redraw (ctx) {
       const z = this.zoom;
 
       // ADDME: add mixing to do all world copies and loop then here

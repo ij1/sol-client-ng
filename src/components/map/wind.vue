@@ -20,6 +20,9 @@ export default {
     labelCol () {
       return this.currentDayNight === 'white' ? '#000' : '#0f0';
     },
+    isDark () {
+      return this.currentDayNight === 'dark';
+    },
     gridOrigo () {
       const centerPoint = this.$parent.map.latLngToContainerPoint(this.center);
 
@@ -41,6 +44,7 @@ export default {
       this.cfgTwsTxt;
       this.cfgTwdTxt;
       this.cfgTwsContours;
+      this.isDark;
       /* Monotonically increasing value to trigger watch reliably every time */
       return Date.now();
     },
@@ -163,12 +167,16 @@ export default {
         ctx.fillText(roundToFixed(twdDeg, 2) + '\xb0', 3, y);
       }
     },
-    redraw (ctx) {
+    redraw (ctx, ctx2) {
       ctx.save();
-      this.drawContours(ctx);
+      ctx2.save();
+      this.drawContours(ctx, ctx2);
       ctx.restore();
+      ctx2.restore();
       ctx.font = "9px Arial";
+      ctx2.font = "9px Arial";
       ctx.translate(this.gridOrigo.x, this.gridOrigo.y);
+      ctx2.translate(this.gridOrigo.x, this.gridOrigo.y);
       for (let y = this.gridOrigo.y; y <= this.$parent.size.y; y += this.gridInterval) {
         let xUndo = 0;
         for (let x = this.gridOrigo.x; x <= this.$parent.size.x; x += this.gridInterval) {
@@ -179,24 +187,36 @@ export default {
             const wind = this.$store.getters['weather/latLngWind'](windPoint);
             if (wind !== null) {
               ctx.rotate(wind.twd);
+              ctx2.rotate(wind.twd);
               const color = windToColor(wind.knots);
               ctx.strokeStyle = color;
+              ctx2.strokeStyle = color;
               ctx.fillStyle = color;
+              ctx2.fillStyle = color;
 
               if (this.useArrows) {
                 this.drawArrow(ctx, wind.knots);
+                if (this.isDark) {
+                  this.drawArrow(ctx2, wind.knots);
+                }
               } else if (this.useBarbs) {
                 this.drawBarb(ctx, wind.knots, windPoint.lat);
+                if (this.isDark) {
+                  this.drawBarb(ctx2, wind.knots, windPoint.lat);
+                }
               }
               ctx.rotate(-wind.twd);
+              ctx2.rotate(-wind.twd);
 
-              this.drawWindLabels(ctx, wind.twd, wind.knots);
+              this.drawWindLabels(!this.isDark ? ctx : ctx2, wind.twd, wind.knots);
             }
           }
           ctx.translate(this.gridInterval, 0);
+          ctx2.translate(this.gridInterval, 0);
           xUndo -= this.gridInterval;
         }
         ctx.translate(xUndo, this.gridInterval);
+        ctx2.translate(xUndo, this.gridInterval);
       }
     },
     logError (error) {
@@ -246,7 +266,7 @@ export default {
      * merge (which is detected as edge, the iteration is unlikely to
      * hit the exact value).
      */
-    drawContours (ctx) {
+    drawContours (ctx, ctx2) {
       if (!this.wxLoaded || (this.twsContours.length === 0)) {
         return;
       }
@@ -321,7 +341,8 @@ export default {
         firstMaxCell = this.wxCells[1] - 1;
       }
 
-      this.__drawContours(ctx, minCell, firstMaxCell, latCells.x, latCells.y,
+      this.__drawContours(ctx, ctx2,
+                          minCell, firstMaxCell, latCells.x, latCells.y,
                           yToLat, yStart, yEnd, cellStep,
                           minWrap, maxWrap);
 
@@ -331,12 +352,14 @@ export default {
         if (maxWrap - minWrap > 1) {
           maxCell = minCell;
         }
-        this.__drawContours(ctx, 0, maxCell, latCells.x, latCells.y,
+        this.__drawContours(ctx, ctx2,
+                            0, maxCell, latCells.x, latCells.y,
                             yToLat, yStart, yEnd, cellStep,
                             minWrap + 1, maxWrap);
       }
     },
-    __drawContours (ctx, minLngCell, maxLngCell, minLatCell, maxLatCell,
+    __drawContours (ctx, ctx2,
+                    minLngCell, maxLngCell, minLatCell, maxLatCell,
                     yToLat, yStart, yEnd, cellStep, minWrap, maxWrap) {
       const baseWrap = minWrap === maxWrap ? minWrap : 0;
       const wrapOffset = 256 * 2 ** this.zoom;
@@ -709,10 +732,15 @@ export default {
             if (twsData.draw[r]) {
               twsData.paths[r].moveTo(0, 0);
               ctx.strokeStyle = this.twsContourColor[twsIdx];
+              ctx2.strokeStyle = this.twsContourColor[twsIdx];
               for (let i = minWrap; i <= maxWrap; i++) {
                 const offset = (i - baseWrap) * wrapOffset;
                 this.drawContour(ctx, twsData.paths[r], offset, i,
                                   minWrap, maxWrap, wrapOffset);
+                if (this.isDark) {
+                  this.drawContour(ctx2, twsData.paths[r], offset, i,
+                                    minWrap, maxWrap, wrapOffset);
+                }
               }
             }
           }
