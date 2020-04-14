@@ -1,6 +1,7 @@
 import { orderBy } from 'lodash';
 import { minToMsec, UTCToMsec } from '../../lib/utils.js';
 import { configSetValue } from '../../components/config/configstore.js';
+import { solapiRetryDispatch } from '../../lib/solapi.js';
 
 export default {
   namespaced: true,
@@ -129,8 +130,8 @@ export default {
   },
 
   actions: {
-    fetchDCs({state, rootState, rootGetters, commit, dispatch}) {
-      if (state.dcs.fetching) {
+    fetchDCs({state, rootState, rootGetters, commit, dispatch}, retry = false) {
+      if (!retry && state.dcs.fetching) {
         return;
       }
 
@@ -175,6 +176,7 @@ export default {
           apiCall: 'dclist',
           error: err,
         }, {root: true});
+        solapiRetryDispatch(dispatch, 'fetchDCs', true, 11000);
       });
     },
 
