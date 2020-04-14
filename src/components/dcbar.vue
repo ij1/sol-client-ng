@@ -63,12 +63,15 @@ export default {
 #dc-bar {
   pointer-events: none;
   text-align: right;
+  font-weight: bold;
   cursor: crosshair;
 }
 .time-of-day-white #dc-bar {
   color: #000;
+  background: rgba(180, 180, 180, 0.5);
 }
 .time-of-day-dark #dc-bar {
   color: #0f0;
+  background: rgba(40, 40, 40, 0.9);
 }
 </style>
