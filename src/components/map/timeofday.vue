@@ -78,20 +78,4 @@ export default {
   background-color: #00004f !important;
   transition: background-color 0.5s;
 }
-
-.time-of-day-color-white {
-  color: #000000;
-  transition: color 0.5s;
-}
-.time-of-day-color-dark {
-  color: #00ff00;
-  transition: color 0.5s;
-}
-
-.time-of-day-blend-white {
-  mix-blend-mode: multiply;
-}
-.time-of-day-blend-dark {
-  mix-blend-mode: screen;
-}
 </style>
