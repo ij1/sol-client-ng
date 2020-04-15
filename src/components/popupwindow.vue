@@ -112,7 +112,7 @@ export default {
 
 <style scoped>
 .popup-window {
-  position: absolute;
+  position: absolute !important;
   transform: translate(-50%, -50%);
   border: solid 3px;
   border-radius: 10px;
