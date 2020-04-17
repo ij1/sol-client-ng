@@ -6,6 +6,8 @@ import { gcCalc, loxoCalc, minTurnAngle } from '../../lib/nav.js';
 import { PROJECTION, EARTH_R, solBoatPolicy, PR_MARK_BOAT } from '../../lib/sol.js';
 
 const nearDistance = 0.0001 * 1852 / EARTH_R;
+const colorCorrectionLimitWhite = 128;
+const colorCorrectionLimitDark = 160;
 
 function addToName2id (state, name, id) {
   if (state.name2id.has(name)) {
@@ -400,12 +402,44 @@ export default {
       }
     },
     /* Does not use state, just to use common code for boat colors */
-    boatColor: (state, getters, rootState) => (boat) => {
+    boatColor: (state, getters, rootState, rootGetters) => (boat) => {
       if ((boat.id === state.boat[state.playerBoatIdx].id) &&
           (rootState.map.cfg.ownBoatColor.value === 'magenta')) {
         return '#ff00ff';
       }
-      return 'rgba(' + boat.color.r + ',' + boat.color.g + ',' + boat.color.b + ', 0.8)';
+      let r = boat.color.r;
+      let g = boat.color.g;
+      let b = boat.color.b;
+      if (rootGetters['ui/isDark']) {
+        const max = Math.max(r, g, b);
+        if (max < colorCorrectionLimitDark) {
+          const correctionFactor = colorCorrectionLimitDark / max;
+          if (r >= max * 0.6) {
+            r = Math.round(r * correctionFactor);
+          }
+          if (g >= max * 0.6) {
+            g = Math.round(g * correctionFactor);
+          }
+          if (b >= max * 0.6) {
+            b = Math.round(b * correctionFactor);
+          }
+        }
+      } else {
+        const min = Math.min(r, g, b);
+        if (min > colorCorrectionLimitWhite) {
+          const correctionFactor = colorCorrectionLimitWhite / min;
+          if (r <= min * 1.4) {
+            r = Math.round(r * correctionFactor);
+          }
+          if (g <= min * 1.4) {
+            g = Math.round(g * correctionFactor);
+          }
+          if (b <= min * 1.4) {
+            b = Math.round(b * correctionFactor);
+          }
+        }
+      }
+      return 'rgba(' + r + ',' + g + ',' + b + ', 0.8)';
     },
 
     multiClassRace: (state) => {
