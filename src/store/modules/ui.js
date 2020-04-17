@@ -108,6 +108,9 @@ export default {
       }
       return 'white';
     },
+    isDark: (state, getters) => {
+      return getters['currentDayNight'] === 'dark';
+    },
   },
   actions: {
     setUiMode({state, commit}, uiMode) {

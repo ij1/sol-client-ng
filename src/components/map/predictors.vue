@@ -35,9 +35,6 @@ export default {
   },
 
   computed: {
-    isDark () {
-      return this.currentDayNight === 'dark';
-    },
     inactiveColor () {
       const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
       return 'rgba(' +
@@ -192,7 +189,7 @@ export default {
       visualPosition: 'boat/visualPosition',
       isTowbackPeriod: 'race/isTowbackPeriod',
       allowControl: 'boat/allowControl',
-      currentDayNight: 'ui/currentDayNight',
+      isDark: 'ui/isDark',
     }),
     ...mapState({
       wxLoaded: state => state.weather.loaded,
