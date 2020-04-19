@@ -87,11 +87,15 @@ export default {
         state.rooms[data.id].msgs = newMsgs;
         state.rooms[data.id].timestamp = data.timestamp;
         state.rooms[data.id].boatIdsMapped = false;
-        state.rooms[data.id].updateStamp = data.fetchTimestamp;
-        /* If not viewed at all, make viewStamp to match updateStamp */
-        if (state.rooms[data.id].viewStamp === 0) {
+        /* If not viewed at all, make viewStamp to match updateStamp or only
+         * own messages were added (and all other were already viewed)
+         */
+        if ((state.rooms[data.id].viewStamp === 0) ||
+            (!data.messagesFromOthers &&
+             (state.rooms[data.id].viewStamp >= state.rooms[data.id].updateStamp))) {
           state.rooms[data.id].viewStamp = data.fetchTimestamp;
         }
+        state.rooms[data.id].updateStamp = data.fetchTimestamp;
       }
 
       state.rooms[data.id].lastFetched = data.fetchTimestamp;
@@ -264,6 +268,7 @@ export default {
       const chatData = chatInfo.chatData;
       let chat = [];
       let timestamp = null;
+      let messagesFromOthers = false;
 
       if ((typeof chatData.chat !== 'undefined') &&
           (typeof chatData.timestamp !== 'undefined')) {
@@ -301,6 +306,9 @@ export default {
                        'Dropped duplicated message from ' + c.name, {root: true});
               continue;
             }
+            if (c.name !== rootState.boat.name) {
+              messagesFromOthers = true;
+            }
 
             chat.push({
               id: state.chatMsgId,
@@ -317,6 +325,7 @@ export default {
         timestamp: timestamp,
         fetchTimestamp: now,
         chat: chat,
+        messagesFromOthers: messagesFromOthers,
       });
       commit('mapBoatIds', rootState.race.fleet.name2id);
     },
