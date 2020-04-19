@@ -6,12 +6,16 @@
     <div
       v-if = "combinedIds.length > 0"
       id = "legend-info"
+      ref = "legend-info"
     >
       <div
         class = "legend-row"
         v-for = "boat in legendBoats"
         :key = "boat.id"
         :class = "{ 'legend-hover': typeof hoverObj[boat.id] !== 'undefined' }"
+        @click.stop.prevent = "highlightBoat($event, boat.id)"
+        @touchstart.stop.prevent = "highlightBoat($event, boat.id)"
+        @touchend.stop.prevent
       >
         <div
           class = "color-block"
@@ -33,7 +37,9 @@
 </template>
 
 <script>
+import L from 'leaflet';
 import { mapGetters, mapState } from 'vuex';
+import { EventBus } from '../../lib/event-bus.js';
 import { LControl } from 'vue2-leaflet';
 import CountryFlag from '../countryflag.vue';
 import SycFlag from '../sycflag.vue';
@@ -67,7 +73,28 @@ export default {
     }),
     ...mapState({
       hoverObj: state => state.race.fleet.hover,
+      ownBoatId: state => state.boat.id,
+      commandBoatPosition: state => state.boat.position,
+      cfgFleetBoatMode: state => state.map.cfg.fleetBoatMode.value,
     }),
+  },
+  updated () {
+    if (typeof this.$refs['legend-info'] !== 'undefined') {
+      L.DomEvent.disableClickPropagation(this.$refs['legend-info']);
+    }
+  },
+  methods: {
+    highlightBoat (e, boatId) {
+      const boat = this.fleetBoatFromId(boatId);
+      let position = boat.latLng;
+      if (this.cfgFleetBoatMode === 'off' && boatId === this.ownBoatId) {
+        position = this.commandBoatPosition;
+      }
+      EventBus.$emit('map-highlight', {
+        latLng: position,
+        keepMapPosition: e.altKey,
+      });
+    },
   },
 }
 </script>
@@ -92,6 +119,7 @@ export default {
 }
 .legend-row {
   margin: 1px;
+  pointer-events: auto;
 }
 .legend-hover {
   background-color: rgba(60, 60, 255, 0.25);
