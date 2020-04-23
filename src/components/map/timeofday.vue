@@ -75,6 +75,7 @@ export default {
   transition: background-color 0.5s;
 }
 .time-of-day-dark {
+  /* darkSeaColor */
   background-color: #00004f !important;
   transition: background-color 0.5s;
 }

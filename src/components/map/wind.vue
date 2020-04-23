@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
-import { windToColor, MS_TO_KNT } from '../../lib/sol.js';
+import { windToColor, MS_TO_KNT, darkSeaColor } from '../../lib/sol.js';
 import { radToDeg, bsearchLeft } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 
@@ -187,9 +187,9 @@ export default {
               ctx.rotate(wind.twd);
               ctx2.rotate(wind.twd);
               const color = windToColor(wind.knots);
-              ctx.strokeStyle = color;
+              ctx.strokeStyle = !this.isDark ? color : darkSeaColor;
               ctx2.strokeStyle = color;
-              ctx.fillStyle = color;
+              ctx.fillStyle = !this.isDark ? color : darkSeaColor;
               ctx2.fillStyle = color;
 
               if (this.useArrows) {

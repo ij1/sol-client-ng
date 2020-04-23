@@ -142,9 +142,12 @@ export default {
   top: 0px;
   left: 0px;
   z-index: 550;
-   mix-blend-mode: multiply;
+  mix-blend-mode: multiply;
   cursor: crosshair;
   pointer-events: none;
+}
+.time-of-day-dark .canvas-overlay {
+  mix-blend-mode: difference;
 }
 .canvas-overlay2 {
   position: absolute;

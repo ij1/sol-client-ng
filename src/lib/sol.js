@@ -11,6 +11,8 @@ export const OLD_CLIENT_MAXZOOM_ACCURATE = 16.8342;
 
 export const PR_MARK_BOAT = 'Practice_Mark_';
 
+export const darkSeaColor = '#00004f';
+
 /* Returns true if the boat is ok to draw / control */
 export function solBoatPolicy(boatname, rootGetters) {
   if (boatname === 'guest') {
