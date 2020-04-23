@@ -154,7 +154,7 @@ export default {
   top: 0px;
   left: 0px;
   z-index: 550;
-   mix-blend-mode: screen;
+  mix-blend-mode: screen;
   cursor: crosshair;
   pointer-events: none;
 }
