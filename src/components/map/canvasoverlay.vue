@@ -64,13 +64,15 @@ export default {
       if (this.ready) {
         ctx.save();
         ctx2.save();
-        canvasAlignToPixelCenter(ctx, ctx2);
+        canvasAlignToPixelCenter(ctx);
+        canvasAlignToPixelCenter(ctx2);
         this.$refs['wind-map'].redraw(ctx, ctx2);
         ctx2.restore();
         ctx.restore();
         ctx.save();
         ctx2.save();
-        canvasAlignToPixelCenter(ctx, ctx2);
+        canvasAlignToPixelCenter(ctx);
+        canvasAlignToPixelCenter(ctx2);
         this.$refs['steering-predictors'].redraw(ctx, ctx2);
         ctx2.restore();
         ctx.restore();
