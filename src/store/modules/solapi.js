@@ -106,8 +106,14 @@ export default {
         throw new SolapiError('response', "Empty response");
       }
 
-      let chunks = [];
+      const compressedPayload = (typeof reqDef.compressedPayload !== 'undefined');
+      let builder;
       let received = 0;
+      if (compressedPayload) {
+        builder = new pako.Inflate();
+      } else {
+        builder = [];
+      }
       try {
         let r = response.body.getReader();
 
@@ -116,7 +122,10 @@ export default {
           if (done) {
             break;
           }
-          chunks.push(value);
+          builder.push(value);
+          if (compressedPayload && (builder.err !== 0)) {
+            throw new SolapiError('parsing', "Decompress fails!");
+          }
           received += value.length;
         }
       } catch(err) {
@@ -124,27 +133,24 @@ export default {
       }
 
       let data;
-      data = new Uint8Array(received);
-      let at = 0;
-      for (let chunk of chunks) {
-        data.set(chunk, at);
-        at += chunk.length;
-      }
-
-      if (typeof reqDef.compressedPayload === 'undefined') {
-        try {
-          data = new TextDecoder('utf-8').decode(data);
-        } catch(err) {
-          throw new SolapiError('parsing', "UTF-8 decode fails");
+      if (compressedPayload) {
+        if (typeof builder.result === 'undefined') {
+          throw new SolapiError('parsing', "Decompress incomplete!");
+        }
+        data = builder.result;
+      } else {
+        data = new Uint8Array(received);
+        let at = 0;
+        for (let chunk of builder) {
+          data.set(chunk, at);
+          at += chunk.length;
         }
       }
 
-      if (typeof reqDef.compressedPayload !== 'undefined') {
-        try {
-          data = await Buffer.from(pako.inflate(data)).toString();
-        } catch(err) {
-          throw new SolapiError('parsing', err.message);
-        }
+      try {
+        data = new TextDecoder('utf-8').decode(data);
+      } catch(err) {
+        throw new SolapiError('parsing', "UTF-8 decode fails");
       }
 
       let result;
