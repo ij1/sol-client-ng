@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { orderBy } from 'lodash';
 import { secToMsec, UTCToMsec } from '../../lib/utils.js';
-import { solapiRetryDispatch } from '../../lib/solapi.js';
+import { solapiRetryDispatch, SolapiError } from '../../lib/solapi.js';
 
 function updateLocalStorageRooms(state) {
   for (let i = 0; i < state.maxOpenRooms; i++) {
@@ -258,10 +258,12 @@ export default {
           }
         })
         .catch(err => {
-          commit('solapi/logError', {
-            request: postDef,
-            error: err,
-          }, {root: true});
+          if (!(err instanceof SolapiError)) {
+            dispatch('solapi/logError', {
+              request: postDef,
+              error: err,
+            }, {root: true});
+          }
         });
     },
     parse({state, rootState, rootGetters, dispatch, commit}, chatInfo) {
