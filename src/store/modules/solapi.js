@@ -106,15 +106,37 @@ export default {
         throw new SolapiError('response', "Empty response");
       }
 
-      let data;
+      let chunks = [];
+      let received = 0;
       try {
-        if (typeof reqDef.compressedPayload !== 'undefined') {
-          data = await response.arrayBuffer();
-        } else {
-          data = await response.text();
+        let r = response.body.getReader();
+
+        while (true) {
+          let {done, value} = await r.read();
+          if (done) {
+            break;
+          }
+          chunks.push(value);
+          received += value.length;
         }
       } catch(err) {
         throw new SolapiError('network', err.message);
+      }
+
+      let data;
+      data = new Uint8Array(received);
+      let at = 0;
+      for (let chunk of chunks) {
+        data.set(chunk, at);
+        at += chunk.length;
+      }
+
+      if (typeof reqDef.compressedPayload === 'undefined') {
+        try {
+          data = new TextDecoder('utf-8').decode(data);
+        } catch(err) {
+          throw new SolapiError('parsing', "UTF-8 decode fails");
+        }
       }
 
       if (typeof reqDef.compressedPayload !== 'undefined') {
