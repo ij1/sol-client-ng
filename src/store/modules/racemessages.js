@@ -57,6 +57,7 @@ export default {
   actions: {
     fetch({state, rootState, commit, dispatch}) {
       const getDef = {
+        apiCall: 'racemsgs',
         url: "/webclient/race_messages.xml",
         params: {
           token: rootState.auth.token,
@@ -87,7 +88,7 @@ export default {
       })
       .catch(err => {
         commit('solapi/logError', {
-          apiCall: 'racemsgs',
+          request: getDef,
           error: err,
         }, {root: true});
       })

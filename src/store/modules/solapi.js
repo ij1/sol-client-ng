@@ -28,10 +28,11 @@ export default {
       state.activeApiCallsStamp++;
     },
     logError (state, errorInfo) {
-      if (typeof state.errorLog[errorInfo.apiCall] === 'undefined') {
-        Vue.set(state.errorLog, errorInfo.apiCall, []);
+      const apiCall = errorInfo.request.apiCall;
+      if (typeof state.errorLog[apiCall] === 'undefined') {
+        Vue.set(state.errorLog, apiCall, []);
       }
-      state.errorLog[errorInfo.apiCall].push(errorInfo.error);
+      state.errorLog[apiCall].push(errorInfo.error);
       if (!(errorInfo.error instanceof SolapiError)) {
         console.log(errorInfo.error.message);
         console.log(errorInfo.error.stack);
@@ -139,7 +140,7 @@ export default {
       })
       .catch(err => {
         commit('logError', {
-          apiCall: 'POSTgeneric',
+          request: reqDef,
           error: err,
         });
         throw err;

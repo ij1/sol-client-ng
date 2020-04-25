@@ -136,6 +136,7 @@ export default {
       }
 
       const getDef = {
+        apiCall: 'dclist',
         url: '/webclient/command/delayed/',
         params: {
           token: rootState.auth.token,
@@ -173,7 +174,7 @@ export default {
       })
       .catch(err => {
         commit('solapi/logError', {
-          apiCall: 'dclist',
+          request: getDef,
           error: err,
         }, {root: true});
         solapiRetryDispatch(dispatch, 'fetchDCs', true, 11000);
@@ -182,6 +183,7 @@ export default {
 
     sendSteeringCommand({rootState, dispatch}, sendParams) {
       const postDef = {
+        apiCall: 'steering',
         url: '/webclient/command/post/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,
@@ -200,6 +202,7 @@ export default {
 
     sendDeleteDC({rootState, dispatch}, sendParams) {
       const postDef = {
+        apiCall: 'dcdelete',
         url: '/webclient/command/delete/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,

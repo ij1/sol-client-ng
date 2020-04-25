@@ -114,9 +114,13 @@ export default {
 
   actions: {
     async fetch ({state, rootState, rootGetters, commit, dispatch}) {
+      let getDef = {
+        apiCall: 'boat',
+      };
       try {
         const nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
-        const getDef = {
+        getDef = {
+          apiCall: 'boat',
           url: rootState.race.info.boaturl,
           params: {
             token: rootState.auth.token,
@@ -172,7 +176,7 @@ export default {
         }
       } catch(err) {
         commit('solapi/logError', {
-          apiCall: 'boat',
+          request: getDef,
           error: err,
         }, {root: true});
 

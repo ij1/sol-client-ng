@@ -106,6 +106,9 @@ export default {
     async loadTile ({state, getters, commit, dispatch}, loadInfo) {
       const key = loadInfo.key;
       let failTimer = 0;
+      let getDef = {
+        apiCall: 'tiles',
+      };
 
       try {
         if (state.tiles[key].loaded) {
@@ -113,7 +116,8 @@ export default {
         }
 
         commit('addActiveFetches', 1);
-        const getDef = {
+        getDef = {
+          apiCall: 'tiles',
           url: getters.tileIdToUrl(state.tiles[key].id),
           params: {},
           useArrays: true,
@@ -147,7 +151,7 @@ export default {
         await lowPrioTask.idle();
       } catch(err) {
         commit('solapi/logError', {
-          apiCall: 'tiles',
+          request: getDef,
           error: err,
         }, {root: true});
         commit('addTileToLoadWaitList', key);   /* Requeue */

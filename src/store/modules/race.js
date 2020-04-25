@@ -192,11 +192,15 @@ export default {
 
   actions: {
     async fetchRaceinfo ({state, rootState, getters, rootGetters, commit, dispatch}) {
+      let getDef = {
+        apiCall: 'raceinfo',
+      };
       try {
         /* Initialize time before boat/wx is fetched to avoid issues */
         const now = rootGetters['time/now']();
 
-        const getDef = {
+        getDef = {
+          apiCall: 'raceinfo',
           url: "/webclient/auth_raceinfo_" + rootState.auth.raceId + ".xml",
           params: {
             token: rootState.auth.token,
@@ -262,7 +266,7 @@ export default {
         }
       } catch(err) {
         commit('solapi/logError', {
-          apiCall: 'raceinfo',
+          request: getDef,
           error: err,
         }, {root: true});
         solapiRetryDispatch(dispatch, 'fetchRaceinfo');

@@ -115,6 +115,7 @@ export default {
       this.retryTimeout = null;
 
       const getDef = {
+        apiCall: 'races',
         url: '/webclient/races.xml',
         params: {
           filter: 'active',
@@ -138,7 +139,7 @@ export default {
       })
       .catch(err => {
         this.$store.commit('solapi/logError', {
-          apiCall: 'races',
+          request: getDef,
           error: err,
         }, {root: true});
         setTimeout(() => {this.fetchRaces()}, 2000);

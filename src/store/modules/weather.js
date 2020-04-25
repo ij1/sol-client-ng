@@ -430,6 +430,7 @@ export default {
     // safe way to avoid multiple overlapping weather fetches.
     fetchInfo ({state, rootState, rootGetters, dispatch, commit}) {
       const getDef = {
+        apiCall: 'weather',
         url: rootState.race.info.weatherurl,
         params: {
           token: rootState.auth.token,
@@ -455,15 +456,19 @@ export default {
       .catch(err => {
         commit('solapi/unlock', 'weather', {root: true});
         commit('solapi/logError', {
-          apiCall: 'weather',
+          request: getDef,
           error: err,
         }, {root: true});
       });
     },
 
     async fetchData ({state, rootState, rootGetters, commit, dispatch}, dataUrl) {
+      let getDef = {
+        apiCall: 'weather',
+      };
       try {
-        const getDef = {
+        getDef = {
+          apiCall: 'weather',
           url: dataUrl,
           params: {
             token: rootState.auth.token,
@@ -591,7 +596,7 @@ export default {
         }
       } catch(err) {
         commit('solapi/logError', {
-          apiCall: 'weather',
+          request: getDef,
           error: err,
         }, {root: true});
       } finally {

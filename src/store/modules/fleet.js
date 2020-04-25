@@ -492,6 +492,7 @@ export default {
       }
 
       const getDef = {
+        apiCall: 'fleet',
         url: "/webclient/race_" + rootState.auth.raceId + ".xml",
         params: {
           token: rootState.auth.token,
@@ -611,7 +612,7 @@ export default {
       })
       .catch(err => {
         commit('solapi/logError', {
-          apiCall: 'fleet',
+          request: getDef,
           error: err,
         }, {root: true});
       })
@@ -622,6 +623,7 @@ export default {
 
     fetchMetainfo({rootState, rootGetters, commit, dispatch}) {
       const getDef = {
+        apiCall: 'fleetmeta',
         url: "/webclient/metainfo_" + rootState.auth.raceId + ".xml",
         params: {
           token: rootState.auth.token,
@@ -651,7 +653,7 @@ export default {
       })
       .catch(err => {
         commit('solapi/logError', {
-          apiCall: 'fleetmeta',
+          request: getDef,
           error: err,
         }, {root: true});
       })
@@ -662,6 +664,7 @@ export default {
 
     fetchTraces({rootState, state, rootGetters, commit, dispatch}) {
       const getDef = {
+        apiCall: 'traces',
         url: "/webclient/traces_" + rootState.auth.raceId + ".xml",
         params: {
           token: rootState.auth.token,
@@ -716,7 +719,7 @@ export default {
       })
       .catch(err => {
         commit('solapi/logError', {
-          apiCall: 'traces',
+          request: getDef,
           error: err,
         }, {root: true});
       })

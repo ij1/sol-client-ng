@@ -21,6 +21,7 @@ export default {
   actions: {
     login ({dispatch, commit}, authParams) {
       const getDef = {
+        apiCall: 'auth',
         url: '/webclient/authenticate.xml',
         params: authParams,
         useArrays: false,
@@ -39,7 +40,7 @@ export default {
       })
       .catch(err => {
         commit('solapi/logError', {
-          apiCall: 'auth',
+          request: getDef,
           error: err,
         }, {root: true});
         commit('loginFailed');

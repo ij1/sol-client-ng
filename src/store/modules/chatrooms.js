@@ -237,6 +237,7 @@ export default {
       const sendParams = state.pendingMessages[0];
 
       const postDef = {
+        apiCall: 'sendchat',
         url: '/webclient/chat/post/?token=' + rootState.auth.token,
         params: sendParams,
         useArrays: false,
@@ -258,7 +259,7 @@ export default {
         })
         .catch(err => {
           commit('solapi/logError', {
-            apiCall: 'sendchat',
+            request: postDef,
             error: err,
           }, {root: true});
         });
