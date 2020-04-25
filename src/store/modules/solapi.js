@@ -101,6 +101,11 @@ export default {
         throw new SolapiError('statuscode', "Invalid API call");
       }
 
+      const len = response.headers.get('Content-Length');
+      if (len === 0) {
+        throw new SolapiError('response', "Empty response");
+      }
+
       let data;
       try {
         if (typeof reqDef.compressedPayload !== 'undefined') {
