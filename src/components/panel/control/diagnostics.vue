@@ -14,7 +14,7 @@
     </div>
     <div>
       <div>Locked API calls:</div>
-      <div v-for = "call in lockedApiCalls" :key = "call">{{call}}</div>
+      <div v-for = "call in apiLocks" :key = "call">{{call}}</div>
     </div>
     <div>
       <div
@@ -40,9 +40,9 @@ export default {
     },
   },
   computed: {
-    lockedApiCalls () {
-      this.$store.state.solapi.activeApiCallsStamp;
-      return Array.from(this.$store.state.solapi.activeApiCalls.values());
+    apiLocks () {
+      this.$store.state.solapi.apiLocksStamp;
+      return Array.from(this.$store.state.solapi.apiLocks.values());
     },
     erroredApiCalls () {
       return Object.keys(this.$store.state.solapi.errorLog).sort((a, b) => {

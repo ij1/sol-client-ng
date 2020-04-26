@@ -46,19 +46,19 @@ export default {
   state: {
     // eslint-disable-next-line
     serverPrefix: process.env.VUE_APP_API_URL,
-    activeApiCalls: new Set(),
-    activeApiCallsStamp: 0,	/* Set is not reactive, dummy dep this */
+    apiLocks: new Set(),
+    apiLocksStamp: 0,	/* Set is not reactive, dummy dep this */
     errorLog: [],
   },
 
   mutations: {
     lock(state, apiCall) {
-      state.activeApiCalls.add(apiCall);
-      state.activeApiCallsStamp++;
+      state.apiLocks.add(apiCall);
+      state.apiLocksStamp++;
     },
     unlock(state, apiCall) {
-      state.activeApiCalls.delete(apiCall);
-      state.activeApiCallsStamp++;
+      state.apiLocks.delete(apiCall);
+      state.apiLocksStamp++;
     },
     logError (state, errorInfo) {
       const apiCall = errorInfo.request.apiCall;
@@ -74,7 +74,7 @@ export default {
   },
   getters: {
     isLocked: (state) => (apiCall) => {
-      return state.activeApiCalls.has(apiCall);
+      return state.apiLocks.has(apiCall);
     },
     isProductionServer: (state) => {
       return state.serverPrefix === '';
