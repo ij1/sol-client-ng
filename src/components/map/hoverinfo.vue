@@ -66,7 +66,6 @@ export default {
 }
 .time-of-day-white #hover-info {
   color: #000;
-  background: rgba(180, 180, 180, 0.5);
 }
 .time-of-day-dark #hover-info {
   color: #0f0;
