@@ -10,11 +10,13 @@ export default {
   state: {
     clockOffset: 0,
     realTime: 0,
+    siteTime: performance.now(),
   },
 
   mutations: {
     update (state) {
       state.realTime = Date.now() + state.clockOffset;
+      state.siteTime = performance.now();
     },
   },
 

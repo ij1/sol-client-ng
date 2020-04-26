@@ -40,6 +40,25 @@ async function __post (state, reqDef) {
   }
 }
 
+const WEIGHT = 1.0/32;
+
+function statsUpdate(stats, newValue) {
+  if (newValue === null) {
+    return;
+  }
+  if (stats.max < newValue) {
+    stats.max = newValue;
+  }
+  if (stats.avg !== null) {
+    stats.avg = stats.avg * (1 - WEIGHT) + newValue * WEIGHT;
+  } else {
+    stats.avg = newValue;
+  }
+  if (typeof stats.sum !== 'undefined') {
+    stats.sum += newValue;
+  }
+}
+
 export default {
   namespaced: true,
 
@@ -48,6 +67,10 @@ export default {
     serverPrefix: process.env.VUE_APP_API_URL,
     apiLocks: new Set(),
     apiLocksStamp: 0,	/* Set is not reactive, dummy dep this */
+    apiCallStats: {},
+    activeApiCalls: {},
+    activeApiCallId: -1,
+    pastApiCalls: [],
     errorLog: [],
   },
 
@@ -60,12 +83,89 @@ export default {
       state.apiLocks.delete(apiCall);
       state.apiLocksStamp++;
     },
+
+    start(state, apiCall) {
+      state.activeApiCallId++;
+      const now = performance.now();
+
+      Vue.set(state.activeApiCalls, '' + state.activeApiCallId, {
+        id: '' + state.activeApiCallId,
+        apiCall: apiCall,
+        startTime: now,
+        lastUpdate: now,
+        firstByteDelay: null,
+        readDelayMax: 0,
+        received: 0,
+        len: null,
+      });
+
+      if (typeof state.apiCallStats[apiCall] === 'undefined') {
+        Vue.set(state.apiCallStats, apiCall, {
+          apiCall: apiCall,
+          count: 1,
+          errors: 0,
+          errorLog: [],
+          firstByteDelay: {
+            max: 0,
+            avg: null,
+          },
+          readDelay: {
+            max: 0,
+            avg: null,
+          },
+          size: {
+            max: 0,
+            avg: null,
+            sum: 0,
+          },
+          duration: {
+            max: 0,
+            avg: null,
+            sum: 0,
+          },
+        });
+      } else {
+        state.apiCallStats[apiCall].count++;
+      }
+    },
+    update(state, apiCallUpdate) {
+      let item = state.activeApiCalls[apiCallUpdate.id];
+      let statsItem = state.apiCallStats[item.apiCall];
+      const now = performance.now();
+      const readDelay = now - item.lastUpdate;
+
+      item.received = apiCallUpdate.received;
+      item.lastUpdate = now;
+      if (item.firstByteDelay === null) {
+        item.firstByteDelay = readDelay;
+        item.len = apiCallUpdate.len;
+        statsUpdate(statsItem.firstByteDelay, readDelay);
+      }
+      if (readDelay > item.readDelayMax) {
+        item.readDelayMax = readDelay;
+      }
+      statsUpdate(statsItem.readDelay, readDelay);
+    },
+    complete(state, completeData) {
+      let item = state.activeApiCalls[completeData.id];
+      item.status = completeData.status;
+      item.duration = performance.now() - item.startTime;
+
+      state.pastApiCalls.unshift(item);
+      if (state.pastApiCalls.length > 20) {
+        state.pastApiCalls.pop();
+      }
+      delete state.activeApiCalls[completeData.id];
+
+      let statsItem = state.apiCallStats[item.apiCall];
+      statsUpdate(statsItem.duration, item.duration);
+      statsUpdate(statsItem.size, item.received);
+    },
+
     logError (state, errorInfo) {
       const apiCall = errorInfo.request.apiCall;
-      if (typeof state.errorLog[apiCall] === 'undefined') {
-        Vue.set(state.errorLog, apiCall, []);
-      }
-      state.errorLog[apiCall].push(errorInfo.error);
+      state.apiCallStats[apiCall].errors++;
+      state.apiCallStats[apiCall].errorLog.push(errorInfo.error);
       if (!(errorInfo.error instanceof SolapiError)) {
         console.log(errorInfo.error.message);
         console.log(errorInfo.error.stack);
@@ -82,7 +182,7 @@ export default {
   },
 
   actions: {
-    async get ({state}, reqDef) {
+    async get ({state, commit}, reqDef) {
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       let url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
       const params = queryString.stringify(reqDef.params);
@@ -90,67 +190,87 @@ export default {
         url += '?' + params;
       }
 
-      let response;
-      try {
-        response = await fetch(state.serverPrefix + url);
-      } catch(err) {
-        throw new SolapiError('network', err.message);
+      commit('start', reqDef.apiCall);
+      const apiCallUpdate = {
+        id: state.activeApiCallId,
+        len: null,
+        received: 0,
       }
-
-      if (response.status !== 200) {
-        throw new SolapiError('statuscode', "Invalid API call");
-      }
-
-      const len = response.headers.get('Content-Length');
-      if (len === 0) {
-        throw new SolapiError('response', "Empty response");
-      }
-
-      const compressedPayload = (typeof reqDef.compressedPayload !== 'undefined');
-      let builder;
-      let received = 0;
-      if (compressedPayload) {
-        builder = new pako.Inflate();
-      } else {
-        builder = [];
-      }
-      try {
-        let r = response.body.getReader();
-
-        while (true) {
-          let {done, value} = await r.read();
-          if (done) {
-            break;
-          }
-          builder.push(value);
-          if (compressedPayload && (builder.err !== 0)) {
-            throw new SolapiError('parsing', "Decompress fails!");
-          }
-          received += value.length;
-        }
-      } catch(err) {
-        throw new SolapiError('network', err.message);
-      }
-
       let data;
-      if (compressedPayload) {
-        if (typeof builder.result === 'undefined') {
-          throw new SolapiError('parsing', "Decompress incomplete!");
-        }
-        data = builder.result;
-      } else {
-        data = new Uint8Array(received);
-        let at = 0;
-        for (let chunk of builder) {
-          data.set(chunk, at);
-          at += chunk.length;
-        }
-      }
-
       try {
-        data = new TextDecoder('utf-8').decode(data);
-      } catch(err) {
-        throw new SolapiError('parsing', "UTF-8 decode fails");
+        let response;
+        try {
+          response = await fetch(state.serverPrefix + url);
+        } catch(err) {
+          throw new SolapiError('network', err.message);
+        }
+
+        if (response.status !== 200) {
+          throw new SolapiError('statuscode', "Invalid API call");
+        }
+
+        const len = response.headers.get('Content-Length');
+        if (len === 0) {
+          throw new SolapiError('response', "Empty response");
+        }
+        apiCallUpdate.len = len;
+
+        const compressedPayload = (typeof reqDef.compressedPayload !== 'undefined');
+        let builder;
+        if (compressedPayload) {
+          builder = new pako.Inflate();
+        } else {
+          builder = [];
+        }
+        try {
+          let r = response.body.getReader();
+
+          while (true) {
+            let {done, value} = await r.read();
+            if (done) {
+              break;
+            }
+            builder.push(value);
+            if (compressedPayload && (builder.err !== 0)) {
+              throw new SolapiError('parsing', "Decompress fails!");
+            }
+            apiCallUpdate.received += value.length;
+            commit('update', apiCallUpdate);
+          }
+        } catch(err) {
+          throw new SolapiError('network', err.message);
+        }
+
+        if (compressedPayload) {
+          if (typeof builder.result === 'undefined') {
+            throw new SolapiError('parsing', "Decompress incomplete!");
+          }
+          data = builder.result;
+        } else {
+          data = new Uint8Array(apiCallUpdate.received);
+          let at = 0;
+          for (let chunk of builder) {
+            data.set(chunk, at);
+            at += chunk.length;
+          }
+        }
+
+        try {
+          data = new TextDecoder('utf-8').decode(data);
+        } catch(err) {
+          throw new SolapiError('parsing', "UTF-8 decode fails");
+        }
+        commit('complete', {
+          id: apiCallUpdate.id,
+          status: 'OK',
+        });
+      } catch (err) {
+        commit('complete', {
+          id: apiCallUpdate.id,
+          status: 'ERROR',
+          error: err,
+        });
+        throw err;
       }
 
       let result;

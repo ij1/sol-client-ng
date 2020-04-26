@@ -1,20 +1,51 @@
 <template>
   <div id = "client-diagnostics">
     <div>
-      <div>Browser id:{{browserId}}</div>
-    </div>
-    <div>
-      <div>Errors:</div>
+      <div>Actuve API calls:</div>
       <div
-         v-for = "apiCall in erroredApiCalls"
-         :key = "apiCall"
+        v-for = "call in activeApiCalls"
+        :key = "call.id"
       >
-        {{apiCall}} {{$store.state.solapi.errorLog[apiCall].length}}
+        {{call.apiCall}}
+        {{call.received}}{{call.len !== null ? '/' + call.len : ''}}B
+        {{call.firstByteDelay | formatSec}}sec
+        {{call.readDelayMax | formatSec}}sec
+        {{call.lastUpdate | elapsedSinceLastUpdate(siteTime)}}sec
+      </div>
+      <div>Old API calls:</div>
+      <div
+        v-for = "call in pastApiCalls"
+        class = "diag-old-apicall"
+        :key = "call.id"
+      >
+        {{call.apiCall}}
+        {{call.received}}{{call.len !== null ? '/' + call.len : ''}}B
+        {{call.firstByteDelay | formatSec}}sec
+        {{call.readDelayMax | formatSec}}sec
+        {{call.duration | formatSec}}sec
+        {{call.status}}
       </div>
     </div>
     <div>
-      <div>Locked API calls:</div>
+      <div>API call summary:</div>
+      <div
+         v-for = "apiCall in apiCallStats"
+         :key = "'s' + apiCall.apiCall"
+      >
+        {{apiCall.apiCall}}
+        {{apiCall.count}} E:{{apiCall.errors}}
+        {{apiCall.firstByteDelay.avg | formatSec}}/{{apiCall.firstByteDelay.max | formatSec}}s
+        {{apiCall.readDelay.avg | formatSec}}/{{apiCall.readDelay.max | formatSec}}s
+        {{apiCall.duration.avg | formatSec}}/{{apiCall.duration.max | formatSec}}s
+        {{apiCall.size.avg | roundSize}}/{{apiCall.size.max}}B
+      </div>
+    </div>
+    <div>
+      <div>API locks:</div>
       <div v-for = "call in apiLocks" :key = "call">{{call}}</div>
+    </div>
+    <div>
+      <div>Browser id:{{browserId}}</div>
     </div>
     <div>
       <div
@@ -36,7 +67,25 @@ export default {
   name: 'ClientDiagnostics',
   filters: {
     msecFormat (msec) {
+      if (msec === null) {
+        return '---';
+      }
       return msecToUTCString(msec) + '.' + ('000' + (msec % 1000)).slice(-3);
+    },
+    formatSec (msec) {
+      if (msec === null) {
+        return '---';
+      }
+      return (msec / 1000).toFixed(3);
+    },
+    elapsedSinceLastUpdate (msec, siteTime) {
+      return Math.round((siteTime - msec) / 1000);
+    },
+    roundSize(val) {
+      if (val === null) {
+        return '-';
+      }
+      return val.toFixed(0);
     },
   },
   computed: {
@@ -60,6 +109,10 @@ export default {
     },
     ...mapState({
       diagnosticsMessages: state => state.diagnostics.messages,
+      activeApiCalls: state => state.solapi.activeApiCalls,
+      pastApiCalls: state => state.solapi.pastApiCalls,
+      apiCallStats: state => state.solapi.apiCallStats,
+      siteTime: state => state.time.siteTime,
     }),
   },
 }
@@ -71,5 +124,8 @@ export default {
   font-size: 10px;
   overflow: scroll;
   height: 100%;
+}
+.diag-old-apicall {
+  color: #777;
 }
 </style>
