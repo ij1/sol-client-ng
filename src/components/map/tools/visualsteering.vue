@@ -28,6 +28,11 @@
           <div>TWA: {{twa | formatAngle }}</div>
           <div>SOG: {{sog | formatValue }}</div>
           <div>VMG: {{vmg | formatValue }}</div>
+          <div
+            v-if = "cfgVmc"
+          >
+            VMC: {{vmc | formatValue}}
+          </div>
         </div>
       </l-tooltip>
     </l-circle>
@@ -39,7 +44,7 @@ import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
-import { speedTowardsBearing, cogTwdToTwa, loxoCalc, pixelDistanceCalc, twaTextPrefix } from '../../../lib/nav.js';
+import { speedTowardsBearing, cogTwdToTwa, loxoCalc, gcCalc, pixelDistanceCalc, twaTextPrefix } from '../../../lib/nav.js';
 import SailBoat from '../sailboat.vue';
 import { uiModeMixin } from '../../mixins/uimode.js';
 
@@ -95,6 +100,11 @@ export default {
     vmg () {
       return speedTowardsBearing(this.sog, this.twa, 0);
     },
+    vmc () {
+      const gcPath = gcCalc(this.visualPosition,
+                            this.$store.getters['race/nextWaypoint'].latLng);
+      return speedTowardsBearing(this.sog, this.cog, gcPath.startBearing);
+    },
     color () {
       return this.twa >= 0 ? '#00ff00' : '#ff0000';
     },
@@ -113,6 +123,7 @@ export default {
       zoom: state => state.map.zoom,
       plottedSteering: state => state.boat.steering.plottedSteering,
       cfgPreserveSteeringType: state => state.boat.steering.cfg.preserveSteeringType,
+      cfgVmc: state => state.boat.instruments.vmc.enabled.value,
     }),
     ...mapGetters({
       visualPosition: 'boat/visualPosition',
