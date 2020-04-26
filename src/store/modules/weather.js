@@ -464,11 +464,11 @@ export default {
 
     async fetchData ({state, rootState, rootGetters, commit, dispatch}, dataUrl) {
       let getDef = {
-        apiCall: 'weather',
+        apiCall: 'weatherdata',
       };
       try {
         getDef = {
-          apiCall: 'weather',
+          apiCall: 'weatherdata',
           url: dataUrl,
           params: {
             token: rootState.auth.token,
