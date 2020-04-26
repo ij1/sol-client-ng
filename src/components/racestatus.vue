@@ -73,6 +73,6 @@ export default {
 }
 .time-of-day-dark #race-status {
   color: #0f0;
-  background: rgba(40, 40, 40, 0.9);
+  background: rgba(60, 60, 60, 0.8);
 }
 </style>

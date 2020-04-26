@@ -315,7 +315,7 @@ export default {
 }
 .time-of-day-dark .leaflet-top,
 .time-of-day-dark .leaflet-right {
-  mix-blend-mode: screen;
+  mix-blend-mode: unset;
 }
 
 .tool-button {
@@ -335,7 +335,7 @@ export default {
 .time-of-day-dark .tool-button,
 .time-of-day-dark .tool-button {
   border: 1px solid rgba(0, 200, 0, 0.6);
-  background-color: #333;
+  background: rgba(60, 60, 60, 0.8);
   color: #0f0;
 }
 .tool-button-enabled {

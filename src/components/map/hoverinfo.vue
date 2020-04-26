@@ -63,7 +63,6 @@ export default {
   pointer-events: none;
   text-align: right;
   font-size: 12px;
-  font-weight: bold;
 }
 .time-of-day-white #hover-info {
   color: #000;
@@ -71,6 +70,6 @@ export default {
 }
 .time-of-day-dark #hover-info {
   color: #0f0;
-  background: rgba(40, 40, 40, 0.9);
+  background: rgba(60, 60, 60, 0.8);
 }
 </style>
