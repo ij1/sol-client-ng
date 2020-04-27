@@ -94,7 +94,7 @@ export default {
         startTime: now,
         lastUpdate: now,
         firstByteDelay: null,
-        readDelayMax: 0,
+        readDelayMax: null,
         received: 0,
         len: null,
       });
@@ -140,11 +140,10 @@ export default {
         item.firstByteDelay = readDelay;
         item.len = apiCallUpdate.len;
         statsUpdate(statsItem.firstByteDelay, readDelay);
-      }
-      if (readDelay > item.readDelayMax) {
+      } else if ((readDelay === null) || (readDelay > item.readDelayMax)) {
         item.readDelayMax = readDelay;
+        statsUpdate(statsItem.readDelay, readDelay);
       }
-      statsUpdate(statsItem.readDelay, readDelay);
     },
     complete(state, completeData) {
       let item = state.activeApiCalls[completeData.id];
