@@ -246,7 +246,7 @@ export default {
     },
 
     isDelayNumber () {
-      if (this.cfgExtraDebug) {
+      if (this.cfgExtraUiDebug) {
         this.debugIsDelayNumber();
       }
       const regex = /^\d+(\.\d+)?$/;
@@ -441,7 +441,7 @@ export default {
     },
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
-      cfgExtraDebug: state => state.diagnostics.cfg.extraDebug.value,
+      cfgExtraUiDebug: state => state.diagnostics.cfg.extraUiDebug.value,
     }),
     ...mapGetters({
       allowControl: 'boat/allowControl',

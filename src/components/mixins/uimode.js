@@ -23,7 +23,7 @@ export let uiModeMixin = {
   },
   computed: {
     ...mapState({
-      cfgExtraDebug: state => state.diagnostics.cfg.extraDebug.value,
+      cfgExtraUiDebug: state => state.diagnostics.cfg.extraUiDebug.value,
     }),
   },
   methods: {
@@ -190,7 +190,7 @@ export let uiModeMixin = {
                                                        this.uiModeOnTouchCancel);
     },
     uiModeLog (message) {
-      if (this.cfgExtraDebug) {
+      if (this.cfgExtraUiDebug) {
         this.$store.commit('diagnostics/__add', {
           time: this.$store.getters['time/now'](),
           message: 'uimode: ' + message,
