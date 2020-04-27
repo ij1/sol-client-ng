@@ -289,22 +289,29 @@ export default {
       return result[reqDef.dataField];
     },
 
-    async post ({state, commit}, reqDef) {
+    async post ({state, commit, dispatch}, reqDef) {
       commit('start', reqDef.apiCall);
+      const apiStats = state.apiCallStats[reqDef.apiCall];
       const apiCallUpdate = {
         id: state.activeApiCallId,
         len: null,
         received: 0,
       }
 
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let timer = null;
+
       let data;
       try {
         let response;
-
+        timer = setTimeout(abortGet, calcTimeout(apiStats.firstByteDelay),
+                           dispatch, controller, reqDef);
         try {
           response = await fetch(state.serverPrefix + reqDef.url, {
             method: "POST",
             body: queryString.stringify(reqDef.params),
+            signal: signal,
           });
         } catch(err) {
           throw new SolapiError('network', err.message);
@@ -320,6 +327,8 @@ export default {
           throw new SolapiError('network', err.message);
         }
         apiCallUpdate.received = data.length;
+        clearTimeout(timer);
+        timer = null;
         commit('update', apiCallUpdate);
         commit('complete', {
           id: apiCallUpdate.id,
@@ -332,6 +341,9 @@ export default {
           status: 'ERROR',
           error: err,
         });
+        if (timer !== null) {
+          clearTimeout(timer);
+        }
         commit('logError', {
           request: reqDef,
           error: err,
