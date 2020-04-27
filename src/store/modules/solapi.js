@@ -7,45 +7,6 @@ import { SolapiError } from '../../lib/solapi.js';
 
 const parseString = promisify(xml2js.parseString);
 
-async function __post (state, reqDef) {
-  let response;
-
-  try {
-    response = await fetch(state.serverPrefix + reqDef.url, {
-      method: "POST",
-      body: queryString.stringify(reqDef.params),
-    });
-  } catch(err) {
-    throw new SolapiError('network', err.message);
-  }
-
-  if (response.status !== 200) {
-    throw new SolapiError('statuscode', "Invalid API call");
-  }
-
-  let data;
-  try {
-    data = await response.text();
-  } catch(err) {
-    throw new SolapiError('network', err.message);
-  }
-
-  if (data === 'OK') {
-    return Promise.resolve();
-  } else if (typeof reqDef.dataField !== 'undefined') {
-    let result = null;
-    try {
-      result = await parseString(data, {explicitArray: reqDef.useArrays});
-    } catch(err) {
-      throw new SolapiError('response', err.message);
-    }
-    if (!(result.hasOwnProperty(reqDef.dataField))) {
-      throw new SolapiError('response', "Response missing datafield: " + reqDef.dataField);
-    }
-    return result[reqDef.dataField];
-  }
-}
-
 const WEIGHT = 1.0/32;
 
 function statsUpdate(stats, newValue) {
@@ -330,9 +291,44 @@ export default {
 
 
     async post ({state, commit}, reqDef) {
-      let res;
       try {
-        res = await __post(state, reqDef)
+        let response;
+
+        try {
+          response = await fetch(state.serverPrefix + reqDef.url, {
+            method: "POST",
+            body: queryString.stringify(reqDef.params),
+          });
+        } catch(err) {
+          throw new SolapiError('network', err.message);
+        }
+
+        if (response.status !== 200) {
+          throw new SolapiError('statuscode', "Invalid API call");
+        }
+
+        let data;
+        try {
+          data = await response.text();
+        } catch(err) {
+          throw new SolapiError('network', err.message);
+        }
+
+        if (data === 'OK') {
+          return Promise.resolve();
+        } else if (typeof reqDef.dataField !== 'undefined') {
+          let result = null;
+          try {
+            result = await parseString(data, {explicitArray: reqDef.useArrays});
+          } catch(err) {
+            throw new SolapiError('response', err.message);
+          }
+          if (!(result.hasOwnProperty(reqDef.dataField))) {
+            throw new SolapiError('response', "Response missing datafield: " +
+                                              reqDef.dataField);
+          }
+          return result[reqDef.dataField];
+        }
       } catch(err) {
         commit('logError', {
           request: reqDef,
@@ -340,8 +336,6 @@ export default {
         });
         throw err;
       }
-
-      return res;
     },
   },
 }
