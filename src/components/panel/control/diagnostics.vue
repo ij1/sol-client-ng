@@ -1,7 +1,7 @@
 <template>
   <div id = "client-diagnostics">
     <div>
-      <div>Actuve API calls:</div>
+      <div>Active API calls:</div>
       <div
         v-for = "call in activeApiCalls"
         :key = "call.id"
