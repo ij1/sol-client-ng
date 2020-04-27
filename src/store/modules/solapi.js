@@ -289,7 +289,6 @@ export default {
       return result[reqDef.dataField];
     },
 
-
     async post ({state, commit}, reqDef) {
       try {
         let response;
