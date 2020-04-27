@@ -1,6 +1,6 @@
 <template>
   <div id = "client-diagnostics">
-    <div>
+    <div v-if = "cfgExtraNetDebug">
       <div>Active API calls:</div>
       <div
         v-for = "call in activeApiCalls"
@@ -113,6 +113,7 @@ export default {
       pastApiCalls: state => state.solapi.pastApiCalls,
       apiCallStats: state => state.solapi.apiCallStats,
       siteTime: state => state.time.siteTime,
+      cfgExtraNetDebug: state => state.diagnostics.cfg.extraNetDebug.value,
     }),
   },
 }
