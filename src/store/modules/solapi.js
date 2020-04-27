@@ -22,7 +22,13 @@ async function __post (state, reqDef) {
   if (response.status !== 200) {
     throw new SolapiError('statuscode', "Invalid API call");
   }
-  let data = response.text();
+
+  let data;
+  try {
+    data = await response.text();
+  } catch(err) {
+    throw new SolapiError('network', err.message);
+  }
 
   if (data === 'OK') {
     return Promise.resolve();
