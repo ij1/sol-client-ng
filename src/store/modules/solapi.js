@@ -221,23 +221,29 @@ export default {
         } else {
           builder = [];
         }
+        let r;
         try {
-          let r = response.body.getReader();
-
-          while (true) {
-            let {done, value} = await r.read();
-            if (done) {
-              break;
-            }
-            builder.push(value);
-            if (compressedPayload && (builder.err !== 0)) {
-              throw new SolapiError('parsing', "Decompress fails!");
-            }
-            apiCallUpdate.received += value.length;
-            commit('update', apiCallUpdate);
-          }
+          r = response.body.getReader();
         } catch(err) {
           throw new SolapiError('network', err.message);
+        }
+
+        while (true) {
+          let read;
+          try {
+            read = await r.read();
+          } catch(err) {
+            throw new SolapiError('network', err.message);
+          }
+          if (read.done) {
+            break;
+          }
+          builder.push(read.value);
+          if (compressedPayload && (builder.err !== 0)) {
+            throw new SolapiError('parsing', "Decompress fails!");
+          }
+          apiCallUpdate.received += read.value.length;
+          commit('update', apiCallUpdate);
         }
 
         if (compressedPayload) {
