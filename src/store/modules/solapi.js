@@ -290,6 +290,14 @@ export default {
     },
 
     async post ({state, commit}, reqDef) {
+      commit('start', reqDef.apiCall);
+      const apiCallUpdate = {
+        id: state.activeApiCallId,
+        len: null,
+        received: 0,
+      }
+
+      let data;
       try {
         let response;
 
@@ -306,13 +314,33 @@ export default {
           throw new SolapiError('statuscode', "Invalid API call");
         }
 
-        let data;
         try {
           data = await response.text();
         } catch(err) {
           throw new SolapiError('network', err.message);
         }
+        apiCallUpdate.received = data.length;
+        commit('update', apiCallUpdate);
+        commit('complete', {
+          id: apiCallUpdate.id,
+          status: 'OK',
+        });
 
+      } catch (err) {
+        commit('complete', {
+          id: apiCallUpdate.id,
+          status: 'ERROR',
+          error: err,
+        });
+        commit('logError', {
+          request: reqDef,
+          error: err,
+        });
+
+        throw err;
+      }
+
+      try {
         if (data === 'OK') {
           return Promise.resolve();
         } else if (typeof reqDef.dataField !== 'undefined') {
