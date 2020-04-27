@@ -59,6 +59,19 @@ function statsUpdate(stats, newValue) {
   }
 }
 
+function abortGet(dispatch, controller, reqDef) {
+  controller.abort();
+  dispatch('diagnostics/add', 'net: aborted API get ' + reqDef.apiCall,
+           {root: true});
+}
+
+function calcTimeout(apiStat) {
+  return Math.min(Math.max(Math.min(apiStat.avg * 8,
+                                    apiStat.max * 2),
+                           15000),
+                  120000);
+}
+
 export default {
   namespaced: true,
 
@@ -181,7 +194,7 @@ export default {
   },
 
   actions: {
-    async get ({state, commit}, reqDef) {
+    async get ({state, commit, dispatch}, reqDef) {
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       let url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
       const params = queryString.stringify(reqDef.params);
@@ -190,16 +203,24 @@ export default {
       }
 
       commit('start', reqDef.apiCall);
+      const apiStats = state.apiCallStats[reqDef.apiCall];
       const apiCallUpdate = {
         id: state.activeApiCallId,
         len: null,
         received: 0,
       }
+
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let timer = null;
+
       let data;
       try {
         let response;
+        timer = setTimeout(abortGet, calcTimeout(apiStats.firstByteDelay),
+                           dispatch, controller, reqDef);
         try {
-          response = await fetch(state.serverPrefix + url);
+          response = await fetch(state.serverPrefix + url, {signal});
         } catch(err) {
           throw new SolapiError('network', err.message);
         }
@@ -235,6 +256,10 @@ export default {
           } catch(err) {
             throw new SolapiError('network', err.message);
           }
+
+          clearTimeout(timer);
+          timer = null;
+
           if (read.done) {
             break;
           }
@@ -244,6 +269,8 @@ export default {
           }
           apiCallUpdate.received += read.value.length;
           commit('update', apiCallUpdate);
+          timer = setTimeout(abortGet, calcTimeout(apiStats.readDelay),
+                             dispatch, controller, reqDef);
         }
 
         if (compressedPayload) {
@@ -275,6 +302,9 @@ export default {
           status: 'ERROR',
           error: err,
         });
+        if (timer !== null) {
+          clearTimeout(timer);
+        }
         throw err;
       }
 
