@@ -8,9 +8,9 @@
       >
         {{call.apiCall}}
         {{call.received}}{{call.len !== null ? '/' + call.len : ''}}B
-        {{call.firstByteDelay | formatSec}}sec
-        {{call.readDelayMax | formatSec}}sec
-        {{call.lastUpdate | elapsedSinceLastUpdate(siteTime)}}sec
+        {{call.firstByteDelay | formatSec}}s
+        {{call.readDelayMax | formatSec}}s
+        {{call.lastUpdate | elapsedSinceLastUpdate(siteTime)}}s
       </div>
       <div>Old API calls:</div>
       <div
@@ -20,9 +20,9 @@
       >
         {{call.apiCall}}
         {{call.received}}{{call.len !== null ? '/' + call.len : ''}}B
-        {{call.firstByteDelay | formatSec}}sec
-        {{call.readDelayMax | formatSec}}sec
-        {{call.duration | formatSec}}sec
+        {{call.firstByteDelay | formatSec}}s
+        {{call.readDelayMax | formatSec}}s
+        {{call.duration | formatSec}}s
         {{call.status}}
       </div>
     </div>
