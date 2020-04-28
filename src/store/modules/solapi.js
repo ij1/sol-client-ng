@@ -26,10 +26,12 @@ function statsUpdate(stats, newValue) {
   }
 }
 
-function abortGet(dispatch, controller, reqDef) {
+function abortReq(rootState, dispatch, controller, reqDef) {
   controller.abort();
-  dispatch('diagnostics/add', 'net: aborted API get ' + reqDef.apiCall,
-           {root: true});
+  if (rootState.diagnostics.cfg.extraNetDebug.value) {
+    dispatch('diagnostics/add', 'net: ABORT ' + reqDef.apiCall,
+             {root: true});
+  }
 }
 
 function calcTimeout(apiStat) {
@@ -161,7 +163,7 @@ export default {
   },
 
   actions: {
-    async get ({state, commit, dispatch}, reqDef) {
+    async get ({state, rootState, commit, dispatch}, reqDef) {
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       let url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
       const params = queryString.stringify(reqDef.params);
@@ -170,6 +172,11 @@ export default {
       }
 
       commit('start', reqDef.apiCall);
+      if (rootState.diagnostics.cfg.extraNetDebug.value &&
+          (reqDef.apiCall !== 'tiles')) {
+        dispatch('diagnostics/add', 'net: start ' + reqDef.apiCall,
+                 {root: true});
+      }
       const apiStats = state.apiCallStats[reqDef.apiCall];
       const apiCallUpdate = {
         id: state.activeApiCallId,
@@ -184,8 +191,8 @@ export default {
       let data;
       try {
         let response;
-        timer = setTimeout(abortGet, calcTimeout(apiStats.firstByteDelay),
-                           dispatch, controller, reqDef);
+        timer = setTimeout(abortReq, calcTimeout(apiStats.firstByteDelay),
+                           rootState, dispatch, controller, reqDef);
         try {
           response = await fetch(state.serverPrefix + url, {signal});
         } catch(err) {
@@ -236,8 +243,8 @@ export default {
           }
           apiCallUpdate.received += read.value.length;
           commit('update', apiCallUpdate);
-          timer = setTimeout(abortGet, calcTimeout(apiStats.readDelay),
-                             dispatch, controller, reqDef);
+          timer = setTimeout(abortReq, calcTimeout(apiStats.readDelay),
+                             rootState, dispatch, controller, reqDef);
         }
 
         if (compressedPayload) {
@@ -263,6 +270,11 @@ export default {
           id: apiCallUpdate.id,
           status: 'OK',
         });
+        if (rootState.diagnostics.cfg.extraNetDebug.value &&
+            (reqDef.apiCall !== 'tiles')) {
+          dispatch('diagnostics/add', 'net: OK ' + reqDef.apiCall,
+                   {root: true});
+        }
       } catch (err) {
         commit('complete', {
           id: apiCallUpdate.id,
@@ -271,6 +283,10 @@ export default {
         });
         if (timer !== null) {
           clearTimeout(timer);
+        }
+        if (rootState.diagnostics.cfg.extraNetDebug.value) {
+          dispatch('diagnostics/add', 'net: FAIL ' + reqDef.apiCall,
+                   {root: true});
         }
         throw err;
       }
@@ -289,8 +305,12 @@ export default {
       return result[reqDef.dataField];
     },
 
-    async post ({state, commit, dispatch}, reqDef) {
+    async post ({state, rootState, commit, dispatch}, reqDef) {
       commit('start', reqDef.apiCall);
+      if (rootState.diagnostics.cfg.extraNetDebug.value) {
+        dispatch('diagnostics/add', 'net: start ' + reqDef.apiCall,
+                 {root: true});
+      }
       const apiStats = state.apiCallStats[reqDef.apiCall];
       const apiCallUpdate = {
         id: state.activeApiCallId,
@@ -305,8 +325,8 @@ export default {
       let data;
       try {
         let response;
-        timer = setTimeout(abortGet, calcTimeout(apiStats.firstByteDelay),
-                           dispatch, controller, reqDef);
+        timer = setTimeout(abortReq, calcTimeout(apiStats.firstByteDelay),
+                           rootState, dispatch, controller, reqDef);
         try {
           response = await fetch(state.serverPrefix + reqDef.url, {
             method: "POST",
@@ -334,6 +354,10 @@ export default {
           id: apiCallUpdate.id,
           status: 'OK',
         });
+        if (rootState.diagnostics.cfg.extraNetDebug.value) {
+          dispatch('diagnostics/add', 'net: OK ' + reqDef.apiCall,
+                   {root: true});
+        }
 
       } catch (err) {
         commit('complete', {
@@ -343,6 +367,10 @@ export default {
         });
         if (timer !== null) {
           clearTimeout(timer);
+        }
+        if (rootState.diagnostics.cfg.extraNetDebug.value) {
+          dispatch('diagnostics/add', 'net: FAIL ' + reqDef.apiCall,
+                   {root: true});
         }
         commit('logError', {
           request: reqDef,
