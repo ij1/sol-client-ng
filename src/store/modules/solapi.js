@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import queryString from 'querystring';
+import axios from 'axios';
 import promisify from 'util.promisify';
 import pako from 'pako';
 import * as xml2js from 'isomorphic-xml2js';
@@ -26,8 +27,8 @@ function statsUpdate(stats, newValue) {
   }
 }
 
-function abortReq(rootState, dispatch, controller, reqDef) {
-  controller.abort();
+function abortReq(rootState, dispatch, abortFunc, reqDef) {
+  abortFunc();
   if (rootState.diagnostics.cfg.extraNetDebug.value) {
     dispatch('diagnostics/add', 'net: ABORT ' + reqDef.apiCall,
              {root: true});
@@ -53,6 +54,7 @@ export default {
     activeApiCalls: {},
     activeApiCallId: -1,
     pastApiCalls: [],
+    hasAbort: typeof window.AbortController !== 'undefined',
   },
 
   mutations: {
@@ -173,6 +175,7 @@ export default {
   actions: {
     async get ({state, rootState, commit, dispatch}, reqDef) {
       const compressedPayload = (typeof reqDef.compressedPayload !== 'undefined');
+      const useFetch = state.hasAbort;
 
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       let url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
@@ -191,7 +194,15 @@ export default {
         received: 0,
       }
 
-      const controller = new AbortController();
+      let controller;
+      let abortFunc;
+      if (useFetch) {
+        controller = new AbortController();
+        abortFunc = controller.abort.bind(controller);
+      } else {
+        controller = axios.CancelToken.source();
+        abortFunc = controller.cancel.bind(controller);
+      }
       let timer = null;
 
       let data;
@@ -199,12 +210,20 @@ export default {
         let response;
         timer = setTimeout(abortReq,
                            calcTimeout(apiStats.firstByteDelay, apiStats.backoff),
-                           rootState, dispatch, controller, reqDef);
+                           rootState, dispatch, abortFunc, reqDef);
         try {
-          response = await fetch(state.serverPrefix + url +
-                                 ((params.length > 0) ? '?' + params : ''), {
-            signal: controller.signal,
-          });
+          if (useFetch) {
+            response = await fetch(state.serverPrefix + url +
+                                   ((params.length > 0) ? '?' + params : ''), {
+              signal: controller.signal,
+            });
+          } else {
+            response = await axios.get(state.serverPrefix + url, {
+              responseType: 'arraybuffer',
+              params: reqDef.params,
+              cancelToken: controller.token,
+            });
+          }
         } catch(err) {
           throw new SolapiError('network', err.message);
         }
@@ -213,7 +232,14 @@ export default {
           throw new SolapiError('statuscode', "Invalid API call");
         }
 
-        const len = response.headers.get('Content-Length');
+        let len = null;
+        if (useFetch) {
+          len = response.headers.get('Content-Length');
+        } else {
+          if (response.headers.hasOwnProperty('content-length')) {
+            len = response.headers['content-length'];
+          }
+        }
         if (len === 0) {
           throw new SolapiError('response', "Empty response");
         }
@@ -227,7 +253,9 @@ export default {
         }
         let r;
         try {
-          r = response.body.getReader();
+          if (useFetch) {
+            r = response.body.getReader();
+          }
         } catch(err) {
           throw new SolapiError('network', err.message);
         }
@@ -235,7 +263,14 @@ export default {
         while (true) {
           let read;
           try {
-            read = await r.read();
+            if (useFetch) {
+              read = await r.read();
+            } else {
+              read = {
+                done: false,
+                value: new Uint8Array(response.data),
+              };
+            }
           } catch(err) {
             throw new SolapiError('network', err.message);
           }
@@ -252,9 +287,14 @@ export default {
           }
           apiCallUpdate.received += read.value.length;
           commit('update', apiCallUpdate);
+
+          if (!useFetch) {
+            break;
+          }
+
           timer = setTimeout(abortReq,
                              calcTimeout(apiStats.readDelay, apiStats.backoff),
-                             rootState, dispatch, controller, reqDef);
+                             rootState, dispatch, abortFunc, reqDef);
         }
 
         if (compressedPayload) {
@@ -316,6 +356,8 @@ export default {
     },
 
     async post ({state, rootState, commit, dispatch}, reqDef) {
+      const useFetch = state.hasAbort;
+
       commit('start', reqDef.apiCall);
       if (rootState.diagnostics.cfg.extraNetDebug.value) {
         dispatch('diagnostics/add', 'net: start ' + reqDef.apiCall,
@@ -328,7 +370,15 @@ export default {
         received: 0,
       }
 
-      const controller = new AbortController();
+      let controller;
+      let abortFunc;
+      if (useFetch) {
+        controller = new AbortController();
+        abortFunc = controller.abort.bind(controller);
+      } else {
+        controller = axios.CancelToken.source();
+        abortFunc = controller.cancel.bind(controller);
+      }
       let timer = null;
 
       let data;
@@ -336,13 +386,23 @@ export default {
         let response;
         timer = setTimeout(abortReq,
                            calcTimeout(apiStats.firstByteDelay, apiStats.backoff),
-                           rootState, dispatch, controller, reqDef);
+                           rootState, dispatch, abortFunc, reqDef);
         try {
-          response = await fetch(state.serverPrefix + reqDef.url, {
-            method: "POST",
-            body: queryString.stringify(reqDef.params),
-            signal: controller.signal,
-          });
+          if (useFetch) {
+            response = await fetch(state.serverPrefix + reqDef.url, {
+              method: "POST",
+              body: queryString.stringify(reqDef.params),
+              signal: controller.signal,
+            });
+          } else {
+            response = await axios.post(state.serverPrefix + reqDef.url,
+                                        queryString.stringify(reqDef.params), {
+                                          headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded'
+                                          },
+                                          cancelToken: controller.token,
+                                        });
+          }
         } catch(err) {
           throw new SolapiError('network', err.message);
         }
@@ -352,7 +412,11 @@ export default {
         }
 
         try {
-          data = await response.text();
+          if (useFetch) {
+            data = await response.text();
+          } else {
+            data = response.data;
+          }
         } catch(err) {
           throw new SolapiError('network', err.message);
         }
