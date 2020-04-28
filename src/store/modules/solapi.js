@@ -130,23 +130,26 @@ export default {
     },
     complete(state, completeData) {
       let item = state.activeApiCalls[completeData.id];
+      let statsItem = state.apiCallStats[item.apiCall];
+
       item.status = completeData.status;
-      item.duration = performance.now() - item.startTime;
+      if (completeData.status === 'OK') {
+        item.duration = performance.now() - item.startTime;
+        statsItem.backoff = 0;
+        statsUpdate(statsItem.duration, item.duration);
+        statsUpdate(statsItem.size, item.received);
+      } else {
+        item.duration = null;
+        if (statsItem.backoff < 30) {
+          statsItem.backoff++;
+        }
+      }
 
       state.pastApiCalls.unshift(item);
       if (state.pastApiCalls.length > 20) {
         state.pastApiCalls.pop();
       }
       delete state.activeApiCalls[completeData.id];
-
-      let statsItem = state.apiCallStats[item.apiCall];
-      statsUpdate(statsItem.duration, item.duration);
-      statsUpdate(statsItem.size, item.received);
-      if (completeData.status === 'OK') {
-        statsItem.backoff = 0;
-      } else if (statsItem.backoff < 30) {
-        statsItem.backoff++;
-      }
     },
 
     logError (state, errorInfo) {
