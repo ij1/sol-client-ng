@@ -172,12 +172,11 @@ export default {
 
   actions: {
     async get ({state, rootState, commit, dispatch}, reqDef) {
+      const compressedPayload = (typeof reqDef.compressedPayload !== 'undefined');
+
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
       let url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
       const params = queryString.stringify(reqDef.params);
-      if (params.length > 0) {
-        url += '?' + params;
-      }
 
       commit('start', reqDef.apiCall);
       if (rootState.diagnostics.cfg.extraNetDebug.value &&
@@ -202,7 +201,8 @@ export default {
                            calcTimeout(apiStats.firstByteDelay, apiStats.backoff),
                            rootState, dispatch, controller, reqDef);
         try {
-          response = await fetch(state.serverPrefix + url, {
+          response = await fetch(state.serverPrefix + url +
+                                 ((params.length > 0) ? '?' + params : ''), {
             signal: controller.signal,
           });
         } catch(err) {
@@ -219,7 +219,6 @@ export default {
         }
         apiCallUpdate.len = len;
 
-        const compressedPayload = (typeof reqDef.compressedPayload !== 'undefined');
         let builder;
         if (compressedPayload) {
           builder = new pako.Inflate();
