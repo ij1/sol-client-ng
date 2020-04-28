@@ -194,7 +194,6 @@ export default {
       }
 
       const controller = new AbortController();
-      const signal = controller.signal;
       let timer = null;
 
       let data;
@@ -204,7 +203,9 @@ export default {
                            calcTimeout(apiStats.firstByteDelay, apiStats.backoff),
                            rootState, dispatch, controller, reqDef);
         try {
-          response = await fetch(state.serverPrefix + url, {signal});
+          response = await fetch(state.serverPrefix + url, {
+            signal: controller.signal,
+          });
         } catch(err) {
           throw new SolapiError('network', err.message);
         }
@@ -330,7 +331,6 @@ export default {
       }
 
       const controller = new AbortController();
-      const signal = controller.signal;
       let timer = null;
 
       let data;
@@ -343,7 +343,7 @@ export default {
           response = await fetch(state.serverPrefix + reqDef.url, {
             method: "POST",
             body: queryString.stringify(reqDef.params),
-            signal: signal,
+            signal: controller.signal,
           });
         } catch(err) {
           throw new SolapiError('network', err.message);
