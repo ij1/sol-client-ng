@@ -53,7 +53,6 @@ export default {
     activeApiCalls: {},
     activeApiCallId: -1,
     pastApiCalls: [],
-    errorLog: [],
   },
 
   mutations: {

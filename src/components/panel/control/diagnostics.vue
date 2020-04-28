@@ -93,11 +93,6 @@ export default {
       this.$store.state.solapi.apiLocksStamp;
       return Array.from(this.$store.state.solapi.apiLocks.values());
     },
-    erroredApiCalls () {
-      return Object.keys(this.$store.state.solapi.errorLog).sort((a, b) => {
-        return a.localeCompare(b);
-      });
-    },
     browserId () {
       let id = "";
       for (let i of Object.keys(L.Browser)) {
