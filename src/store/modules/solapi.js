@@ -34,9 +34,9 @@ function abortReq(rootState, dispatch, controller, reqDef) {
   }
 }
 
-function calcTimeout(apiStat) {
+function calcTimeout(apiStat, backoff) {
   return Math.min(Math.max(Math.min(apiStat.avg * 8,
-                                    apiStat.max * 2),
+                                    apiStat.max * 2) * (2 ** backoff),
                            15000),
                   120000);
 }
@@ -85,6 +85,7 @@ export default {
         Vue.set(state.apiCallStats, apiCall, {
           apiCall: apiCall,
           count: 1,
+          backoff: 0,
           errors: 0,
           errorLog: [],
           firstByteDelay: {
@@ -141,6 +142,11 @@ export default {
       let statsItem = state.apiCallStats[item.apiCall];
       statsUpdate(statsItem.duration, item.duration);
       statsUpdate(statsItem.size, item.received);
+      if (completeData.status === 'OK') {
+        statsItem.backoff = 0;
+      } else if (statsItem.backoff < 30) {
+        statsItem.backoff++;
+      }
     },
 
     logError (state, errorInfo) {
@@ -191,7 +197,8 @@ export default {
       let data;
       try {
         let response;
-        timer = setTimeout(abortReq, calcTimeout(apiStats.firstByteDelay),
+        timer = setTimeout(abortReq,
+                           calcTimeout(apiStats.firstByteDelay, apiStats.backoff),
                            rootState, dispatch, controller, reqDef);
         try {
           response = await fetch(state.serverPrefix + url, {signal});
@@ -243,7 +250,8 @@ export default {
           }
           apiCallUpdate.received += read.value.length;
           commit('update', apiCallUpdate);
-          timer = setTimeout(abortReq, calcTimeout(apiStats.readDelay),
+          timer = setTimeout(abortReq,
+                             calcTimeout(apiStats.readDelay, apiStats.backoff),
                              rootState, dispatch, controller, reqDef);
         }
 
@@ -325,7 +333,8 @@ export default {
       let data;
       try {
         let response;
-        timer = setTimeout(abortReq, calcTimeout(apiStats.firstByteDelay),
+        timer = setTimeout(abortReq,
+                           calcTimeout(apiStats.firstByteDelay, apiStats.backoff),
                            rootState, dispatch, controller, reqDef);
         try {
           response = await fetch(state.serverPrefix + reqDef.url, {
