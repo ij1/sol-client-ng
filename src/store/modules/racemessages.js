@@ -55,7 +55,7 @@ export default {
   },
 
   actions: {
-    fetch({state, rootState, commit, dispatch}) {
+    async fetch({state, rootState, commit, dispatch}) {
       const getDef = {
         apiCall: 'racemsgs',
         url: "/webclient/race_messages.xml",
@@ -67,8 +67,9 @@ export default {
         dataField: 'racemessages',
       };
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(raceMessages => {
+      try {
+        let raceMessages = await dispatch('solapi/get', getDef, {root: true});
+
         if (typeof raceMessages.racemessage === 'undefined') {
           return;
         }
@@ -85,20 +86,18 @@ export default {
            */
           dispatch('race/fetchRaceinfo', null, {root: true});
         }
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           request: getDef,
           error: err,
         }, {root: true});
-      })
-      .finally(() => {
+      } finally {
         /* New messages appeared during our last fetch, fetch again */
         if (state.expectedId > state.lastId) {
           const refetchDelay = secToMsec(5) + secToMsec(15) * Math.random();
           solapiRetryDispatch(dispatch, 'fetch', undefined, refetchDelay);
         }
-      });
+      }
     },
     updateExpected({state, commit, dispatch}, expectedId) {
       if (expectedId > state.expectedId) {

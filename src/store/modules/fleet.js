@@ -486,7 +486,7 @@ export default {
   },
 
   actions: {
-    fetchRace({rootState, state, getters, rootGetters, commit, dispatch}) {
+    async fetchRace({rootState, state, getters, rootGetters, commit, dispatch}) {
       if (rootGetters['isTowBackPeriod'] && !state.towbackResetDone) {
         commit('towbackReset');
       }
@@ -506,8 +506,8 @@ export default {
       }
       commit('solapi/lock', 'fleet', {root: true});
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(raceInfo => {
+      try {
+        let raceInfo = await dispatch('solapi/get', getDef, {root: true});
         const now = rootGetters['time/now']();
 
         commit('race/updateMessage', raceInfo.message, {root: true});
@@ -609,19 +609,17 @@ export default {
             dispatch('fetchTraces');
           }
         }
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           request: getDef,
           error: err,
         }, {root: true});
-      })
-      .finally(() => {
+      } finally {
         commit('solapi/unlock', 'fleet', {root: true});
-      });
+      }
     },
 
-    fetchMetainfo({rootState, rootGetters, commit, dispatch}) {
+    async fetchMetainfo({rootState, rootGetters, commit, dispatch}) {
       const getDef = {
         apiCall: 'fleetmeta',
         url: "/webclient/metainfo_" + rootState.auth.raceId + ".xml",
@@ -637,10 +635,11 @@ export default {
       }
       commit('solapi/lock', 'fleetmetainfo', {root: true});
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(metaInfo => {
+      try {
+        let metaInfo = await dispatch('solapi/get', getDef, {root: true});
         const now = rootGetters['time/now']();
         let boatList = metaInfo.b;
+
         if (typeof boatList !== 'undefined') {
           if (!Array.isArray(boatList)) {
             boatList = [boatList];
@@ -650,19 +649,17 @@ export default {
             time: now,
           });
         }
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           request: getDef,
           error: err,
         }, {root: true});
-      })
-      .finally(() => {
+      } finally {
         commit('solapi/unlock', 'fleetmetainfo', {root: true});
-      });
+      }
     },
 
-    fetchTraces({rootState, state, rootGetters, commit, dispatch}) {
+    async fetchTraces({rootState, state, rootGetters, commit, dispatch}) {
       const getDef = {
         apiCall: 'traces',
         url: "/webclient/traces_" + rootState.auth.raceId + ".xml",
@@ -678,12 +675,13 @@ export default {
       }
       commit('solapi/lock', 'traces', {root: true});
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(traces => {
+      try {
+        let traces = await dispatch('solapi/get', getDef, {root: true});
         let boatList = traces.boat;
         if (typeof boatList === 'undefined') {
           return;
         }
+
         if (!Array.isArray(boatList)) {
           boatList = [boatList];
         }
@@ -716,16 +714,14 @@ export default {
         }
         const now = rootGetters['time/now']();
         commit('allTracesUpdated', now);
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/logError', {
           request: getDef,
           error: err,
         }, {root: true});
-      })
-      .finally(() => {
+      } finally {
         commit('solapi/unlock', 'traces', {root: true});
-      });
+      }
     },
   },
 }

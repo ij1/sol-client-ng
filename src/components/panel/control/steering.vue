@@ -469,7 +469,7 @@ export default {
   },
 
   methods: {
-    sendSteeringCommand () {
+    async sendSteeringCommand () {
       if (!this.canSend) {
         return;
       }
@@ -486,8 +486,10 @@ export default {
                            radToDeg(cmdValue) + ' ' +
                            (this.delayOn ? ('DC=' + delayValue) : '');
       this.$store.dispatch('diagnostics/add', 'INFO: steering SEND ' + steeringTxt);
-      this.$store.dispatch('boat/steering/sendSteeringCommand', sendParams)
-      .then(status => {
+      try {
+        let status = await this.$store.dispatch('boat/steering/sendSteeringCommand',
+                                                sendParams);
+
         if (status !== 'OK') {
           this.$store.dispatch('notifications/add', {
             text: 'Failed to send ' +
@@ -502,10 +504,9 @@ export default {
         if (delayTime > 0) {
           this.$store.dispatch('boat/steering/fetchDCs');
         }
-      })
-      .finally(() => {
+      } finally {
         this.sending = false;
-      });
+      }
     },
 
     recallCurrent () {
