@@ -99,9 +99,9 @@ export default {
   created() {
     /* Detect injected login credentials */
     if (!this.standalone) {
-      this.$store.commit('auth/loggedIn', {
+      this.$store.commit('auth/setToken', {
         token: window.token,
-        race_id: window.theracenumber,
+        raceId: window.theracenumber,
       });
       this.$store.dispatch('race/fetchRaceinfo');
     } else {

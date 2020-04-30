@@ -233,7 +233,22 @@ export default {
             });
           }
         } catch(err) {
+          if (err.response.status === 403) {
+            const payload = new TextDecoder('utf-8').decode(new Uint8Array(err.response.data));
+            if (payload === 'Bad token') {
+              dispatch('auth/reauth', null, {root: true});
+              throw new SolapiError('tokenfail', "Bad token");
+            }
+          }
           throw new SolapiError('network', err.message);
+        }
+
+        if (response.status === 403) {
+          const payload = await response.text();
+          if (payload === 'Bad token') {
+            dispatch('auth/reauth', null, {root: true});
+            throw new SolapiError('tokenfail', "Bad token");
+          }
         }
 
         if (response.status !== 200) {
