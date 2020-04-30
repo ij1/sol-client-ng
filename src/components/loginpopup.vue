@@ -1,5 +1,5 @@
 <template>
-  <div id="popup-block" v-if="$store.state.auth.status !== 'Authenticated'">
+  <div id="popup-block" v-if="authStatus !== 'Authenticated'">
     <popup-window
       title = "Login"
       :z-index = "1020"
@@ -53,8 +53,8 @@
           type = "password"
         />
       </div>
-      <div v-if="$store.state.auth.status !== 'Unauthenticated'">
-        {{ $store.state.auth.status }}
+      <div v-if="authStatus !== 'Unauthenticated'">
+        {{ authStatus }}
       </div>
     </popup-window>
   </div>
@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     authenticated() {
-      return this.$store.state.auth.token !== null;
+      return this.token !== null;
     },
     canSend () {
       return (this.authParams.race_id !== '') &&
@@ -92,6 +92,8 @@ export default {
     },
     ...mapState({
       standalone: state => state.auth.standalone,
+      authStatus: state => state.auth.status,
+      token: state => state.auth.token,
     }),
   },
   created() {
