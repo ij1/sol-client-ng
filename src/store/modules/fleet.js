@@ -592,13 +592,15 @@ export default {
             boatTypes: boatTypes,
             searchData: searchData,
           });
-          commit('updateCommandBoat', {
-            oldPosition: null,
-            newPosition: rootState.boat.position,
-            wrappedNewPosition: rootGetters['race/latLngToRaceBounds'](rootState.boat.position),
-            move: false,
-            rootGetters: rootGetters,
-          });
+          if (rootState.boat.position !== null) {
+            commit('updateCommandBoat', {
+              oldPosition: null,
+              newPosition: rootState.boat.position,
+              wrappedNewPosition: rootGetters['race/latLngToRaceBounds'](rootState.boat.position),
+              move: false,
+              rootGetters: rootGetters,
+            });
+          }
           commit('chatrooms/mapBoatIds', state.name2id, {root: true});
 
           if ((state.flaglessBoats > 0) ||
