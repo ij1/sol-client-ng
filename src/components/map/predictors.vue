@@ -192,6 +192,7 @@ export default {
       isDark: 'ui/isDark',
     }),
     ...mapState({
+      boatId: state => state.boat.id,
       wxLoaded: state => state.weather.loaded,
       wxUpdated: state => state.weather.data.updated,
       raceLoaded: state => state.race.loaded,
@@ -401,7 +402,7 @@ export default {
       return res;
     },
     recalc () {
-      if (!this.wxLoaded) {
+      if (!this.wxLoaded || this.boatId === null) {
         return;
       }
       this.cog = this.cogCalc();
