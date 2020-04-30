@@ -1,3 +1,5 @@
+import { secToMsec } from '../../lib/utils.js';
+
 export default {
   namespaced: true,
 
@@ -8,6 +10,7 @@ export default {
     token: null,
     raceId: null,
     authParams: null,
+    reauthStamp: 0,
   }, 
 
   mutations: {
@@ -21,6 +24,9 @@ export default {
     },
     loginFailed (state) {
       state.status = 'Login failed';
+    },
+    reauthAttempt (state) {
+      state.reauthStamp = performance.now();
     },
   },
 
@@ -66,6 +72,11 @@ export default {
       });
     },
     async reauth ({state, dispatch, commit}) {
+      if (state.reauthStamp + secToMsec(17) > performance.now()) {
+        return;
+      }
+      commit('reauthAttempt');
+
       dispatch('diagnostics/add', 'auth: reauthentication start', {root: true});
       if (state.standalone) {
         dispatch('login', null);
