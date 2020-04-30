@@ -2,6 +2,8 @@ export default {
   namespaced: true,
 
   state: {
+    standalone: (typeof window.token === 'undefined') ||
+                (typeof window.theracenumber === 'undefined'),
     status: 'Unauthenticated',
     token: null,
     raceId: null,

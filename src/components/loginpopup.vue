@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import PopupWindow from './popupwindow.vue';
 
 export default {
@@ -89,11 +90,13 @@ export default {
              (this.authParams.username.trim().length > 0) &&
              (this.authParams.password.trim().length > 0);
     },
+    ...mapState({
+      standalone: state => state.auth.standalone,
+    }),
   },
   created() {
     /* Detect injected login credentials */
-    if ((typeof window.token !== 'undefined') &&
-        (typeof window.theracenumber !== 'undefined')) {
+    if (!this.standalone) {
       this.$store.commit('auth/loggedIn', {
         token: window.token,
         race_id: window.theracenumber,
