@@ -222,6 +222,14 @@ export default {
               responseType: 'arraybuffer',
               params: reqDef.params,
               cancelToken: controller.token,
+              onDownloadProgress: (progressEvent) => {
+                apiCallUpdate.received = progressEvent.loaded;
+                commit('update', apiCallUpdate);
+                clearTimeout(timer);
+                timer = setTimeout(abortReq,
+                                   calcTimeout(apiStats.readDelay, apiStats.backoff),
+                                   rootState, dispatch, abortFunc, reqDef);
+              },
             });
           }
         } catch(err) {
@@ -285,7 +293,11 @@ export default {
           if (compressedPayload && (builder.err !== 0)) {
             throw new SolapiError('parsing', "Decompress fails!");
           }
-          apiCallUpdate.received += read.value.length;
+          if (useFetch) {
+            apiCallUpdate.received += read.value.length;
+          } else {
+            apiCallUpdate.received = read.value.length;
+          }
           commit('update', apiCallUpdate);
 
           if (!useFetch) {
