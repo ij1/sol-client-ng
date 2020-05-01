@@ -11,8 +11,8 @@ export default {
     twsval: [],
     twaval: [],
     bs: [],
+    maxBs: null,
 
-    curves: [3, 6, 9, 12, 15, 20, 25, 30],
     windKeys: [3, 6, 9, 12, 15, 20, 25, 30, 40, 50],
     twaInterval: 1,
   },
@@ -22,6 +22,7 @@ export default {
       state.twsval = polarData.twsval;
       state.twaval = polarData.twaval;
       state.bs = polarData.bs;
+      state.maxBs = polarData.max;
       state.loaded = true;
     },
   },
@@ -108,9 +109,17 @@ export default {
     },
 
     staticCurves: (state, getters) => {
+      if (!state.loaded) {
+        return [];
+      }
       let res = [];
-      for (let knots of state.curves) {
-        res.push(getters['curve'](knots, state.twaInterval));
+      let maxBs = 0;
+      for (let knots of state.windKeys) {
+        const curve = getters['curve'](knots, state.twaInterval)
+        if ((knots <= 30) || (maxBs * 1.02 < state.maxBs.speed)) {
+          res.push(curve);
+        }
+        maxBs = Math.max(maxBs, curve.maxspeed.speed);
       }
       return res;
     },
@@ -141,6 +150,11 @@ export default {
         throw new SolapiDataError('polar', 'Polar data length error');
       }
 
+      polarData.max = {
+        speed: 0,
+        ms: 0,
+        knots: 0,
+      }
       let bs = [];
       for (let i = 0; i < rows.length - 1; i++) {
         let tmp = rows[i].split(/\s+/).map(parseFloat);
@@ -153,6 +167,13 @@ export default {
           );
           /* Throw here to force a retry, no point to sail without a polar? */
           throw new SolapiDataError('polar', 'Polar data length error');
+        }
+        for (let j = 0; j < tmp.length; j++) {
+          if (tmp[j] > polarData.max.speed) {
+            polarData.max.speed = tmp[j];
+            polarData.max.ms = polarData.twsval[j];
+            polarData.max.knots = polarData.max.ms * MS_TO_KNT;
+          }
         }
         bs.push(Object.freeze(tmp));
       }
