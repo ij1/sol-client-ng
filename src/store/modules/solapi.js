@@ -233,7 +233,7 @@ export default {
             });
           }
         } catch(err) {
-          if (err.response.status === 403) {
+          if (!useFetch && (err.response.status === 403)) {
             const payload = new TextDecoder('utf-8').decode(new Uint8Array(err.response.data));
             if (payload === 'Bad token') {
               dispatch('auth/reauth', null, {root: true});
