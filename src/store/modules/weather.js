@@ -269,7 +269,7 @@ export default {
       return idx;
     },
 
-    latLngWind: (state, getters) => (latLng, timestamp) => {
+    __latLngWind: (state) => (latLng, timeIdx) => {
       if (state.data.boundary === null) {
         return null;
       }
@@ -295,20 +295,6 @@ export default {
 
       const lonIdx = Math.floor((wxLng - state.data.origo[1]) / state.data.cellSize[1]);
       const latIdx = Math.floor((wxLat - state.data.origo[0]) / state.data.cellSize[0]);
-      let timeIdx = getters.timeIndex;
-      let timeVal = state.time;
-
-      if (typeof timestamp !== 'undefined') {
-        timeVal = timestamp;
-        timeIdx = getters['timeIndexAny'](timestamp);
-      }
-
-      /* Sanity check wx data */
-      if ((timeIdx === null) ||
-          (typeof state.data.windMap[timeIdx+1] === 'undefined') ||
-          (state.data.timeSeries[timeIdx+1] < timeVal)) {
-        return null;
-      }
 
       /* latitude (y) solution */
       let firstRes = [[], []];
@@ -341,7 +327,29 @@ export default {
             firstRes[t][1]
           );
       }
+      return secondRes;
+    },
 
+    latLngWind: (state, getters) => (latLng, timestamp) => {
+      let timeIdx = getters.timeIndex;
+      let timeVal = state.time;
+
+      if (typeof timestamp !== 'undefined') {
+        timeVal = timestamp;
+        timeIdx = getters['timeIndexAny'](timestamp);
+      }
+
+      /* Sanity check wx data */
+      if ((timeIdx === null) ||
+          (typeof state.data.windMap[timeIdx+1] === 'undefined') ||
+          (state.data.timeSeries[timeIdx+1] < timeVal)) {
+        return null;
+      }
+
+      const secondRes = getters.__latLngWind(latLng, timeIdx);
+      if (secondRes === null) {
+        return null;
+      }
       /* time (z) solution */
       const thirdFactor = interpolateFactor(
         state.data.timeSeries[timeIdx],
