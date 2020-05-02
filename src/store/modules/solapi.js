@@ -178,7 +178,7 @@ export default {
       const useFetch = state.hasAbort;
 
       /* Due to dev CORS reasons, we need to mangle some API provided URLs */
-      let url = reqDef.url.replace(/^http:\/\/sailonline.org\//, '/');
+      let url = reqDef.url.replace(/^http:\/\/(beta\.)?sailonline.org\//, '/');
       const params = queryString.stringify(reqDef.params);
 
       commit('start', reqDef.apiCall);
