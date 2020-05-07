@@ -409,6 +409,11 @@ export default {
   border-radius: 5px 5px 2px 2px;
   touch-action: none;
 }
+#weather-slider:focus {
+  border: 1px solid;
+  border-radius: 5px 5px 4px 4px;
+  color: rgba(255, 80, 80, 0.8);
+}
 #weather-slider-fg {
   position: absolute;
   background-image: linear-gradient(rgba(85, 149, 191, 0.8), rgba(85, 191, 255, 0.8), rgba(85, 149, 191, 0.8));
