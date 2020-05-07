@@ -231,6 +231,10 @@ export default {
         raceInfo.course = getters['parseCourse'](raceInfo);
         raceInfo.loadTime = now;
 
+        if (typeof raceInfo.boaturl === 'undefined') {
+          throw new SolapiError('data', 'Missing boat URL!');
+        }
+
         /* Sanity check! Make sure there are at least 2 WPs (start+finish) */
         if (raceInfo.course.route.length < 2) {
           /* Use the previous one if possible and skip any updates */
