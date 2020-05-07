@@ -5,7 +5,7 @@ import { solBoatPolicy, PR_MARK_BOAT } from '../../lib/sol.js';
 import polarModule from './polar';
 import steeringModule from './steering';
 import instrumentModule from './instruments';
-import { solapiRetryDispatch } from '../../lib/solapi.js';
+import { solapiRetryDispatch, SolapiError } from '../../lib/solapi.js';
 
 export default {
   namespaced: true,
@@ -133,7 +133,10 @@ export default {
 
         let boatData = await dispatch('solapi/get', getDef, {root: true});
         const now = rootGetters['time/now']();
-        boatData.boat.time = now;
+        boatData.boat.time = UTCToMsec(boatData.boat.last_update_time);
+        if (boatData.boat.time === null) {
+          throw new SolapiError('data', 'Boat timestamp missing!');
+        }
         const chatInfo = {
           id: nextChatroom,
           chatData: boatData.chats,
