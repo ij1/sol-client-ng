@@ -3,6 +3,18 @@ import { speedTowardsBearing } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { SolapiDataError } from '../../lib/solapi.js';
 
+function diffCurves(prev, next) {
+  let maxDiff = 0;
+  for (let i = 0; i < prev.values.length; i++) {
+    if (prev.values[i].speed === 0) {
+      continue;
+    }
+    maxDiff = Math.max(Math.abs(1 - next.values[i].speed / prev.values[i].speed),
+                       maxDiff);
+  }
+  return maxDiff;
+}
+
 export default {
   namespaced: true,
 
@@ -114,10 +126,13 @@ export default {
       }
       let res = [];
       let maxBs = 0;
+      let prevCurve = null;
       for (let knots of state.windKeys) {
         const curve = getters['curve'](knots, state.twaInterval)
-        if ((knots <= 30) || (maxBs * 1.02 < state.maxBs.speed)) {
+        if ((knots <= 30) || (maxBs * 1.02 < state.maxBs.speed) ||
+            (prevCurve !== null && diffCurves(prevCurve, curve) > 0.02)) {
           res.push(curve);
+          prevCurve = curve;
         }
         maxBs = Math.max(maxBs, curve.maxspeed.speed);
       }
