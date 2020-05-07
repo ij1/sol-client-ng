@@ -234,6 +234,7 @@ export default {
         if (typeof raceInfo.boaturl === 'undefined') {
           throw new SolapiError('data', 'Missing boat URL!');
         }
+        raceInfo.boaturl = raceInfo.boaturl.replace(/boat\.xml/,'boat_2.xml');
 
         /* Sanity check! Make sure there are at least 2 WPs (start+finish) */
         if (raceInfo.course.route.length < 2) {
