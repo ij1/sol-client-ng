@@ -9,6 +9,8 @@ export const PROJECTION = L.CRS.EPSG3857;
 export const OLD_CLIENT_MAXZOOM = 16.8;
 export const OLD_CLIENT_MAXZOOM_ACCURATE = 16.8342;
 
+export const PERF_RECOVERY_MULT = 3.0 / (20 * 1000 * 100.0);
+
 export const PR_MARK_BOAT = 'Practice_Mark_';
 
 export const darkSeaColor = '#00004f';

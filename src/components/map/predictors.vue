@@ -3,6 +3,7 @@ import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { degToRad, hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
 import { cogTwdToTwa, twaTwdToCog } from '../../lib/nav.js';
+import { PERF_RECOVERY_MULT } from '../../lib/sol.js';
 
 export default {
   name: 'SteeringPredictors',
@@ -197,6 +198,7 @@ export default {
       currentSteering: state => state.boat.currentSteering,
       boatCog: state => state.boat.instruments.course.value,
       boatTwa: state => state.boat.instruments.twa.value,
+      boatPerf: state => state.boat.instruments.perf.value,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
@@ -314,6 +316,7 @@ export default {
       cogPred.latLngs.push(Object.freeze(lastLatLng));
 
       const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
+      let perf = this.boatPerf;
 
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
@@ -321,7 +324,7 @@ export default {
           break;
         }
         const twa = cogTwdToTwa(cogPred.cog, wind.twd);
-        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa);
+        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) * perf;
 
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
         const dlon = delta * speed * Math.sin(cogPred.cog) / lonScaling;
@@ -331,6 +334,9 @@ export default {
                               lastLatLng.lng + dlon);
         cogPred.latLngs.push(Object.freeze(lastLatLng));
         t += this.timeDelta;
+        perf = Math.min(perf +
+                        PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
+                        1.0);
       }
       Object.freeze(cogPred.latLngs);
       return cogPred;
@@ -354,13 +360,14 @@ export default {
       twaPred.latLngs.push(Object.freeze(lastLatLng));
 
       const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
+      let perf = this.boatPerf;
 
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
         if (wind === null) {
           break;
         }
-        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twaPred.twa);
+        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twaPred.twa) * perf;
 
         const course = twaTwdToCog(twaPred.twa, wind.twd);
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
@@ -371,6 +378,9 @@ export default {
                               lastLatLng.lng + dlon);
         twaPred.latLngs.push(Object.freeze(lastLatLng));
         t += this.timeDelta;
+        perf = Math.min(perf +
+                        PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
+                        1.0);
       }
       Object.freeze(twaPred.latLngs);
 
