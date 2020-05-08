@@ -195,6 +195,8 @@ export default {
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
       currentSteering: state => state.boat.currentSteering,
+      boatCog: state => state.boat.instruments.course.value,
+      boatTwa: state => state.boat.instruments.twa.value,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
@@ -301,7 +303,7 @@ export default {
 
       let cogPred = {
         time: t,
-        cog: this.$store.state.boat.instruments.course.value,
+        cog: this.boatCog,
         firstLatLng: lastLatLng,
         latLngs: [],
       };
@@ -341,7 +343,7 @@ export default {
 
       let twaPred = {
         time: t,
-        twa: this.$store.state.boat.instruments.twa.value,
+        twa: this.boatTwa,
         firstLatLng: lastLatLng,
         latLngs: [],
       };
