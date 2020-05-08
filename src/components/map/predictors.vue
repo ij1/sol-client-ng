@@ -63,9 +63,6 @@ export default {
       }
       return this.boatTime;
     },
-    currentSteering () {
-      return this.$store.state.boat.currentSteering;
-    },
     hourIndexes () {
       let res = [];
       for (let i = 0; i <= this.predictorLen; i++) {
@@ -197,6 +194,7 @@ export default {
       wxUpdated: state => state.weather.data.updated,
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
+      currentSteering: state => state.boat.currentSteering,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
