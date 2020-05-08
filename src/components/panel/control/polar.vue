@@ -179,7 +179,7 @@ export default {
       for (let curve of this.bgCurves) {
         curvectx.strokeStyle = windToColor(curve.knots);
         curvectx.lineWidth = 2;
-        this.drawPolarCurve(curvectx, curve, this.gridScale);
+        this.drawPolarCurve(curvectx, curve, this.gridScale, this.gridMaxKnots);
       }
       gridctx.restore();
       curvectx.restore();
@@ -205,7 +205,7 @@ export default {
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 2;
       if (this.fgCurve !== null) {
-        this.drawPolarCurve(ctx, this.fgCurve, this.gridScale);
+        this.drawPolarCurve(ctx, this.fgCurve, this.gridScale, this.gridMaxKnots);
       }
 
       if ((this.boatTwa !== null) && (this.boatSpeed !== null)) {

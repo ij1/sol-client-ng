@@ -1,7 +1,7 @@
 <template>
   <div id="wind-key">
     <div
-      v-for = "wind in $store.state.boat.polar.windKeys"
+      v-for = "wind in windKeys"
       v-bind:key = "wind"
     >
       <span
@@ -14,10 +14,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { windToColor} from '../../../lib/sol.js';
 
 export default {
   name: 'WindKey',
+  computed: {
+    ...mapGetters({
+      windKeys: 'boat/polar/windKeys',
+    }),
+  },
   methods: {
     windToColor(knots) {
       return windToColor(knots);

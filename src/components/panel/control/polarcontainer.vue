@@ -1,7 +1,22 @@
 <template>
   <div id="polar-container">
-    <div id="boat-type">
-      <span v-html="boatType"/>
+    <div id = "polar-header">
+      <span id = "boat-type" v-html="boatType"/>
+      <span id = "polar-mode-container">
+        <label for = "polar-mode">Curves:</label>
+        <select
+          id = "polar-mode"
+          v-model = "polarMode"
+        >
+          <option
+            v-for = "mode in polarModes"
+            :value = "mode"
+            :key = "mode"
+          >
+            {{mode}}
+          </option>
+        </select>
+      </span>
     </div>
     <div id = "polar-max-area" ref = "polar-max-area">
       <polar-graph v-if = "polarLoaded" :polar-size-limit = "polarSizeLimit"/>
@@ -28,6 +43,17 @@ export default {
     }
   },
   computed: {
+    polarMode: {
+      get () {
+        return this.$store.state.boat.polar.polarMode;
+      },
+      set (value) {
+        this.$store.commit('boat/polar/setPolarMode', value);
+      },
+    },
+    polarModes () {
+      return Object.keys(this.$store.state.boat.polar.polarModes);
+    },
     ...mapState({
       polarLoaded: state => state.boat.polar.loaded,
       boatType: state => state.boat.type,
@@ -68,11 +94,22 @@ export default {
   min-height: 30px;
   flex-direction: column;
 }
-#boat-type {
+#polar-header {
   padding-left: 20px;
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#boat-type {
   font-size: 14px;
   font-weight: bold;
-  flex: none;
+}
+#polar-mode-container {
+  font-size: 11px;
+}
+#polar-mode-container select {
+  font-size: 11px;
 }
 #polar-max-area {
   flex: auto;

@@ -25,8 +25,13 @@ export default {
     bs: [],
     maxBs: null,
 
-    windKeys: [3, 6, 9, 12, 15, 20, 25, 30, 40, 50],
     twaInterval: 1,
+
+    polarMode: 'default',
+    polarModes: {
+      'default': [3, 6, 9, 12, 15, 20, 25, 30, 40, 50],
+      'low TWS': [1, 2, 3, 4, 5, 6],
+    },
   },
 
   mutations: {
@@ -37,11 +42,17 @@ export default {
       state.maxBs = polarData.max;
       state.loaded = true;
     },
+    setPolarMode(state, newMode) {
+      state.polarMode = newMode;
+    },
   },
 
   getters: {
     maxTws: (state) => {
       return state.twsval[state.twsval.length - 1];
+    },
+    windKeys: (state) => {
+      return state.polarModes[state.polarMode];
     },
     getSpeed: (state, getters) => (twsms, twa) => {
       twa = Math.abs(twa);
@@ -127,7 +138,7 @@ export default {
       let res = [];
       let maxBs = 0;
       let prevCurve = null;
-      for (let knots of state.windKeys) {
+      for (let knots of getters.windKeys) {
         const curve = getters['curve'](knots, state.twaInterval)
         if ((knots <= 30) || (maxBs * 1.02 < state.maxBs.speed) ||
             (prevCurve !== null && diffCurves(prevCurve, curve) > 0.02)) {
