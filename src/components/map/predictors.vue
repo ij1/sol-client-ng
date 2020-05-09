@@ -416,6 +416,15 @@ export default {
     wxUpdated () {
       this.recalc();
     },
+    predictorMarkers (newVal) {
+      for (let pt of newVal) {
+        if (this.currentSteering === pt.type) {
+          this.$store.commit('boat/steering/setDelayLatLng', pt.latLng);
+          return;
+        }
+      }
+      this.$store.commit('boat/steering/setDelayLatLng', null);
+    },
   },
   render () {
     return null;

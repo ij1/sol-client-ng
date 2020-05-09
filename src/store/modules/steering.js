@@ -15,6 +15,7 @@ export default {
       delayOn: false,
       delay: '',
       delayTime: null,
+      delayLatLng: null,
       prevCopyDecimals: 2,
     },
 
@@ -78,6 +79,9 @@ export default {
     },
     setDelayTime(state, delayTime) {
       state.plottedSteering.delayTime = delayTime;
+    },
+    setDelayLatLng(state, latLng) {
+      state.delayLatLng = latLng;
     },
     setPrevCopyDecimals(state, prevCopyDecimals) {
       state.plottedSteering.prevCopyDecimals = prevCopyDecimals;
