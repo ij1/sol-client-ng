@@ -12,8 +12,8 @@
       v-for = "waypoint in wrappedMarks"
       :key = "waypoint.key"
       :lat-lng = "waypoint.latLng"
-      :rounding-arrow-angle = "waypoint.arc.midAngle"
-      :rounding-side = "waypoint.arc.side"
+      :rounding-arrow-angle = "race.route[waypoint.index].arc.midAngle"
+      :rounding-side = "race.route[waypoint.index].side"
       :color = "waypoint.color"
       :mark-radius = "waypoint.radius"
     >
@@ -147,34 +147,12 @@ export default {
       let route = [];
 
       for (let i = 0; i < this.race.route.length; i++) {
-        let arc = {}
-        if (this.isIntermediateMark(i)) {
-          arc.prevAngle = this.race.route[i-1].nextWpBearing;
-          arc.nextAngle = this.race.route[i].nextWpBearing;
-          arc.turnAngle = arc.nextAngle - arc.prevAngle;
-          if (this.race.route[i].side === "Port") {
-            arc.prevAngle += Math.PI / 2;
-            arc.nextAngle += Math.PI / 2;
-            if (arc.turnAngle > 0) {
-              arc.turnAngle -= Math.PI * 2;
-            }
-          } else {
-            arc.prevAngle -= Math.PI / 2;
-            arc.nextAngle -= Math.PI / 2;
-            if (arc.turnAngle < 0) {
-              arc.turnAngle += Math.PI * 2;
-            }
-          }
-          arc.midAngle = arc.prevAngle + arc.turnAngle / 2;
-          arc.side = this.race.route[i].side;
-        }
-
         route.push({
           latLng: this.race.route[i].latLng,
           name: this.race.route[i].name,
+          index: i,
           info: this.markInfoText(i),
           color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
-          arc: arc,
           radius: !this.isFinishMark(i) ? 4 : this.finishPointRadius,
         });
       }
@@ -237,8 +215,8 @@ export default {
             line = [];
           } else {
             const wpLatLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
-            const prevAngle = this.raceRoute[i].arc.prevAngle;
-            const turnAngle = this.raceRoute[i].arc.turnAngle;
+            const prevAngle = this.race.route[i].arc.prevAngle;
+            const turnAngle = this.race.route[i].arc.turnAngle;
 
             line.push(this.wpArcLatLng(wpLatLng, prevAngle));
             res.push({
@@ -259,8 +237,8 @@ export default {
         for (let i = 1; i < this.raceRoute.length - 1; i++) {
           let arc = [];
           const wpLatLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
-          const prevAngle = this.raceRoute[i].arc.prevAngle;
-          const turnAngle = this.raceRoute[i].arc.turnAngle;
+          const prevAngle = this.race.route[i].arc.prevAngle;
+          const turnAngle = this.race.route[i].arc.turnAngle;
 
           let middleDone = false;
           for (let a = 0; a < Math.abs(turnAngle); a += this.routeLineArcInterval) {

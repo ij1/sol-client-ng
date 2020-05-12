@@ -72,6 +72,7 @@ export default {
         waypoint.latLng = L.latLng(waypoint.lat, waypoint.lon);
         waypoint.nextWpBearing = null;
         waypoint.side = null;
+        waypoint.arc = {};
 
         /* Calculate bearing from prev WP to this WP ... */
         if (i > 0) {
@@ -84,6 +85,29 @@ export default {
             let prevAngle = course.route[i - 2].nextWpBearing;
             const turn = minTurnAngle(prevAngle, bearing);
             course.route[i - 1].side = (turn < 0 ? "Port" : "Starboard");
+
+            /* Bisecting line and arc from prev to next angles */
+            course.route[i - 1].arc = {
+              prevAngle: prevAngle,
+              nextAngle: bearing,
+              turnAngle: bearing - prevAngle,
+            };
+            let arc = course.route[i - 1].arc;
+
+            if (turn < 0) {
+              arc.prevAngle += Math.PI / 2;
+              arc.nextAngle += Math.PI / 2;
+              if (arc.turnAngle > 0) {
+                arc.turnAngle -= Math.PI * 2;
+              }
+            } else {
+              arc.prevAngle -= Math.PI / 2;
+              arc.nextAngle -= Math.PI / 2;
+              if (arc.turnAngle < 0) {
+                arc.turnAngle += Math.PI * 2;
+              }
+            }
+            arc.midAngle = arc.prevAngle + arc.turnAngle / 2;
           }
         }
         course.route[idx] = waypoint;
