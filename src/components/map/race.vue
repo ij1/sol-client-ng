@@ -14,19 +14,19 @@
       :lat-lng = "waypoint.latLng"
       :rounding-arrow-angle = "race.route[waypoint.index].arc.midAngle"
       :rounding-side = "race.route[waypoint.index].side"
-      :color = "waypoint.color"
-      :mark-radius = "waypoint.radius"
+      :color = "markDetail[waypoint.index].color"
+      :mark-radius = "markDetail[waypoint.index].radius"
     >
       <l-tooltip
         :options="wpTooltipOptions"
       >
         <span
-          :style = "{color: waypoint.color}"
-          v-html="waypoint.name"
+          :style = "{color: markDetail[waypoint.index].color}"
+          v-html="race.route[waypoint.index].name"
         /><br>
         <span
-          :style = "{color: waypoint.color}"
-        >{{waypoint.info}}
+          :style = "{color: markDetail[waypoint.index].color}"
+        >{{markDetail[waypoint.index].info}}
         </span>
       </l-tooltip>
     </route-mark>
@@ -143,14 +143,11 @@ export default {
       }
       return res;
     },
-    raceRoute () {
+    markDetail () {
       let route = [];
 
       for (let i = 0; i < this.race.route.length; i++) {
         route.push({
-          latLng: this.race.route[i].latLng,
-          name: this.race.route[i].name,
-          index: i,
           info: this.markInfoText(i),
           color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
           radius: !this.isFinishMark(i) ? 4 : this.finishPointRadius,
@@ -161,11 +158,12 @@ export default {
     wrappedMarks () {
       let res = [];
       for (const offset of this.mapWrapList) {
-        for (let i = 0; i < this.raceRoute.length; i++) {
-          let copy = Object.assign({}, this.raceRoute[i]);
-          copy.latLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
-          copy.key = 'm_' + offset + '_' + i;
-          res.push(copy);
+        for (let i = 0; i < this.race.route.length; i++) {
+          res.push({
+            latLng: latLngAddOffset(this.race.route[i].latLng, offset),
+            index: i,
+            key: 'm_' + offset + '_' + i,
+          });
         }
       }
       return res;
@@ -196,32 +194,32 @@ export default {
       if (this.cfgCourseDrawMode === 'default') {
         return 'red';
       }
-      return 'rgba(255,0,0,' + this.wpAlpha(this.raceRoute.length - 1) + ')';
+      return 'rgba(255,0,0,' + this.wpAlpha(this.race.route.length - 1) + ')';
     },
     wrappedLines () {
       let res = [];
       let line = [];
       for (const offset of this.mapWrapList) {
-        for (let i = 0; i < this.raceRoute.length; i++) {
+        for (let i = 0; i < this.race.route.length; i++) {
           if (this.isStartMark(i)) {
-            line.push(latLngAddOffset(this.raceRoute[i].latLng, offset));
+            line.push(latLngAddOffset(this.race.route[i].latLng, offset));
           } else if (this.isFinishMark(i)) {
-            line.push(latLngAddOffset(this.raceRoute[i].latLng, offset));
+            line.push(latLngAddOffset(this.race.route[i].latLng, offset));
             res.push({
               key: 'l_' + offset + '_' + i,
-              color: this.raceRoute[i].color,
+              color: this.markDetail[i].color,
               line: line,
             });
             line = [];
           } else {
-            const wpLatLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
+            const wpLatLng = latLngAddOffset(this.race.route[i].latLng, offset);
             const prevAngle = this.race.route[i].arc.prevAngle;
             const turnAngle = this.race.route[i].arc.turnAngle;
 
             line.push(this.wpArcLatLng(wpLatLng, prevAngle));
             res.push({
               key: 'l_' + offset + '_' + i,
-              color: this.raceRoute[i].color,
+              color: this.markDetail[i].color,
               line: line,
             });
             line = [this.wpArcLatLng(wpLatLng, turnAngle + prevAngle)];
@@ -234,9 +232,9 @@ export default {
     wrappedArcs () {
       let res = [];
       for (const offset of this.mapWrapList) {
-        for (let i = 1; i < this.raceRoute.length - 1; i++) {
+        for (let i = 1; i < this.race.route.length - 1; i++) {
           let arc = [];
-          const wpLatLng = latLngAddOffset(this.raceRoute[i].latLng, offset);
+          const wpLatLng = latLngAddOffset(this.race.route[i].latLng, offset);
           const prevAngle = this.race.route[i].arc.prevAngle;
           const turnAngle = this.race.route[i].arc.turnAngle;
 
@@ -254,7 +252,7 @@ export default {
             res.push({
               key: 'a_' + offset + '_' + i,
               arc: arc,
-              color: this.raceRoute[i].color,
+              color: this.markDetail[i].color,
               midPoint: {
                 latLng: this.wpArcLatLng(wpLatLng, turnAngle / 2 + prevAngle),
                 angle: turnAngle / 2 + prevAngle,
