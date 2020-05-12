@@ -81,8 +81,8 @@ export default {
 
           /* ...and which side to pass the prev WP */
           if (i > 1) {
-            const turn = minTurnAngle(course.route[i - 2].nextWpBearing,
-                                      bearing);
+            let prevAngle = course.route[i - 2].nextWpBearing;
+            const turn = minTurnAngle(prevAngle, bearing);
             course.route[i - 1].side = (turn < 0 ? "Port" : "Starboard");
           }
         }
