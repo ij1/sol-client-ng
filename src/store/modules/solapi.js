@@ -88,6 +88,7 @@ export default {
           count: 1,
           backoff: 0,
           errors: 0,
+          consecutiveErrors: 0,
           errorLog: [],
           firstByteDelay: {
             max: 0,
@@ -156,12 +157,16 @@ export default {
     logError (state, errorInfo) {
       const apiCall = errorInfo.request.apiCall;
       state.apiCallStats[apiCall].errors++;
+      state.apiCallStats[apiCall].consecutiveErrors++;
       state.apiCallStats[apiCall].errorLog.push(errorInfo.error);
       if (!(errorInfo.error instanceof SolapiError)) {
         console.log(errorInfo.error.message);
         console.log(errorInfo.error.stack);
       }
     },
+    noError (state, apiCall) {
+      state.apiCallStats[apiCall].consecutiveErrors = 0;
+    }
   },
   getters: {
     isLocked: (state) => (apiCall) => {
@@ -378,6 +383,7 @@ export default {
       if (!(result.hasOwnProperty(reqDef.dataField))) {
         throw new SolapiError('response', "Response missing datafield: " + reqDef.dataField);
       }
+      commit('noError', reqDef.apiCall);
 
       return result[reqDef.dataField];
     },
@@ -483,6 +489,7 @@ export default {
 
       try {
         if (data === 'OK') {
+          commit('noError', reqDef.apiCall);
           return Promise.resolve();
         } else if (typeof reqDef.dataField !== 'undefined') {
           let result = null;
@@ -495,6 +502,8 @@ export default {
             throw new SolapiError('response', "Response missing datafield: " +
                                               reqDef.dataField);
           }
+          commit('noError', reqDef.apiCall);
+
           return result[reqDef.dataField];
         }
       } catch(err) {
