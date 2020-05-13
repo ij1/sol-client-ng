@@ -120,12 +120,10 @@ export default {
         let allMapped = true;
         for (let i = 0; i < state.rooms[c].msgs.length; i++) {
           let msg = state.rooms[c].msgs[i];
-          if (typeof msg.boatId === 'undefined') {
+          if (msg.boatId === null) {
             let idList = name2boatId.get(msg.name);
             if (typeof idList !== 'undefined') {
-              // FIXME: make boatId present when rewriting msg parsing code
-              // to avoid need to use Vue.set here
-              Vue.set(state.rooms[c].msgs[i], 'boatId', idList[0]);
+              state.rooms[c].msgs[i].boatId = idList[0];
             } else {
               allMapped = false;
             }
@@ -315,6 +313,7 @@ export default {
 
             chat.push({
               id: state.chatMsgId,
+              boatId: null,
               timestamp: timestamp,
               name: c.name,
               msg: msg,
