@@ -77,10 +77,12 @@ export default {
        */
       this.cancelHighlight();
 
+      let target = highlightInfo.latLng;
+
       const currentLatLng = this.map.getCenter();
       const minTurn = minTurnAngle(degToRad(currentLatLng.lng),
-                                   degToRad(highlightInfo.latLng.lng));
-      const targetLatLng = L.latLng(highlightInfo.latLng.lat,
+                                   degToRad(target.lng));
+      const targetLatLng = L.latLng(target.lat,
                                     currentLatLng.lng + radToDeg(minTurn));
       this.latLng = targetLatLng;
 
