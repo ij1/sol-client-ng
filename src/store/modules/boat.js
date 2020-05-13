@@ -31,6 +31,11 @@ export default {
      * closest to the map center.
      */
     visualLngOffset: 0,
+
+    chatlessCount: 0,
+    chatRetryMark: 0,
+    chatlessThreshold: 3,  /* Degrade to chatless when enough failures in row */
+    chatlessDummyRoom: -1,
   },
 
   mutations: {
@@ -63,6 +68,25 @@ export default {
       }
       if (state.visualLngOffset != newOffset) {
         state.visualLngOffset = newOffset;
+      }
+    },
+
+    degradedToChatless (state, chatless) {
+      if (chatless) {
+        state.chatlessCount++;
+        if (state.chatRetryMark === 0) {
+          state.chatRetryMark = 2;
+        }
+      } else {
+        state.chatlessCount = 0;
+        state.chatRetryMark = 0;
+      }
+    },
+    chatRetryFail (state) {
+      if (state.chatRetryMark < 10) {
+        state.chatRetryMark *= 2;
+      } else {
+        state.chatRetryMark += 10;
       }
     },
   },
@@ -113,15 +137,29 @@ export default {
       let getDef = {
         apiCall: 'boat',
       };
+      let nextChatroom;
       try {
-        const nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
+        nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
+        let chatTimestamp = rootState.chatrooms.rooms[nextChatroom].timestamp;
+        let apiStats = rootState.solapi.apiCallStats['boat'];
+
+        /* Degrade to chatless mode if many failures */
+        if (typeof apiStats !== 'undefined') {
+          if ((apiStats.consecutiveErrors > state.chatlessThreshold) ||
+              ((state.chatRetryMark > 0) &&
+               (state.chatlessCount < state.chatRetryMark))) {
+            nextChatroom = state.chatlessDummyRoom;
+            chatTimestamp = 0;
+          }
+        }
+
         getDef = {
           apiCall: 'boat',
           url: rootState.race.info.boaturl,
           params: {
             token: rootState.auth.token,
             room_id: nextChatroom,
-            timestamp: rootState.chatrooms.rooms[nextChatroom].timestamp,
+            timestamp: chatTimestamp,
           },
           useArrays: false,
           dataField: 'data',
@@ -167,7 +205,18 @@ export default {
           }
         }
 
-        await dispatch('chatrooms/parse', chatInfo, {root: true});
+        if (nextChatroom !== state.chatlessDummyRoom) {
+          await dispatch('chatrooms/parse', chatInfo, {root: true});
+          if (state.chatlessCount > 0) {
+            dispatch('diagnostics/add', 'net: chat mode returned to normal', {root: true});
+          }
+          commit('degradedToChatless', false);
+        } else {
+          if (state.chatlessCount === 0) {
+            dispatch('diagnostics/add', 'net: degraded to chatless mode', {root: true});
+          }
+          commit('degradedToChatless', true);
+        }
 
         dispatch('race/fetchRaceComponents', null, {root: true});
         if (rootGetters['boat/steering/nextTimeToFetchDCs'] <= now) {
@@ -178,6 +227,11 @@ export default {
           request: getDef,
           error: err,
         }, {root: true});
+        if ((state.chatlessCount > 0) &&
+            (nextChatroom !== state.chatlessDummyRoom)) {
+          commit('chatRetryFail');
+          dispatch('diagnostics/add', 'net: unsuccessful chat mode probe', {root: true});
+        }
 
         /* Backup fetch if boat API is down, still try the others */
         dispatch('race/fetchRaceComponents', null, {root: true});
