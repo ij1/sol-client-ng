@@ -47,10 +47,6 @@ export default {
       state.currentSteering = data.last_cmd_type;
     },
 
-    setFetching (state, param) {
-      state.fetching[param.id] = param.state;
-    },
-
     setType (state, type) {
       state.type = type;
     },
