@@ -53,7 +53,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
-import { solBoatPolicy } from '../../../lib/sol.js';
 import BoatList from './boatlist.vue';
 
 export default {
@@ -111,15 +110,9 @@ export default {
       activeBoatlist: state => state.ui.boatlists.activeList,
       filterListKey: state => state.ui.boatlists.filterList,
       hoverList: state => state.race.fleet.hover,
-      ownBoatId: state => state.boat.id,
-      commandBoatPosition: state => state.boat.position,
-      cfgFleetBoatMode: state => state.map.cfg.fleetBoatMode.value,
     }),
     ...mapGetters({
-      fleetBoatFromId: 'race/fleet/boatFromId',
       selectedObj: 'race/fleet/selectedFiltered',
-      currentFilter: 'ui/boatlists/currentFilter',
-      applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
     }),
   },
   methods: {
@@ -129,19 +122,8 @@ export default {
       this.$store.commit('race/fleet/setSelected', newSelected);
     },
     selectBoat (e) {
-      const boat = this.fleetBoatFromId(e.boatId);
-      if (!solBoatPolicy(boat.name, this.$store.getters)) {
-        return;
-      }
-      if (this.currentFilter && !this.applyFilterToBoat(boat)) {
-        return;
-      }
-      let position = boat.latLng;
-      if (this.cfgFleetBoatMode === 'off' && boat.id === this.ownBoatId) {
-        position = this.commandBoatPosition;
-      }
       EventBus.$emit('map-highlight', {
-        latLng: position,
+        boatId: e.boatId,
         keepMapPosition: e.altModifier,
       });
     },

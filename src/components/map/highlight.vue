@@ -8,11 +8,13 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex';
 import { EventBus } from '../../lib/event-bus.js';
 import MarkerCanvas from './markercanvas.vue';
 import L from 'leaflet';
 import { degToRad, radToDeg } from '../../lib/utils.js';
 import { minTurnAngle } from '../../lib/nav.js';
+import { solBoatPolicy } from '../../lib/sol.js';
 
 export default {
   name: 'MapHighlight',
@@ -45,6 +47,16 @@ export default {
       r = Math.round(r);
       return r > 0 ? r : 0;
     },
+    ...mapState({
+      ownBoatId: state => state.boat.id,
+      commandBoatPosition: state => state.boat.position,
+      cfgFleetBoatMode: state => state.map.cfg.fleetBoatMode.value,
+    }),
+    ...mapGetters({
+      fleetBoatFromId: 'race/fleet/boatFromId',
+      currentFilter: 'ui/boatlists/currentFilter',
+      applyFilterToBoat: 'ui/boatlists/applyFilterToBoat',
+    }),
   },
 
   methods: {
@@ -71,13 +83,33 @@ export default {
       }
     },
     onHighlight (highlightInfo) {
+      let target = null;
+
+      if (typeof highlightInfo.latLng !== 'undefined') {
+        target = highlightInfo.latLng;
+
+      } else if (typeof highlightInfo.boatId !== 'undefined') {
+        const boat = this.fleetBoatFromId(highlightInfo.boatId);
+        if (!solBoatPolicy(boat.name, this.$store.getters)) {
+          return;
+        }
+        if (this.currentFilter && !this.applyFilterToBoat(boat)) {
+          return;
+        }
+        target = boat.latLng;
+        if ((this.cfgFleetBoatMode === 'off') &&
+            (highlightInfo.boatId === this.ownBoatId)) {
+          target = this.commandBoatPosition;
+        }
+      }
+      if (target === null) {
+        return;
+      }
       /* This is bit tricky, remove prev/stale highlight first.
        * Only at the nextTick, launch the next highlight to avoid first
        * displaying at the wrong position.
        */
       this.cancelHighlight();
-
-      let target = highlightInfo.latLng;
 
       const currentLatLng = this.map.getCenter();
       const minTurn = minTurnAngle(degToRad(currentLatLng.lng),

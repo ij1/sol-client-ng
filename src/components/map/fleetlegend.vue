@@ -73,9 +73,6 @@ export default {
     }),
     ...mapState({
       hoverObj: state => state.race.fleet.hover,
-      ownBoatId: state => state.boat.id,
-      commandBoatPosition: state => state.boat.position,
-      cfgFleetBoatMode: state => state.map.cfg.fleetBoatMode.value,
     }),
   },
   updated () {
@@ -85,13 +82,8 @@ export default {
   },
   methods: {
     highlightBoat (e, boatId) {
-      const boat = this.fleetBoatFromId(boatId);
-      let position = boat.latLng;
-      if (this.cfgFleetBoatMode === 'off' && boatId === this.ownBoatId) {
-        position = this.commandBoatPosition;
-      }
       EventBus.$emit('map-highlight', {
-        latLng: position,
+        boatId: boatId,
         keepMapPosition: e.altKey,
       });
     },
