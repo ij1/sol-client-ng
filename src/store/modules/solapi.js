@@ -3,7 +3,7 @@ import queryString from 'querystring';
 import axios from 'axios';
 import promisify from 'util.promisify';
 import pako from 'pako';
-import * as xml2js from 'isomorphic-xml2js';
+import xml2js from 'xml2js';
 import { SolapiError } from '../../lib/solapi.js';
 
 const parseString = promisify(xml2js.parseString);
