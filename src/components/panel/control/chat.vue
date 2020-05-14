@@ -36,11 +36,11 @@
         >
           <div class="chat-block-header">
             <span @click = "selectBoat($event, msg.boatId)">
-              <country-flag :country = "msg.boat.country"/>
-              <syc-flag :syc = "msg.boat.syc"/>
               <span class="chat-name">
                 <span v-html="msg.name"/>
               </span>
+              <country-flag :country = "msg.boat.country"/>
+              <syc-flag :syc = "msg.boat.syc"/>
             </span>
             <span class="chat-time">
               {{ timeOnlyForToday(msg.timestamp) }}
