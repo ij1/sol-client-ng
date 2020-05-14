@@ -298,10 +298,12 @@ export default {
 .chat-bundee {
 }
 .chat-name {
-  float: left;
+  position: relative;
+  top: -1px;
+  left: 1px;
   font-size: 10px;
   font-weight: bold;
-  padding-right: 11px;
+  padding-right: 8px;
 }
 .chat-time {
 }
