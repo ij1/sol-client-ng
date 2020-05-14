@@ -425,6 +425,11 @@ export default {
                          DARK_SEA_BLUE, 255);
           }
         }
+        if (r + g < colorCorrectionLimitDark) {
+          const saturationFactor = colorCorrectionLimitDark / (r + g + 1.0);
+          r = Math.round((r + 1) * saturationFactor);
+          g = Math.round((g + 1) * saturationFactor);
+        }
       } else {
         const min = Math.min(r, g, b);
         if (min > colorCorrectionLimitWhite) {
