@@ -34,12 +34,14 @@ export default {
 
   mutations: {
     addTile (state, id) {
-      Vue.set(state.tiles, tileIdToKey(id), {
+      const key = tileIdToKey(id);
+      Vue.set(state.tiles, key, {
         id: id,
         loaded: false,
         refCount: 1,
         geoms: {},
       });
+      state.waitList.push(key);
     },
     deleteTile (state, key) {
       Vue.delete(state.tiles, key);
@@ -59,9 +61,6 @@ export default {
     addActiveFetches (state, inc) {
       state.activeFetches += inc;
     },
-    addTileToLoadWaitList (state, key) {
-      state.waitList.push(key);
-    },
     /*
      * Vuex workaround: unfortunately cannot return the value from here
      * so get it in action instead :-(
@@ -72,19 +71,11 @@ export default {
   },
 
   actions: {
-    addTile ({state, getters, commit, dispatch}, id) {
-      const key = getters.tileIdToKey(id);
-      if (typeof state.tiles[key] !== 'undefined') {
-        commit('lockTile', id);
-      } else {
-        commit('addTile', id);
-        commit('addTileToLoadWaitList', key);
-        if (state.activeFetches < state.maxParallelFetches) {
-          dispatch('loadTiles', 0);
-        }
+    loadTiles ({state, commit, dispatch}, failTimer = 0) {
+      if (state.activeFetches >= state.maxParallelFetches) {
+        return;
       }
-    },
-    loadTiles ({state, commit, dispatch}, failTimer) {
+
       let key;
       do {
         key = state.waitList[0];
@@ -95,6 +86,7 @@ export default {
             commit('deleteTile', key);
             continue;
           }
+          commit('addActiveFetches', 1);
           dispatch('loadTile', {
             key: key,
             failTimer: failTimer,
@@ -115,7 +107,6 @@ export default {
           return;
         }
 
-        commit('addActiveFetches', 1);
         getDef = {
           apiCall: 'tiles',
           url: getters.tileIdToUrl(state.tiles[key].id),
