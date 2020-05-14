@@ -14,6 +14,7 @@ export const PERF_RECOVERY_MULT = 3.0 / (20 * 1000 * 100.0);
 export const PR_MARK_BOAT = 'Practice_Mark_';
 
 export const darkSeaColor = '#00004f';
+export const DARK_SEA_BLUE = 79;
 
 /* Returns true if the boat is ok to draw / control */
 export function solBoatPolicy(boatname, rootGetters) {

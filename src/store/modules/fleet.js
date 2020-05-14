@@ -3,7 +3,7 @@ import L from 'leaflet';
 import rbush from 'rbush';
 import { minToMsec, secToMsec, radToDeg } from '../../lib/utils.js';
 import { gcCalc, loxoCalc, minTurnAngle } from '../../lib/nav.js';
-import { PROJECTION, EARTH_R, solBoatPolicy, PR_MARK_BOAT } from '../../lib/sol.js';
+import { PROJECTION, EARTH_R, solBoatPolicy, PR_MARK_BOAT, DARK_SEA_BLUE } from '../../lib/sol.js';
 
 const nearDistance = 0.0001 * 1852 / EARTH_R;
 const colorCorrectionLimitWhite = 128;
@@ -411,7 +411,7 @@ export default {
       let g = boat.color.g;
       let b = boat.color.b;
       if (rootGetters['ui/isDark']) {
-        const max = Math.max(r, g, b);
+        const max = Math.max(r, g, b - DARK_SEA_BLUE);
         if (max < colorCorrectionLimitDark) {
           const correctionFactor = colorCorrectionLimitDark / max;
           if (r >= max * 0.6) {
@@ -420,8 +420,9 @@ export default {
           if (g >= max * 0.6) {
             g = Math.round(g * correctionFactor);
           }
-          if (b >= max * 0.6) {
-            b = Math.round(b * correctionFactor);
+          if (b - DARK_SEA_BLUE >= max * 0.6) {
+            b = Math.min(Math.round((b - DARK_SEA_BLUE) * correctionFactor) +
+                         DARK_SEA_BLUE, 255);
           }
         }
       } else {
