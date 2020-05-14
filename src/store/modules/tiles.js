@@ -76,24 +76,25 @@ export default {
         return;
       }
 
-      let key;
-      do {
-        key = state.waitList[0];
+      while (true) {
+        const key = state.waitList[0];
         commit('consumeTileToLoad');
-        if (typeof key !== 'undefined') {
-          /* Outside of visible area already? */
-          if (state.tiles[key].refCount === 0) {
-            commit('deleteTile', key);
-            continue;
-          }
-          commit('addActiveFetches', 1);
-          dispatch('loadTile', {
-            key: key,
-            failTimer: failTimer,
-          });
-          return;
+        if (typeof key === 'undefined') {
+          break;
         }
-      } while (typeof key !== 'undefined');
+        /* Outside of visible area already? */
+        if (state.tiles[key].refCount === 0) {
+          commit('deleteTile', key);
+          continue;
+        }
+        commit('addActiveFetches', 1);
+        dispatch('loadTile', {
+          key: key,
+          failTimer: failTimer,
+        });
+
+        break;
+      }
     },
     async loadTile ({state, getters, commit, dispatch}, loadInfo) {
       const key = loadInfo.key;
