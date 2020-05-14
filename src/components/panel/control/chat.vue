@@ -143,7 +143,7 @@ export default {
       /* Dummy dep */
       for (let msg of this.rawMsgs) {
         let msgcopy = Object.assign({}, msg);
-        if (typeof msg.boatId !== 'undefined') {
+        if (msg.boatId !== null) {
           msgcopy.boat = this.$store.getters['race/fleet/boatFromId'](msg.boatId);
         } else {
           msgcopy.boat = this.dummyBoat;
