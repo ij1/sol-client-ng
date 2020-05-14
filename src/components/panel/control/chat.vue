@@ -35,10 +35,12 @@
           :key = "msg.id"
         >
           <div class="chat-block-header">
-            <country-flag :country = "msg.boat.country"/>
-            <syc-flag :syc = "msg.boat.syc"/>
-            <span class="chat-name">
-              <span v-html="msg.name"/>
+            <span @click = "selectBoat($event, msg.boatId)">
+              <country-flag :country = "msg.boat.country"/>
+              <syc-flag :syc = "msg.boat.syc"/>
+              <span class="chat-name">
+                <span v-html="msg.name"/>
+              </span>
             </span>
             <span class="chat-time">
               {{ timeOnlyForToday(msg.timestamp) }}
@@ -75,6 +77,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { EventBus } from '../../../lib/event-bus.js';
 import { msecToUTCDateWithoutYearString, msecToUTCTimeString } from '../../../lib/utils.js';
 import CountryFlag from '../../countryflag.vue';
 import SycFlag from '../../sycflag.vue';
@@ -205,6 +208,14 @@ export default {
         id: this.roomId,
         timestamp: this.$store.getters['time/now'](),
       });
+    },
+    selectBoat(e, boatId) {
+      if (boatId !== null) {
+        EventBus.$emit('map-highlight', {
+          boatId: boatId,
+          keepMapPosition: e.altKey,
+        });
+      }
     },
   },
 
