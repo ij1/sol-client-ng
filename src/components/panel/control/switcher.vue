@@ -41,6 +41,8 @@
         </keep-alive>
       </div>
       <div v-if="activeTab === 2" class="control-panel-content">
+        <!-- Removing keep-alive might break/hide an open boatlist editor
+             when tab changes -->
         <keep-alive>
           <control-leaderboards/>
         </keep-alive>
