@@ -20,6 +20,7 @@
       <boatlist-editor
         :editor-type = "editorType"
         :edit-list-key = "editListKey"
+        :seed-list-key = "activeList"
         @close = "doClose"
       />
     </portal>
@@ -51,6 +52,7 @@ export default {
     },
     ...mapState({
       boatlists: state => state.ui.boatlists.boatlists,
+      activeList: state => state.ui.boatlists.activeList,
     }),
   },
   methods: {

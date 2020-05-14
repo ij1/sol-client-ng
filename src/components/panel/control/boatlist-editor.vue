@@ -102,6 +102,11 @@ export default {
     },
     editListKey: {
       type: String,
+      default: null,
+    },
+    seedListKey: {
+      type: String,
+      required: true,
     },
   },
   data () {
@@ -113,24 +118,10 @@ export default {
       onList: new Set(),
       onSelected: {},
       offSelected: {},
+      editorMode: null,
     }
   },
   computed: {
-    editorMode () {
-      if (this.editListKey !== null) {
-        this.editList.filter.filterStamp;
-	if (this.editList.filter.boats !== null) {
-          return 'boat';
-        }
-        if (this.editList.filter.distance !== null) {
-          return 'distance';
-        }
-	if (this.editList.filter.country !== null) {
-          return 'country';
-        }
-      }
-      return this.editorType;
-    },
     listsAddDelMode () {
       return (this.editorMode !== 'distance');
     },
@@ -205,16 +196,6 @@ export default {
       }
       return res;
     },
-    editList () {
-      if (this.editListKey === null) {
-        return null;
-      }
-      if (typeof this.boatlists[this.editListKey] !== 'undefined') {
-        return this.boatlists[this.editListKey];
-      }
-      /* Should never be reached */
-      return null;
-    },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
     }),
@@ -223,17 +204,31 @@ export default {
     }),
   },
   created () {
-    if (this.editList !== null) {
-      this.listname = this.editList.name;
-      if (this.editList.filter.boats !== null) {
-        this.onList = new Set(this.editList.filter.boats);
+    let seedList = null;
+
+    if (this.editListKey !== null) {
+      seedList = this.getList(this.editListKey);
+      if (seedList !== null) {
+        this.listname = seedList.name;
+        this.editorMode = this.filterToMode(seedList);
+      }
+
+    } else {
+      seedList = this.getList(this.seedListKey);
+      this.editorMode = this.editorType;
+    }
+
+    if ((seedList !== null) &&
+        (this.filterToMode(seedList.filter) === this.editorMode)) {
+      if (seedList.filter.boats !== null) {
+        this.onList = new Set(seedList.filter.boats);
         this.onListStamp++;
       }
-      if (this.editList.filter.distance !== null) {
-        this.distance = this.editList.filter.distance;
+      if (seedList.filter.distance !== null) {
+        this.distance = seedList.filter.distance;
       }
-      if (this.editList.filter.country !== null) {
-        this.onList = new Set(this.editList.filter.country);
+      if (seedList.filter.country !== null) {
+        this.onList = new Set(seedList.filter.country);
         this.onListStamp++;
       }
     }
@@ -253,6 +248,27 @@ export default {
         },
       });
       this.$emit('close');
+    },
+    getList (listKey) {
+      if (listKey === null) {
+        return null;
+      }
+      if (typeof this.boatlists[listKey] !== 'undefined') {
+        return this.boatlists[listKey];
+      }
+      return null;
+    },
+    filterToMode (filter) {
+      if (filter.boats !== null) {
+        return 'boat';
+      }
+      if (filter.distance !== null) {
+        return 'distance';
+      }
+      if (filter.country !== null) {
+        return 'country';
+      }
+      return null;
     },
     onAdd () {
       for (let id of Object.keys(this.offSelected)) {
