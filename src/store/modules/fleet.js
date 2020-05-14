@@ -547,9 +547,9 @@ export default {
             delete boat.current_leg;
 
             boat.color = {
-              r: boat.color_R,
-              g: boat.color_G,
-              b: boat.color_B,
+              r: +boat.color_R,
+              g: +boat.color_G,
+              b: +boat.color_B,
             }
             delete boat.color_R;
             delete boat.color_G;
