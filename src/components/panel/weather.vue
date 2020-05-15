@@ -19,9 +19,15 @@
         />
       </div>
       <div
-        v-for = "tic in tics"
+        v-for = "tic in timeTics"
         class = "weather-slider-tic"
-        :key = "tic.timestamp"
+        :key = "'t' + tic.timestamp"
+        :style = "tic.style"
+      />
+      <div
+        v-for = "tic in wxTics"
+        class = "weather-slider-tic"
+        :key = "'w' + tic.timestamp"
         :style = "tic.style"
       />
     </div>
@@ -225,7 +231,7 @@ export default {
     playStep () {
       return this.weatherTimescales[this.selectedTimescale].playStep;
     },
-    tics () {
+    timeTics () {
       let res = [];
 
       const ticStep = this.weatherTimescales[this.selectedTimescale].defaultStep;
@@ -246,7 +252,12 @@ export default {
         tstamp += ticFinal;
       }
 
-      tstamp = Math.floor(this.boatTime / daysToMsec(1)) * daysToMsec(1);
+      return res;
+    },
+    wxTics () {
+      let res = [];
+
+      let tstamp = Math.floor(this.boatTime / daysToMsec(1)) * daysToMsec(1);
       while (tstamp <= this.timeMax) {
         for (let updateSecs of this.wxUpdateTimes) {
           let updateTstamp = tstamp + minToMsec(updateSecs);
