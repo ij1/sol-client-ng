@@ -213,6 +213,9 @@ export default {
       /* Safeguard against truncated wx, normally range < this.fullTimescale */
       return Math.min(range, this.fullTimescale);
     },
+    timeMax () {
+      return this.boatTime + this.offsetMax;
+    },
     timeOffset () {
       return this.wxTime - this.boatTime;
     },
@@ -230,7 +233,7 @@ export default {
       const ticFinal = ticMult * ticStep;
       let tstamp = Math.ceil(this.boatTime / ticFinal) * ticFinal;
 
-      while (tstamp <= this.wxLastTimestamp) {
+      while (tstamp <= this.timeMax) {
         res.push({
           timestamp: tstamp,
           style: {
@@ -244,10 +247,10 @@ export default {
       }
 
       tstamp = Math.floor(this.boatTime / daysToMsec(1)) * daysToMsec(1);
-      while (tstamp <= this.wxLastTimestamp) {
+      while (tstamp <= this.timeMax) {
         for (let updateSecs of this.wxUpdateTimes) {
           let updateTstamp = tstamp + minToMsec(updateSecs);
-          if (updateTstamp > this.wxLastTimestamp) {
+          if (updateTstamp > this.timeMax) {
             break;
           }
           if (updateTstamp >= this.boatTime) {
