@@ -258,6 +258,7 @@ export default {
                        ((updateTstamp - this.boatTime) / this.offsetMax) + ' + ' +
                        (this.sliderZeroPx / 2) + 'px)',
                 'background': 'rgba(255, 0, 0, 0.6)',
+                'z-index': 1,
               },
             });
           }
