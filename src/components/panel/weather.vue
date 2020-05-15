@@ -243,6 +243,28 @@ export default {
         tstamp += ticFinal;
       }
 
+      tstamp = Math.floor(this.boatTime / daysToMsec(1)) * daysToMsec(1);
+      while (tstamp <= this.wxLastTimestamp) {
+        for (let updateSecs of this.wxUpdateTimes) {
+          let updateTstamp = tstamp + minToMsec(updateSecs);
+          if (updateTstamp > this.wxLastTimestamp) {
+            break;
+          }
+          if (updateTstamp >= this.boatTime) {
+            res.push({
+              timestamp: updateTstamp,
+              style: {
+                left: 'calc((100% - ' + this.sliderZeroPx + 'px) * ' +
+                       ((updateTstamp - this.boatTime) / this.offsetMax) + ' + ' +
+                       (this.sliderZeroPx / 2) + 'px)',
+                'background': 'rgba(255, 0, 0, 0.6)',
+              },
+            });
+          }
+        }
+        tstamp += daysToMsec(1);
+      }
+
       return res;
     },
     ...mapState({
@@ -250,6 +272,7 @@ export default {
       wxTime: state => state.weather.time,
       wxMode: state => state.weather.mode,
       wxUpdated: state => state.weather.data.updated,
+      wxUpdateTimes: state => state.weather.updateTimes,
       wxStartMode: state => state.weather.cfg.startMode.value,
     }),
     ...mapGetters({
