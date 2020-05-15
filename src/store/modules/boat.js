@@ -139,6 +139,7 @@ export default {
       };
       let nextChatroom;
       try {
+        const firstFetch = state.id === null;
         nextChatroom = rootGetters['chatrooms/nextRoomToFetch'];
         let chatTimestamp = rootState.chatrooms.rooms[nextChatroom].timestamp;
         let apiStats = rootState.solapi.apiCallStats['boat'];
@@ -178,6 +179,12 @@ export default {
         const oldTime = state.instruments.time.value;
         const oldPosition = state.position;
         const oldCog = state.cog;
+
+        /* Older game time than what we have already? */
+        if (!firstFetch && (boatData.boat.time < oldTime)) {
+          dispatch('diagnostics/add', 'boat: timestamp reversion!', {root: true});
+          throw new SolapiError('data', 'Boat timestamp reversion!');
+        }
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
