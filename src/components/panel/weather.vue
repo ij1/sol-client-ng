@@ -225,8 +225,10 @@ export default {
     tics () {
       let res = [];
 
-      const ticStep = 2 * this.weatherTimescales[this.selectedTimescale].defaultStep;
-      let tstamp = Math.ceil(this.boatTime / ticStep) * ticStep;
+      const ticStep = this.weatherTimescales[this.selectedTimescale].defaultStep;
+      const ticMult = Math.ceil(Math.min(this.offsetMax / ticStep) / 16.0);
+      const ticFinal = ticMult * ticStep;
+      let tstamp = Math.ceil(this.boatTime / ticFinal) * ticFinal;
 
       while (tstamp <= this.wxLastTimestamp) {
         res.push({
@@ -238,7 +240,7 @@ export default {
             'background': 'rgba(0, 0, 0, 0.6)',
           },
         });
-        tstamp += ticStep;
+        tstamp += ticFinal;
       }
 
       return res;
