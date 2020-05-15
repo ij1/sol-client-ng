@@ -18,6 +18,12 @@
           :style = "{width: 'calc((100% - ' + sliderZeroPx + 'px) * ' + timeFrac + ' + ' + sliderZeroPx + 'px)'}"
         />
       </div>
+      <div
+        v-for = "tic in tics"
+        class = "weather-slider-tic"
+        :key = "tic.timestamp"
+        :style = "tic.style"
+      />
     </div>
     <div id="weather-panel-placeholder" v-if="!wxLoaded">
       <span class = "weather-panel-control-padding"/>
@@ -215,6 +221,27 @@ export default {
     },
     playStep () {
       return this.weatherTimescales[this.selectedTimescale].playStep;
+    },
+    tics () {
+      let res = [];
+
+      const ticStep = 2 * this.weatherTimescales[this.selectedTimescale].defaultStep;
+      let tstamp = Math.ceil(this.boatTime / ticStep) * ticStep;
+
+      while (tstamp <= this.wxLastTimestamp) {
+        res.push({
+          timestamp: tstamp,
+          style: {
+            left: 'calc((100% - ' + this.sliderZeroPx + 'px) * ' +
+                   ((tstamp - this.boatTime) / this.offsetMax) + ' + ' +
+                   (this.sliderZeroPx / 2) + 'px)',
+            'background': 'rgba(0, 0, 0, 0.6)',
+          },
+        });
+        tstamp += ticStep;
+      }
+
+      return res;
     },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
@@ -424,6 +451,13 @@ export default {
 }
 #weather-slider:focus {
   outline: none;
+}
+.weather-slider-tic {
+  position: absolute;
+  top: 1px;
+  height: calc(100% - 2px);
+  width: 1px;
+  pointer-events: none;
 }
 #weather-panel-control, #weather-panel-placeholder {
   background: rgba(200, 200, 200, 0.8);
