@@ -30,6 +30,11 @@
         :key = "'w' + tic.timestamp"
         :style = "tic.style"
       />
+      <div
+        v-if = "startTic !== null"
+        class = "weather-slider-tic"
+        :style = "startTic"
+      />
     </div>
     <div id="weather-panel-placeholder" v-if="!wxLoaded">
       <span class = "weather-panel-control-padding"/>
@@ -282,6 +287,19 @@ export default {
 
       return res;
     },
+    startTic () {
+      if (this.boatTime >= this.raceStartTime) {
+        return null;
+      }
+      return {
+        left: 'calc((100% - ' + this.sliderZeroPx + 'px) * ' +
+               ((this.raceStartTime - this.boatTime) / this.offsetMax) + ' + ' +
+               (this.sliderZeroPx / 2) + 'px)',
+        background: 'rgba(0, 128, 0, 0.6)',
+        width: '3px',
+        'z-index': 2,
+      };
+    },
     ...mapState({
       wxLoaded: state => state.weather.loaded,
       wxTime: state => state.weather.time,
@@ -289,6 +307,7 @@ export default {
       wxUpdated: state => state.weather.data.updated,
       wxUpdateTimes: state => state.weather.updateTimes,
       wxStartMode: state => state.weather.cfg.startMode.value,
+      raceStartTime: state => state.race.info.startTime,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
