@@ -146,8 +146,20 @@ export default {
       if (this.zoom !== this.map.getZoom()) {
         this.zoom = this.map.getZoom();
       }
-      this.latLngBounds = this.map.getBounds();
-      this.pixelBounds = this.map.getPixelBounds();
+
+      const bounds = this.map.getBounds();
+      if (this.latLngBounds.getWest() !== bounds.getWest() ||
+          this.latLngBounds.getEast() !== bounds.getEast() ||
+          this.latLngBounds.getNorth() !== bounds.getNorth() ||
+          this.latLngBounds.getSouth() !== bounds.getSouth()) {
+        this.latLngBounds = bounds;
+      }
+
+      const pxBounds = this.map.getPixelBounds();
+      if (!this.pixelBounds.min.equals(pxBounds.min) ||
+          !this.pixelBounds.max.equals(pxBounds.max)) {
+        this.pixelBounds = pxBounds;
+      }
       this.animFrame = null;
     },
 
