@@ -15,7 +15,10 @@ function updateWrapList (state) {
       wrapList.push(i);
     }
     state.wrapList = wrapList;
+
+    return true;
   }
+  return false;
 }
 
 export default {
@@ -101,15 +104,48 @@ export default {
 
   mutations: {
     setView(state, view) {
-      state.center = view.center;
-      state.zoom = view.zoom;
-      state.bounds = view.bounds;
-      state.tripleBounds = view.tripleBounds;
-      if (typeof view.size !== 'undefined') {
-        state.size = view.size;
+      let updated = false;
+
+      if (state.center.lat !== view.center.lat ||
+          state.center.lng !== view.center.lng) {
+        state.center = view.center;
+        updated = true;
       }
-      updateWrapList(state);
-      state.viewUpdateStamp++;
+
+      if (state.zoom !== view.zoom) {
+        state.zoom = view.zoom;
+        updated = true;
+      }
+
+      if (state.bounds.getWest() !== view.bounds.getWest() ||
+          state.bounds.getEast() !== view.bounds.getEast() ||
+          state.bounds.getNorth() !== view.bounds.getNorth() ||
+          state.bounds.getSouth() !== view.bounds.getSouth()) {
+        state.bounds = view.bounds;
+        state.tripleBounds = view.tripleBounds;
+        updated = true;
+      } else if (state.tripleBounds.getWest() !== view.tripleBounds.getWest() ||
+                 state.tripleBounds.getEast() !== view.tripleBounds.getEast() ||
+                 state.tripleBounds.getNorth() !== view.tripleBounds.getNorth() ||
+                state.tripleBounds.getSouth() !== view.tripleBounds.getSouth()) {
+        state.tripleBounds = view.tripleBounds;
+        updated = true;
+      }
+
+      if (typeof view.size !== 'undefined' &&
+          (state.size.x !== view.size.x ||
+           state.size.y !== view.size.y)) {
+        state.size = view.size;
+        updated = true;
+      }
+
+      if (updateWrapList(state)) {
+        updated = true;
+      }
+
+      if (updated) {
+        state.viewUpdateStamp++;
+      }
     },
     setHover(state, latLng) {
       state.hoverLatLng = latLng;
