@@ -32,7 +32,6 @@ export default {
       container: null,
       latLngBounds: this.map.getBounds(),
       pixelBounds: this.map.getPixelBounds(),
-      pixelSize: this.map.getSize(),
       padding: L.point(100, 100),       /* padding beyond the viewport */
       animFrame: null,
     }
@@ -149,7 +148,6 @@ export default {
       }
       this.latLngBounds = this.map.getBounds();
       this.pixelBounds = this.map.getPixelBounds();
-      this.pixelSize = this.map.getSize();
       this.animFrame = null;
     },
 
