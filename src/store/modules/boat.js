@@ -46,9 +46,7 @@ export default {
       state.lastRoundedMark = parseInt(data.current_leg);
       state.ranking = parseInt(data.ranking);
       state.dtg = parseFloat(data.dtg);
-      if (data.finish_time.length > 0) {
-        state.finishTime = UTCToMsec(data.finish_time);
-      }
+      state.finishTime = data.finish_time;
       state.currentSteering = data.last_cmd_type;
     },
 
@@ -179,6 +177,13 @@ export default {
         const oldTime = state.instruments.time.value;
         const oldPosition = state.position;
         const oldCog = state.cog;
+
+        if (boatData.boat.finish_time.length > 0) {
+          boatData.boat.finish_time = UTCToMsec(boatData.boat.finish_time);
+          boatData.boat.time = Math.max(boatData.boat.finish_time, now);
+        } else {
+          boatData.boat.finish_time = null;
+        }
 
         /* Older game time than what we have already? */
         if (!firstFetch && (boatData.boat.time < oldTime)) {
