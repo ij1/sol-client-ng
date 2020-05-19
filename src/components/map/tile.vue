@@ -274,7 +274,7 @@ export default {
     /* Props not yet initialized but addTile must occur before computed
      * (reactivity) is setup to avoid undefined tile errors from them
      */
-    if (typeof this.$store.state.tiles.tiles[this.$options.propsData.id] === 'undefined') {
+    if (typeof this.$store.state.tiles.tiles[this.$options.propsData.tileKeyIn] === 'undefined') {
       this.$store.commit('tiles/addTile', this.$options.propsData.id);
       this.$store.dispatch('tiles/loadTiles');
     } else {
