@@ -42,7 +42,7 @@ export default {
     },
     tilesize() {
       /* Dummy access to dependency */
-      this.$parent.zoom;
+      this.id.z;
 
       return this.latLngToTilePoint(this.bounds.getSouthEast());
     },
@@ -63,7 +63,7 @@ export default {
       let x1 = this.maxBounds.getSouthWest().lng;
       let y2 = this.maxBounds.getNorthEast().lat;
       let x2 = this.maxBounds.getNorthEast().lng;
-      const drawBounds = latLngBoundsAddOffset(this.$parent.drawBounds,
+      const drawBounds = latLngBoundsAddOffset(this.$parent.drawBounds['' + this.id.z],
                                                -this.lngOffset);
 
       /* Restrict canvas boundaries if necessary */
@@ -83,8 +83,7 @@ export default {
       return L.latLngBounds(L.latLng(y1, x1), L.latLng(y2, x2));
     },
     projectedOrigo() {
-      this.$parent.zoom;
-      return this.$parent.map.project(this.bounds.getNorthWest()).round();
+      return this.$parent.map.project(this.bounds.getNorthWest(), this.id.z).round();
     },
 
     needsUpdate() {
@@ -92,7 +91,7 @@ export default {
       this.bounds;
       /* this.geoms is frozen, so check loaded state flag instead */
       this.loaded;
-      this.$parent.zoom;
+      this.id.z;
 
       this.$store.state.map.cfg.tinyIslands.value;
       this.$store.getters['ui/currentDayNight'];
@@ -108,7 +107,7 @@ export default {
 
   methods: {
     latLngToTilePoint(latLng) {
-      return this.$parent.map.project(latLng).round().subtract(this.projectedOrigo);
+      return this.$parent.map.project(latLng, this.id.z).round().subtract(this.projectedOrigo);
     },
     tileToLayerPoint() {
       const nw = this.bounds.getNorthWest();
@@ -118,6 +117,10 @@ export default {
     },
 
     resetCanvasPlacement() {
+      /* This layer is dying */
+      if (this.$parent.map.getZoom() !== this.id.z) {
+        return;
+      }
       L.DomUtil.setPosition(this.$el, this.tileToLayerPoint());
       this.$el.width = this.tilesize.x;
       this.$el.height = this.tilesize.y;
@@ -137,7 +140,7 @@ export default {
       this.drawPolys(ctx);
       this.drawGraticules(ctx);
 
-      this.drawnZoom = this.$parent.zoom;
+      this.drawnZoom = this.id.z;
       this.animFrame = null;
     },
     drawPolys (ctx) {
