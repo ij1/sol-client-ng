@@ -29,8 +29,18 @@ export default {
 
     polarMode: 'default',
     polarModes: {
-      'default': [3, 6, 9, 12, 15, 20, 25, 30, 40, 50],
-      'low TWS': [1, 2, 3, 4, 5, 6],
+      'low TWS': {
+        label: 'low TWS',
+        curves: [1, 2, 3, 4, 5, 6],
+      },
+      'normal': {
+        label: '1-30 kn',
+        curves: [3, 6, 9, 12, 15, 20, 25, 30],
+      },
+      'default': {
+        label: 'default',
+        curves: [3, 6, 9, 12, 15, 20, 25, 30, 40, 50],
+      }
     },
   },
 
@@ -52,7 +62,7 @@ export default {
       return state.twsval[state.twsval.length - 1];
     },
     windKeys: (state) => {
-      return state.polarModes[state.polarMode];
+      return state.polarModes[state.polarMode].curves;
     },
     getSpeed: (state, getters) => (twsms, twa) => {
       twa = Math.abs(twa);

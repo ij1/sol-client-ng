@@ -9,11 +9,11 @@
           v-model = "polarMode"
         >
           <option
-            v-for = "mode in polarModes"
+            v-for = "mode in Object.keys(polarModes)"
             :value = "mode"
             :key = "mode"
           >
-            {{mode}}
+            {{polarModes[mode].label}}
           </option>
         </select>
       </span>
@@ -51,11 +51,9 @@ export default {
         this.$store.commit('boat/polar/setPolarMode', value);
       },
     },
-    polarModes () {
-      return Object.keys(this.$store.state.boat.polar.polarModes);
-    },
     ...mapState({
       polarLoaded: state => state.boat.polar.loaded,
+      polarModes: state => state.boat.polar.polarModes,
       boatType: state => state.boat.type,
     }),
   },
