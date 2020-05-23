@@ -33,6 +33,7 @@ export default {
     minZoom: 1,
     hoverLatLng: null,
     size: L.point(1, 1),
+    zoomStep: 0.1,
     viewUpdateStamp: 0,
 
     cfg: {

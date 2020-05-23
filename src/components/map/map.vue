@@ -12,8 +12,8 @@
       :options="{
         zoomControl: false,
         attributionControl: false,
-        zoomSnap: 0.1,
-        zoomDelta: 0.1,
+        zoomSnap: zoomStep,
+        zoomDelta: zoomStep,
         wheelPxPerZoomLevel: 120,
         doubleClickZoom: false,
         dragging: !L.Browser.mobile,
@@ -160,6 +160,7 @@ export default {
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
+      zoomStep: state => state.map.zoomStep,
     }),
     ...mapGetters({
       inDefaultUiMode: 'ui/inDefaultUiMode',
