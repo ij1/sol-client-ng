@@ -191,6 +191,12 @@ export default {
     isRaceStarted: (state, getters, rootState, rootGetters) => {
       return rootGetters['boat/time'] >= getters.towbackPeriod.end;
     },
+    raceBounds: (state) => {
+      if (!state.loaded) {
+        return null;
+      }
+      return L.latLngBounds(state.boundary);
+    },
 
     nextTimeToFetch: (state) => {
       if (state.loadTime >= state.info.startTime) {

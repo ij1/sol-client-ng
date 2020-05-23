@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { holdRepeatMixin } from './holdrepeat.js';
 import { LControl } from 'vue2-leaflet';
@@ -35,7 +35,10 @@ export default {
   },
   computed: {
     ...mapState({
-      minZoom: state => state.map.minZoom,
+      zoomStep: state => state.map.zoomStep,
+    }),
+    ...mapGetters({
+      raceBounds: 'race/raceBounds',
     }),
   },
   methods: {
@@ -44,7 +47,15 @@ export default {
         this.holdRepeatStart(ev);
         this.map.zoomOut();
       } else {
-        this.map.flyTo(this.map.getCenter(), this.minZoom);
+        const bounds = this.raceBounds.extend(this.map.getCenter()).pad(0.3);
+
+        const zoom = this.map.getZoom();
+        const minZoom = Math.min(zoom, 12);
+
+        const zoomCandidate = this.map.getBoundsZoom(bounds);
+        if (zoomCandidate < zoom - this.zoomStep) {
+          this.map.flyToBounds(bounds, { maxZoom: minZoom });
+        }
       }
     },
     onRepeat () {

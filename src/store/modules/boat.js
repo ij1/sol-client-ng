@@ -128,6 +128,23 @@ export default {
       }
       return solBoatPolicy(state.name, rootGetters);
     },
+    remainingRouteBounds: (state, getters, rootState) => {
+      if (state.id === null || !rootState.race.loaded) {
+        return null;
+      }
+      let res = L.latLngBounds(rootState.race.finish[0],
+                               rootState.race.finish[1]);
+      let i = 0;
+      if ((state.id !== null) && !getters['publicBoat']) {
+        i = state.lastRoundedMark + 1;
+        res.extend(state.position);
+      }
+      while (i < rootState.race.route.length) {
+        res.extend(rootState.race.route[i].latLng);
+        i++;
+      }
+      return res;
+    },
   },
 
   actions: {

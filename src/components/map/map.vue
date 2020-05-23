@@ -6,6 +6,7 @@
       :crs="PROJECTION"
       :zoom="initialZoom"
       :center="initialCenter"
+      :min-zoom = "minZoom"
       :max-zoom = "maxZoom"
       @resize="setSize"
       :world-copy-jump="true"
@@ -156,7 +157,7 @@ export default {
   },
   computed: {
     ...mapState({
-      raceLoaded: state => state.race.loaded,
+      boatLoaded: state => state.boat.id,
       raceBoundary: state => state.race.boundary,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
@@ -164,7 +165,9 @@ export default {
     }),
     ...mapGetters({
       inDefaultUiMode: 'ui/inDefaultUiMode',
+      minZoom: 'map/minZoom',
       maxZoom: 'map/maxZoom',
+      remainingRouteBounds: 'boat/remainingRouteBounds',
     }),
   },
 
@@ -197,13 +200,14 @@ export default {
   },
 
   watch: {
-    raceLoaded (newValue, oldValue) {
+    boatLoaded (newValue, oldValue) {
       if (this.map === null) {
         return;
       }
-      if (newValue && !oldValue) {
+      if (newValue !== null && oldValue === null) {
         this.$nextTick(() => {
-          this.map.flyToBounds(this.raceBoundary);
+          const bounds = this.remainingRouteBounds.pad(0.3);
+          this.map.flyToBounds(bounds, { maxZoom: 12 });
         });
       }
     },

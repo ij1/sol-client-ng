@@ -31,7 +31,6 @@ export default {
     bounds: L.latLngBounds([-1, -1], [1, 1]),      /* dummy initial value */
     tripleBounds: L.latLngBounds([-1, -1], [1, 1]),/* dummy initial value */
     wrapList: [-360, 0, 360],
-    minZoom: 1,
     hoverLatLng: null,
     size: L.point(1, 1),
     zoomStep: 0.1,
@@ -169,6 +168,13 @@ export default {
     },
     maxZoom: (state) => {
       return state.cfg.extraZoomLevels.value ? 21 : OLD_CLIENT_MAXZOOM;
+    },
+    minZoom: (state) => {
+      if (state.map === null) {
+        return 0;
+      }
+      return state.map.getBoundsZoom(L.latLngBounds(L.latLng(-90, -180),
+                                                    L.latLng(90, 180)));
     },
     fleetTilesNeedRedraw: (state, getters, rootState, rootGetters) => {
       rootState.race.fleet.searchTreeStamp;
