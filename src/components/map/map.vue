@@ -171,6 +171,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject;
+      this.$store.commit('map/setMap', this.map);
       this.setSize();
       EventBus.$on('right-pane-resize', this.forceResize);
     });

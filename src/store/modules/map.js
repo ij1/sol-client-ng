@@ -25,6 +25,7 @@ export default {
   namespaced: true,
 
   state: {
+    map: null,
     center: L.latLng(0, 0),
     zoom: 3,
     bounds: L.latLngBounds([-1, -1], [1, 1]),      /* dummy initial value */
@@ -104,6 +105,9 @@ export default {
   },
 
   mutations: {
+    setMap(state, map) {
+      state.map = map;
+    },
     setView(state, view) {
       let updated = false;
 
