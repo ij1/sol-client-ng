@@ -51,12 +51,6 @@ export default {
     'country-flag': CountryFlag,
     'syc-flag': SycFlag,
   },
-  data () {
-    return {
-      maxSelectedBoats: 5,
-      maxHoverBoats: 3,
-    }
-  },
   computed: {
     legendBoats () {
       return this.showIds.map(id => this.fleetBoatFromId(id));
