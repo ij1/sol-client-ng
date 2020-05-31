@@ -4,7 +4,7 @@
     :position = "'bottomleft'"
   >
     <div
-      v-if = "combinedIds.length > 0"
+      v-if = "showLegend && combinedIds.length > 0"
       id = "legend-info"
       ref = "legend-info"
     >
@@ -52,8 +52,14 @@ export default {
     'syc-flag': SycFlag,
   },
   computed: {
+    showLegend () {
+      return this.cfgKeys === 'corner' || this.cfgKeys === 'both';
+    },
     legendBoats () {
-      return this.showIds.map(id => this.fleetBoatFromId(id));
+      if (this.showLegend) {
+        return this.showIds.map(id => this.fleetBoatFromId(id));
+      }
+      return [];
     },
     countNonExpandedBoats () {
       return this.combinedIds.length - this.legendBoats.length;
@@ -67,6 +73,7 @@ export default {
     }),
     ...mapState({
       hoverObj: state => state.race.fleet.hover,
+      cfgKeys: state => state.map.cfg.boatKeys.value,
     }),
   },
   updated () {

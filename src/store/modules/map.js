@@ -85,6 +85,16 @@ export default {
         highText: 'large',
         cfgText: 'Boat scale',
       },
+      boatKeys: {
+        value: 'corner',
+        type: 'values',
+        values: [
+          ['corner', 'in corner'],
+          ['map', 'on map'],
+          ['both', 'both corner and map'],
+        ],
+        cfgText: 'Boat keys',
+      },
       tinyIslands: {
         value: 'default',
         type: 'values',
