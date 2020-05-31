@@ -409,6 +409,7 @@ export default {
 <style scoped>
 #polar {
   position: absolute;
+  width: 100%;
 }
 #labels {
   position: relative;
@@ -428,6 +429,6 @@ export default {
 }
 #wind-key-container {
   position: absolute;
-  right: 2px;
+  right: 10px;
 }
 </style>
