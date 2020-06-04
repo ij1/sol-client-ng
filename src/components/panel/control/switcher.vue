@@ -167,9 +167,6 @@ export default {
   position: absolute;
   top: 0px;
   right: 1px;
-  width: 14px;
-  height: 14px;
-  font-size: 9px;
   pointer-events: none;
 }
 </style>
