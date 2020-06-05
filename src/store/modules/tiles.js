@@ -43,6 +43,9 @@ export default {
       });
       state.waitList.push(key);
     },
+    addTileToLoadWaitList(state, key) {
+      state.waitList.push(key);
+    },
     deleteTile (state, key) {
       Vue.delete(state.tiles, key);
     },
