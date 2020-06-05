@@ -176,7 +176,15 @@ export default {
 
       this.drawGrid(gridctx);
       this.drawLabels(labelctx);
-      for (let curve of this.bgCurves) {
+
+      let sortedCurves = this.bgCurves;
+      if (this.boatTws !== null) {
+        sortedCurves = [].concat(this.bgCurves).sort((a, b) => {
+          return Math.abs(this.boatTws - b.ms) -
+                 Math.abs(this.boatTws - a.ms);
+        });
+      }
+      for (let curve of sortedCurves) {
         curvectx.strokeStyle = windToColor(curve.knots);
         curvectx.lineWidth = 2;
         this.drawPolarCurve(curvectx, curve, this.gridScale, this.gridMaxKnots);
@@ -376,6 +384,17 @@ export default {
     },
     bgNeedRedraw () {
       this.draw();
+    },
+    boatTws(newVal, oldVal) {
+      if (oldVal === null && newVal !== null) {
+        this.draw();
+      }
+      for (const c of this.bgCurves) {
+        if (Math.sign(c.ms - newVal) !== Math.sign(c.ms - oldVal)) {
+          this.draw();
+          return;
+        }
+      }
     },
     visualSteeringTwa (twaVal, oldVal) {
       if (twaVal !== null) {
