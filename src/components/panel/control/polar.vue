@@ -390,7 +390,6 @@ export default {
     maxWidth () {
       this.draw();
     },
-    twaTextPrefix,
   },
   mounted () {
     this.draw();
