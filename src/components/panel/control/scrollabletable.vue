@@ -30,7 +30,9 @@ export default {
       let srcArr = this.$refs.fakehead.children[0].children;
 
       for (let i = 0; i < dstArr.length; i++) {
-        dstArr[i].style.width = srcArr[i].offsetWidth + 'px';
+        const width = srcArr[i].offsetWidth + 'px';
+        dstArr[i].style.maxWidth = width;
+        dstArr[i].style.minWidth = width;
       }
     },
   },
