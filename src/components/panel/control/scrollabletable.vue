@@ -30,7 +30,7 @@ export default {
       let srcArr = this.$refs.fakehead.children[0].children;
 
       for (let i = 0; i < dstArr.length; i++) {
-        const width = srcArr[i].offsetWidth + 'px';
+        const width = srcArr[i].scrollWidth + 'px';
         dstArr[i].style.maxWidth = width;
         dstArr[i].style.minWidth = width;
       }
