@@ -1,5 +1,5 @@
 <template>
-  <scrollable-table id = "boatlist-table">
+  <scrollable-table id = "boatlist-table" ref = "boatlist-table">
     <template v-slot:headers>
       <th
         v-for = "column in visibleColumnsWithSort"
@@ -269,6 +269,11 @@ export default {
         return;
       }
       this.$store.commit('race/fleet/setHover', {});
+    },
+  },
+  watch: {
+    sortedBoatList () {
+      this.$refs['boatlist-table'].dataUpdated();
     },
   },
 }
