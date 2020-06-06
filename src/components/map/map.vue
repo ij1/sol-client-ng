@@ -206,18 +206,17 @@ export default {
     },
 
     remainingRouteBounds () {
-      let res = L.latLngBounds(this.raceFinish[0],
-                               this.raceFinish[1]);
+      let res = [this.raceFinish[0], this.raceFinish[1]];
       let i = 0;
       if (!this.publicBoat) {
         i = this.lastRoundedMark + 1;
-        res.extend(this.boatPosition);
+        res.push(this.boatPosition);
       }
       while (i < this.raceRoute.length) {
-        res.extend(this.raceRoute[i].latLng);
+        res.push(this.raceRoute[i].latLng);
         i++;
       }
-      return res;
+      return L.latLngBounds(res);
     },
   },
 
