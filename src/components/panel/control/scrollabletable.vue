@@ -78,6 +78,7 @@ export default {
 }
 .visualhead, .visualhead th {
   padding: 0px;
+  box-sizing: border-box;
   position: relative;
 }
 .fakehead, .fakehead th {
