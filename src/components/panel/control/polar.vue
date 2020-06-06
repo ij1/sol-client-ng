@@ -115,7 +115,11 @@ export default {
       return Math.acos(this.gridOrigoY / (this.gridMaxKnots * this.gridScale));
     },
     windKeyY () {
-      return this.polarCoords(degToRad(125), this.gridMaxKnots,
+      let toAngle = 125;
+      if (this.polarSizeLimit.maxWidth < 280) {
+        toAngle += (280 - this.polarSizeLimit.maxWidth) * 10 / (160.0 - 125.0);
+      }
+      return this.polarCoords(degToRad(toAngle), this.gridMaxKnots,
                               this.gridScale, 5).y + 10 +
              this.gridOrigoY + this.margin;
     },
