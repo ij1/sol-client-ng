@@ -253,7 +253,7 @@ export default {
       seedList = this.getList(this.editListKey);
       if (seedList !== null) {
         this.listname = seedList.name;
-        this.editorMode = this.filterToMode(seedList);
+        this.editorMode = this.filterToMode(seedList.filter);
       }
 
     } else {
