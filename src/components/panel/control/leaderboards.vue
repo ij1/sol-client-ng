@@ -13,6 +13,12 @@
           <button @click = "editorType = 'boat'">Boat</button>
           <button @click = "editorType = 'distance'">Distance</button>
           <button @click = "editorType = 'country'">Country</button>
+          <button
+            v-if = "multiClassRace"
+            @click = "editorType = 'boattype'"
+          >
+            Boat Type
+          </button>
         </div>
       </div>
     </div>
@@ -28,7 +34,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import ControlLeaderboard from './leaderboard.vue';
 import BoatlistEditor from './boatlist-editor.vue';
 
@@ -53,6 +59,9 @@ export default {
     ...mapState({
       boatlists: state => state.ui.boatlists.boatlists,
       activeList: state => state.ui.boatlists.activeList,
+    }),
+    ...mapGetters({
+      multiClassRace: 'race/fleet/multiClassRace',
     }),
   },
   methods: {

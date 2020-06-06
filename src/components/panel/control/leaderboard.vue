@@ -97,6 +97,11 @@ export default {
           return this.boatlistInfo.filter.country.has(i.country);
         });
       }
+      if (this.boatlistInfo.filter.boattype !== null) {
+        res = res.filter(i => {
+          return this.boatlistInfo.filter.boattype.has(i.type);
+        });
+      }
       return res;
     },
     name () {

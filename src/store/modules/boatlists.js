@@ -19,6 +19,7 @@ function __addOrEdit (state, boatlist) {
       boats: boatlist.filter.boats,
       distance: boatlist.filter.distance,
       country: boatlist.filter.country,
+      boattype: boatlist.filter.boattype,
       filterStamp: state.nextFilterStamp++,
     },
     editable: true,
@@ -49,6 +50,7 @@ export default {
           boats: null,
           distance: null,
           country: null,
+          boattype: null,
           filterStamp: 0,
         },
         editable: false,
@@ -93,6 +95,23 @@ export default {
         },
       },
       country: {
+        decode: function (data) {
+          if (data !== null) {
+            const res = data.split(/;/);
+            if (res.length > 0) {
+              return new Set(res);
+            }
+          }
+          return null;
+        },
+        encode: function (data) {
+          if (data !== null) {
+            return [...data].join(';');
+          }
+          return null;
+        },
+      },
+      boattype: {
         decode: function (data) {
           if (data !== null) {
             const res = data.split(/;/);
@@ -201,7 +220,9 @@ export default {
           ((currentFilter.distance !== null) &&
            (boat.distance > currentFilter.distance)) ||
           ((currentFilter.country !== null) &&
-           !currentFilter.country.has(boat.country))) {
+           !currentFilter.country.has(boat.country)) ||
+          ((currentFilter.boattype !== null) &&
+           !currentFilter.boattype.has(boat.type))) {
         return false;
       }
       return true;

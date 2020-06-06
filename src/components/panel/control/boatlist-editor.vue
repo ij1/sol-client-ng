@@ -20,6 +20,9 @@
     <div v-if = "editorMode === 'country'">
       
     </div>
+    <div v-if = "editorMode === 'boattype'">
+
+    </div>
     <div class = "boatlist-editor-body" v-if = "listsAddDelMode">
       <div class="search">
         <label for="search">Search</label>
@@ -40,6 +43,12 @@
           v-if = "editorMode === 'country'"
           :search = "search"
           :country-list = "countryLists.offList"
+          @input = "offSelected = $event"
+        />
+        <boattype-list
+          v-if = "editorMode === 'boattype'"
+          :search = "search"
+          :boattype-list = "boattypeLists.offList"
           @input = "offSelected = $event"
         />
       </div>
@@ -77,6 +86,12 @@
           :country-list = "countryLists.onList"
           @input = "onSelected = $event"
         />
+        <boattype-list
+          v-if = "editorMode === 'boattype'"
+          :search = "search"
+          :boattype-list = "boattypeLists.onList"
+          @input = "onSelected = $event"
+        />
       </div>
     </div>
   </popup-window>
@@ -87,6 +102,7 @@ import { mapState, mapGetters } from 'vuex';
 import PopupWindow from '../../popupwindow.vue';
 import BoatList from './boatlist.vue';
 import CountryList from './countrylist.vue';
+import BoattypeList from './boattypelist.vue';
 import { validCountries } from '../../../lib/country.js';
 
 export default {
@@ -95,6 +111,7 @@ export default {
     'popup-window': PopupWindow,
     'boat-list': BoatList,
     'country-list': CountryList,
+    'boattype-list': BoattypeList,
   },
   props: {
     editorType: {
@@ -146,7 +163,8 @@ export default {
         const regex = /^\d\d*(\.\d\d*)?$/;
         return regex.test(this.distance);
       } else if ((this.editorMode === 'boat') ||
-                 (this.editorMode === 'country')) {
+                 (this.editorMode === 'country') ||
+                 (this.editorMode === 'boattype')) {
         this.onListStamp;
         return this.onList.size > 0;
       }
@@ -196,11 +214,36 @@ export default {
       }
       return res;
     },
+    boattypeList () {
+      this.boatTypesCount;      /* Dummy dep */
+
+      let res = Array.from(this.boatTypes).sort((a, b) => {
+        return a - b;
+      }).map(val => { return { 'boattype': val }; });
+      return res;
+    },
+    boattypeLists () {
+      let res = {
+        offList: [],
+        onList: [],
+      }
+      this.onListStamp;
+      for (let boattype of this.boattypeList) {
+        if (this.onList.has(boattype.boattype)) {
+          res.onList.push(boattype);
+        } else {
+          res.offList.push(boattype);
+        }
+      }
+      return res;
+    },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
     }),
     ...mapState({
       boatlists: state => state.ui.boatlists.boatlists,
+      boatTypes: state => state.race.fleet.boatTypes,
+      boatTypesCount: state => state.race.fleet.boatTypesCount,
     }),
   },
   created () {
@@ -231,6 +274,10 @@ export default {
         this.onList = new Set(seedList.filter.country);
         this.onListStamp++;
       }
+      if (seedList.filter.boattype !== null) {
+        this.onList = new Set(seedList.filter.boattype);
+        this.onListStamp++;
+      }
     }
   },
   methods: {
@@ -245,6 +292,7 @@ export default {
           boats: (this.editorMode === 'boat') ? this.onList : null,
           distance: (this.editorMode === 'distance') ? parseFloat(this.distance) : null,
           country: (this.editorMode === 'country') ? this.onList: null,
+          boattype: (this.editorMode === 'boattype') ? this.onList: null,
         },
       });
       this.$emit('close');
@@ -267,6 +315,9 @@ export default {
       }
       if (filter.country !== null) {
         return 'country';
+      }
+      if (filter.boattype !== null) {
+        return 'boattype';
       }
       return null;
     },
