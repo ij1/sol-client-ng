@@ -299,5 +299,6 @@ export default {
 }
 .boatlist-right {
   text-align: right;
+  padding-right: 7px;
 }
 </style>
