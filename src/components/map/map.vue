@@ -162,15 +162,19 @@ export default {
     ...mapState({
       boatLoaded: state => state.boat.id,
       raceBoundary: state => state.race.boundary,
+      raceFinish: state => state.race.finish,
+      raceRoute: state => state.race.route,
       visualSteeringEnabled: state => state.boat.steering.visualSteering.enabled,
       rulerEnabled: state => state.ui.ruler.enabled,
       zoomStep: state => state.map.zoomStep,
+      lastRoundedMark: state => state.boat.lastRoundedMark,
+      boatPosition: state => state.boat.position,
     }),
     ...mapGetters({
       inDefaultUiMode: 'ui/inDefaultUiMode',
       minZoom: 'map/minZoom',
       maxZoom: 'map/maxZoom',
-      remainingRouteBounds: 'boat/remainingRouteBounds',
+      publicBoat: 'boat/publicBoat',
     }),
   },
 
@@ -200,6 +204,21 @@ export default {
     forceResize () {
       this.map.invalidateSize({pan: false});
     },
+
+    remainingRouteBounds () {
+      let res = L.latLngBounds(this.raceFinish[0],
+                               this.raceFinish[1]);
+      let i = 0;
+      if (!this.publicBoat) {
+        i = this.lastRoundedMark + 1;
+        res.extend(this.boatPosition);
+      }
+      while (i < this.raceRoute.length) {
+        res.extend(this.raceRoute[i].latLng);
+        i++;
+      }
+      return res;
+    },
   },
 
   watch: {
@@ -209,7 +228,7 @@ export default {
       }
       if (newValue !== null && oldValue === null) {
         this.$nextTick(() => {
-          const bounds = this.remainingRouteBounds.pad(0.3);
+          const bounds = this.remainingRouteBounds().pad(0.3);
           this.map.flyToBounds(bounds, { maxZoom: 12 });
         });
       }
