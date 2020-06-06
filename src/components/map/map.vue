@@ -216,6 +216,7 @@ export default {
         res.push(this.raceRoute[i].latLng);
         i++;
       }
+      res = res.map(x => this.$store.getters['race/latLngToRaceBounds'](x));
       return L.latLngBounds(res);
     },
   },
@@ -228,7 +229,8 @@ export default {
       if (newValue !== null && oldValue === null) {
         this.$nextTick(() => {
           const bounds = this.remainingRouteBounds().pad(0.3);
-          this.map.flyToBounds(bounds, { maxZoom: 12 });
+          const wrappedBounds = this.map.wrapLatLngBounds(bounds);
+          this.map.flyToBounds(wrappedBounds, { maxZoom: 12 });
         });
       }
     },
