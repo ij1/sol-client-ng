@@ -7,7 +7,7 @@
         </thead>
       </table>
     </div>
-    <div class = "scrollable-table-wrapper">
+    <div class = "scrollable-table-wrapper" @scroll = "onScroll">
       <table cellspacing = "0" cellpadding = "1px" class = "scrollable-table">
         <thead class = "fakehead" ref = "fakehead">
           <tr><slot name = "headers"></slot></tr>
@@ -34,6 +34,9 @@ export default {
         dstArr[i].style.maxWidth = width;
         dstArr[i].style.minWidth = width;
       }
+    },
+    onScroll(ev) {
+      this.$refs.visualhead.style.left = '-' + ev.target.scrollLeft + 'px';
     },
   },
   beforeUpdate () {
@@ -75,6 +78,7 @@ export default {
 }
 .visualhead, .visualhead th {
   padding: 0px;
+  position: relative;
 }
 .fakehead, .fakehead th {
   padding: 0px;
