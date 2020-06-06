@@ -100,6 +100,17 @@ export default {
         type: 'boolean',
         cfgText: 'Start with 24h weather',
       },
+      startStep: {
+        value: '3',
+        type: 'values',
+        values: [
+          ['0.5', '30 min'],
+          ['1', '1 h'],
+          ['2', '2 h'],
+          ['3', '3 h'],
+        ],
+        cfgText: 'Start with weather step',
+      },
       startMode: {
         value: 'time',
         type: 'values',

@@ -156,7 +156,7 @@ export default {
     return {
       /* 24h / max (this.weatherTimescales.length - 1) */
       selectedTimescale: this.$store.state.weather.cfg.start24h.value ? 1 : 3,
-      selectedStep: hToMsec(3),
+      selectedStep: hToMsec(+this.$store.state.weather.cfg.startStep.value),
       playTimer: null,
       tickInterval: 100,
       sliderZeroPx: 8,
