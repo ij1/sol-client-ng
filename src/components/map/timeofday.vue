@@ -62,7 +62,11 @@ export default {
     },
   },
   created () {
-    let pane = this.map.createPane('timeofdayPane');
+    const paneName = 'timeofdayPane';
+    let pane = this.map.getPane(paneName);
+    if (typeof pane === 'undefined') {
+      pane = this.map.createPane(paneName);
+    }
     pane.style.zIndex = 300;
     this.updateDayNight();
   },
