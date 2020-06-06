@@ -138,7 +138,7 @@ export default {
           dummyData: PR_MARK_BOAT + '5',
         },
         {
-          dataField: 'dtg', th: 'DTF',
+          dataField: 'dtg', th: 'DTF\xa0\xa0',
           align: 'r', visible: true, localeSort: false,
           dummyData: '19999.99',
         },
