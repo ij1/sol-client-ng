@@ -79,6 +79,7 @@ export default {
   flex: 1 1;
   flex-basis: calc(100% - 17px);
   overflow-y: scroll;
+  overflow-x: auto;
   position: relative;
 }
 .scrollable-table {
