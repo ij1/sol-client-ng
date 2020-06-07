@@ -147,9 +147,14 @@ export default {
       let route = [];
 
       for (let i = 0; i < this.race.route.length; i++) {
+        let alpha = this.wpAlpha(i);
+        let color = 'rgba(255,0,0,' + alpha + ')';
+        if (alpha === '1') {
+          color = 'red';
+        }
         route.push({
           info: this.markInfoText(i),
-          color: 'rgba(255,0,0,' + this.wpAlpha(i) + ')',
+          color: color,
           radius: !this.isFinishMark(i) ? 4 : this.finishPointRadius,
         });
       }
