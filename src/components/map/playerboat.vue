@@ -7,6 +7,7 @@
       :color = "commandBoatColor"
       :scale = "1"
       :strokeWidth = "2"
+      :map = "map"
     />
     <map-polar
       :lat-lng="visualPosition"
@@ -31,6 +32,12 @@ export default {
     'sail-boat': SailBoat,
     'map-polar': MapPolar,
     'boat-trace': BoatTrace,
+  },
+  props: {
+    map: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     showPolar () {

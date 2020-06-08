@@ -7,6 +7,7 @@
       :course = "cog"
       :twa = "twa"
       :stroke-width = "1"
+      :map = "map"
     />
     <l-polyline
       :lat-lngs = "steerLine"

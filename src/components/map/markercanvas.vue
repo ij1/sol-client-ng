@@ -4,6 +4,7 @@
     :key = "recreateHack"
     :lat-lng = "latLng"
     :options = "markerOptions"
+    :pane = "pane"
     @ready = "doReady"
   >
     <l-icon
@@ -44,7 +45,11 @@ export default {
     needsRedraw: {
       type: Number,
       default: 0,
-    }
+    },
+    pane: {
+      type: String,
+      default: 'markerPane',
+    },
   },
 
   data () {

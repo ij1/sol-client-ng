@@ -29,7 +29,7 @@
       <canvas-overlay v-if = "map !== null" :map = "map"/>
       <fleet-traces v-if = "map !== null"/>
       <fleet-map v-if = "map !== null" :map = "map"/>
-      <player-boat v-if = "map !== null"/>
+      <player-boat v-if = "map !== null" :map = "map"/>
 
       <default-ui-mode v-if = "map !== null && inDefaultUiMode" :map = "map"/>
       <map-pois v-if = "map !== null"/>

@@ -4,12 +4,14 @@
     :lat-lng = "latLng"
     :icon-center = "boatCenter"
     :needs-redraw = "needsRedraw"
+    :pane = "paneName"
   />
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import { boatScaleDivisor, drawBoat } from '../../lib/boatshape.js';
+import { createPane } from '../../lib/quirks.js';
 import MarkerCanvas from './markercanvas.vue';
 
 export default {
@@ -44,6 +46,16 @@ export default {
       type: Number,
       default: 2,
     },
+    map: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  data () {
+    return {
+      paneName: 'boatPane',
+    }
   },
 
   computed: {
@@ -66,6 +78,11 @@ export default {
     ...mapState({
       cfgBoatScale: state => state.map.cfg.boatScale.value,
     }),
+  },
+
+  created () {
+    let pane = createPane(this.map, this.paneName);
+    pane.style.zIndex = 680;
   },
 
   methods: {
