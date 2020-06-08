@@ -14,6 +14,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup } from 'vue2-leaflet';
+import { createPane } from '../../lib/quirks.js';
 import Vue2LeafletTerminator from './Vue2LeafletTerminator.vue';
 
 export default {
@@ -62,11 +63,7 @@ export default {
     },
   },
   created () {
-    const paneName = 'timeofdayPane';
-    let pane = this.map.getPane(paneName);
-    if (typeof pane === 'undefined') {
-      pane = this.map.createPane(paneName);
-    }
+    let pane = createPane(this.map, 'timeofdayPane');
     pane.style.zIndex = 300;
     this.updateDayNight();
   },

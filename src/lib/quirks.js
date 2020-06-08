@@ -29,3 +29,16 @@ export function leafletIconQuirk () {
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
   });
 }
+
+/* Create new Leaflet map panes without duplicating them
+ *
+ * As component destruction cannot remove panes due to lack of Leaflet API,
+ * we need this quirk on create side.
+ */
+export function createPane (map, paneName) {
+  let pane = map.getPane(paneName);
+  if (typeof pane === 'undefined') {
+    pane = map.createPane(paneName);
+  }
+  return pane;
+}
