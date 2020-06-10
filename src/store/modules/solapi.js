@@ -4,7 +4,7 @@ import axios from 'axios';
 import promisify from 'util.promisify';
 import pako from 'pako';
 import xml2js from 'xml2js';
-import { SOLAPI_MIN_DELAY, SolapiError } from '../../lib/solapi.js';
+import { SOLAPI_MIN_DELAY, SOLAPI_MAX_DECAY, SolapiError } from '../../lib/solapi.js';
 
 const parseString = promisify(xml2js.parseString);
 
@@ -18,6 +18,9 @@ function statsUpdate(stats, newValue) {
     stats.max = newValue;
   }
   if (stats.avg !== null) {
+    if (newValue <= stats.avg) {
+      stats.max *= SOLAPI_MAX_DECAY;
+    }
     stats.avg = stats.avg * (1 - WEIGHT) + newValue * WEIGHT;
   } else {
     stats.avg = newValue;
