@@ -109,7 +109,7 @@ function terminatorLatitude (lng, gst, sunPos) {
   /* Compute the hour angle of the sun for a longitude on Earth */
   const lst = gst + lng / 15;
   const ha = lst * 15 - sunPos.alpha;
-  
+
   const lat = Math.atan(-Math.cos(ha * _D2R) /
                         Math.tan(sunPos.delta * _D2R)) * _R2D;
   return lat;
