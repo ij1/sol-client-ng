@@ -1,9 +1,16 @@
-import { UTCToMsec, secToMsec } from '../../lib/utils.js';
+import { UTCToMsec, secToMsec, msecToUTCString } from '../../lib/utils.js';
 
-function secTimer (state, commit) {
+function secTimer (state, commit, dispatch) {
+  const oldRealTime = state.realTime;
   commit('update');
+  if (Math.abs(state.realTime - oldRealTime) > secToMsec(3)) {
+    dispatch('diagnostics/add',
+             'Clock jump: ' + msecToUTCString(oldRealTime) +
+             ' -> ' + msecToUTCString(state.realTime),
+             {root: true});
+  }
   const delay = 1000 - ((state.realTime + 2) % 1000);
-  setTimeout(secTimer, delay, state, commit);
+  setTimeout(secTimer, delay, state, commit, dispatch);
 }
 
 export default {
@@ -36,7 +43,7 @@ export default {
 
   actions: {
     async init ({state, dispatch, commit}) {
-      secTimer(state, commit);
+      secTimer(state, commit, dispatch);
       await dispatch('checkOffset');
     },
     async checkOffset ({dispatch, commit}) {
