@@ -19,7 +19,7 @@ function statsUpdate(stats, newValue) {
   }
   if (stats.avg !== null) {
     if (newValue <= stats.avg) {
-      stats.max *= SOLAPI_MAX_DECAY;
+      stats.max = Math.max(stats.max * SOLAPI_MAX_DECAY, stats.avg);
     }
     stats.avg = stats.avg * (1 - WEIGHT) + newValue * WEIGHT;
   } else {
