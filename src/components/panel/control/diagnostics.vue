@@ -37,7 +37,7 @@
         {{apiCall.firstByteDelay.avg | formatSec}}/{{apiCall.firstByteDelay.max | formatSec}}s
         {{apiCall.readDelay.avg | formatSec}}/{{apiCall.readDelay.max | formatSec}}s
         {{apiCall.duration.avg | formatSec}}/{{apiCall.duration.max | formatSec}}s
-        {{apiCall.size.avg | roundSize}}/{{apiCall.size.max}}B
+        {{apiCall.size.avg | roundSize}}/{{apiCall.size.max | roundSize}}B
       </div>
     </div>
     <div>
