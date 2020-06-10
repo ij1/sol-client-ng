@@ -6,6 +6,7 @@ import polarModule from './polar';
 import steeringModule from './steering';
 import instrumentModule from './instruments';
 import { solapiRetryDispatch, SolapiError } from '../../lib/solapi.js';
+import { latLngInDark } from '../../lib/sun.js';
 
 export default {
   namespaced: true,
@@ -100,6 +101,12 @@ export default {
       }
       return L.latLng(state.position.lat,
                       state.position.lng + state.visualLngOffset);
+    },
+    inDark: (state, getters) => {
+      if (state.position === null) {
+        return false;
+      }
+      return latLngInDark(state.position, getters.time);
     },
     isGuestBoat: (state) => {
       return state.name === 'guest';

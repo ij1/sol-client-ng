@@ -39,8 +39,9 @@ export default {
         cfgText: 'Lat/Lon format',
       },
       dayNightMode: {
-        value: 'day',
+        value: 'default',
         values: [
+          ['default', 'Default'],
           ['day', 'Daylight only'],
           ['white', 'White, no terminator'],
           ['dark', 'Dark only'],
@@ -102,7 +103,11 @@ export default {
     coordinateNoDegSymbol: (state) => {
       return state.cfg.coordinateFormat.value === 'signdegnosym';
     },
-    currentDayNight: (state) => {
+    currentDayNight: (state, getters, rootState, rootGetters) => {
+      if (state.cfg.dayNightMode.value === 'default') {
+        const boatInDark = rootGetters['boat/inDark'];
+        return boatInDark ? 'dark' : 'white';
+      }
       if (state.cfg.dayNightMode.value === 'dark') {
         return 'dark';
       }
