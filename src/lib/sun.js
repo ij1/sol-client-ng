@@ -31,14 +31,14 @@ SOFTWARE.
  * the beginning of the UNIX epoch 1970-01-01 and ignores leap
  * seconds.
  */
-function julian(date) {
+export function julian(date) {
   return (date / 86400000) + 2440587.5;
 }
 
 /* Calculate Greenwich Mean Sidereal Time according to 
  * http://aa.usno.navy.mil/faq/docs/GAST.php
  */
-function GMST(julianDay) {
+export function GMST(julianDay) {
   let d = julianDay - 2451545.0;
   /* Low precision equation is good enough for our purposes. */
   return (18.697374558 + 24.06570982441908 * d) % 24;
@@ -86,7 +86,7 @@ function eclipticObliquity (julianDay) {
  * position. Inputs are expected in degrees. Outputs are in
  * degrees as well.
  */
-function sunEquatorialPosition (julianDay) {
+export function sunEquatorialPosition (julianDay) {
   const sunEclLng = sunEclipticPosition(julianDay).lambda;
   const eclObliq = eclipticObliquity(julianDay);
 

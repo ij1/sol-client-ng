@@ -3,7 +3,7 @@ import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { degToRad } from '../../lib/utils.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
-import { boatScaleDivisor, drawBoat } from '../../lib/boatshape.js';
+import { boatScaleDivisor, drawBoat, drawNavLights } from '../../lib/boatshape.js';
 import { ownBoatVisibleFilter } from '../../lib/sol.js';
 
 export default {
@@ -94,10 +94,17 @@ export default {
             ctx.fill();
             ctx.scale(zoomDescale, zoomDescale);
           } else {
-            ctx.scale(boatScale, boatScale);
-            ctx.strokeStyle = color;
-            drawBoat(ctx, boat.cog, twa);
-            ctx.scale(boatDescale, boatDescale);
+            if (!boat.navLights || boat.buddy) {
+              ctx.scale(boatScale, boatScale);
+              ctx.strokeStyle = color;
+              drawBoat(ctx, boat.cog, twa);
+              ctx.scale(boatDescale, boatDescale);
+            }
+            if (boat.navLights) {
+              ctx.scale(zoomScale, zoomScale);
+              drawNavLights(ctx, boat.cog);
+              ctx.scale(zoomDescale, zoomDescale);
+            }
           }
         } else {
           ctx.scale(zoomScale, zoomScale);

@@ -1,6 +1,7 @@
 export const boatScaleDivisor = 5.0;
 
 const sailOffset = -6;
+const navLightSize = 3;
 
 /* Edge doesn't support SVG string in Path2D constructor. Thus, create the
  * shapes one bit at a time instead.
@@ -39,6 +40,23 @@ export function drawBoat(ctx, course, twa) {
   }
   ctx.rotate(-sangle);
   ctx.translate(0, -sailOffset);
+  ctx.rotate(-course);
+}
+
+export function drawNavLights(ctx, course) {
+  ctx.rotate(course);
+
+  ctx.fillStyle = "red";
+  ctx.arc(0, 0, navLightSize, Math.PI - Math.PI / 6, Math.PI * 1.5);
+  ctx.lineTo(0, 0);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.fillStyle = "rgb(80,255,80)";
+  ctx.arc(0, 0, navLightSize, Math.PI * 1.5, Math.PI / 6);
+  ctx.lineTo(0, 0);
+  ctx.fill();
+
   ctx.rotate(-course);
 }
 

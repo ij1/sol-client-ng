@@ -4,6 +4,7 @@ import rbush from 'rbush';
 import { minToMsec, secToMsec, radToDeg } from '../../lib/utils.js';
 import { gcCalc, loxoCalc, minTurnAngle } from '../../lib/nav.js';
 import { PROJECTION, EARTH_R, solBoatPolicy, PR_MARK_BOAT, DARK_SEA_BLUE } from '../../lib/sol.js';
+import { __latLngInDark, sunEquatorialPosition, GMST, julian } from '../../lib/sun.js';
 
 const nearDistance = 0.0001 * 1852 / EARTH_R;
 const colorCorrectionLimitWhite = 128;
@@ -119,6 +120,8 @@ export default {
         wrappedLatLng: boatData.wrappedLatLng,
         buddy: false,
         practiceMark: boatData.name.startsWith(PR_MARK_BOAT),
+        navLights: false,
+
         syc: null,
         country: null,
         trace: [],
@@ -184,6 +187,7 @@ export default {
           toBoat.distance = boat.distance;
           toBoat.lastRoundedMark = boat.lastRoundedMark;
           toBoat.color = boat.color;
+          toBoat.navLights = boat.navLights;
 
         } else {
           Vue.set(state.id2idx, id, state.boat.length);
@@ -204,6 +208,7 @@ export default {
             log: boat.log,
             buddy: boat.buddy,
             practiceMark: boat.practiceMark,
+            navLights: boat.navLights,
             syc: false,
             country: null,
             trace: [],
@@ -515,6 +520,9 @@ export default {
       try {
         let raceInfo = await dispatch('solapi/get', getDef, {root: true});
         const now = rootGetters['time/now']();
+        const julianDay = julian(now);
+        const gst = GMST(julianDay);
+        const sunPos = sunEquatorialPosition(julianDay);
 
         commit('race/updateMessage', raceInfo.message, {root: true});
 
@@ -547,6 +555,7 @@ export default {
             boat.log = parseFloat(boat.log);
             boat.buddy = (boat.name.charAt(0) === '@');
             boat.practiceMark = boat.name.startsWith(PR_MARK_BOAT);
+            boat.navLights = __latLngInDark(boat.latLng, gst, sunPos);
 
             boat.lastRoundedMark = parseInt(boat.current_leg);
             delete boat.current_leg;
