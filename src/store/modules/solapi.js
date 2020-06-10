@@ -4,7 +4,7 @@ import axios from 'axios';
 import promisify from 'util.promisify';
 import pako from 'pako';
 import xml2js from 'xml2js';
-import { SolapiError } from '../../lib/solapi.js';
+import { SOLAPI_MIN_DELAY, SolapiError } from '../../lib/solapi.js';
 
 const parseString = promisify(xml2js.parseString);
 
@@ -36,10 +36,11 @@ function abortReq(rootState, dispatch, abortFunc, reqDef) {
 }
 
 function calcTimeout(apiStat, backoff) {
-  return Math.min(Math.max(Math.min(apiStat.avg * 8,
-                                    apiStat.max * 2) * (2 ** backoff),
-                           15000),
-                  120000);
+  let baseTime = SOLAPI_MIN_DELAY;
+  if (apiStat.avg !== null) {
+    baseTime = Math.min(apiStat.avg * 8, apiStat.max * 2);
+  }
+  return Math.min(Math.max(baseTime * (2 ** backoff), SOLAPI_MIN_DELAY), 120000);
 }
 
 export default {

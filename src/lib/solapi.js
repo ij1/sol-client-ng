@@ -1,3 +1,5 @@
+export const SOLAPI_MIN_DELAY = 15000;
+
 export class SolapiError extends Error {
   constructor(category, message) {
     super(message);
