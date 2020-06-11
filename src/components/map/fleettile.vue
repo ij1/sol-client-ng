@@ -43,6 +43,7 @@ export default {
       if (zoomScale >= 2) {
         return;
       }
+      const cfgAllowNavLights = this.$store.getters['ui/allowNavLights'];
       const boatScale = zoomScale * boatSizeScale;
       const boatDescale = zoomDescale / boatSizeScale;
       /* Anything > 1/2 boat size is fine */
@@ -94,13 +95,13 @@ export default {
             ctx.fill();
             ctx.scale(zoomDescale, zoomDescale);
           } else {
-            if (!boat.navLights || boat.buddy) {
+            if (!boat.navLights || boat.buddy || !cfgAllowNavLights) {
               ctx.scale(boatScale, boatScale);
               ctx.strokeStyle = color;
               drawBoat(ctx, boat.cog, twa);
               ctx.scale(boatDescale, boatDescale);
             }
-            if (boat.navLights) {
+            if (boat.navLights && cfgAllowNavLights) {
               ctx.scale(zoomScale, zoomScale);
               drawNavLights(ctx, boat.cog);
               ctx.scale(zoomDescale, zoomDescale);

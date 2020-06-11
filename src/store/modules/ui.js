@@ -59,6 +59,15 @@ export default {
         type: 'values',
         cfgText: 'Day/night mode',
       },
+      nightIcons: {
+        value: 'default',
+        values: [
+          ['default', 'Default'],
+          ['hull', 'Show only hull'],
+        ],
+        type: 'values',
+        cfgText: 'Boat icons at night',
+      },
     },
   },
 
@@ -115,6 +124,9 @@ export default {
     },
     isDark: (state, getters) => {
       return getters['currentDayNight'] === 'dark';
+    },
+    allowNavLights: (state, getters, rootState) => {
+      return rootState.ui.cfg.nightIcons.value !== 'hull';
     },
   },
   actions: {

@@ -189,6 +189,7 @@ export default {
     fleetTilesNeedRedraw: (state, getters, rootState, rootGetters) => {
       rootState.race.fleet.searchTreeStamp;
       rootState.weather.data.updated;
+      rootState.ui.cfg.nightIcons.value;
       state.zoom;
       state.cfg.fleetBoatMode.value;
       rootGetters['race/fleet/selectedFiltered'];
