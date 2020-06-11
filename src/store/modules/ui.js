@@ -38,6 +38,16 @@ export default {
         type: 'values',
         cfgText: 'Lat/Lon format',
       },
+      cursorLines: {
+        value: 'none',
+        values: [
+          ['none', "None"],
+          ['normal', "Horizontal and vertical"],
+          ['wind', "Wind based"],
+        ],
+        type: 'values',
+        cfgText: 'Auxiliary cursor lines',
+      },
       dayNightMode: {
         value: 'default',
         values: [
@@ -48,16 +58,6 @@ export default {
         ],
         type: 'values',
         cfgText: 'Day/night mode',
-      },
-      cursorLines: {
-        value: 'none',
-        values: [
-          ['none', "None"],
-          ['normal', "Horizontal and vertical"],
-          ['wind', "Wind based"],
-        ],
-        type: 'values',
-        cfgText: 'Auxiliary cursor lines',
       },
     },
   },
