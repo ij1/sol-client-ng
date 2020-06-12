@@ -409,7 +409,7 @@ export default {
     },
 
     multiClassRace: (state) => {
-      return state.boatTypes.count > 1;
+      return state.boatTypesCount > 1;
     },
 
     nextTimeToFetch: (state) => {
