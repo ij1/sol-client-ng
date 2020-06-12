@@ -234,7 +234,7 @@ export default {
           state.boatTypes.add(boatType);
         }
       }
-      state.boatTypesCount = state.boatTypes.length;
+      state.boatTypesCount = state.boatTypes.size;
 
       state.fleetTime = update.timestamp;
     },
