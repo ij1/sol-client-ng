@@ -182,8 +182,8 @@ export default {
         /* Draw outline */
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = outlineColor;
-        ctx.fillStyle = outlineColor;
         for (let poly of this.geoms['l' + l]) {
+          ctx.fillStyle = outlineColor;
           let first = true;
           let prevAtBorder = 0;
           let firstAtBorder;
@@ -239,6 +239,9 @@ export default {
           }
 
           if (tinyIsland) {
+            if (isDark) {
+              ctx.fillStyle = '#ffffff';
+            }
             const startX = Math.round((polyMaxX - polyMinX) / 2) + polyMinX;
             const startY = Math.round((polyMaxY - polyMinY) / 2) + polyMinY;
             if (cfgTinyIslands === '1px') {
