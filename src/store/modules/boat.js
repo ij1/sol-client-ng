@@ -200,6 +200,7 @@ export default {
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
         boatData.boat.wrappedLatLng = rootGetters['race/latLngToRaceBounds'](boatData.boat.latLng);
+        boatData.boat.type = state.type;
         commit('race/fleet/initMyBoat', boatData.boat, {root: true});
         commit('updateBoat', boatData.boat);
         commit('race/fleet/updateCommandBoat', {

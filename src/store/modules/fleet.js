@@ -104,7 +104,7 @@ export default {
           g: 0,
           b: 255,
         },
-        type: '',
+        type: boatData.type,
 
         dtg: parseFloat(boatData.dtg),
         dbl: parseFloat(boatData.dbl),
