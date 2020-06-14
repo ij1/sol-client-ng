@@ -130,6 +130,11 @@ export default {
       });
       state.flaglessBoats++;
       addToName2id(state, boatData.name, boatData.id);
+
+      if (!state.boatTypes.has(boatData.type)) {
+        state.boatTypes.add(boatData.type);
+      }
+      state.boatTypesCount = state.boatTypes.size;
     },
     updateFleet (state, update) {
       for (let boat of update.fleet) {
