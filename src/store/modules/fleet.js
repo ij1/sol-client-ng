@@ -185,9 +185,13 @@ export default {
           toBoat.dbl = boat.dbl;
           toBoat.log = boat.log;
           toBoat.distance = boat.distance;
-          toBoat.lastRoundedMark = boat.lastRoundedMark;
+          if (toBoat.lastRoundedMark !== boat.lastRoundedMark) {
+            toBoat.lastRoundedMark = boat.lastRoundedMark;
+          }
           toBoat.color = boat.color;
-          toBoat.navLights = boat.navLights;
+          if (toBoat.navLights !== boat.navLights) {
+            toBoat.navLights = boat.navLights;
+          }
           if (toBoat.type !== boat.type) {
             toBoat.type = boat.type;
           }
