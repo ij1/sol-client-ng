@@ -188,6 +188,9 @@ export default {
           toBoat.lastRoundedMark = boat.lastRoundedMark;
           toBoat.color = boat.color;
           toBoat.navLights = boat.navLights;
+          if (toBoat.type !== boat.type) {
+            toBoat.type = boat.type;
+          }
 
         } else {
           Vue.set(state.id2idx, id, state.boat.length);
