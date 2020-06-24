@@ -118,8 +118,19 @@ export default {
     first15minMarkers () {
       return this.getMarkers(this.first15minIndexes);
     },
+    dotDelay () {
+      if (this.raceLoaded && this.isTowbackPeriod &&
+          (this.plottedDcDelay !== null)) {
+        const startDelta = Math.max(this.raceStartTime - this.boatTime, 0);
+        if (this.plottedDcDelay < startDelta) {
+          return null;
+        }
+        return this.plottedDcDelay - startDelta;
+      }
+      return this.plottedDcDelay;
+    },
     predictorMarkers () {
-      const time = this.plottedDcDelay;
+      const time = this.dotDelay;
       if ((time === null) ||
           (time > this.predictorLen) ||
           (this.cog.firstLatLng === null) ||
