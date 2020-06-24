@@ -126,7 +126,7 @@ export default {
           license: 'MIT',
         },
         {
-          name: 'isomorphic-xml2js',
+          name: 'xml2js',
           license: 'MIT',
         },        
       ],
