@@ -8,6 +8,11 @@ export default {
     idCount: 0,
 
     cfg: {
+      noInitialZoom: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'No initial zoom in',
+      },
       showDiagnostics: {
         value: false,
         type: 'boolean',

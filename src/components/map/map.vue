@@ -169,6 +169,7 @@ export default {
       zoomStep: state => state.map.zoomStep,
       lastRoundedMark: state => state.boat.lastRoundedMark,
       boatPosition: state => state.boat.position,
+      cfgNoInitialZoom: state => state.diagnostics.cfg.noInitialZoom.value,
     }),
     ...mapGetters({
       inDefaultUiMode: 'ui/inDefaultUiMode',
@@ -223,7 +224,7 @@ export default {
 
   watch: {
     boatLoaded (newValue, oldValue) {
-      if (this.map === null) {
+      if (this.map === null || this.cfgNoInitialZoom) {
         return;
       }
       if (newValue !== null && oldValue === null) {

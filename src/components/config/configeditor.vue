@@ -135,7 +135,7 @@ export default {
           }],
         },
         {
-          title: 'Diagnostics',
+          title: 'Workarounds and Diagnostics',
           cfgs: [{
             base: 'diagnostics',
           }],
