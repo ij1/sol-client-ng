@@ -59,9 +59,6 @@ export default {
       return this.$parent.map.project(this.visualPosition, z).round();
     },
     timeOrigo () {
-      if (this.raceLoaded && this.isTowbackPeriod) {
-        return this.raceStartTime;
-      }
       return this.boatTime;
     },
     hourIndexes () {
@@ -122,10 +119,9 @@ export default {
       if (this.raceLoaded && this.isTowbackPeriod &&
           (this.plottedDcDelay !== null)) {
         const startDelta = Math.max(this.raceStartTime - this.boatTime, 0);
-        if (this.plottedDcDelay < startDelta) {
+        if (hToMsec(this.plottedDcDelay) < startDelta) {
           return null;
         }
-        return this.plottedDcDelay - startDelta;
       }
       return this.plottedDcDelay;
     },
@@ -309,6 +305,26 @@ export default {
       return p;
     },
 
+    consumeTowback (latLngs, pos, t) {
+      while (t <= this.raceStartTime - this.timeDelta) {
+        latLngs.push(pos);
+        t += this.timeDelta;
+      }
+      return t;
+    },
+    /* When starting, part of the predictor belongs to towback and other
+     * part is after race start, this function calculates the fraction
+     * of the full movement the boat is already racing.
+     *
+     * Note: the DC dot interpolation won't be accurate for the first
+     * predictor segment but that's < 30s from start so it shouldn't
+     * matter.
+     */
+    moveFractionAfterTowback (t) {
+      let firstStep = 1.0 - ((this.raceStartTime - t) / this.timeDelta);
+      /* These safety bounds should be unncessary */
+      return Math.max(Math.min(firstStep, 1), 0);
+    },
     cogCalc () {
       let t = this.timeOrigo;
       const endTime = t + hToMsec(this.predictorLen);
@@ -328,6 +344,13 @@ export default {
 
       const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
       let perf = this.boatPerf;
+      let firstStep = 1;
+
+      if (this.isTowbackPeriod) {
+        t = this.consumeTowback(cogPred.latLngs, lastLatLng, t);
+        perf = 1.0;
+        firstStep = this.startFractionAfterTowback(t);
+      }
 
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
@@ -335,7 +358,9 @@ export default {
           break;
         }
         const twa = cogTwdToTwa(cogPred.cog, wind.twd);
-        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) * perf;
+        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
+                      perf * firstStep;
+        firstStep = 1;
 
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
         const dlon = delta * speed * Math.sin(cogPred.cog) / lonScaling;
@@ -372,13 +397,22 @@ export default {
 
       const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
       let perf = this.boatPerf;
+      let firstStep = 1;
+
+      if (this.isTowbackPeriod) {
+        t = this.consumeTowback(twaPred.latLngs, lastLatLng, t);
+        perf = 1.0;
+        firstStep = this.startFractionAfterTowback(t);
+      }
 
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
         if (wind === null) {
           break;
         }
-        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twaPred.twa) * perf;
+        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twaPred.twa) *
+                      perf * firstStep;
+        firstStep = 1;
 
         const course = twaTwdToCog(twaPred.twa, wind.twd);
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
