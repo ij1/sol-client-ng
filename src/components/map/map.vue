@@ -224,14 +224,18 @@ export default {
 
   watch: {
     boatLoaded (newValue, oldValue) {
-      if (this.map === null || this.cfgNoInitialZoom) {
+      if (this.map === null) {
         return;
       }
       if (newValue !== null && oldValue === null) {
         this.$nextTick(() => {
           const bounds = this.remainingRouteBounds().pad(0.3);
           const wrappedBounds = this.map.wrapLatLngBounds(bounds);
-          this.map.flyToBounds(wrappedBounds, { maxZoom: 12 });
+          let zoom = 12;
+          if (this.cfgNoInitialZoom) {
+            zoom = this.map.getZoom();
+          }
+          this.map.flyToBounds(wrappedBounds, { maxZoom: zoom });
         });
       }
     },
