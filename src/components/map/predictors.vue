@@ -349,7 +349,7 @@ export default {
       if (this.isTowbackPeriod) {
         t = this.consumeTowback(cogPred.latLngs, lastLatLng, t);
         perf = 1.0;
-        firstStep = this.startFractionAfterTowback(t);
+        firstStep = this.moveFractionAfterTowback(t);
       }
 
       while (t < endTime) {
@@ -402,7 +402,7 @@ export default {
       if (this.isTowbackPeriod) {
         t = this.consumeTowback(twaPred.latLngs, lastLatLng, t);
         perf = 1.0;
-        firstStep = this.startFractionAfterTowback(t);
+        firstStep = this.moveFractionAfterTowback(t);
       }
 
       while (t < endTime) {
