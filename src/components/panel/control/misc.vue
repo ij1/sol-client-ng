@@ -161,6 +161,12 @@ export default {
         url: '/series/2/',
       });
       res.push({
+        name: 'Boat Polar',
+        url: this.raceLoaded ?
+             '/webclient/vpp/boat/' + this.boatId + '/' :
+             null,
+      }),
+      res.push({
         name: 'Google Earth Feed',
         url: this.raceLoaded ?
              '/googleearth/race_' + this.raceId + '.kml' :
@@ -172,6 +178,7 @@ export default {
       raceLoaded: state => state.race.loaded,
       raceId: state => state.race.info.id,
       raceTilemap: state => state.race.info.tilemap,
+      boatId: state => state.boat.id,
       wxLoaded: state => state.weather.loaded,
       wxCellSize: state => state.weather.data.cellSize,
       wxUpdateTimes: state => state.weather.updateTimes,
