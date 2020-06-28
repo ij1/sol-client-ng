@@ -5,8 +5,7 @@
     @resized = "doResize"
   >
     <div id = "left-div" splitpanes-size = "80">
-      <map-view ref="map"/>
-      <bottom-panel/>
+      <map-panel/>
     </div>
     <div id = "right-div" splitpanes-size = "20">
       <control-panel-switcher/>
@@ -19,16 +18,14 @@ import { EventBus } from '../lib/event-bus.js';
 
 import Splitpanes from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
-import Map from './map/map.vue';
-import BottomPanel from './panel/bottompanel.vue';
+import MapPanel from './mappanel.vue';
 import ControlPanelSwitcher from './panel/control/switcher.vue';
 
 export default {
   name: 'MainView',
   components: {
     'splitpanes': Splitpanes,
-    'map-view': Map,
-    'bottom-panel': BottomPanel,
+    'map-panel': MapPanel,
     'control-panel-switcher': ControlPanelSwitcher,
   },
   methods: {
