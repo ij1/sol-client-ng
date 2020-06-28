@@ -1,6 +1,6 @@
 <template>
   <l-control :position = "'topleft'">
-    <div id = "race-status">
+    <div id = "race-status" v-if = "uiComponentStatusBar">
       <span v-html="message"/>
       {{ boatInfo }}
     </div>
@@ -51,6 +51,7 @@ export default {
       raceLoaded: state => state.race.loaded,
       raceName: state => state.race.info.name,
       raceMessage: state => state.race.info.message,
+      uiComponentStatusBar: state => state.ui.uiComponent.statusBar,
     }),
   },
   watch: {

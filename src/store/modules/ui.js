@@ -21,6 +21,19 @@ export default {
       showEditor: false,
     },
     showHelp: false,
+    uiComponent: {
+      controlPanel: true,
+      steeringPanel: true,
+      dcPanel: true,
+      rankingPanel: true,
+      chatPanel: true,
+      racemessagePanel: true,
+      miscPanel: true,
+      bottomPanels: true,
+      instrumentPanel: true,
+      statusBar: true,
+      dcBar: true,
+    },
     cfg: {
       gcMode: {
         value: true,

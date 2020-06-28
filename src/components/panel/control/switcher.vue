@@ -2,24 +2,28 @@
   <div id="control-panel">
     <div class="tabs">
       <a
+        v-if = "uiComponentSteeringPanel"
         @click="activeTab=0"
         :class="activeTab === 0 ? 'active' : ''"
       >
         <img src="../../../images/wheel.png" alt="Steering"/>
       </a>
       <a
+        v-if = "uiComponentDcPanel"
         @click="activeTab=1"
         :class="activeTab === 1 ? 'active' : ''"
       >
         <img src="../../../images/clock.png" alt="Delayed Commands"/>
       </a>
       <a
+        v-if = "uiComponentRankingPanel"
         @click="activeTab=2"
         :class="activeTab === 2 ? 'active' : ''"
       >
         <img src="../../../images/podium.png" alt="Boatlists"/>
       </a>
       <a
+        v-if = "uiComponentChatPanel"
         @click="activeTab=3"
         :class="activeTab === 3 ? 'active' : ''"
       >
@@ -30,20 +34,21 @@
         />
       </a>
       <a
-        v-if = "racemessages.length > 0"
+        v-if = "uiComponentRacemessagePanel && racemessages.length > 0"
         @click = "activeTab=4"
         :class="activeTab === 4 ? 'active' : ''"
       >
         <lima-flag :size = "14"/>
       </a>
       <a
+        v-if = "uiComponentMiscPanel"
         @click="activeTab=6"
         :class="activeTab === 6 ? 'active' : ''"
       >
         Misc
       </a>
       <a
-        v-if = "configShowDiagnostics"
+        v-if = "uiComponentMiscPanel && configShowDiagnostics"
         @click = "activeTab=7"
         :class="activeTab === 7 ? 'active' : ''"
       >Diag</a>
@@ -119,10 +124,37 @@ export default {
     ...mapState({
       configShowDiagnostics: state => state.diagnostics.cfg.showDiagnostics.value,
       racemessages: state => state.race.messages.racemsgs,
+      uiComponentSteeringPanel: state => state.ui.uiComponent.steeringPanel,
+      uiComponentDcPanel: state => state.ui.uiComponent.dcPanel,
+      uiComponentRankingPanel: state => state.ui.uiComponent.rankingPanel,
+      uiComponentChatPanel: state => state.ui.uiComponent.chatPanel,
+      uiComponentRacemessagePanel: state => state.ui.uiComponent.racemessagePanel,
+      uiComponentMiscPanel: state => state.ui.uiComponent.miscPanel,
     }),
     ...mapGetters({
       chatNewMessagesToShow: 'chatrooms/newMessagesToShow',
     }),
+  },
+  created () {
+    const panels = [
+      this.uiComponentSteeringPanel,
+      this.uiComponentDcPanel,
+      this.uiComponentRankingPanel,
+      this.uiComponentChatPanel,
+      this.uiComponentRacemessagePanel,
+      false,
+      this.uiComponentMiscPanel,
+      this.uiComponentMiscPanel,
+    ];
+
+    if (!panels[this.activeTab]) {
+      for (let i = 0; i < panels.length; i++) {
+        if (panels[i]) {
+          this.activeTab = i;
+          return;
+        }
+      }
+    }
   },
 }
 </script>

@@ -1,5 +1,6 @@
 <template>
   <splitpanes
+    v-if = "uiComponentControlPanel"
     class = "default-theme"
     @resize = "doResize"
     @resized = "doResize"
@@ -11,9 +12,11 @@
       <control-panel-switcher/>
     </div>
   </splitpanes>
+  <map-panel v-else/>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { EventBus } from '../lib/event-bus.js';
 
 import Splitpanes from 'splitpanes';
@@ -27,6 +30,11 @@ export default {
     'splitpanes': Splitpanes,
     'map-panel': MapPanel,
     'control-panel-switcher': ControlPanelSwitcher,
+  },
+  computed: {
+    ...mapState({
+      uiComponentControlPanel: state => state.ui.uiComponent.controlPanel,
+    }),
   },
   methods: {
     doResize () {

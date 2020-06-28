@@ -1,6 +1,6 @@
 <template>
   <l-control :position = "'topright'">
-    <div id = "dc-bar" v-if = "nextDC !== null">
+    <div id = "dc-bar" v-if = "uiComponentDcBar && nextDC !== null">
       Next DC:
       {{ nextDC.type | cctocog }}={{ nextDC | prettyDegrees }}
       in {{ nextDCDelay | formatNextDCTime }}
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 import { radToDeg, daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin } from '../lib/utils.js';
 import { roundToFixed } from '../lib/quirks.js';
@@ -44,6 +44,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      uiComponentDcBar: state => state.ui.uiComponent.dcBar,
+    }),
     ...mapGetters({
       nextDC: 'boat/steering/nextDC',
       nextDCDelay: 'boat/steering/nextDCDelay',

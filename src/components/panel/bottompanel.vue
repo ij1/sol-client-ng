@@ -1,14 +1,15 @@
 <template>
-  <div id="bottom-panel">
+  <div id="bottom-panel" v-if = "uiComponentBottomPanels">
     <weather-panel v-if = "$store.state.ui.config.loaded">
       <!-- config for 24h wx & wx mode needs to be loaded prior panel -->
     </weather-panel>
-    <boat-instruments/>
+    <boat-instruments v-if = "uiComponentInstrumentPanel"/>
     <bottom-spacer/>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import WeatherPanel from './weather.vue';
 import BoatInstruments from './instruments/instruments.vue';
 import BottomSpacer from './bottomspacer.vue';
@@ -19,6 +20,12 @@ export default {
     'weather-panel': WeatherPanel,
     'boat-instruments': BoatInstruments,
     'bottom-spacer': BottomSpacer,
+  },
+  computed: {
+    ...mapState({
+      uiComponentBottomPanels: state => state.ui.uiComponent.bottomPanels,
+      uiComponentInstrumentPanel: state => state.ui.uiComponent.instrumentPanel,
+    }),
   },
 }
 </script>
