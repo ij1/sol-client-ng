@@ -137,7 +137,7 @@
 
     <div class = "help-content">
       For more comprehensive help, see the Official Sailonline Manual,
-      found <a href="/wiki/show/Manual/">here</a>.
+      found <a target = "_blank" href="/wiki/show/Manual/">here</a>.
     </div>
 
   </popup-window>
