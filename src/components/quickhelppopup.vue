@@ -172,6 +172,8 @@ export default {
 .help-header {
   font-size: 14px;
   font-weight: bold;
+  margin: 5px;
+  margin-left: 0px;
 }
 
 .help-content {
