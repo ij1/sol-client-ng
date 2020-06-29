@@ -163,10 +163,6 @@ export default {
       state.apiCallStats[apiCall].errors++;
       state.apiCallStats[apiCall].consecutiveErrors++;
       state.apiCallStats[apiCall].errorLog.push(errorInfo.error);
-      if (!(errorInfo.error instanceof SolapiError)) {
-        console.log(errorInfo.error.message);
-        console.log(errorInfo.error.stack);
-      }
     },
     noError (state, apiCall) {
       state.apiCallStats[apiCall].consecutiveErrors = 0;
