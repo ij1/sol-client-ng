@@ -2,7 +2,7 @@
   <popup-window
     class = "boatlist-editor"
     title = "Select Boats"
-    :z-index = "1001"
+    :z-index = "1002"
     close-button-label = "Cancel"
     @close = "$emit('close')"
     :submit-button-label = "submitLabel"

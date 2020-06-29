@@ -1,7 +1,7 @@
 <template>
   <popup-window
     title = "Edit Delayed Command"
-    :z-index = "1000"
+    :z-index = "1001"
     close-button-label = "Cancel"
     @close = "$emit('close')"
     submit-button-label = "Update"
