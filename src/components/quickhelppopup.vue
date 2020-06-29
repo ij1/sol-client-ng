@@ -89,7 +89,9 @@
       with the speech bubble icon. Enter the text you want to send in
       the input box at the bottom, and hit Enter or click Send to send
       the message. New chat from yourself or other players appears at
-      the top of the Chat list. If the chat tab is not active and new
+      the top of the Chat list. If you want to have more than one
+      Chatroom open at the same time, click the '+' button at the bottom.
+      If the chat tab is not active and new
       messages have appeared, a small alert icon is shown on the chat
       tab.
     </div>
