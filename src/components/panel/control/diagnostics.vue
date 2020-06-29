@@ -20,10 +20,10 @@
       >
         {{call.apiCall}}
         {{call.received}}{{call.len !== null ? '/' + call.len : ''}}B
-        {{call.firstByteDelay | formatSec}}s
-        {{call.readDelayMax | formatSec}}s
         {{call.duration | formatSec}}s
         {{call.status}}
+        {{call.firstByteDelay | formatSec}}s
+        {{call.readDelayMax | formatSec}}s
       </div>
     </div>
     <div>
@@ -45,10 +45,12 @@
         >
           E:{{apiCall.errors}}
         </span>
-        {{apiCall.firstByteDelay.avg | formatSec}}/{{apiCall.firstByteDelay.max | formatSec}}s
-        {{apiCall.readDelay.avg | formatSec}}/{{apiCall.readDelay.max | formatSec}}s
-        {{apiCall.duration.avg | formatSec}}/{{apiCall.duration.max | formatSec}}s
         {{apiCall.size.avg | roundSize}}/{{apiCall.size.max | roundSize}}B
+        {{apiCall.duration.avg | formatSec}}/{{apiCall.duration.max | formatSec}}s
+        <span v-if = "cfgExtraNetDebug">
+          {{apiCall.firstByteDelay.avg | formatSec}}/{{apiCall.firstByteDelay.max | formatSec}}s
+          {{apiCall.readDelay.avg | formatSec}}/{{apiCall.readDelay.max | formatSec}}s
+        </span>
       </div>
     </div>
     <div>
