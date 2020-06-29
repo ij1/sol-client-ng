@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <login-popup/>
+    <errors-popup/>
     <notifications-popup/>
     <config-editor/>
     <race-messages-popup/>
@@ -30,6 +31,7 @@ import { EventBus } from './lib/event-bus.js';
 import Splitpanes from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
 import LoginPopup from './components/loginpopup.vue';
+import ErrorsPopup from './components/errorspopup.vue';
 import NotificationsPopup from './components/notificationspopup.vue';
 import ConfigEditor from './components/config/configeditor.vue';
 import RaceMessagesPopup from './components/racemessagespopup.vue';
@@ -44,6 +46,7 @@ export default {
   components: {
     'splitpanes': Splitpanes,
     'login-popup': LoginPopup,
+    'errors-popup': ErrorsPopup,
     'notifications-popup': NotificationsPopup,
     'config-editor': ConfigEditor,
     'race-messages-popup': RaceMessagesPopup,

@@ -6,6 +6,7 @@ export default {
   state: {
     messages: [],
     idCount: 0,
+    showApiErrors: null,
 
     cfg: {
       noInitialZoom: {
@@ -39,6 +40,9 @@ export default {
       if (state.messages.length > 200) {
         state.messages.shift();
       }
+    },
+    popupApiErrors(state, apiCall) {
+      state.showApiErrors = apiCall;
     },
 
     configSetValue,

@@ -33,7 +33,18 @@
          :key = "'s' + apiCall.apiCall"
       >
         {{apiCall.apiCall}}
-        {{apiCall.count}} E:{{apiCall.errors}}
+        {{apiCall.count}}
+        <span
+          v-if = "apiCall.errors === 0"
+        >
+          E:{{apiCall.errors}}
+        </span>
+        <span
+          v-if = "apiCall.errors > 0"
+          @click = "$store.commit('diagnostics/popupApiErrors', apiCall.apiCall)"
+        >
+          E:{{apiCall.errors}}
+        </span>
         {{apiCall.firstByteDelay.avg | formatSec}}/{{apiCall.firstByteDelay.max | formatSec}}s
         {{apiCall.readDelay.avg | formatSec}}/{{apiCall.readDelay.max | formatSec}}s
         {{apiCall.duration.avg | formatSec}}/{{apiCall.duration.max | formatSec}}s
