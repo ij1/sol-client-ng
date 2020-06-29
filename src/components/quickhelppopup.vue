@@ -17,7 +17,7 @@
       the '+' and '-' buttons in the toolbar to the left. Hold the button
       to continuously zoom. You can see the current map scale in the bottom
       left of the map. Clicking the 'Center Boat' button in the toolbar
-      will centre
+      will center
       the map on your boat. Hovering the mouse over another boat will
       display the name of the boat and other information. Moving the mouse
       over the map changes the display in the top right corner. The top
@@ -110,8 +110,8 @@
       the list and click add. When all the boats/countries/boat types
       are listed in
       the right side panel of the popup window, click 'Done'. You can edit
-      these lists, either the name or boats contained in them. These Lists
-      are saved when you close the game client, and re-loaded when you open
+      these lists, either the name or what is contained in them. These Lists
+      are saved in your browser, and re-loaded when you open
       it again. When you click 'Dist' enter a distance to filter boats by.
       The list will then contain only those boats within this distance
       from your own boat, updated once per minute.
