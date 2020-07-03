@@ -2,7 +2,7 @@
   <l-layer-group>
     <l-circle-marker
       v-for = "boat in legendBoats"
-      :key = "boat.id"
+      :key = "boat.key"
       :lat-lng = "boat.latLng"
       :radius = "0"
       :stroke = "false"
@@ -11,12 +11,12 @@
         :options = "boatnameTipOptions"
         class = "legend-row"
       >
-        <span class = "boat-ranking">{{boat.ranking}}</span>
-        <country-flag :country = "boat.country"/>
-        <syc-flag :syc = "boat.syc"/>
-        <span class = "boat-name">{{ boat.name }}</span>
+        <span class = "boat-ranking">{{ boat.boat.ranking }}</span>
+        <country-flag :country = "boat.boat.country"/>
+        <syc-flag :syc = "boat.boat.syc"/>
+        <span class = "boat-name">{{ boat.boat.name }}</span>
         <span v-if="multiClassRace">
-          ({{ boat.type}})
+          ({{ boat.boat.type }})
         </span>
       </l-tooltip>
     </l-circle-marker>
@@ -26,6 +26,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { LLayerGroup, LCircleMarker, LTooltip } from 'vue2-leaflet';
+import { latLngAddOffset } from '../../lib/utils.js';
 import CountryFlag from '../countryflag.vue';
 import SycFlag from '../sycflag.vue';
 
@@ -52,10 +53,29 @@ export default {
       return this.cfgKeys === 'map' || this.cfgKeys === 'both';
     },
     legendBoats () {
-      if (this.showLegend) {
-        return this.showIds.map(id => this.fleetBoatFromId(id));
+      if (!this.showLegend) {
+	return [];
       }
-      return [];
+
+      const wrapList = [-360, 0, 360]
+      let res = [];
+
+      for (let id of this.showIds) {
+        let boat = this.fleetBoatFromId(id)
+        for (let w of wrapList) {
+          let latLng = latLngAddOffset(boat.latLng, w);
+          if (!this.tripleBounds.contains(latLng)) {
+            continue;
+          }
+
+          res.push({
+            latLng: latLng,
+            key: 'k_' + boat.id + '_' + w,
+            boat: boat,
+          });
+        }
+      }
+      return res;
     },
     ...mapGetters({
       fleetBoatFromId: 'race/fleet/boatFromId',
@@ -64,6 +84,7 @@ export default {
     }),
     ...mapState({
       cfgKeys: state => state.map.cfg.boatKeys.value,
+      tripleBounds: state => state.map.tripleBounds,
     }),
   },
 }
