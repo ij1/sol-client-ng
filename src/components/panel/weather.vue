@@ -48,16 +48,6 @@
     </div>
     <div id="weather-panel-control" v-if="wxLoaded && wxValidTimeseries">
       <span class = "weather-panel-control-padding"/>
-      <button
-        @click.prevent = "setTime(0)"
-      >
-        &#124;&#9664;
-      </button>
-      <button
-        @click.prevent = "changeTime(-selectedStep)"
-      >
-        &#9664;&#9664;
-      </button>
       <span>Weather forecasted for</span>
       <select
         ref = "timescale-selector"
@@ -128,6 +118,16 @@
         </option>
       </select>
       <span>steps.</span>
+      <button
+        @click.prevent = "setTime(0)"
+      >
+        &#124;&#9664;
+      </button>
+      <button
+        @click.prevent = "changeTime(-selectedStep)"
+      >
+        &#9664;&#9664;
+      </button>
       <button
         @click.prevent = "changeTime(selectedStep)"
       >
