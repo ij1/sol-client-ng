@@ -8,59 +8,33 @@
     <quick-help-popup/>
     <portal-target name="dc-editor-dest"/>
     <portal-target name="boatlist-editor-dest"/>
-    <splitpanes
-      class = "default-theme"
-      @resize = "doResize"
-      @resized = "doResize"
-    >
-      <div id = "left-div" splitpanes-size = "80">
-        <map-view ref="map"/>
-        <bottom-panel/>
-      </div>
-      <div id = "right-div" splitpanes-size = "20">
-        <control-panel-switcher/>
-      </div>
-    </splitpanes>
+    <main-view/>
     <weather-sound/>
   </div>
 </template>
 
 <script>
-import { EventBus } from './lib/event-bus.js';
-
-import Splitpanes from 'splitpanes';
-import 'splitpanes/dist/splitpanes.css';
 import LoginPopup from './components/loginpopup.vue';
 import ErrorsPopup from './components/errorspopup.vue';
 import NotificationsPopup from './components/notificationspopup.vue';
 import ConfigEditor from './components/config/configeditor.vue';
 import RaceMessagesPopup from './components/racemessagespopup.vue';
 import QuickHelpPopup from './components/quickhelppopup.vue';
-import Map from './components/map/map.vue';
-import BottomPanel from './components/panel/bottompanel.vue';
-import ControlPanelSwitcher from './components/panel/control/switcher.vue';
+import MainView from './components/mainview.vue';
 import WeatherSound from './components/weathersound.vue';
 
 export default {
   name: 'app',
   components: {
-    'splitpanes': Splitpanes,
     'login-popup': LoginPopup,
     'errors-popup': ErrorsPopup,
     'notifications-popup': NotificationsPopup,
     'config-editor': ConfigEditor,
     'race-messages-popup': RaceMessagesPopup,
     'quick-help-popup': QuickHelpPopup,
-    'map-view': Map,
-    'bottom-panel': BottomPanel,
-    'control-panel-switcher': ControlPanelSwitcher,
+    'main-view': MainView,
     'weather-sound': WeatherSound,
   },
-  methods: {
-    doResize () {
-      EventBus.$emit('right-pane-resize');
-    }
-  }
 }
 </script>
 
@@ -85,40 +59,5 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-}
-
-.splitpanes--vertical > .splitpanes__splitter {
-  min-width: 9px;
-}
-
-.splitpanes--vertical > .splitpanes__splitter:after,
-.splitpanes--vertical > .splitpanes__splitter:before {
-  background-color: rgba(0, 0, 0, 0.3) !important;
-}
-
-.splitpanes--vertical > .splitpanes__splitter:hover:after,
-.splitpanes--vertical > .splitpanes__splitter:hover:before {
-  background-color: rgba(0, 0, 0, 0.5) !important;
-}
-
-</style>
-
-<style scoped>
-#left-div {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: inherit;
-  height: 100%;
-  overflow: hidden;
-}
-#right-div {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: inherit;
-  height: 100%;
-  overflow: hidden;
-  background-color: #fff;
 }
 </style>

@@ -21,6 +21,23 @@ export default {
       showEditor: false,
     },
     showHelp: false,
+    uiComponent: Object.assign(
+      {
+        controlPanel: true,
+        steeringPanel: true,
+        dcPanel: true,
+        rankingPanel: true,
+        chatPanel: true,
+        racemessagePanel: true,
+        miscPanel: true,
+        bottomPanels: true,
+        instrumentPanel: true,
+        statusBar: true,
+        dcBar: true,
+      },
+      (typeof window.uicomponents !== 'undefined' ?
+       window.uicomponents : {})
+    ),
     cfg: {
       gcMode: {
         value: true,

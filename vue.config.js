@@ -35,6 +35,11 @@ module.exports = {
       template: 'public/index.template.html',
       filename: 'index.template.html',
     },
+    spectator: {
+      entry: 'src/main.js',
+      template: 'public/spectator.html',
+      filename: 'spectator.html',
+    },
   },
 }
 
