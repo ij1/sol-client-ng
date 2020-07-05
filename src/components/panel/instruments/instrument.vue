@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'BoatInstrument',
   props: {
@@ -37,7 +39,7 @@ export default {
           return col;
         }
       }
-      return '#000000';
+      return !this.isDark ? '#000000' : '#ffffff';
     },
     bgColor () {
       if (typeof this.instrument.bgColor !== 'undefined') {
@@ -45,6 +47,9 @@ export default {
       }
       return null;
     },
+    ...mapGetters({
+      isDark: 'ui/isDark',
+    }),
   },
   filters: {
     format (instrument, state) {
