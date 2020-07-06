@@ -222,8 +222,14 @@ export default {
       return getters.lastTimestamp - rootGetters['boat/time'];
     },
 
-    twsContours: (state) => {
-      return contourDefs[state.cfg.twsDensity.value];
+    twsContours: (state, getters, rootState) => {
+      let val = state.cfg.twsDensity.value;
+
+      if (rootState.map.zoom <= 5) {
+        val = Math.min(val, state.cfg.twsDensity.high - 1);
+      }
+
+      return contourDefs[val];
     },
 
     timeIndex: (state) => {
