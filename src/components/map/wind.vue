@@ -166,6 +166,9 @@ export default {
       }
     },
     redraw (ctx, ctx2) {
+      if (!this.wxValid) {
+        return;
+      }
       ctx.save();
       ctx2.save();
       this.drawContours(ctx, ctx2);
