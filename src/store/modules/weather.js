@@ -242,7 +242,7 @@ export default {
       return contourDefs[val];
     },
 
-    timeIndex: (state) => {
+    timeIndex: (state, getters) => {
       let idx;
       /* Short-circuit for the common case near the beginning of the wx series */
       if (state.time <= state.data.timeSeries[1]) {
@@ -257,10 +257,14 @@ export default {
       /* For now, check that the result is valid, */
       if ((state.data.timeSeries[idx] > state.time) ||
           (state.data.timeSeries[idx+1] < state.time)) {
-        store.dispatch(
-          'diagnostics/add',
-          "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?"
-        );
+        /* Warn only when it's a bug. If wx data is invalid, no log spam */
+        if (getters.valid) {
+          store.dispatch(
+            'diagnostics/add',
+            "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?"
+          );
+        }
+        return null;
       }
       return idx;
     },
@@ -288,10 +292,14 @@ export default {
       /* For now, check that the result is valid, */
       if ((state.data.timeSeries[idx] > timestamp) ||
           (state.data.timeSeries[idx+1] < timestamp)) {
-        store.dispatch(
-          'diagnostics/add',
-          "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?"
-        );
+        /* Warn only when it's a bug. If wx data is invalid, no log spam */
+        if (getters.valid) {
+          store.dispatch(
+            'diagnostics/add',
+            "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?"
+          );
+        }
+        return null;
       }
       return idx;
     },
