@@ -459,7 +459,7 @@ export default {
       return res;
     },
     recalc () {
-      if (!this.wxValid || this.boatId === null) {
+      if (this.boatId === null) {
         return;
       }
       this.cog = this.cogCalc();
