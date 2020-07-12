@@ -218,7 +218,7 @@ export default {
 
   getters: {
     firstTimestamp: (state) => {
-      return state.date.timeSeries[0];
+      return state.data.timeSeries[0];
     },
     lastTimestamp: (state) => {
       return state.data.timeSeries[state.data.timeSeries.length - 1];
