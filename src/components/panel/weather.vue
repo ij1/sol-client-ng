@@ -197,11 +197,6 @@ export default {
   },
 
   computed: {
-    wxValidTimeseries () {
-      return this.wxLoaded &&
-             (this.wxFirstTimestamp <= this.boatTime) &&
-             (this.wxLastTimestamp > this.boatTime);
-    },
     activeTimescales () {
       let res = [];
       for (let i = 0; i < this.weatherTimescales.length; i++) {
@@ -314,8 +309,7 @@ export default {
     ...mapGetters({
       boatTime: 'boat/time',
       wxDataTimescale: 'weather/dataTimescale',
-      wxFirstTimestamp: 'weather/firstTimestamp',
-      wxLastTimestamp: 'weather/lastTimestamp',
+      wxValidTimeseries: 'weather/valid',
     }),
   },
 
@@ -407,7 +401,7 @@ export default {
       this.focusPanel();
     },
     changeTime (delta) {
-      if (!this.wxLoaded || !this.wxValidTimeseries) {
+      if (!this.wxValidTimeseries) {
         return;
       }
       let value = this.timeOffset + delta;
@@ -437,7 +431,7 @@ export default {
     },
     onDragStart (ev) {
       ev.preventDefault();
-      if (!this.wxLoaded) {
+      if (!this.wxValidTimeseries) {
         return;
       }
       this.draggingSlider = ev.type;

@@ -226,6 +226,11 @@ export default {
     dataTimescale: (state, getters, rootState, rootGetters) => {
       return getters.lastTimestamp - rootGetters['boat/time'];
     },
+    valid: (state, getters, rootState, rootGetters) => {
+      return state.loaded &&
+             (getters.firstTimestamp <= rootGetters['boat/time']) &&
+             (getters.lastTimestamp > rootGetters['boat/time']);
+    },
 
     twsContours: (state, getters, rootState) => {
       let val = state.cfg.twsDensity.value;
