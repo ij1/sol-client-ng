@@ -7,7 +7,7 @@
       <map-coordinate :lat-lng = "wrappedHoverLatLng"/>
     </div>
     <path-distance v-if = 'path !== null' :path = "path"/>
-    <div v-if = 'wxLoaded'>
+    <div v-if = 'wxValid'>
       {{ wind }}
     </div>
   </l-control>
@@ -45,7 +45,6 @@ export default {
         loxoCalc(this.boatPosition, this.hoverLatLng);
     },
     ...mapState({
-      wxLoaded: state => state.weather.loaded,
       boatPosition: state => state.boat.position,
       cfgGcMode: state => state.ui.cfg.gcMode.value,
       hoverLatLng: state => state.map.hoverLatLng,
@@ -53,6 +52,7 @@ export default {
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
       hoverWind: 'map/hoverWind',
+      wxValid: 'weather/valid',
     }),
   },
 }

@@ -190,6 +190,7 @@ export default {
       return Date.now();
     },
     ...mapGetters({
+      wxValid: 'weather/valid',
       boatTime: 'boat/time',
       visualPosition: 'boat/visualPosition',
       isTowbackPeriod: 'race/isTowbackPeriod',
@@ -198,7 +199,6 @@ export default {
     }),
     ...mapState({
       boatId: state => state.boat.id,
-      wxLoaded: state => state.weather.loaded,
       wxUpdated: state => state.weather.data.updated,
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
@@ -337,7 +337,7 @@ export default {
         latLngs: [],
       };
 
-      if (!this.wxLoaded) {
+      if (!this.wxValid) {
         return cogPred;
       }
       cogPred.latLngs.push(Object.freeze(lastLatLng));
@@ -390,7 +390,7 @@ export default {
         latLngs: [],
       };
 
-      if (!this.wxLoaded) {
+      if (!this.wxValid) {
         return twaPred;
       }
       twaPred.latLngs.push(Object.freeze(lastLatLng));
@@ -457,7 +457,7 @@ export default {
       return res;
     },
     recalc () {
-      if (!this.wxLoaded || this.boatId === null) {
+      if (!this.wxValid || this.boatId === null) {
         return;
       }
       this.cog = this.cogCalc();

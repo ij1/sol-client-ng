@@ -34,7 +34,7 @@ export default {
     },
     needsRedraw () {
       /* Dummy access for the dependencies */
-      this.wxLoaded;
+      this.wxValid;
       this.wxTime;
       this.gridInterval;
       this.useArrows;
@@ -49,7 +49,6 @@ export default {
       return this.twsContours.map(windToColor);
     },
     ...mapState({
-      wxLoaded: state => state.weather.loaded,
       wxTime: state => state.weather.time,
       wxOrigo: state => state.weather.data.origo,
       wxCellSize: state => state.weather.data.cellSize,
@@ -66,6 +65,7 @@ export default {
       zoom: state => state.map.zoom,
     }),
     ...mapGetters({
+      wxValid: 'weather/valid',
       twsContours: 'weather/twsContours',
       currentDayNight: 'ui/currentDayNight',
       isDark: 'ui/isDark',
@@ -265,7 +265,7 @@ export default {
      * hit the exact value).
      */
     drawContours (ctx, ctx2) {
-      if (!this.wxLoaded || (this.twsContours.length === 0)) {
+      if (!this.wxValid || (this.twsContours.length === 0)) {
         return;
       }
 
