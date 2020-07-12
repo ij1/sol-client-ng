@@ -174,7 +174,9 @@ export default {
           'diagnostics/add',
           "WARNING: time outside wx, fixing: " + state.time + " vs " + state.data.timeSeries[0] + "-" + state.data.timeSeries[state.data.timeSeries.length - 1]
         );
-        state.time = boundedTime;
+        if (state.time !== boundedTime) {
+          state.time = boundedTime;
+        }
       }
     },
     boatTimeUpdated(state, timeData) {
