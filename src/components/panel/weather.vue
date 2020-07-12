@@ -198,7 +198,9 @@ export default {
 
   computed: {
     wxValidTimeseries () {
-      return this.wxLoaded && (this.wxLastTimestamp > this.boatTime);
+      return this.wxLoaded &&
+             (this.wxFirstTimestamp <= this.boatTime) &&
+             (this.wxLastTimestamp > this.boatTime);
     },
     activeTimescales () {
       let res = [];
@@ -312,6 +314,7 @@ export default {
     ...mapGetters({
       boatTime: 'boat/time',
       wxDataTimescale: 'weather/dataTimescale',
+      wxFirstTimestamp: 'weather/firstTimestamp',
       wxLastTimestamp: 'weather/lastTimestamp',
     }),
   },
