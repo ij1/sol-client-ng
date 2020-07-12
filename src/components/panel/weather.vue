@@ -41,12 +41,12 @@
       Waiting for the weather information to load...
       <span class = "weather-panel-control-padding"/>
     </div>
-    <div id="weather-panel-placeholder" v-if="wxLoaded && !wxValidTimeseries">
+    <div id="weather-panel-placeholder" v-if="wxLoaded && !wxValid">
       <span class = "weather-panel-control-padding"/>
       Weather information is truncated...
       <span class = "weather-panel-control-padding"/>
     </div>
-    <div id="weather-panel-control" v-if="wxLoaded && wxValidTimeseries">
+    <div id="weather-panel-control" v-if="wxLoaded && wxValid">
       <span class = "weather-panel-control-padding"/>
       <span>Weather forecasted for</span>
       <select
@@ -309,7 +309,7 @@ export default {
     ...mapGetters({
       boatTime: 'boat/time',
       wxDataTimescale: 'weather/dataTimescale',
-      wxValidTimeseries: 'weather/valid',
+      wxValid: 'weather/valid',
     }),
   },
 
@@ -401,7 +401,7 @@ export default {
       this.focusPanel();
     },
     changeTime (delta) {
-      if (!this.wxValidTimeseries) {
+      if (!this.wxValid) {
         return;
       }
       let value = this.timeOffset + delta;
@@ -431,7 +431,7 @@ export default {
     },
     onDragStart (ev) {
       ev.preventDefault();
-      if (!this.wxValidTimeseries) {
+      if (!this.wxValid) {
         return;
       }
       this.draggingSlider = ev.type;
