@@ -338,6 +338,7 @@ export default {
       };
 
       if (!this.wxValid) {
+        cogPred.firstLatLng = null;
         return cogPred;
       }
       cogPred.latLngs.push(Object.freeze(lastLatLng));
@@ -391,6 +392,7 @@ export default {
       };
 
       if (!this.wxValid) {
+        twaPred.firstLatLng = null;
         return twaPred;
       }
       twaPred.latLngs.push(Object.freeze(lastLatLng));
