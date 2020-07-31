@@ -2,9 +2,8 @@ import L from 'leaflet';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
 import { solapiRetryDispatch, SolapiError } from '../../lib/solapi.js';
-import { degToRad, radToDeg, minToMsec, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
+import { degToRad, minToMsec, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
 import { minTurnAngle, loxoCalc } from '../../lib/nav.js';
-import { PROJECTION} from '../../lib/sol.js';
 
 export default {
   namespaced: true,
@@ -115,17 +114,14 @@ export default {
       }
 
       /* Finish line endpoint calculations */
-      const angularDist = degToRad(parseFloat(raceInfo.course.goal_radius) / 60);
+      const angularDist = parseFloat(raceInfo.course.goal_radius) / 60;
       const center = course.route[course.route.length - 1].latLng;
-      const centerProj = PROJECTION.project(center);
-      for (let i = 0; i <= 1; i++) {
-        const angle = course.route[course.route.length - 2].nextWpBearing +
-                             Math.PI / 2 + i * Math.PI;
-        const dlat = Math.asin(Math.sin(angle - Math.PI / 2) * Math.sin(angularDist));
-        const epLat = center.lat + radToDeg(dlat);
-        const dy = PROJECTION.project(L.latLng(epLat, center.lng)).y - centerProj.y;
-        const dx = Math.tan(angle) * dy;
-        const endpoint = PROJECTION.unproject(L.point(centerProj.x + dx, centerProj.y + dy));
+      const angle = course.route[course.route.length - 2].nextWpBearing;
+      const dlon = angularDist * Math.cos(angle) / Math.cos(degToRad(center.lat));
+      const dlat = angularDist * Math.sin(angle);
+
+      for (let i = -1; i <= 1; i += 2) {
+        const endpoint = L.latLng(center.lat + dlat * i, center.lng - dlon * i);
         course.finish.push(endpoint);
       }
 
