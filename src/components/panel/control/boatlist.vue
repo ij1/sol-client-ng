@@ -108,7 +108,7 @@ export default {
   },
   filters: {
     prettyPrint (value, column) {
-      if (column.dataField === 'dtg') {
+      if (column.dataField === 'dtg' || column.dataField === 'dbl') {
         return roundToFixed(value, 2);
       }
       return value;
@@ -139,6 +139,11 @@ export default {
         },
         {
           dataField: 'dtg', th: 'DTF\xa0',
+          align: 'r', visible: true, localeSort: false,
+          dummyData: '19999.99',
+        },
+        {
+          dataField: 'dbl', th: 'DBL\xa0',
           align: 'r', visible: true, localeSort: false,
           dummyData: '19999.99',
         },
