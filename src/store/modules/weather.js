@@ -229,13 +229,13 @@ export default {
     lastTimestamp: (state) => {
       return state.data.timeSeries[state.data.timeSeries.length - 1];
     },
-    dataTimescale: (state, getters, rootState, rootGetters) => {
-      return getters.lastTimestamp - rootGetters['boat/time'];
+    dataTimescale: (state, getters) => {
+      return getters.lastTimestamp - state.minTime;
     },
-    valid: (state, getters, rootState, rootGetters) => {
+    valid: (state, getters) => {
       return state.loaded &&
-             (getters.firstTimestamp <= rootGetters['boat/time']) &&
-             (getters.lastTimestamp > rootGetters['boat/time']);
+             (getters.firstTimestamp <= state.minTime) &&
+             (getters.lastTimestamp > state.minTime);
     },
 
     twsContours: (state, getters, rootState) => {
