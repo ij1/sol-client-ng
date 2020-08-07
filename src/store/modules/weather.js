@@ -219,6 +219,11 @@ export default {
     updateFetchTime(state, fetchTime) {
       state.fetchTime = fetchTime;
     },
+    resetTime(state, clock) {
+      if (state.fetchTime !== 0 && Math.abs(clock.offsetDelta) > secToMsec(60)) {
+        state.fetchTime = clock.now;
+      }
+    },
     configSetValue,
   },
 

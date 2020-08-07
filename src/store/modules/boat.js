@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { radToDeg, degToRad, UTCToMsec } from '../../lib/utils.js';
+import { radToDeg, degToRad, UTCToMsec, minToMsec } from '../../lib/utils.js';
 import { minTurnAngle } from '../../lib/nav.js';
 import { solBoatPolicy, PR_MARK_BOAT } from '../../lib/sol.js';
 import polarModule from './polar';
@@ -188,6 +188,11 @@ export default {
         boatData.boat.finish_time = UTCToMsec(boatData.boat.finish_time);
         if (boatData.boat.finish_time !== null) {
           boatData.boat.time = Math.max(boatData.boat.finish_time, now);
+        } else {
+          /* Rough clock correctness check (compare to server timestamp) */
+          if (Math.abs(now - boatData.boat.time) > minToMsec(2)) {
+            dispatch('time/checkOffset', null, {root: true});
+          }
         }
 
         /* Older game time than what we have already? */

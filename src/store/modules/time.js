@@ -46,7 +46,7 @@ export default {
       secTimer(state, commit, dispatch);
       await dispatch('checkOffset');
     },
-    async checkOffset ({dispatch, commit}) {
+    async checkOffset ({state, dispatch, commit, getters}) {
       const getDef = {
         apiCall: 'time',
         url: '/webclient/time.xml',
@@ -68,10 +68,22 @@ export default {
         const highCorrection = peerNow - (postNow + secToMsec(1));
         const correction = (lowCorrection > 0) ? -lowCorrection :
                            (highCorrection > 0) ? highCorrection : 0;
-        if (correction !== 0) {
+        if ((correction !== 0) || (state.clockOffset !== 0)) {
+          const offsetDelta = correction - state.clockOffset;
+
           commit('applyCorrection', correction);
           dispatch('diagnostics/add', 'Clock correction: ' + correction,
                    {root: true});
+
+          const now = getters['now']();
+          const clock = {
+            now: now,
+            offsetDelta: offsetDelta,
+          };
+          commit('race/fleet/resetTime', clock, {root: true});
+          commit('weather/resetTime', clock, {root: true});
+          dispatch('boat/steering/resetTime', clock, {root: true});
+
         } else {
           dispatch('diagnostics/add', 'Time check OK!', {root: true});
         }

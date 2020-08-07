@@ -371,6 +371,26 @@ export default {
     allTracesUpdated(state, time) {
       state.tracesTime = time;
     },
+    resetTime(state, clock) {
+      if (Math.abs(clock.offsetDelta) < state.fleetFetchInterval) {
+        return;
+      }
+      /* When clock gets adjusted due to being too far off, restart
+       * fleet/metadata/traces poll timers.
+       *
+       * In theory this could stall fleet et al. if the time is adjusted
+       * on every tick but then clock must be very unreliable.
+       */
+      if (state.fleetTime !== 0) {
+        state.fleetTime = clock.now;
+      }
+      if (state.metadataTime !== 0) {
+        state.metadataTime = clock.now;
+      }
+      if (state.tracesTime !== 0) {
+        state.tracesTime = clock.now;
+      }
+    },
     setSelected (state, ids) {
       state.selected = ids;
     },

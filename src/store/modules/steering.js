@@ -184,6 +184,11 @@ export default {
         solapiRetryDispatch(dispatch, 'fetchDCs', true, 11000);
       });
     },
+    resetTime({dispatch}, clock) {
+      if (Math.abs(clock.offsetDelta) > minToMsec(1)) {
+        dispatch('fetchDCs');
+      }
+    },
 
     sendSteeringCommand({rootState, dispatch}, sendParams) {
       const postDef = {
