@@ -27,10 +27,13 @@ function wxTimeInterpolate(factor, startData, endData) {
  */
 function boundTime(state, time) {
   if (state.loaded) {
-    if (time < state.data.timeSeries[0]) {
+    if (time < state.minTime) {
+      return state.minTime;
+    } else if (time < state.data.timeSeries[0]) {
       return state.data.timeSeries[0];
     } else if (time > state.data.timeSeries[state.data.timeSeries.length - 1]) {
-      return state.data.timeSeries[state.data.timeSeries.length - 1];
+      return Math.max(state.data.timeSeries[state.data.timeSeries.length - 1],
+                      state.minTime);
     }
   }
   return null;
@@ -60,6 +63,7 @@ export default {
   state: {
     loaded: false,
     time: 0,
+    minTime: 0,
     mode: 'time',
     fetchTime: 0,
     fetchPeriod: {
@@ -172,7 +176,7 @@ export default {
       if (boundedTime !== null) {
         store.dispatch(
           'diagnostics/add',
-          "WARNING: time outside wx, fixing: " + state.time + " vs " + state.data.timeSeries[0] + "-" + state.data.timeSeries[state.data.timeSeries.length - 1]
+          "WARNING: time outside boattime/wx, fixing: " + state.time + " vs " + state.data.timeSeries[0] + "-" + state.data.timeSeries[state.data.timeSeries.length - 1]
         );
         if (state.time !== boundedTime) {
           state.time = boundedTime;
@@ -180,6 +184,8 @@ export default {
       }
     },
     boatTimeUpdated(state, timeData) {
+      state.minTime = timeData.newTime;
+
       let newTime = timeData.newTime;
 
       if ((state.mode === 'offset') && (state.time > 0) && (timeData.delta !== null)) {
