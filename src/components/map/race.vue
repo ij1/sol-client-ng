@@ -22,12 +22,8 @@
       >
         <span
           :style = "{color: markDetail[waypoint.index].color}"
-          v-html="race.route[waypoint.index].name"
-        /><br>
-        <span
-          :style = "{color: markDetail[waypoint.index].color}"
-        >{{markDetail[waypoint.index].info}}
-        </span>
+          v-html="markDetail[waypoint.index].info"
+        />
       </l-tooltip>
     </route-mark>
     <route-mark
@@ -152,8 +148,24 @@ export default {
         if (alpha === '1') {
           color = 'red';
         }
+
+        let info = this.markInfoText(i);
+        let text = this.race.route[i].name +
+                   (info.length > 0 ? '<br>' + info : '');
+
+        /* Try to eliminate duplicated labels */
+        let legDistance = Math.abs(i - this.lastRoundedMark);
+        for (let d of this.race.route[i].duplicate) {
+          let otherDistance = Math.abs(d - this.lastRoundedMark);
+          if ((otherDistance < legDistance) ||
+              (otherDistance == legDistance && i < d)) {
+            text = '';
+            break;
+          }
+        }
+
         route.push({
-          info: this.markInfoText(i),
+          info: text,
           color: color,
           radius: !this.isFinishMark(i) ? 4 : this.finishPointRadius,
         });

@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import rbush from 'rbush';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
 import { solapiRetryDispatch, SolapiError } from '../../lib/solapi.js';
@@ -25,6 +26,7 @@ export default {
     init (state, raceInfo) {
       state.boundary = raceInfo.course.boundary;
       state.route = raceInfo.course.route;
+      state.marks = raceInfo.course.marks;
       state.finish = raceInfo.course.finish;
       delete raceInfo.course;
       state.info = raceInfo;
@@ -52,8 +54,10 @@ export default {
           L.latLng(raceInfo.maxlat, raceInfo.maxlon)
         ],
         route: [],
+        marks: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
         finish: [],
       };
+      let searchData = [];
 
       raceInfo.course.waypoint.sort((a, b) => {
         const aa = parseInt(a.order);
@@ -72,6 +76,7 @@ export default {
         waypoint.nextWpBearing = null;
         waypoint.side = null;
         waypoint.arc = {};
+        waypoint.duplicate = [];
 
         /* Calculate bearing from prev WP to this WP ... */
         if (i > 0) {
@@ -110,6 +115,16 @@ export default {
           }
         }
         course.route[idx] = waypoint;
+
+        let searchItem = {
+          lng: waypoint.latLng.lng,
+          lat: waypoint.latLng.lat,
+          id: idx,
+          finish: false,
+        };
+        Object.freeze(searchItem);
+        searchData.push(searchItem);
+
         idx++;
       }
 
@@ -123,6 +138,36 @@ export default {
       for (let i = -1; i <= 1; i += 2) {
         const endpoint = L.latLng(center.lat + dlat * i, center.lng - dlon * i);
         course.finish.push(endpoint);
+
+        let searchItem = {
+          lng: endpoint.lng,
+          lat: endpoint.lat,
+          id: i,
+          finish: true,
+        };
+        Object.freeze(searchItem);
+        searchData.push(searchItem);
+      }
+
+      course.marks.load(searchData);
+
+      for (let i = 0; i < course.route.length; i++) {
+        let mark = course.route[i];
+        const needle = {
+          minX: mark.latLng.lng,
+          minY: mark.latLng.lat,
+          maxX: mark.latLng.lng,
+          maxY: mark.latLng.lat,
+        }
+        let res = course.marks.search(needle);
+        if (res.length > 1) {
+          for (let f of res) {
+            if (!f.finish && f.id !== i &&
+                mark.latLng.equals(course.route[f.id])) {
+              mark.duplicate.push(f.id);
+            }
+          }
+        }
       }
 
       return course;
