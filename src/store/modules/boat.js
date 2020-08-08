@@ -185,11 +185,9 @@ export default {
         const oldPosition = state.position;
         const oldCog = state.cog;
 
-        if (boatData.boat.finish_time.length > 0) {
-          boatData.boat.finish_time = UTCToMsec(boatData.boat.finish_time);
+        boatData.boat.finish_time = UTCToMsec(boatData.boat.finish_time);
+        if (boatData.boat.finish_time !== null) {
           boatData.boat.time = Math.max(boatData.boat.finish_time, now);
-        } else {
-          boatData.boat.finish_time = null;
         }
 
         /* Older game time than what we have already? */
