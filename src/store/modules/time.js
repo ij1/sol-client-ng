@@ -59,6 +59,11 @@ export default {
         const postNow = Date.now();
         const peerNow = UTCToMsec(data.time);
 
+        if (preNow > postNow) {
+          dispatch('diagnostics/add', 'Time check failed due to clock instability!', {root: true});
+          return;
+        }
+
         const lowCorrection = (preNow - secToMsec(1)) - peerNow;
         const highCorrection = peerNow - (postNow + secToMsec(1));
         const correction = (lowCorrection > 0) ? -lowCorrection :
