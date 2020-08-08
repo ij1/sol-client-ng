@@ -186,10 +186,13 @@ export default {
           if (a[this.sortKey] > b[this.sortKey]) {
             return dir;
           }
-          return 0;
         } else {
-          return dir * a[this.sortKey].localeCompare(b[this.sortKey]);
+          let diff = dir * a[this.sortKey].localeCompare(b[this.sortKey]);
+          if (diff !== 0) {
+            return diff;
+          }
         }
+        return a.ranking - b.ranking;
       });
     },
     ...mapGetters({
