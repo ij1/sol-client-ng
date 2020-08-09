@@ -154,9 +154,9 @@ export default {
                    (info.length > 0 ? '<br>' + info : '');
 
         /* Try to eliminate duplicated labels */
-        let legDistance = Math.abs(i - this.lastRoundedMark);
+        let legDistance = Math.abs(i - this.lastRoundedMark - 1);
         for (let d of this.race.route[i].duplicate) {
-          let otherDistance = Math.abs(d - this.lastRoundedMark);
+          let otherDistance = Math.abs(d - this.lastRoundedMark - 1);
           if ((otherDistance < legDistance) ||
               (otherDistance == legDistance && i < d)) {
             text = '';
