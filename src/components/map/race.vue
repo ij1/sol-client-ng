@@ -149,6 +149,7 @@ export default {
           color = 'red';
         }
 
+        let show = true;
         let info = this.markInfoText(i);
         let text = this.race.route[i].name +
                    (info.length > 0 ? '<br>' + info : '');
@@ -160,12 +161,14 @@ export default {
           if ((otherDistance < legDistance) ||
               (otherDistance == legDistance && i < d)) {
             text = '';
+            show = false;
             break;
           }
         }
 
         route.push({
           info: text,
+          show: show,
           color: color,
           radius: !this.isFinishMark(i) ? 4 : this.finishPointRadius,
         });
@@ -176,6 +179,9 @@ export default {
       let res = [];
       for (const offset of this.mapWrapList) {
         for (let i = 0; i < this.race.route.length; i++) {
+          if (!this.markDetail[i].show) {
+            continue;
+          }
           res.push({
             latLng: latLngAddOffset(this.race.route[i].latLng, offset),
             index: i,
