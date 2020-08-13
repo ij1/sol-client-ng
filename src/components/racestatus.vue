@@ -70,6 +70,7 @@ export default {
 }
 .time-of-day-white #race-status {
   color: #000;
+  background: rgba(200, 200, 200, 0.8);
 }
 .time-of-day-dark #race-status {
   color: #0f0;

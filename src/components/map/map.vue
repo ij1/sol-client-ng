@@ -345,7 +345,7 @@ export default {
 
 .time-of-day-white .leaflet-top,
 .time-of-day-white .leaflet-right {
-  mix-blend-mode: multiply;
+  mix-blend-mode: unset;
 }
 .time-of-day-dark .leaflet-top,
 .time-of-day-dark .leaflet-right {
@@ -363,7 +363,7 @@ export default {
 .time-of-day-white .tool-button,
 .time-of-day-white .tool-button {
   border: 1px solid rgba(48, 48, 48, 0.6);
-  background-color: #ddd;
+  background-color: rgba(200, 200, 200, 0.8);
   color: #000;
 }
 .time-of-day-dark .tool-button,
