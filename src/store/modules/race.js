@@ -208,6 +208,10 @@ export default {
       return changed;
     },
 
+    isTimedRace: (state) => {
+      return state.info.race_type === 'timed race';
+    },
+
     startPosition: (state) => {
       return state.route[0].latLng;
     },

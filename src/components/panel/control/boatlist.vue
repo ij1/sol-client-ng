@@ -144,7 +144,7 @@ export default {
         },
         {
           dataField: 'dbl', th: 'DBL\xa0',
-          align: 'r', visible: true, localeSort: false,
+          align: 'r', visible: !this.isTimedRace, localeSort: false,
           dummyData: '19999.99',
         },
         {
@@ -196,6 +196,7 @@ export default {
       });
     },
     ...mapGetters({
+      isTimedRace: 'race/isTimedRace',
       multiClassRace: 'race/fleet/multiClassRace',
       fleetBoatFromId: 'race/fleet/boatFromId',
       currentFilter: 'ui/boatlists/currentFilter',
