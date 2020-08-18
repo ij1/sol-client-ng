@@ -67,6 +67,8 @@ export default {
   pointer-events: none;
   font-size: 12px;
   cursor: crosshair;
+  position: relative;
+  top: 6px;
 }
 .time-of-day-white #race-status {
   color: #000;
