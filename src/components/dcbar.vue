@@ -71,6 +71,7 @@ export default {
 }
 .time-of-day-white #dc-bar {
   color: #000;
+  background: rgba(200, 200, 200, 0.8);
 }
 .time-of-day-dark #dc-bar {
   color: #0f0;
