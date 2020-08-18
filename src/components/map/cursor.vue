@@ -7,28 +7,28 @@
       :style = "[posStyle, rotateStyle]"
     >
       <div
-        class = "aimline"
+        class = "aimline cursorline"
         :style = "{
           height: maxLineLengthPx,
           bottom: cursorFreeCirclePx,
         }"
       />
       <div
-        class = "aimline"
+        class = "aimline cursorline"
         :style = "{
           height: maxLineLengthPx,
           top: cursorFreeCirclePx,
         }"
       />
       <div
-        class = "aimline"
+        class = "aimline cursorline"
         :style = "{
           width: maxLineLengthPx,
           right: cursorFreeCirclePx,
         }"
       />
       <div
-        class = "aimline"
+        class = "aimline cursorline"
         :style = "{
           width: maxLineLengthPx,
           left: cursorFreeCirclePx,
@@ -236,17 +236,19 @@ export default {
 .time-of-day-dark #aimline-container {
   mix-blend-mode: screen;
 }
-.aimline {
+.cursorline {
   position: absolute;
   cursor: crosshair;
+}
+.aimline {
   width: 1px;
   height: 1px;
 }
-.time-of-day-white .aimline {
-  background: #ddd;
+.time-of-day-white .cursorline {
+  background-color: #ddd;
 }
-.time-of-day-dark .aimline {
-  background: #333;
+.time-of-day-dark .cursorline {
+  background-color: #333;
 }
 </style>
 
