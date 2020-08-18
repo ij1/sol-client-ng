@@ -286,8 +286,6 @@ export default {
 }
 #zoom-box {
   position: absolute;
-  border-width: 1px;
-  border-style: solid;
   border: solid 1px;
   transform: translate(-50%, -50%);
   z-index: 999;
