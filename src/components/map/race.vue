@@ -144,6 +144,12 @@ export default {
         this.raceBoundary[0],
       ]];
     },
+    visualCenterLat () {
+      const s = PROJECTION.latLngToPoint(L.latLng(this.raceBoundary[0].lat, 0));
+      const n = PROJECTION.latLngToPoint(L.latLng(this.raceBoundary[1].lat, 0));
+      const mid = (n.y + s.y) / 2;
+      return PROJECTION.pointToLatLng(L.point(0, mid)).lat;
+    },
     boundaryLabels () {
       const lonCenter = (this.raceBoundary[1].lng + this.raceBoundary[0].lng) / 2;
       let res = [
@@ -166,9 +172,8 @@ export default {
       ];
 
       if (!this.boundaryAroundWorld) {
-        const latCenter = (this.raceBoundary[1].lat + this.raceBoundary[0].lat) / 2;
         res.push({
-          latLng: L.latLng(latCenter, this.raceBoundary[0].lng),
+          latLng: L.latLng(this.visualCenterLat, this.raceBoundary[0].lng),
           tooltipOptions: {
             permanent: true,
             direction: 'left',
@@ -176,7 +181,7 @@ export default {
           },
         });
         res.push({
-          latLng: L.latLng(latCenter, this.raceBoundary[1].lng),
+          latLng: L.latLng(this.visualCenterLat, this.raceBoundary[1].lng),
           tooltipOptions: {
             permanent: true,
             direction: 'right',
