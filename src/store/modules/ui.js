@@ -56,9 +56,10 @@ export default {
         cfgText: 'Lat/Lon format',
       },
       cursorLines: {
-        value: 'none',
+        value: 'scale',
         values: [
           ['none', "None"],
+          ['scale', "10m scale only"],
           ['normal', "Horizontal and vertical"],
           ['wind', "Wind based"],
         ],

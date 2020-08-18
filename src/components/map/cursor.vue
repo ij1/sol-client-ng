@@ -1,8 +1,9 @@
 <template>
   <div
-    v-if = "showCursorAid"
+    v-if = "showCursorOverlay"
   >
     <div
+      v-if = "showCursorAid"
       id = "aimline-container"
       :style = "[posStyle, rotateStyle]"
     >
@@ -53,13 +54,20 @@
         <lat-coordinate :lat-lng = "wrappedHoverLatLng"/>
       </div>
     </div>
+    <div
+      v-if = "showCursorScale"
+      id = "zoombox"
+      class = "cursorline"
+      :style = "[posStyle, scaleStyle]"
+    />
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { radToDeg, tripleBounds } from '../../lib/utils.js';
+import { degToRad, radToDeg, tripleBounds } from '../../lib/utils.js';
 import { touchPositionOnElement } from '../../lib/events.js';
+import { EARTH_CIRCUMFENCE, OLD_CLIENT_MAXZOOM } from '../../lib/sol.js';
 import LatCoordinate from '../latcoordinate.vue';
 import LonCoordinate from '../loncoordinate.vue';
 
@@ -84,11 +92,32 @@ export default {
       mousePos: null,
       cursorFreeCirclePx: '24px',
       mapContainer: null,
+      scaleMeters: 10,
     }
   },
   computed: {
-    showCursorAid () {
+    cursorMetersPerPixel () {
+      if (this.hoverLatLng === null) {
+        return 1;
+      }
+      return EARTH_CIRCUMFENCE * Math.cos(degToRad(this.hoverLatLng.lat)) /
+             Math.pow(2, this.zoom + 8);
+    },
+    scaleStyle () {
+      const pxSize = (this.scaleMeters / this.cursorMetersPerPixel) + 'px';
+      return {
+        width: pxSize,
+        height: pxSize,
+      }
+    },
+    showCursorOverlay () {
       return (this.cfgCursorLines !== 'none') && (this.mousePos !== null);
+    },
+    showCursorScale () {
+      return (this.cfgCursorLines !== 'none') && (this.zoom > OLD_CLIENT_MAXZOOM);
+    },
+    showCursorAid () {
+      return this.normalCursorAid || this.windCursorAid;
     },
     normalCursorAid () {
       return this.cfgCursorLines === 'normal';
@@ -122,6 +151,8 @@ export default {
     ...mapState({
       cfgCursorLines: state => state.ui.cfg.cursorLines.value,
       mapSize: state => state.map.size,
+      zoom: state => state.map.zoom,
+      hoverLatLng: state => state.map.hoverLatLng,
     }),
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
@@ -246,9 +277,11 @@ export default {
 }
 .time-of-day-white .cursorline {
   background-color: #ddd;
+  border-color: #ddd !important;
 }
 .time-of-day-dark .cursorline {
   background-color: #333;
+  border-color: #333 !important;
 }
 </style>
 
@@ -269,5 +302,20 @@ export default {
   top: 2px;
   text-align: left;
   margin-left: 3px;
+}
+#zoombox {
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border: solid 1px;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  background-color: unset !important;
+}
+.time-of-day-white #zoombox {
+  mix-blend-mode: multiply;
+}
+.time-of-day-dark #zoombox {
+  mix-blend-mode: screen;
 }
 </style>
