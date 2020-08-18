@@ -5,6 +5,7 @@
     <div
       v-if = "showCursorAid"
       id = "aimline-container"
+      class = "cursor-blend"
       :style = "[posStyle, rotateStyle]"
     >
       <div
@@ -56,8 +57,8 @@
     </div>
     <div
       v-if = "showCursorScale"
-      id = "zoombox"
-      class = "cursorline"
+      id = "zoom-box"
+      class = "cursorline cursor-blend"
       :style = "[posStyle, scaleStyle]"
     />
   </div>
@@ -261,10 +262,10 @@ export default {
   pointer-events: none;
   z-index: 999;
 }
-.time-of-day-white #aimline-container {
+.time-of-day-white .cursor-blend {
   mix-blend-mode: multiply;
 }
-.time-of-day-dark #aimline-container {
+.time-of-day-dark .cursor-blend {
   mix-blend-mode: screen;
 }
 .cursorline {
@@ -282,6 +283,15 @@ export default {
 .time-of-day-dark .cursorline {
   background-color: #333;
   border-color: #333 !important;
+}
+#zoom-box {
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border: solid 1px;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  background-color: unset !important;
 }
 </style>
 
@@ -302,20 +312,5 @@ export default {
   top: 2px;
   text-align: left;
   margin-left: 3px;
-}
-#zoombox {
-  position: absolute;
-  border-width: 1px;
-  border-style: solid;
-  border: solid 1px;
-  transform: translate(-50%, -50%);
-  z-index: 999;
-  background-color: unset !important;
-}
-.time-of-day-white #zoombox {
-  mix-blend-mode: multiply;
-}
-.time-of-day-dark #zoombox {
-  mix-blend-mode: screen;
 }
 </style>
