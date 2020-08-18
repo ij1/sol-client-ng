@@ -303,6 +303,14 @@ export default {
   font-size: 12px;
   z-index: 999;
 }
+.time-of-day-white .coordinfo {
+  color: #000;
+  background: rgba(200, 200, 200, 0.8);
+}
+.time-of-day-dark .coordinfo {
+  color: #0f0;
+  background: rgba(60, 60, 60, 0.8);
+}
 #latinfo {
   right: 2px;
   text-align: right;
