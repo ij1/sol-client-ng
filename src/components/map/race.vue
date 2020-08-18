@@ -6,8 +6,20 @@
        :lat-lngs = "boundary.boundary"
        :fill="false"
        :weight="2"
-       color="magenta"
+       :color="boundaryColor"
     />
+    <l-circle-marker
+      v-for = "(label, idx) in boundaryLabels"
+      :key = "idx"
+      :lat-lng = "label.latLng"
+      :radius = "0"
+      :stroke = "false">
+      <l-tooltip
+        :options = "label.tooltipOptions"
+      >
+        <span>Race boundary</span>
+      </l-tooltip>
+    </l-circle-marker>
     <route-mark
       v-for = "waypoint in wrappedMarks"
       :key = "waypoint.key"
@@ -64,7 +76,7 @@
 <script>
 import { mapState } from 'vuex';
 import L from 'leaflet';
-import { LLayerGroup, LPolyline, LTooltip } from 'vue2-leaflet';
+import { LCircleMarker, LLayerGroup, LPolyline, LTooltip } from 'vue2-leaflet';
 import RouteMark from './routemark.vue';
 import { latLngAddOffset, latLngArrayAddOffset } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
@@ -73,6 +85,7 @@ import { degToRad } from '../../lib/utils.js';
 export default {
   name: 'RaceInfo',
   components: {
+    'l-circle-marker': LCircleMarker,
     'l-layer-group': LLayerGroup,
     'l-polyline': LPolyline,
     'l-tooltip': LTooltip,
@@ -87,6 +100,7 @@ export default {
         direction: 'right',
         className: 'wp-tooltip',
       },
+      boundaryColor: "magenta",
       finishPointRadius: 3,
       routeLineGap: 10,
       routeLineArcInterval: degToRad(5),
@@ -106,9 +120,12 @@ export default {
        */
       return this.mapWrapList.concat(this.mapWrapList[0] - 360);
     },
+    /* Spanning the whole Earth? */
+    boundaryAroundWorld () {
+      return this.raceBoundary[0].lng + 360 <= this.raceBoundary[1].lng;
+    },
     boundaryPolylines () {
-      /* Spanning the whole Earth? */
-      if (this.raceBoundary[0].lng + 360 <= this.raceBoundary[1].lng) {
+      if (this.boundaryAroundWorld) {
         return [
           [
             this.raceBoundary[0],
@@ -126,6 +143,48 @@ export default {
         L.latLng(this.raceBoundary[1].lat, this.raceBoundary[0].lng),
         this.raceBoundary[0],
       ]];
+    },
+    boundaryLabels () {
+      const lonCenter = (this.raceBoundary[1].lng + this.raceBoundary[0].lng) / 2;
+      let res = [
+        {
+          latLng: L.latLng(this.raceBoundary[0].lat, lonCenter),
+          tooltipOptions: {
+            permanent: true,
+            direction: 'bottom',
+            className: 'bound-tooltip',
+          },
+        },
+        {
+          latLng: L.latLng(this.raceBoundary[1].lat, lonCenter),
+          tooltipOptions: {
+            permanent: true,
+            direction: 'top',
+            className: 'bound-tooltip',
+          },
+        },
+      ];
+
+      if (!this.boundaryAroundWorld) {
+        const latCenter = (this.raceBoundary[1].lat + this.raceBoundary[0].lat) / 2;
+        res.push({
+          latLng: L.latLng(latCenter, this.raceBoundary[0].lng),
+          tooltipOptions: {
+            permanent: true,
+            direction: 'left',
+            className: 'bound-tooltip',
+          },
+        });
+        res.push({
+          latLng: L.latLng(latCenter, this.raceBoundary[1].lng),
+          tooltipOptions: {
+            permanent: true,
+            direction: 'right',
+            className: 'bound-tooltip',
+          },
+        });
+      }
+      return res;
     },
     wrappedBoundaries () {
       let res = [];
@@ -344,3 +403,19 @@ export default {
   },
 }
 </script>
+
+<style>
+.bound-tooltip {
+  background: transparent !important;
+  border: 0px !important;
+  color: magenta !important;
+  padding: 0px !important;
+  padding-left: 5px !important;
+  box-shadow: unset !important;
+  text-align: left !important;
+}
+
+.bound-tooltip::before {
+  all: unset !important;
+}
+</style>
