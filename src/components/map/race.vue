@@ -5,7 +5,7 @@
        :key = "boundary.key"
        :lat-lngs = "boundary.boundary"
        :fill="false"
-       :weight="2"
+       :weight="4"
        :color="boundaryColor"
     />
     <l-circle-marker
