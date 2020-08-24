@@ -424,6 +424,9 @@ export default {
           if (useFetch) {
             response = await fetch(state.serverPrefix + reqDef.url, {
               method: "POST",
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
               body: queryString.stringify(reqDef.params),
               signal: controller.signal,
             });
