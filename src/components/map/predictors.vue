@@ -210,6 +210,7 @@ export default {
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
       cfgPredictors: state => state.boat.steering.cfg.predictors.value,
+      cfgExtraUiDebug: state => state.diagnostics.cfg.extraUiDebug.value,
       commandBoatColor: state => state.map.cfg.commandBoatColor.value,
     }),
   },
@@ -279,6 +280,11 @@ export default {
       for (let pt of this.predictorMarkers) {
         if (!this.isEnabled(pt.type)) {
           continue;
+        }
+        if (this.cfgExtraUiDebug) {
+          this.$store.dispatch('diagnostics/add', 'predictor: dot (' +
+                                                  pt.type + ') redraw to ' +
+                                                  pt.latLng.lat + ' ' + pt.latLng.lng);
         }
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.fillStyle = 'orange';
@@ -474,6 +480,9 @@ export default {
       this.recalc();
     },
     predictorMarkers (newVal) {
+      if (this.cfgExtraUiDebug) {
+        this.$store.dispatch('diagnostics/add', 'predictor: dot watch ' + newVal.length + ' ' + this.dotDelay);
+      }
       for (let pt of newVal) {
         if (this.currentSteering === pt.type) {
           this.$store.commit('boat/steering/setDelayLatLng', pt.latLng);
