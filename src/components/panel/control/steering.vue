@@ -442,7 +442,6 @@ export default {
     ...mapState({
       plottedSteering: state => state.boat.steering.plottedSteering,
       cfgExtraUiDebug: state => state.diagnostics.cfg.extraUiDebug.value,
-      delayLatLng: state => state.boat.steering.delayLatLng,
     }),
     ...mapGetters({
       allowControl: 'boat/allowControl',
@@ -487,9 +486,9 @@ export default {
                            radToDeg(cmdValue) + ' ' +
                            (!this.delayOn ? '' :
                             ('DC=' + delayValue + ' @ ' +
-                             (!this.delayLatLng ? 'no dot?' :
-                              (roundToFixed(this.delayLatLng.lat, 6) + ',' +
-                               roundToFixed(this.delayLatLng.lng, 6)))));
+                             (this.$store.state.boat.steering.delayLatLng === null ? 'no dot' :
+                              (roundToFixed(this.$store.state.boat.steering.delayLatLng.lat, 6) + ',' +
+                               roundToFixed(this.$store.state.boat.steering.delayLatLng.lng, 6)))));
       this.$store.dispatch('diagnostics/add', 'INFO: steering SEND ' + steeringTxt);
       try {
         let status = await this.$store.dispatch('boat/steering/sendSteeringCommand',
