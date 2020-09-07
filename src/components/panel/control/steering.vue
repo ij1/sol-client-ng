@@ -280,7 +280,7 @@ export default {
         const towbackPeriod = this.$store.getters['race/towbackPeriod'];
         const towbackSafeStart = towbackPeriod.start +
                                  secToMsec(SERVER_TICK_SAFETY_SECS);
-        const now = this.$store.getters['time/now']();
+        const now = this.$store.state.time.realTime;
 
         if (this.$store.getters['race/isTowbackPeriod'] &&
             (towbackSafeStart < now)) {
