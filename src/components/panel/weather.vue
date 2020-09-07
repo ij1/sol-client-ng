@@ -68,7 +68,7 @@
       </span>
       <span class = "text-placeholder-container">
         <span class = "text-dummy">
-          Wed 29:59utc
+          May 29 29:59utc
         </span>
         <span
           class = "text-real"
@@ -145,7 +145,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin, msecToUTCHourMinString } from '../../lib/utils.js';
+import { daysToMsec, hToMsec, minToMsec, msecToDays, msecToH, msecToMin, msecToUTCHourMinString, MONTHS_TXT } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { eventMap } from '../../lib/events.js';
 import L from 'leaflet';
@@ -334,9 +334,10 @@ export default {
       return (msecToH(value)).toFixed(0) + ' h';
     },
     formatTime (value) {
-      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const d = new Date(value);
-      return days[d.getUTCDay()] + " " + msecToUTCHourMinString(d) + "utc";
+      return MONTHS_TXT[d.getUTCMonth()] + " " +
+             ("0" + d.getUTCDate()).slice(-2) + " " +
+             msecToUTCHourMinString(d) + "utc";
     },
     formatOffset (value) {
       const h = msecToH(value);

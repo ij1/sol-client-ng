@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { minToMsec } from '../../lib/utils.js';
+import { minToMsec, MONTHS_TXT } from '../../lib/utils.js';
 import { speedTowardsBearing, gcCalc, twaTextPrefix } from '../../lib/nav.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
@@ -182,7 +182,7 @@ export default {
           return '--/--';
         }
         const d = new Date(instrument.value);
-        return ("0" + (d.getUTCMonth() + 1)).slice(-2) + '/' +
+        return MONTHS_TXT[d.getUTCMonth()] + ' ' +
                ("0" + d.getUTCDate()).slice(-2);
       },
       enabled: {

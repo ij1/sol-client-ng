@@ -1,6 +1,10 @@
 import L from 'leaflet';
 import { store } from '../store/index.js';
 
+export const MONTHS_TXT = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+];
+
 export function UTCToMsec(dateString) {
   const regex = /^(\d{4})\/([01]\d)\/([0-3]\d) ([012]\d):([0-5]\d):([0-5]\d)(\.(\d{3})\d{3})?/;
 
