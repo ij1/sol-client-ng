@@ -113,9 +113,10 @@
 import { mapState, mapGetters } from 'vuex';
 import PolarContainer from './polarcontainer.vue';
 import SycBanner from '../../sycbanner.vue';
-import { radToDeg, degToRad, msecToH } from '../../../lib/utils.js';
+import { radToDeg, degToRad, msecToH, secToMsec } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { isCcValid, isTwaValid, twaTextPrefix, minTurnAngle } from '../../../lib/nav.js';
+import { SERVER_TICK_SAFETY_SECS } from '../../../lib/sol.js';
 
 const dayHourMinSecRegex = /^([1-9][0-9]*d)?([0-9][0-9]*h)?([0-9][0-9]*m)?([0-9][0-9]*s)?$/;
 
@@ -275,15 +276,19 @@ export default {
         return parseFloat(this.delay);
       }
       if (this.isDelayStart) {
-        if (this.$store.getters['race/isTowbackPeriod']) {
+        /* Towback might not begin at -01:00 hours sharp but a few sec after */
+        const towbackPeriod = this.$store.getters['race/towbackPeriod'];
+        const towbackSafeStart = towbackPeriod.start +
+                                 secToMsec(SERVER_TICK_SAFETY_SECS);
+        const now = this.$store.getters['time/now']();
+
+        if (this.$store.getters['race/isTowbackPeriod'] &&
+            (towbackSafeStart < now)) {
           return 0;
         } else {
-          const now = this.$store.getters['time/now']();
-          const towbackPeriod = this.$store.getters['race/towbackPeriod'];
-
-          const delay = Math.max((towbackPeriod.end - towbackPeriod.start) * 0.8 *
+          const delay = Math.max((towbackPeriod.end - towbackSafeStart) * 0.8 *
                           Math.random() +
-                          towbackPeriod.start - now, 0);
+                          towbackSafeStart - now, 0);
           return msecToH(delay);
         }
       }
