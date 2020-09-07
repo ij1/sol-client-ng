@@ -176,7 +176,7 @@ export default {
       this.cog;
       this.twa;
       this.wxUpdated;
-      this.plottedDcDelay;
+      this.dotDelay;
       this.cfgPredictors;
       this.commandBoatColor;
       this.isDark;
