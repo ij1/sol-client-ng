@@ -87,15 +87,19 @@ export default {
     searchTree: rbush(9, ['.lng', '.lat', '.lng', '.lat']),
     searchTreeStamp: 0,
     commandBoatItems: [],
-    playerBoatIdx: 0,
+    playerBoatIdx: null,
   },
 
   mutations: {
     initMyBoat (state, boatData) {
       if (typeof state.id2idx[boatData.id] !== 'undefined') {
+        if (state.playerBoatIdx === null) {
+          state.playerBoatIdx = state.id2idx[boatData.id];
+        }
         return;
       }
       Vue.set(state.id2idx, boatData.id, state.boat.length);
+      state.playerBoatIdx = state.boat.length;
       state.boat.push({
         id: boatData.id,
         name: boatData.name,
@@ -440,7 +444,8 @@ export default {
     },
     /* Does not use state, just to use common code for boat colors */
     boatColor: (state, getters, rootState, rootGetters) => (boat) => {
-      if ((boat.id === state.boat[state.playerBoatIdx].id) &&
+      if ((state.playerBoatIdx !== null) &&
+          (boat.id === state.boat[state.playerBoatIdx].id) &&
           (rootState.map.cfg.ownBoatColor.value === 'magenta')) {
         return '#ff00ff';
       }
@@ -639,7 +644,7 @@ export default {
             boatTypes: boatTypes,
             searchData: searchData,
           });
-          if (rootState.boat.position !== null) {
+          if (rootState.boat.position !== null && state.playerBoatIdx !== null) {
             commit('updateCommandBoat', {
               oldPosition: null,
               newPosition: rootState.boat.position,
