@@ -162,7 +162,7 @@ export default {
       });
       res.push({
         name: 'Boat Polar',
-        url: this.raceLoaded ?
+        url: this.boatId !== null ?
              '/webclient/vpp/boat/' + this.boatId + '/' :
              null,
       }),
