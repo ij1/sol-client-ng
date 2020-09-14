@@ -20,6 +20,9 @@ export default {
   name: 'SycBanner',
   computed: {
     boatSyc () {
+      if (this.boatId === null) {
+        return null;
+      }
       const boat = this.boatFromId(this.boatId);
       if (typeof boat !== 'undefined') {
         return boat.syc;
