@@ -164,6 +164,7 @@ export default {
   mutations: {
     initTime(state, time) {
       state.time = time;
+      state.minTime = time;
     },
     update(state, weatherData) {
       state.data = weatherData;
