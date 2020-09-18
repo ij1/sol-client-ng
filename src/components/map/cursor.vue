@@ -16,7 +16,7 @@
         }"
       />
       <div
-        class = "aimline cursorline"
+        :class = "downwindLineStyle"
         :style = "{
           height: maxLineLengthPx,
           top: cursorFreeCirclePx,
@@ -109,6 +109,13 @@ export default {
       return {
         width: pxSize,
         height: pxSize,
+      }
+    },
+    downwindLineStyle () {
+      return {
+        'cursorline': true,
+        'aimline': !this.windCursorAid,
+        'aimline-downwind': this.windCursorAid,
       }
     },
     showCursorOverlay () {
@@ -274,6 +281,10 @@ export default {
 }
 .aimline {
   width: 1px;
+  height: 1px;
+}
+.aimline-downwind {
+  width: 3px;
   height: 1px;
 }
 .time-of-day-white .cursorline {
