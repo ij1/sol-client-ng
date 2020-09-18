@@ -12,7 +12,6 @@ export default {
       time: 0,
       // ADDME: support 10s for the first 10 minutes
       timeDelta: secToMsec(30),
-      predictorLen: 6,
 
       hourRadius: 3,
       quarterRadius: 2,
@@ -36,6 +35,9 @@ export default {
   },
 
   computed: {
+    predictorLen () {
+      return parseInt(this.cfgPredictorLen);
+    },
     inactiveColor () {
       const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
       return 'rgba(' +
@@ -178,6 +180,7 @@ export default {
       this.wxUpdated;
       this.dotDelay;
       this.cfgPredictors;
+      this.predictorLen;
       this.commandBoatColor;
       this.isDark;
 
@@ -211,6 +214,7 @@ export default {
       zoom: state => state.map.zoom,
       cfgPredictors: state => state.boat.steering.cfg.predictors.value,
       cfgExtraUiDebug: state => state.diagnostics.cfg.extraUiDebug.value,
+      cfgPredictorLen: state => state.boat.steering.cfg.predictorLen.value,
       commandBoatColor: state => state.map.cfg.commandBoatColor.value,
     }),
   },
@@ -477,6 +481,9 @@ export default {
       this.recalc();
     },
     wxUpdated () {
+      this.recalc();
+    },
+    predictorLen () {
       this.recalc();
     },
     predictorMarkers (newVal) {
