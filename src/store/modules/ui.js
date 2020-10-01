@@ -123,10 +123,6 @@ export default {
     inDefaultUiMode: (state) => {
       return state.uiModeCancel === null;
     },
-    coordinateSignToHemisphere: (state) => {
-      return (state.cfg.coordinateFormat.value !== 'signdeg') &&
-             (state.cfg.coordinateFormat.value !== 'signdegnosym');
-    },
     currentDayNight: (state, getters, rootState, rootGetters) => {
       if (state.cfg.dayNightMode.value === 'default') {
         const boatInDark = rootGetters['boat/inDark'];

@@ -1,4 +1,4 @@
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import { roundToFixed } from '../../lib/quirks.js';
 
 const snHemispheres = ['S', 'N'];
@@ -29,13 +29,12 @@ export let coordinateMixin = {
     ...mapState({
       coordinateFormat: state => state.ui.cfg.coordinateFormat.value,
     }),
-    ...mapGetters({
-      signToHemisphere: 'ui/coordinateSignToHemisphere',
-    }),
   },
   methods: {
     formatCoordinate (value, hemispheres) {
       const noDegSymbol = this.coordinateFormat.value === 'signdegnosym';
+      const signToHemisphere = (this.coordinateFormat.value !== 'signdeg') &&
+                               (this.coordinateFormat.value !== 'signdegnosym');
       const absValue = Math.abs(value);
       let text;
 
@@ -53,7 +52,7 @@ export let coordinateMixin = {
                (noDegSymbol ? '' : '\xb0');
       }
 
-      if (this.signToHemisphere) {
+      if (signToHemisphere) {
         text = text + hemispheres[value < 0 ? 0 : 1];
       } else if (value < 0) {
         text = '-' + text;
