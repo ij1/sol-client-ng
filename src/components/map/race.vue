@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { LCircleMarker, LLayerGroup, LPolyline, LTooltip } from 'vue2-leaflet';
 import RouteMark from './routemark.vue';
@@ -208,9 +208,10 @@ export default {
 
       for (let i = 0; i < this.race.route.length; i++) {
         let alpha = this.wpAlpha(i);
-        let color = 'rgba(255,0,0,' + alpha + ')';
+        const tmpColor = this.markColor(i);
+        let color = 'rgba(' + tmpColor + ',' + alpha + ')';
         if (alpha === '1') {
-          color = 'red';
+          color = 'rgb(' + tmpColor + ')';
         }
 
         let show = true;
@@ -354,10 +355,17 @@ export default {
       race: state => state.race,
       raceBoundary: state => state.race.boundary,
       lastRoundedMark: state => state.boat.lastRoundedMark,
+      startTime: state => state.boat.startTime,
       finishTime: state => state.boat.finishTime,
+      boatPosition: state => state.boat.position,
       zoom: state => state.map.zoom,
       mapWrapList: state => state.map.wrapList,
       cfgCourseDrawMode: state => state.map.cfg.courseDrawMode.value,
+    }),
+    ...mapGetters({
+      isDark: 'ui/isDark',
+      isPracticePeriod: 'race/isPracticePeriod',
+      raceStartPosition: 'race/startPosition',
     }),
   },
 
@@ -388,6 +396,30 @@ export default {
       }
 
       return this.finishTime === null ? "Cross line to Finish" : "Finished.";
+    },
+    markColor (mark) {
+      let rounded = false;
+
+      if (this.isStartMark(mark)) {
+        if (this.startTime !== null) {
+          rounded = true;
+        } else if (this.isPracticePeriod && this.boatPosition !== null &&
+                   !this.raceStartPosition.equals(this.boatPosition)) {
+          rounded = true;
+        }
+      }
+      if (this.isIntermediateMark(mark)) {
+        if (mark <= this.lastRoundedMark) {
+          rounded = true;
+        }
+      }
+      if (!rounded) {
+        return "255,0,0";
+      } else if (this.isDark) {
+        return "20,255,20";
+      } else {
+        return "0,150,0";
+      }
     },
     wpAlpha (mark) {
       if (this.cfgCourseDrawMode === 'default') {
