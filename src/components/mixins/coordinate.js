@@ -33,8 +33,7 @@ export let coordinateMixin = {
   methods: {
     formatCoordinate (value, hemispheres) {
       const noDegSymbol = this.coordinateFormat.value === 'signdegnosym';
-      const signToHemisphere = (this.coordinateFormat.value !== 'signdeg') &&
-                               (this.coordinateFormat.value !== 'signdegnosym');
+      const signToHemisphere = !this.coordinateFormat.value.startsWith('sign');
       const absValue = Math.abs(value);
       let text;
 
