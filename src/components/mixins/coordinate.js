@@ -19,27 +19,27 @@ export let coordinateMixin = {
         return '';
       }
       return this.formatCoordinate(this.latLng.lat, snHemispheres,
-                                   this.precision);
+                                   this.precision, this.coordinateFormat);
     },
     lngFormatted () {
       if ((typeof this.latLng === 'undefined') || (this.latLng === null)) {
         return '';
       }
       return this.formatCoordinate(this.latLng.lng, weHemispheres,
-                                   this.precision);
+                                   this.precision, this.coordinateFormat);
     },
     ...mapState({
       coordinateFormat: state => state.ui.cfg.coordinateFormat.value,
     }),
   },
   methods: {
-    formatCoordinate (value, hemispheres, precision) {
-      const noDegSymbol = this.coordinateFormat.value === 'signdegnosym';
-      const signToHemisphere = !this.coordinateFormat.value.startsWith('sign');
+    formatCoordinate (value, hemispheres, precision, coordinateFormat) {
+      const noDegSymbol = coordinateFormat === 'signdegnosym';
+      const signToHemisphere = !coordinateFormat.startsWith('sign');
       const absValue = Math.abs(value);
       let text;
 
-      if (this.coordinateFormat === 'degmin') {
+      if (coordinateFormat === 'degmin') {
         let degs = Math.floor(absValue);
         /* CHECKME: Precision approximation by subtracting -2 ok? */
         let minutes = roundToFixed((absValue - degs) * 60, precision - 2);
