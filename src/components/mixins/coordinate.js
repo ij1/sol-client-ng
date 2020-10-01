@@ -18,20 +18,22 @@ export let coordinateMixin = {
       if ((typeof this.latLng === 'undefined') || (this.latLng === null)) {
         return '';
       }
-      return this.formatCoordinate(this.latLng.lat, snHemispheres);
+      return this.formatCoordinate(this.latLng.lat, snHemispheres,
+                                   this.precision);
     },
     lngFormatted () {
       if ((typeof this.latLng === 'undefined') || (this.latLng === null)) {
         return '';
       }
-      return this.formatCoordinate(this.latLng.lng, weHemispheres);
+      return this.formatCoordinate(this.latLng.lng, weHemispheres,
+                                   this.precision);
     },
     ...mapState({
       coordinateFormat: state => state.ui.cfg.coordinateFormat.value,
     }),
   },
   methods: {
-    formatCoordinate (value, hemispheres) {
+    formatCoordinate (value, hemispheres, precision) {
       const noDegSymbol = this.coordinateFormat.value === 'signdegnosym';
       const signToHemisphere = !this.coordinateFormat.value.startsWith('sign');
       const absValue = Math.abs(value);
@@ -40,14 +42,14 @@ export let coordinateMixin = {
       if (this.coordinateFormat === 'degmin') {
         let degs = Math.floor(absValue);
         /* CHECKME: Precision approximation by subtracting -2 ok? */
-        let minutes = roundToFixed((absValue - degs) * 60, this.precision - 2);
+        let minutes = roundToFixed((absValue - degs) * 60, precision - 2);
         if (minutes.startsWith('60')) {
           degs += 1;
-          minutes = roundToFixed(0, this.precision - 2);
+          minutes = roundToFixed(0, precision - 2);
         }
         text = degs + '\xb0' + minutes + "'";
       } else {
-        text = roundToFixed(absValue, this.precision) +
+        text = roundToFixed(absValue, precision) +
                (noDegSymbol ? '' : '\xb0');
       }
 
