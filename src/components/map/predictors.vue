@@ -138,37 +138,25 @@ export default {
         const idx = hToMsec(time) / this.timeDelta;
         const lowIdx = Math.floor(idx);
         let markers = this.getMarkers([lowIdx]);
-        /*
-         * If either predictor fails to calculate to the dc point due to
-         * buggy wx, don't show any dots
-         */
-        if (markers.length !== 2) {
-          return [];
-        }
         if (time < this.predictorLen) {
           const highMarkers = this.getMarkers([lowIdx + 1]);
-          /*
-           * If either predictor fails to calculate to the dc point due to
-           * buggy wx, don't show any dots
-           */
-          if (highMarkers.length !== 2) {
-            return [];
-          }
           const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
 
           /* Assumes the same order (twa & cc) */
-          markers[0].latLng = L.latLng(linearInterpolate(frac,
-                                         markers[0].latLng.lat,
-                                         highMarkers[0].latLng.lat),
-                                       linearInterpolate(frac,
-                                         markers[0].latLng.lng,
-                                         highMarkers[0].latLng.lng));
-          markers[1].latLng = L.latLng(linearInterpolate(frac,
-                                         markers[1].latLng.lat,
-                                         highMarkers[1].latLng.lat),
-                                       linearInterpolate(frac,
-                                         markers[1].latLng.lng,
-                                         highMarkers[1].latLng.lng));
+          for (let m = 0; m < markers.length; m++) {
+            for (let n of highMarkers) {
+              if (markers[m].type === n.type) {
+
+                markers[m].latLng = L.latLng(linearInterpolate(frac,
+                                               markers[m].latLng.lat,
+                                               n.latLng.lat),
+                                             linearInterpolate(frac,
+                                               markers[m].latLng.lng,
+                                               n.latLng.lng));
+                break;
+              }
+            }
+          }
         }
         return markers;
       }
