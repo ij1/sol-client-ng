@@ -31,11 +31,11 @@ export let coordinateMixin = {
     }),
     ...mapGetters({
       signToHemisphere: 'ui/coordinateSignToHemisphere',
-      noDegSymbol: 'ui/coordinateNoDegSymbol',
     }),
   },
   methods: {
     formatCoordinate (value, hemispheres) {
+      const noDegSymbol = this.coordinateFormat.value === 'signdegnosym';
       const absValue = Math.abs(value);
       let text;
 
@@ -50,7 +50,7 @@ export let coordinateMixin = {
         text = degs + '\xb0' + minutes + "'";
       } else {
         text = roundToFixed(absValue, this.precision) +
-               (this.noDegSymbol ? '' : '\xb0');
+               (noDegSymbol ? '' : '\xb0');
       }
 
       if (this.signToHemisphere) {
