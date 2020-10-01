@@ -18,13 +18,13 @@ export let coordinateMixin = {
       if ((typeof this.latLng === 'undefined') || (this.latLng === null)) {
         return '';
       }
-      return this.formatNumber(this.latLng.lat, snHemispheres);
+      return this.formatCoordinate(this.latLng.lat, snHemispheres);
     },
     lngFormatted () {
       if ((typeof this.latLng === 'undefined') || (this.latLng === null)) {
         return '';
       }
-      return this.formatNumber(this.latLng.lng, weHemispheres);
+      return this.formatCoordinate(this.latLng.lng, weHemispheres);
     },
     ...mapState({
       coordinateFormat: state => state.ui.cfg.coordinateFormat.value,
@@ -35,7 +35,7 @@ export let coordinateMixin = {
     }),
   },
   methods: {
-    formatNumber (value, hemispheres) {
+    formatCoordinate (value, hemispheres) {
       const absValue = Math.abs(value);
       let text;
 
