@@ -3,6 +3,7 @@ import { minToMsec, MONTHS_TXT } from '../../lib/utils.js';
 import { speedTowardsBearing, gcCalc, twaTextPrefix } from '../../lib/nav.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
+import { formatCoordinate } from '../../lib/format.js';
 import { configSetValue } from '../../components/config/configstore.js';
 
 const API_DOWN_DELAY = minToMsec(1);
@@ -18,6 +19,21 @@ function twaFormat (instrument, state) {
   return twaTextPrefix(instrument.value) + defaultFormat(instrument, state);
 }
 
+const snHemispheres = ['S', 'N'];
+const weHemispheres = ['W', 'E'];
+
+function latFormat (instrument, state) {
+  return formatCoordinate(instrument.value, snHemispheres,
+                          instrument.minDecimals,
+                          state.ui.cfg.coordinateFormat.value);
+}
+
+function lonFormat (instrument, state) {
+  return formatCoordinate(instrument.value, weHemispheres,
+                          instrument.minDecimals,
+                          state.ui.cfg.coordinateFormat.value);
+}
+
 export default {
   namespaced: true,
   state: {
@@ -27,8 +43,8 @@ export default {
       unit: "\xb0",
       datafield: "lat",
       mult: 1,
-      minDecimals: 3,
-      format: defaultFormat,
+      minDecimals: 4,
+      format: latFormat,
       enabled: {
         value: false,
         type: 'boolean',
@@ -41,8 +57,8 @@ export default {
       unit: "\xb0",
       datafield: "lon",
       mult: 1,
-      minDecimals: 3,
-      format: defaultFormat,
+      minDecimals: 4,
+      format: lonFormat,
       enabled: {
         value: false,
         type: 'boolean',
