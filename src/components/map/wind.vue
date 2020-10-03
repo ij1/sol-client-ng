@@ -186,7 +186,8 @@ export default {
           if (windPoint !== null) {
             windPoint = this.$parent.map.wrapLatLng(windPoint);
             const wind = this.$store.getters['weather/latLngWind'](windPoint);
-            if (wind !== null) {
+            /* Filter out out-of-area winds that are contain valid data (0,0) */
+            if (wind !== null && (wind.twd !== 0.0 || wind.knots > 0.0)) {
               ctx.rotate(wind.twd);
               ctx2.rotate(wind.twd);
               const color = windToColor(wind.knots);
