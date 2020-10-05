@@ -135,7 +135,8 @@ export default {
           (this.twa.firstLatLng === null)) {
         return [];
       } else {
-        const idx = hToMsec(time) / this.timeDelta;
+        const msecDot = hToMsec(time);
+        const idx = msecDot / this.timeDelta;
         const lowIdx = Math.floor(idx);
         let markers = this.getMarkers([lowIdx]);
         if (time < this.predictorLen) {
@@ -146,7 +147,7 @@ export default {
           for (let m = 0; m < markers.length; m++) {
             for (let n of highMarkers) {
               if (markers[m].type === n.type) {
-
+                markers[m].time = msecDot;
                 markers[m].latLng = L.latLng(linearInterpolate(frac,
                                                markers[m].latLng.lat,
                                                n.latLng.lat),
@@ -244,9 +245,16 @@ export default {
         }
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.strokeStyle = this.predictorColor(pt.type);
+        ctx.fillStyle = ctx.strokeStyle;
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
         ctx.stroke();
+
+        /* Draw solid circle every 6 hours */
+        let inHours = pt.time / hToMsec(6);
+        if (Math.abs(inHours - Math.floor(inHours)) < 0.001) {
+          ctx.fill();
+        }
       }
 
       for (let pt of this.quarterMarkers) {
@@ -444,12 +452,14 @@ export default {
         if (i < this.twa.latLngs.length) {
           res.push({
             type: 'twa',
+            time: i * this.timeDelta,
             latLng: this.twa.latLngs[i],
           });
         }
         if (i < this.cog.latLngs.length) {
           res.push({
             type: 'cc',
+            time: i * this.timeDelta,
             latLng: this.cog.latLngs[i],
           });
         }
