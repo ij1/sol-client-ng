@@ -454,22 +454,31 @@ export default {
   },
 
   watch: {
-    toCc (value) {
-      if ((this.type === 'cc') || (value === null)) {
-        return;
-      }
-      this.ccRaw = value;
+    toCc: {
+      handler: function (value) {
+        if ((this.type === 'cc') || (value === null)) {
+          return;
+        }
+        this.ccRaw = value;
+      },
+      immediate: true,
     },
-    toTwa (value) {
-      if ((this.type === 'twa') || (value === null)) {
-        return;
-      }
-      this.twaRaw = twaTextPrefix(value) + value;
+    toTwa: {
+      handler: function (value) {
+        if ((this.type === 'twa') || (value === null)) {
+          return;
+        }
+        this.twaRaw = twaTextPrefix(value) + value;
+      },
+      immediate: true,
     },
-    delayTime (value) {
-      /* Don't show the DC dot when "start" is used as the delay */
-      this.$store.commit('boat/steering/setDelayTime',
-                         !this.isDelayStart ? value : null);
+    delayTime: {
+      handler: function (value) {
+        /* Don't show the DC dot when "start" is used as the delay */
+        this.$store.commit('boat/steering/setDelayTime',
+                           !this.isDelayStart ? value : null);
+      },
+      immediate: true,
     },
   },
 
