@@ -250,10 +250,12 @@ export default {
         ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
         ctx.stroke();
 
-        /* Draw solid circle every 6 hours */
-        let inHours = pt.time / hToMsec(6);
-        if (Math.abs(inHours - Math.floor(inHours)) < 0.001) {
-          ctx.fill();
+        if (this.predictorLen > 6) {
+          /* Draw solid circle every 6 hours */
+          let inHours = pt.time / hToMsec(6);
+          if (Math.abs(inHours - Math.floor(inHours)) < 0.001) {
+            ctx.fill();
+          }
         }
       }
 
