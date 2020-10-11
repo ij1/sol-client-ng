@@ -55,9 +55,12 @@ export default {
     }),
   },
   watch: {
-    titlebar (newValue) {
-      document.title = newValue;
-    }
+    titlebar: {
+      handler: function (newValue) {
+        document.title = newValue;
+      },
+      immediate: true,
+    },
   },
 }
 </script>
