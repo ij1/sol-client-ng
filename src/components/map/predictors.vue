@@ -476,6 +476,9 @@ export default {
       this.twa = this.twaCalc();
     },
   },
+  mounted () {
+    this.recalc();
+  },
   watch: {
     boatDataUpdated () {
       this.recalc();
