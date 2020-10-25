@@ -98,7 +98,7 @@ export default {
             };
             let arc = course.route[i - 1].arc;
 
-            if (turn < 0) {
+            if (course.route[i - 1].side == "Port") {
               arc.prevAngle += Math.PI / 2;
               arc.nextAngle += Math.PI / 2;
               if (arc.turnAngle > 0) {
