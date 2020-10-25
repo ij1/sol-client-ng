@@ -6,7 +6,12 @@ import { PROJECTION } from './sol.js';
  */
 export function minTurnAngle(currentAngle, nextAngle) {
   const pi2 = Math.PI * 2;
+  /* This is what we want to do...:
   return ((((nextAngle - currentAngle + Math.PI) % pi2) + pi2) % pi2) - Math.PI;
+   * ...but to match server behavior on angles that are not well-defined,
+   * some negations are added:
+   */
+  return -(((((-(nextAngle - currentAngle) + Math.PI) % pi2) + pi2) % pi2) - Math.PI);
 }
 
 /* Calculates the component towards bearing from a speed towards heading.
