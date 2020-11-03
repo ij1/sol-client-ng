@@ -25,7 +25,6 @@ export default {
     dtg: null,
     position: null,
     lastRoundedMark: 0,
-    startTime: null,
     finishTime: null,
     currentSteering: 'twa',
     /*
@@ -48,7 +47,6 @@ export default {
       state.lastRoundedMark = parseInt(data.current_leg);
       state.ranking = parseInt(data.ranking);
       state.dtg = parseFloat(data.dtg);
-      state.startTime = data.start_time;
       state.finishTime = data.finish_time;
       state.currentSteering = data.last_cmd_type;
     },
@@ -187,7 +185,6 @@ export default {
         const oldPosition = state.position;
         const oldCog = state.cog;
 
-        boatData.boat.start_time = UTCToMsec(boatData.boat.start_time);
         boatData.boat.finish_time = UTCToMsec(boatData.boat.finish_time);
         if (boatData.boat.finish_time !== null) {
           boatData.boat.time = Math.max(boatData.boat.finish_time, now);
