@@ -143,7 +143,6 @@ export default {
           const highMarkers = this.getMarkers([lowIdx + 1]);
           const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
 
-          /* Assumes the same order (twa & cc) */
           for (let m = 0; m < markers.length; m++) {
             for (let n of highMarkers) {
               if (markers[m].type === n.type) {
