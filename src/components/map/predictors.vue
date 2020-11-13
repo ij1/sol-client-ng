@@ -13,6 +13,9 @@ export default {
       // ADDME: support 10s for the first 10 minutes
       timeDelta: secToMsec(30),
 
+      halfLimit: 24,
+      quarterLimit: 12,
+
       hourRadius: 3,
       quarterRadius: 2,
       first15minRadius: 1,
@@ -75,8 +78,11 @@ export default {
     },
     quarterIndexes () {
       let res = [];
-      for (let i = 1; i < 4 * this.predictorLen; i++) {
+      for (let i = 1; i < 4 * Math.min(this.predictorLen, this.halfLimit); i++) {
         if ((i % 4) === 0) {
+          continue;
+        }
+        if ((i >= 4 * this.quarterLimit) && (i % 4) !== 2) {
           continue;
         }
         res.push(Math.floor(minToMsec(15) * i / this.timeDelta));
