@@ -42,7 +42,7 @@ export default {
       }
       return this.cfgGcMode ?
         gcCalc(this.boatPosition, this.wrappedHoverLatLng) :
-        loxoCalc(this.boatPosition, this.hoverLatLng);
+        loxoCalc(this.visualBoatPosition, this.hoverLatLng);
     },
     ...mapState({
       boatPosition: state => state.boat.position,
@@ -51,6 +51,7 @@ export default {
     }),
     ...mapGetters({
       wrappedHoverLatLng: 'map/wrappedHoverLatLng',
+      visualBoatPosition: 'boat/visualPosition',
       hoverWind: 'map/hoverWind',
       wxValid: 'weather/valid',
     }),
