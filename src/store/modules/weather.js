@@ -552,6 +552,20 @@ export default {
         let cells = [parseInt(weatherData.$.lat_n_points) - 1,
                      parseInt(weatherData.$.lon_n_points) - 1];
 
+        for (let frame of weatherData.frames.frame) {
+          frame.utc = UTCToMsec(frame.$.target_time);
+          if (frame.utc === null) {
+            dispatch(
+              'diagnostics/add',
+              'DATA ERROR: Invalid date in weather data: ' + frame.$.target_time,
+              {root: true}
+            );
+            return;
+          }
+        }
+
+        weatherData.frames.frame.sort((a, b) => { return a.utc - b.utc; });
+
         let timeSeries = [];
         let windMap = [];
         /* FIXME: It takes quite long time to parse&mangle the arrays here,
@@ -561,16 +575,7 @@ export default {
          * for this conversion to take place.
          */
         for (let frame of weatherData.frames.frame) {
-          const utc = UTCToMsec(frame.$.target_time);
-          if (utc === null) {
-            dispatch(
-              'diagnostics/add',
-              'DATA ERROR: Invalid date in weather data: ' + frame.$.target_time,
-              {root: true}
-            );
-            return;
-          }
-          timeSeries.push(utc);
+          timeSeries.push(frame.utc);
 
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
