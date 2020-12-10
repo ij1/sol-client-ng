@@ -39,10 +39,12 @@ export default {
       predictorDefs: {
         'cog': {
           'calc': this.cogCalc,
+          'steer': 'boatCog',
           'path': 'cogPath',
         },
         'twa': {
           'calc': this.twaCalc,
+          'steer': 'boatTwa',
           'path': 'twaPath',
         },
       },
@@ -366,7 +368,7 @@ export default {
       return Math.max(Math.min(firstStep, 1), 0);
     },
 
-    __cogCalc (pred, cog, perf, t, endTime, firstStep) {
+    cogCalc (pred, cog, perf, t, endTime, firstStep) {
       const moveDelta = this.moveDelta;
       let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
@@ -395,39 +397,7 @@ export default {
 
       return t;
     },
-    cogCalc () {
-      let t = this.timeOrigo;
-      const endTime = t + hToMsec(this.predictorLen);
-      let lastLatLng = this.visualPosition;
-
-      let cogPred = {
-        time: t,
-        cog: this.boatCog,
-        firstLatLng: lastLatLng,
-        latLngs: [],
-      };
-
-      if (!this.wxValid) {
-        cogPred.firstLatLng = null;
-        return cogPred;
-      }
-      cogPred.latLngs.push(Object.freeze(lastLatLng));
-
-      let perf = this.boatPerf;
-      let firstStep = 1;
-
-      if (this.isTowbackPeriod) {
-        t = this.consumeTowback(cogPred.latLngs, lastLatLng, t);
-        perf = 1.0;
-        firstStep = this.moveFractionAfterTowback(t);
-      }
-
-      this.__cogCalc(cogPred, this.boatCog, perf, t, endTime, firstStep);
-      Object.freeze(cogPred.latLngs);
-      return cogPred;
-    },
-
-    __twaCalc (pred, twa, perf, t, endTime, firstStep) {
+    twaCalc (pred, twa, perf, t, endTime, firstStep) {
       const moveDelta = this.moveDelta;
       let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
@@ -456,37 +426,38 @@ export default {
 
       return t;
     },
-    twaCalc () {
+    predCalc (predictor) {
       let t = this.timeOrigo;
       const endTime = t + hToMsec(this.predictorLen);
       let lastLatLng = this.visualPosition;
 
-      let twaPred = {
+      let pred = {
         time: t,
-        twa: this.boatTwa,
         firstLatLng: lastLatLng,
         latLngs: [],
       };
 
       if (!this.wxValid) {
-        twaPred.firstLatLng = null;
-        return twaPred;
+        pred.firstLatLng = null;
+        return pred;
       }
-      twaPred.latLngs.push(Object.freeze(lastLatLng));
+      pred.latLngs.push(Object.freeze(lastLatLng));
 
       let perf = this.boatPerf;
       let firstStep = 1;
 
       if (this.isTowbackPeriod) {
-        t = this.consumeTowback(twaPred.latLngs, lastLatLng, t);
+        t = this.consumeTowback(pred.latLngs, lastLatLng, t);
         perf = 1.0;
         firstStep = this.moveFractionAfterTowback(t);
       }
 
-      this.__twaCalc(twaPred, this.boatTwa, perf, t, endTime, firstStep);
-      Object.freeze(twaPred.latLngs);
+      const steer = this.predictorDefs[predictor]['steer'];
+      const func = this.predictorDefs[predictor]['calc'];
+      func(pred, this[steer], perf, t, endTime, firstStep);
+      Object.freeze(pred.latLngs);
 
-      return twaPred;
+      return pred;
     },
 
     getMarkers (indexes) {
@@ -552,7 +523,7 @@ export default {
         return;
       }
       for (let pred of this.predictorList) {
-        this.predictors[pred] = this.predictorDefs[pred]['calc']();
+        this.predictors[pred] = this.predCalc(pred);
       }
     },
   },
