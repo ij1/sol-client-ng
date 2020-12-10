@@ -454,6 +454,7 @@ export default {
                         1.0);
       }
 
+      return t;
     },
     twaCalc () {
       let t = this.timeOrigo;
