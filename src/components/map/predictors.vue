@@ -362,6 +362,35 @@ export default {
       /* These safety bounds should be unncessary */
       return Math.max(Math.min(firstStep, 1), 0);
     },
+
+    __cogCalc (pred, cog, perf, t, endTime, delta, firstStep) {
+      let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
+
+      while (t < endTime) {
+        const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
+        if (wind === null) {
+          break;
+        }
+        const twa = cogTwdToTwa(cog, wind.twd);
+        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
+                      perf * firstStep;
+        firstStep = 1;
+
+        const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
+        const dlon = delta * speed * Math.sin(cog) / lonScaling;
+        const dlat = delta * speed * Math.cos(cog);
+
+        lastLatLng = L.latLng(lastLatLng.lat + dlat,
+                              lastLatLng.lng + dlon);
+        pred.latLngs.push(Object.freeze(lastLatLng));
+        t += this.timeDelta;
+        perf = Math.min(perf +
+                        PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
+                        1.0);
+      }
+
+      return t;
+    },
     cogCalc () {
       let t = this.timeOrigo;
       const endTime = t + hToMsec(this.predictorLen);
@@ -390,32 +419,38 @@ export default {
         firstStep = this.moveFractionAfterTowback(t);
       }
 
+      this.__cogCalc(cogPred, this.boatCog, perf, t, endTime, delta, firstStep);
+      Object.freeze(cogPred.latLngs);
+      return cogPred;
+    },
+
+    __twaCalc (pred, twa, perf, t, endTime, delta, firstStep) {
+      let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
+
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
         if (wind === null) {
           break;
         }
-        const twa = cogTwdToTwa(cogPred.cog, wind.twd);
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
                       perf * firstStep;
         firstStep = 1;
 
+        const course = twaTwdToCog(twa, wind.twd);
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
-        const dlon = delta * speed * Math.sin(cogPred.cog) / lonScaling;
-        const dlat = delta * speed * Math.cos(cogPred.cog);
+        const dlon = delta * speed * Math.sin(course) / lonScaling;
+        const dlat = delta * speed * Math.cos(course);
 
         lastLatLng = L.latLng(lastLatLng.lat + dlat,
                               lastLatLng.lng + dlon);
-        cogPred.latLngs.push(Object.freeze(lastLatLng));
+        pred.latLngs.push(Object.freeze(lastLatLng));
         t += this.timeDelta;
         perf = Math.min(perf +
                         PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
                         1.0);
       }
-      Object.freeze(cogPred.latLngs);
-      return cogPred;
-    },
 
+    },
     twaCalc () {
       let t = this.timeOrigo;
       const endTime = t + hToMsec(this.predictorLen);
@@ -444,28 +479,7 @@ export default {
         firstStep = this.moveFractionAfterTowback(t);
       }
 
-      while (t < endTime) {
-        const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
-        if (wind === null) {
-          break;
-        }
-        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twaPred.twa) *
-                      perf * firstStep;
-        firstStep = 1;
-
-        const course = twaTwdToCog(twaPred.twa, wind.twd);
-        const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
-        const dlon = delta * speed * Math.sin(course) / lonScaling;
-        const dlat = delta * speed * Math.cos(course);
-
-        lastLatLng = L.latLng(lastLatLng.lat + dlat,
-                              lastLatLng.lng + dlon);
-        twaPred.latLngs.push(Object.freeze(lastLatLng));
-        t += this.timeDelta;
-        perf = Math.min(perf +
-                        PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
-                        1.0);
-      }
+      this.__twaCalc(twaPred, this.boatTwa, perf, t, endTime, delta, firstStep);
       Object.freeze(twaPred.latLngs);
 
       return twaPred;
