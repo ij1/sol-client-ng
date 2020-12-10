@@ -36,6 +36,16 @@ export default {
           latLngs: [],
         },
       },
+      predictorDefs: {
+        'cog': {
+          'calc': this.cogCalc,
+          'path': 'cogPath',
+        },
+        'twa': {
+          'calc': this.twaCalc,
+          'path': 'twaPath',
+        },
+      },
     }
   },
 
@@ -45,6 +55,19 @@ export default {
     },
     predictorLenMsec () {
       return hToMsec(this.predictorLen);
+    },
+    predictorList () {
+      if (!this.allowControl) {
+        return [];
+      }
+      let res = []
+      if (this.cfgPredictors === 'both') {
+        res.push(this.currentSteering === 'cog' ? 'twa' : 'cog');
+      }
+      if (this.cfgPredictors !== 'none') {
+        res.push(this.currentSteering);
+      }
+      return res;
     },
     inactiveColor () {
       const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
@@ -167,7 +190,7 @@ export default {
       this.wxUpdated;
       this.dotDelay;
       this.wxDelay;
-      this.cfgPredictors;
+      this.predictorList;
       this.predictorLen;
       this.commandBoatColor;
       this.isDark;
@@ -230,13 +253,9 @@ export default {
       // ADDME: add mixing to do all world copies and loop then here
       ctx.translate(this.boatOrigo.x - this.viewOrigo.x,
                     this.boatOrigo.y - this.viewOrigo.y);
-      if (this.isEnabled('cog')) {
-        ctx.strokeStyle = this.predictorColor('cog');
-        ctx.stroke(this.cogPath);
-      }
-      if (this.isEnabled('twa')) {
-        ctx.strokeStyle = this.predictorColor('twa');
-        ctx.stroke(this.twaPath);
+      for (let pred of this.predictorList) {
+        ctx.strokeStyle = this.predictorColor(pred);
+        ctx.stroke(this[this.predictorDefs[pred]['path']]);
       }
 
       for (let pt of this.hoursMarkers) {
@@ -514,8 +533,9 @@ export default {
       if (this.boatId === null) {
         return;
       }
-      this.predictors.cog = this.cogCalc();
-      this.predictors.twa = this.twaCalc();
+      for (let pred of this.predictorList) {
+        this.predictors[pred] = this.predictorDefs[pred]['calc']();
+      }
     },
   },
   mounted () {
