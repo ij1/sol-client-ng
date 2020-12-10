@@ -35,6 +35,12 @@ export default {
           firstLatLng: null,
           latLngs: [],
         },
+        dcPred: {
+          time: 0,
+          twa: 0,
+          firstLatLng: null,
+          latLngs: [],
+        },
       },
       predictorDefs: {
         'cog': {
@@ -46,6 +52,11 @@ export default {
           'calc': this.twaCalc,
           'steer': 'boatTwa',
           'path': 'twaPath',
+        },
+        'dcPred': {
+          'calc': this.dcPredCalc,
+          'steer': 'boatCog',                    /* Dummy value */
+          'path': 'dcPredPath',
         },
       },
     }
@@ -69,6 +80,7 @@ export default {
       if (this.cfgPredictors !== 'none') {
         res.push(this.currentSteering);
       }
+      res.push('dcPred');
       return res;
     },
     moveDelta () {
@@ -143,10 +155,10 @@ export default {
       return p;
     },
     twaPath () {
-      let twa = this.predictors.twa;
-      twa.time;
-
-      return this.precalcPath(twa.firstLatLng, twa.latLngs);
+      return this.precalcPath('twa')
+    },
+    dcPredPath () {
+      return this.precalcPath('dcPred');
     },
     hoursMarkers () {
       return this.getMarkers(this.hourIndexes);
@@ -192,6 +204,7 @@ export default {
     needsRedraw() {
       this.predictors.cog;
       this.predictors.twa;
+      this.predictors.dcPred;
       this.wxUpdated;
       this.dotDelay;
       this.wxDelay;
@@ -206,6 +219,8 @@ export default {
     boatDataUpdated () {
       this.boatTime;
       this.visualPosition;
+      this.dcFetchTime;
+
       return Date.now();
     },
     ...mapGetters({
@@ -227,6 +242,7 @@ export default {
       boatTwa: state => state.boat.instruments.twa.value,
       boatPerf: state => state.boat.instruments.perf.value,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
+      dcFetchTime: state => state.boat.steering.dcs.fetchTime,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
       cfgPredictors: state => state.boat.steering.cfg.predictors.value,
@@ -331,7 +347,12 @@ export default {
       ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
       ctx.fill();
     },
-    precalcPath(firstPt, otherPts) {
+    precalcPath(predictor) {
+      let pred = this.predictors[predictor];
+      pred.time;                             /* Dummy dep */
+      let firstPt = pred.firstLatLng;
+      let otherPts = pred.latLngs;
+
       let p = new Path2D();
 
       if (firstPt === null) {
@@ -425,6 +446,33 @@ export default {
       }
 
       return t;
+    },
+    dcPredCalc(pred, twa, perf, t, endTime, firstStep) {
+      let commandType = this.currentSteering;
+      let commandValue = this[this.predictorDefs[commandType]['steer']];
+      let dcIdx = 0;
+
+      while (t < endTime) {
+        let nextEnd = endTime;
+        let dc = null;
+
+        if (dcIdx < this.$store.state.boat.steering.dcs.list.length) {
+          dc = this.$store.state.boat.steering.dcs.list[dcIdx];
+          if (dc.time < nextEnd) {
+            nextEnd = dc.time;
+          }
+        }
+
+        const func = this.predictorDefs[commandType]['calc'];
+        t = func(pred, commandValue, perf, t, nextEnd, firstStep);
+        // FIXME: perf is not returned nor perf loss applied
+        if (dc !== null) {
+          commandType = dc.type;
+          commandValue = dc.value;
+        }
+        dcIdx++;
+        firstStep = 1;
+      }
     },
     predCalc (predictor) {
       let t = this.timeOrigo;
