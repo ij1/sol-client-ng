@@ -157,6 +157,9 @@ export default {
       }
       return this.interpolateMarkers(this.wxDelay);
     },
+    currentSteering () {
+      return this.currentSteeringApi === 'cc' ? 'cog' : this.currentSteeringApi;
+    },
 
     needsRedraw() {
       this.predictors.cog;
@@ -191,7 +194,7 @@ export default {
       wxTime: state => state.weather.time,
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
-      currentSteering: state => state.boat.currentSteering,
+      currentSteeringApi: state => state.boat.currentSteering,
       boatCog: state => state.boat.instruments.course.value,
       boatTwa: state => state.boat.instruments.twa.value,
       boatPerf: state => state.boat.instruments.perf.value,
@@ -227,8 +230,8 @@ export default {
       // ADDME: add mixing to do all world copies and loop then here
       ctx.translate(this.boatOrigo.x - this.viewOrigo.x,
                     this.boatOrigo.y - this.viewOrigo.y);
-      if (this.isEnabled('cc')) {
-        ctx.strokeStyle = this.predictorColor('cc');
+      if (this.isEnabled('cog')) {
+        ctx.strokeStyle = this.predictorColor('cog');
         ctx.stroke(this.cogPath);
       }
       if (this.isEnabled('twa')) {
@@ -467,7 +470,7 @@ export default {
         }
         if (i < this.predictors.cog.latLngs.length) {
           res.push({
-            type: 'cc',
+            type: 'cog',
             time: i * this.timeDelta,
             latLng: this.predictors.cog.latLngs[i],
           });
