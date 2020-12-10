@@ -69,6 +69,9 @@ export default {
       }
       return res;
     },
+    moveDelta () {
+      return (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
+    },
     inactiveColor () {
       const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
       return 'rgba(' +
@@ -363,7 +366,8 @@ export default {
       return Math.max(Math.min(firstStep, 1), 0);
     },
 
-    __cogCalc (pred, cog, perf, t, endTime, delta, firstStep) {
+    __cogCalc (pred, cog, perf, t, endTime, firstStep) {
+      const moveDelta = this.moveDelta;
       let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
       while (t < endTime) {
@@ -377,8 +381,8 @@ export default {
         firstStep = 1;
 
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
-        const dlon = delta * speed * Math.sin(cog) / lonScaling;
-        const dlat = delta * speed * Math.cos(cog);
+        const dlon = moveDelta * speed * Math.sin(cog) / lonScaling;
+        const dlat = moveDelta * speed * Math.cos(cog);
 
         lastLatLng = L.latLng(lastLatLng.lat + dlat,
                               lastLatLng.lng + dlon);
@@ -409,7 +413,6 @@ export default {
       }
       cogPred.latLngs.push(Object.freeze(lastLatLng));
 
-      const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
       let perf = this.boatPerf;
       let firstStep = 1;
 
@@ -419,12 +422,13 @@ export default {
         firstStep = this.moveFractionAfterTowback(t);
       }
 
-      this.__cogCalc(cogPred, this.boatCog, perf, t, endTime, delta, firstStep);
+      this.__cogCalc(cogPred, this.boatCog, perf, t, endTime, firstStep);
       Object.freeze(cogPred.latLngs);
       return cogPred;
     },
 
-    __twaCalc (pred, twa, perf, t, endTime, delta, firstStep) {
+    __twaCalc (pred, twa, perf, t, endTime, firstStep) {
+      const moveDelta = this.moveDelta;
       let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
       while (t < endTime) {
@@ -438,8 +442,8 @@ export default {
 
         const course = twaTwdToCog(twa, wind.twd);
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
-        const dlon = delta * speed * Math.sin(course) / lonScaling;
-        const dlat = delta * speed * Math.cos(course);
+        const dlon = moveDelta * speed * Math.sin(course) / lonScaling;
+        const dlat = moveDelta * speed * Math.cos(course);
 
         lastLatLng = L.latLng(lastLatLng.lat + dlat,
                               lastLatLng.lng + dlon);
@@ -469,7 +473,6 @@ export default {
       }
       twaPred.latLngs.push(Object.freeze(lastLatLng));
 
-      const delta = (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
       let perf = this.boatPerf;
       let firstStep = 1;
 
@@ -479,7 +482,7 @@ export default {
         firstStep = this.moveFractionAfterTowback(t);
       }
 
-      this.__twaCalc(twaPred, this.boatTwa, perf, t, endTime, delta, firstStep);
+      this.__twaCalc(twaPred, this.boatTwa, perf, t, endTime, firstStep);
       Object.freeze(twaPred.latLngs);
 
       return twaPred;
