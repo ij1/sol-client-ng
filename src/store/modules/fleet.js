@@ -95,6 +95,9 @@ export default {
       if (typeof state.id2idx[boatData.id] !== 'undefined') {
         if (state.playerBoatIdx === null) {
           state.playerBoatIdx = state.id2idx[boatData.id];
+        } else if (state.boat[state.playerBoatIdx].id !== boatData.id) {
+          /* Player boat ID was changed (due to reauth?) */
+          state.playerBoatIdx = state.id2idx[boatData.id];
         }
         return;
       }

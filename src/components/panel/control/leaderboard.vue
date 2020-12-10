@@ -23,6 +23,10 @@
         <input
           id = "search"
           class = "leadeboard-search-box"
+          autocompletion = "off"
+          autocorrect = "off"
+          autocapitalize = "off"
+          spellcheck = "false"
           v-model = "search"
         />
       </div>

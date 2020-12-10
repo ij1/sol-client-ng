@@ -29,6 +29,10 @@
         <input
           id = "search"
           class = "boatlist-search-box"
+          autocompletion = "off"
+          autocorrect = "off"
+          autocapitalize = "off"
+          spellcheck = "false"
           v-model = "search"
         />
       </div>

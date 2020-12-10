@@ -13,6 +13,9 @@ export default {
       // ADDME: support 10s for the first 10 minutes
       timeDelta: secToMsec(30),
 
+      halfLimit: 24,
+      quarterLimit: 12,
+
       hourRadius: 3,
       quarterRadius: 2,
       first15minRadius: 1,
@@ -37,6 +40,9 @@ export default {
   computed: {
     predictorLen () {
       return parseInt(this.cfgPredictorLen);
+    },
+    predictorLenMsec () {
+      return hToMsec(this.predictorLen);
     },
     inactiveColor () {
       const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
@@ -72,8 +78,11 @@ export default {
     },
     quarterIndexes () {
       let res = [];
-      for (let i = 1; i < 4 * this.predictorLen; i++) {
+      for (let i = 1; i < 4 * Math.min(this.predictorLen, this.halfLimit); i++) {
         if ((i % 4) === 0) {
+          continue;
+        }
+        if ((i >= 4 * this.quarterLimit) && (i % 4) !== 2) {
           continue;
         }
         res.push(Math.floor(minToMsec(15) * i / this.timeDelta));
@@ -117,6 +126,12 @@ export default {
     first15minMarkers () {
       return this.getMarkers(this.first15minIndexes);
     },
+    wxDelay () {
+      if (!this.wxValid) {
+        return null;
+      }
+      return this.wxTime - this.boatTime;
+    },
     dotDelay () {
       if (this.raceLoaded && this.isTowbackPeriod &&
           (this.plottedDcDelay !== null)) {
@@ -127,39 +142,17 @@ export default {
       }
       return this.plottedDcDelay;
     },
-    predictorMarkers () {
-      const time = this.dotDelay;
-      if ((time === null) ||
-          (time > this.predictorLen) ||
-          (this.cog.firstLatLng === null) ||
-          (this.twa.firstLatLng === null)) {
+    dcMarkers () {
+      if (this.dotDelay === null) {
         return [];
-      } else {
-        const idx = hToMsec(time) / this.timeDelta;
-        const lowIdx = Math.floor(idx);
-        let markers = this.getMarkers([lowIdx]);
-        if (time < this.predictorLen) {
-          const highMarkers = this.getMarkers([lowIdx + 1]);
-          const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
-
-          /* Assumes the same order (twa & cc) */
-          for (let m = 0; m < markers.length; m++) {
-            for (let n of highMarkers) {
-              if (markers[m].type === n.type) {
-
-                markers[m].latLng = L.latLng(linearInterpolate(frac,
-                                               markers[m].latLng.lat,
-                                               n.latLng.lat),
-                                             linearInterpolate(frac,
-                                               markers[m].latLng.lng,
-                                               n.latLng.lng));
-                break;
-              }
-            }
-          }
-        }
-        return markers;
       }
+      return this.interpolateMarkers(hToMsec(this.dotDelay));
+    },
+    wxMarkers () {
+      if (this.wxDelay === null || this.wxDelay <= 0) {
+        return [];
+      }
+      return this.interpolateMarkers(this.wxDelay);
     },
 
     needsRedraw() {
@@ -167,6 +160,7 @@ export default {
       this.twa;
       this.wxUpdated;
       this.dotDelay;
+      this.wxDelay;
       this.cfgPredictors;
       this.predictorLen;
       this.commandBoatColor;
@@ -191,6 +185,7 @@ export default {
     ...mapState({
       boatId: state => state.boat.id,
       wxUpdated: state => state.weather.data.updated,
+      wxTime: state => state.weather.time,
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
       currentSteering: state => state.boat.currentSteering,
@@ -244,9 +239,18 @@ export default {
         }
         let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
         ctx.strokeStyle = this.predictorColor(pt.type);
+        ctx.fillStyle = ctx.strokeStyle;
         ctx.beginPath();
         ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
         ctx.stroke();
+
+        if (this.predictorLen > 6) {
+          /* Draw solid circle every 6 hours */
+          let inHours = pt.time / hToMsec(6);
+          if (Math.abs(inHours - Math.floor(inHours)) < 0.001) {
+            ctx.fill();
+          }
+        }
       }
 
       for (let pt of this.quarterMarkers) {
@@ -269,7 +273,13 @@ export default {
         ctx.arc(tmp.x, tmp.y, this.first15minRadius, 0, Math.PI*2);
         ctx.stroke();
       }
-      for (let pt of this.predictorMarkers) {
+      for (let pt of this.wxMarkers) {
+        if (!this.isEnabled(pt.type)) {
+          continue;
+        }
+        this.drawDot(ctx, z, pt, 'red');
+      }
+      for (let pt of this.dcMarkers) {
         if (!this.isEnabled(pt.type)) {
           continue;
         }
@@ -278,14 +288,18 @@ export default {
                                                   pt.type + ') redraw to ' +
                                                   pt.latLng.lat + ' ' + pt.latLng.lng);
         }
-        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
-        ctx.fillStyle = 'orange';
-        ctx.beginPath();
-        const radius = (this.currentSteering === pt.type) ?
-                       this.plottedDelayRadius : this.otherDelayRadius;
-        ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
-        ctx.fill();
+        this.drawDot(ctx, z, pt, 'orange');
       }
+    },
+    drawDot(ctx, z, pt, color) {
+      let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+      ctx.fillStyle = color;
+
+      ctx.beginPath();
+      const radius = (this.currentSteering === pt.type) ?
+                     this.plottedDelayRadius : this.otherDelayRadius;
+      ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
+      ctx.fill();
     },
     precalcPath(firstPt, otherPts) {
       let p = new Path2D();
@@ -444,17 +458,51 @@ export default {
         if (i < this.twa.latLngs.length) {
           res.push({
             type: 'twa',
+            time: i * this.timeDelta,
             latLng: this.twa.latLngs[i],
           });
         }
         if (i < this.cog.latLngs.length) {
           res.push({
             type: 'cc',
+            time: i * this.timeDelta,
             latLng: this.cog.latLngs[i],
           });
         }
       }
       return res;
+    },
+    interpolateMarkers (msec) {
+      if ((msec > this.predictorLenMsec) ||
+          (this.cog.firstLatLng === null) ||
+          (this.twa.firstLatLng === null)) {
+        return [];
+      } else {
+        const idx = msec / this.timeDelta;
+        const lowIdx = Math.floor(idx);
+        let markers = this.getMarkers([lowIdx]);
+
+        if (msec < this.predictorLenMsec) {
+          const highMarkers = this.getMarkers([lowIdx + 1]);
+          const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
+
+          for (let m = 0; m < markers.length; m++) {
+            for (let n of highMarkers) {
+              if (markers[m].type === n.type) {
+                markers[m].time = msec;
+                markers[m].latLng = L.latLng(linearInterpolate(frac,
+                                               markers[m].latLng.lat,
+                                               n.latLng.lat),
+                                             linearInterpolate(frac,
+                                               markers[m].latLng.lng,
+                                               n.latLng.lng));
+                break;
+              }
+            }
+          }
+        }
+        return markers;
+      }
     },
     recalc () {
       if (this.boatId === null) {
@@ -463,6 +511,9 @@ export default {
       this.cog = this.cogCalc();
       this.twa = this.twaCalc();
     },
+  },
+  mounted () {
+    this.recalc();
   },
   watch: {
     boatDataUpdated () {
@@ -474,7 +525,7 @@ export default {
     predictorLen () {
       this.recalc();
     },
-    predictorMarkers (newVal) {
+    dcMarkers (newVal) {
       if (this.cfgExtraUiDebug) {
         this.$store.dispatch('diagnostics/add', 'predictor: dot watch ' + newVal.length + ' ' + this.dotDelay);
       }
