@@ -22,17 +22,19 @@ export default {
       plottedDelayRadius: 5,
       otherDelayRadius: 2,
 
-      cog: {
-        time: 0,
-        cog: 0,
-        firstLatLng: null,
-        latLngs: [],
-      },
-      twa: {
-        time: 0,
-        twa: 0,
-        firstLatLng: null,
-        latLngs: [],
+      predictors: {
+        cog: {
+          time: 0,
+          cog: 0,
+          firstLatLng: null,
+          latLngs: [],
+        },
+        twa: {
+          time: 0,
+          twa: 0,
+          firstLatLng: null,
+          latLngs: [],
+        },
       },
     }
   },
@@ -97,25 +99,26 @@ export default {
       return res;
     },
     cogPath () {
-      this.cog.time;
+      let cog = this.predictors.cog;
+      cog.time;
 
       let p = new Path2D();
-      if (this.cog.firstLatLng === null) {
+      if (cog.firstLatLng === null) {
         return p;
       }
       const z = this.zoom;
 
       p.moveTo(0, 0);
-      let tmp = this.$parent.map.project(this.cog.latLngs[this.cog.latLngs.length - 1], z).round().subtract(this.boatOrigo);
+      let tmp = this.$parent.map.project(cog.latLngs[cog.latLngs.length - 1], z).round().subtract(this.boatOrigo);
       p.lineTo(tmp.x, tmp.y);
 
       return p;
     },
     twaPath () {
-      this.twa.time;
+      let twa = this.predictors.twa;
+      twa.time;
 
-      return this.precalcPath(this.twa.firstLatLng,
-                              this.twa.latLngs);
+      return this.precalcPath(twa.firstLatLng, twa.latLngs);
     },
     hoursMarkers () {
       return this.getMarkers(this.hourIndexes);
@@ -156,8 +159,8 @@ export default {
     },
 
     needsRedraw() {
-      this.cog;
-      this.twa;
+      this.predictors.cog;
+      this.predictors.twa;
       this.wxUpdated;
       this.dotDelay;
       this.wxDelay;
@@ -447,26 +450,26 @@ export default {
     },
 
     getMarkers (indexes) {
-      this.twa.time;
+      this.predictors.twa.time;
 
-      if ((this.cog.firstLatLng === null) ||
-          (this.twa.firstLatLng === null)) {
+      if ((this.predictors.cog.firstLatLng === null) ||
+          (this.predictors.twa.firstLatLng === null)) {
         return [];
       }
       let res = [];
       for (let i of indexes) {
-        if (i < this.twa.latLngs.length) {
+        if (i < this.predictors.twa.latLngs.length) {
           res.push({
             type: 'twa',
             time: i * this.timeDelta,
-            latLng: this.twa.latLngs[i],
+            latLng: this.predictors.twa.latLngs[i],
           });
         }
-        if (i < this.cog.latLngs.length) {
+        if (i < this.predictors.cog.latLngs.length) {
           res.push({
             type: 'cc',
             time: i * this.timeDelta,
-            latLng: this.cog.latLngs[i],
+            latLng: this.predictors.cog.latLngs[i],
           });
         }
       }
@@ -474,8 +477,8 @@ export default {
     },
     interpolateMarkers (msec) {
       if ((msec > this.predictorLenMsec) ||
-          (this.cog.firstLatLng === null) ||
-          (this.twa.firstLatLng === null)) {
+          (this.predictors.cog.firstLatLng === null) ||
+          (this.predictors.twa.firstLatLng === null)) {
         return [];
       } else {
         const idx = msec / this.timeDelta;
@@ -508,8 +511,8 @@ export default {
       if (this.boatId === null) {
         return;
       }
-      this.cog = this.cogCalc();
-      this.twa = this.twaCalc();
+      this.predictors.cog = this.cogCalc();
+      this.predictors.twa = this.twaCalc();
     },
   },
   mounted () {
