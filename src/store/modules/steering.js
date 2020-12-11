@@ -43,7 +43,12 @@ export default {
         value: 'current',
         type: 'values',
         values: ['current', 'both', 'none'],
-        cfgText: 'Show predictor(s):',
+        cfgText: 'Show steering predictor(s):',
+      },
+      predictorDcs: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Show DC-aware predictor',
       },
       predictorLen: {
         value: '6 h',

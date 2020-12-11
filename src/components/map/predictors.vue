@@ -81,7 +81,9 @@ export default {
       if (this.cfgPredictors !== 'none') {
         res.push(this.currentSteering);
       }
-      res.push('dcPred');
+      if (this.cfgPredictorDcs) {
+        res.push('dcPred');
+      }
       return res;
     },
     moveDelta () {
@@ -247,6 +249,7 @@ export default {
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
       cfgPredictors: state => state.boat.steering.cfg.predictors.value,
+      cfgPredictorDcs: state => state.boat.steering.cfg.predictorDcs.value,
       cfgExtraUiDebug: state => state.diagnostics.cfg.extraUiDebug.value,
       cfgPredictorLen: state => state.boat.steering.cfg.predictorLen.value,
       commandBoatColor: state => state.map.cfg.commandBoatColor.value,
@@ -254,6 +257,10 @@ export default {
   },
   methods: {
     predictorColor (predictor) {
+      if (this.cfgPredictorDcs) {
+        return predictor === 'dcPred' ?
+               this.commandBoatColor : this.inactiveColor;
+      }
       return this.currentSteering === predictor ?
              this.commandBoatColor : this.inactiveColor;
     },
@@ -571,8 +578,13 @@ export default {
       this.recalc();
     },
     markers (newVal) {
-      if (typeof newVal[this.currentSteering] !== 'undefined') {
-        let pts = newVal[this.currentSteering].dc;
+      let fromPred = this.currentSteering;
+      if (this.cfgPredictorDcs) {
+        fromPred = 'dcPred';
+      }
+
+      if (typeof newVal[fromPred] !== 'undefined') {
+        let pts = newVal[fromPred].dc;
         if (pts.length > 0) {
           this.$store.commit('boat/steering/setDelayLatLng', pts[0].latLng);
           return;
