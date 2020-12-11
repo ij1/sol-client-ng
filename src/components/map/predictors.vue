@@ -203,13 +203,12 @@ export default {
     },
 
     needsRedraw() {
-      this.predictors.cog;
-      this.predictors.twa;
-      this.predictors.dcPred;
+      for (let pred of this.predictorList) {
+        this.predictors[pred];
+      }
       this.wxUpdated;
       this.dotDelay;
       this.wxDelay;
-      this.predictorList;
       this.predictorLen;
       this.commandBoatColor;
       this.isDark;
@@ -221,6 +220,7 @@ export default {
       this.boatTime;
       this.visualPosition;
       this.dcFetchTime;
+      this.predictorList;
 
       return Date.now();
     },
