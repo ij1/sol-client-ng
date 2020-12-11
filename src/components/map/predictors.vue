@@ -440,16 +440,32 @@ export default {
       let commandType = this.currentSteering;
       let commandValue = this[this.predictorDefs[commandType]['steer']];
       let dcIdx = 0;
+      const dcList = this.$store.state.boat.steering.dcs.list;
+
+      if (this.isTowbackPeriod) {
+        for (let dc of dcList) {
+          if (dc.time >= this.raceStartTime) {
+            break;
+          }
+          commandType = dc.type === 'cc' ? 'cog' : dc.type;
+          commandValue = dc.value;
+          dcIdx++;
+        }
+      }
 
       while (t < endTime) {
         let nextEnd = endTime;
-        let dc = null;
 
-        if (dcIdx < this.$store.state.boat.steering.dcs.list.length) {
-          dc = this.$store.state.boat.steering.dcs.list[dcIdx];
-          if (dc.time < nextEnd) {
-            nextEnd = dc.time;
+        while (dcIdx < dcList.length) {
+          const dc = dcList[dcIdx];
+          if (t + this.timeDelta < dc.time) {
+            nextEnd = dc.time - this.timeDelta;
+            break;
           }
+          // FIXME: perf is not returned nor perf loss applied
+          commandType = dc.type === 'cc' ? 'cog' : dc.type;
+          commandValue = dc.value;
+          dcIdx++;
         }
 
         const func = this.predictorDefs[commandType]['calc'];
@@ -457,13 +473,6 @@ export default {
         if (t === null) {
           break;
         }
-
-        // FIXME: perf is not returned nor perf loss applied
-        if (dc !== null) {
-          commandType = dc.type;
-          commandValue = dc.value;
-        }
-        dcIdx++;
       }
     },
     predCalc (predictor) {
