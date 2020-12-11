@@ -570,13 +570,14 @@ export default {
     predictorLen () {
       this.recalc();
     },
-    dcMarkers (newVal) {
+    markers (newVal) {
       if (this.cfgExtraUiDebug) {
-        this.$store.dispatch('diagnostics/add', 'predictor: dot watch ' + newVal.length + ' ' + this.dotDelay);
+        this.$store.dispatch('diagnostics/add', 'predictor: dot watch ' + this.dotDelay);
       }
-      for (let pt of newVal) {
-        if (this.currentSteering === pt.type) {
-          this.$store.commit('boat/steering/setDelayLatLng', pt.latLng);
+      if (typeof newVal[this.currentSteering] !== 'undefined') {
+        let pts = newVal[this.currentSteering].dc;
+        if (pts.length > 0) {
+          this.$store.commit('boat/steering/setDelayLatLng', pts[0].latLng);
           return;
         }
       }
