@@ -86,6 +86,14 @@ export default {
       }
       return res;
     },
+    activePredictor () {
+      let fromPred = this.currentSteering;
+      if (this.cfgPredictorDcs) {
+        fromPred = 'dcPred';
+      }
+      return fromPred;
+    },
+
     moveDelta () {
       return (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
     },
@@ -578,11 +586,7 @@ export default {
       this.recalc();
     },
     markers (newVal) {
-      let fromPred = this.currentSteering;
-      if (this.cfgPredictorDcs) {
-        fromPred = 'dcPred';
-      }
-
+      const fromPred = this.activePredictor;
       if (typeof newVal[fromPred] !== 'undefined') {
         let pts = newVal[fromPred].dc;
         if (pts.length > 0) {
