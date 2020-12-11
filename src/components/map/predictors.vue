@@ -70,10 +70,11 @@ export default {
       return hToMsec(this.predictorLen);
     },
     predictorList () {
-      if (!this.allowControl) {
-        return [];
+      let res = [];
+      if (!this.allowControl || !this.wxValid) {
+        return res;
       }
-      let res = []
+
       if (this.cfgPredictors === 'both') {
         res.push(this.currentSteering === 'cog' ? 'twa' : 'cog');
       }
@@ -160,15 +161,6 @@ export default {
     dcPredPath () {
       return this.precalcPath('dcPred');
     },
-    hoursMarkers () {
-      return this.getMarkers(this.hourIndexes);
-    },
-    quarterMarkers () {
-      return this.getMarkers(this.quarterIndexes);
-    },
-    first15minMarkers () {
-      return this.getMarkers(this.first15minIndexes);
-    },
     wxDelay () {
       if (!this.wxValid) {
         return null;
@@ -185,17 +177,26 @@ export default {
       }
       return this.plottedDcDelay;
     },
-    dcMarkers () {
-      if (this.dotDelay === null) {
-        return [];
+    markers () {
+      let res = {};
+
+      for (let pred of this.predictorList) {
+        res[pred] = {};
+        res[pred].hour = this.getMarkers(pred, this.hourIndexes);
+        res[pred].quarter = this.getMarkers(pred, this.quarterIndexes);
+        res[pred].first15min = this.getMarkers(pred, this.first15minIndexes);
+        if (this.dotDelay === null) {
+          res[pred].dc = [];
+        } else {
+          res[pred].dc = this.interpolateMarkers(pred, hToMsec(this.dotDelay));
+        }
+        if (this.wxDelay === null || this.wxDelay <= 0) {
+          res[pred].wx = [];
+        } else {
+          res[pred].wx = this.interpolateMarkers(pred, this.wxDelay);
+        }
       }
-      return this.interpolateMarkers(hToMsec(this.dotDelay));
-    },
-    wxMarkers () {
-      if (this.wxDelay === null || this.wxDelay <= 0) {
-        return [];
-      }
-      return this.interpolateMarkers(this.wxDelay);
+      return res;
     },
     currentSteering () {
       return this.currentSteeringApi === 'cc' ? 'cog' : this.currentSteeringApi;
@@ -277,64 +278,52 @@ export default {
       for (let pred of this.predictorList) {
         ctx.strokeStyle = this.predictorColor(pred);
         ctx.stroke(this[this.predictorDefs[pred]['path']]);
-      }
 
-      for (let pt of this.hoursMarkers) {
-        if (!this.isEnabled(pt.type)) {
-          continue;
-        }
-        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
-        ctx.strokeStyle = this.predictorColor(pt.type);
-        ctx.fillStyle = ctx.strokeStyle;
-        ctx.beginPath();
-        ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
-        ctx.stroke();
+        for (let pt of this.markers[pred].hour) {
+          let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+          ctx.strokeStyle = this.predictorColor(pt.type);
+          ctx.fillStyle = ctx.strokeStyle;
+          ctx.beginPath();
+          ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
+          ctx.stroke();
 
-        if (this.predictorLen > 6) {
-          /* Draw solid circle every 6 hours */
-          let inHours = pt.time / hToMsec(6);
-          if (Math.abs(inHours - Math.floor(inHours)) < 0.001) {
-            ctx.fill();
+          if (this.predictorLen > 6) {
+            /* Draw solid circle every 6 hours */
+            let inHours = pt.time / hToMsec(6);
+            if (Math.abs(inHours - Math.floor(inHours)) < 0.001) {
+              ctx.fill();
+            }
           }
         }
-      }
 
-      for (let pt of this.quarterMarkers) {
-        if (!this.isEnabled(pt.type)) {
-          continue;
+        for (let pt of this.markers[pred].quarter) {
+          let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+          ctx.fillStyle = this.predictorColor(pt.type);
+          ctx.beginPath();
+          ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
+          ctx.fill();
         }
-        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
-        ctx.fillStyle = this.predictorColor(pt.type);
-        ctx.beginPath();
-        ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
-        ctx.fill();
-      }
-      for (let pt of this.first15minMarkers) {
-        if (!this.isEnabled(pt.type) || (this.zoom < 12)) {
-          continue;
+        for (let pt of this.markers[pred].first15min) {
+          if (this.zoom < 12) {
+            continue;
+          }
+          let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+          ctx.strokeStyle = this.predictorColor(pt.type);
+          ctx.beginPath();
+          ctx.arc(tmp.x, tmp.y, this.first15minRadius, 0, Math.PI*2);
+          ctx.stroke();
         }
-        let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
-        ctx.strokeStyle = this.predictorColor(pt.type);
-        ctx.beginPath();
-        ctx.arc(tmp.x, tmp.y, this.first15minRadius, 0, Math.PI*2);
-        ctx.stroke();
-      }
-      for (let pt of this.wxMarkers) {
-        if (!this.isEnabled(pt.type)) {
-          continue;
+        for (let pt of this.markers[pred].wx) {
+          this.drawDot(ctx, z, pt, 'red');
         }
-        this.drawDot(ctx, z, pt, 'red');
-      }
-      for (let pt of this.dcMarkers) {
-        if (!this.isEnabled(pt.type)) {
-          continue;
+        for (let pt of this.markers[pred].dc) {
+          if (this.cfgExtraUiDebug) {
+            this.$store.dispatch('diagnostics/add', 'predictor: dot (' +
+                                                    pt.type + ') redraw to ' +
+                                                    pt.latLng.lat + ' ' + pt.latLng.lng);
+          }
+          this.drawDot(ctx, z, pt, 'orange');
         }
-        if (this.cfgExtraUiDebug) {
-          this.$store.dispatch('diagnostics/add', 'predictor: dot (' +
-                                                  pt.type + ') redraw to ' +
-                                                  pt.latLng.lat + ' ' + pt.latLng.lng);
-        }
-        this.drawDot(ctx, z, pt, 'orange');
       }
     },
     drawDot(ctx, z, pt, color) {
@@ -508,58 +497,49 @@ export default {
       return pred;
     },
 
-    getMarkers (indexes) {
-      this.predictors.twa.time;
+    getMarkers (predictor, indexes) {
+      const pred = this.predictors[predictor];
+      pred.time;
 
-      if ((this.predictors.cog.firstLatLng === null) ||
-          (this.predictors.twa.firstLatLng === null)) {
+      if (pred.firstLatLng === null) {
         return [];
       }
       let res = [];
       for (let i of indexes) {
-        if (i < this.predictors.twa.latLngs.length) {
+        if (i < pred.latLngs.length) {
           res.push({
-            type: 'twa',
+            type: predictor,
             time: i * this.timeDelta,
-            latLng: this.predictors.twa.latLngs[i],
-          });
-        }
-        if (i < this.predictors.cog.latLngs.length) {
-          res.push({
-            type: 'cog',
-            time: i * this.timeDelta,
-            latLng: this.predictors.cog.latLngs[i],
+            latLng: pred.latLngs[i],
           });
         }
       }
       return res;
     },
-    interpolateMarkers (msec) {
-      if ((msec > this.predictorLenMsec) ||
-          (this.predictors.cog.firstLatLng === null) ||
-          (this.predictors.twa.firstLatLng === null)) {
+    interpolateMarkers (predictor, msec) {
+      const pred = this.predictors[predictor];
+
+      if ((msec > this.predictorLenMsec) || (pred.firstLatLng === null)) {
         return [];
       } else {
         const idx = msec / this.timeDelta;
         const lowIdx = Math.floor(idx);
-        let markers = this.getMarkers([lowIdx]);
+        let markers = this.getMarkers(predictor, [lowIdx]);
 
         if (msec < this.predictorLenMsec) {
-          const highMarkers = this.getMarkers([lowIdx + 1]);
+          const highMarkers = this.getMarkers(predictor, [lowIdx + 1]);
           const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
 
           for (let m = 0; m < markers.length; m++) {
             for (let n of highMarkers) {
-              if (markers[m].type === n.type) {
-                markers[m].time = msec;
-                markers[m].latLng = L.latLng(linearInterpolate(frac,
+              markers[m].time = msec;
+              markers[m].latLng = L.latLng(linearInterpolate(frac,
                                                markers[m].latLng.lat,
                                                n.latLng.lat),
-                                             linearInterpolate(frac,
+                                           linearInterpolate(frac,
                                                markers[m].latLng.lng,
                                                n.latLng.lng));
-                break;
-              }
+              break;
             }
           }
         }
