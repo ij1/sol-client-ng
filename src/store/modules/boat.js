@@ -192,6 +192,8 @@ export default {
           /* Rough clock correctness check (compare to server timestamp) */
           if (Math.abs(now - boatData.boat.time) > minToMsec(2)) {
             dispatch('time/checkOffset', null, {root: true});
+          } else if (firstFetch) {
+            commit('weather/initTime', boatData.boat.time, {root: true});
           }
         }
 
