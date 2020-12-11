@@ -414,7 +414,7 @@ export default {
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
         if (wind === null) {
-          break;
+          return null;
         }
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
                       perf * firstStep;
@@ -454,6 +454,10 @@ export default {
 
         const func = this.predictorDefs[commandType]['calc'];
         t = func(pred, commandValue, perf, t, nextEnd, firstStep);
+        if (t === null) {
+          break;
+        }
+
         // FIXME: perf is not returned nor perf loss applied
         if (dc !== null) {
           commandType = dc.type;
