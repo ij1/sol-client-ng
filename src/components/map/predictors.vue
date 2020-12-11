@@ -526,21 +526,18 @@ export default {
         const lowIdx = Math.floor(idx);
         let markers = this.getMarkers(predictor, [lowIdx]);
 
-        if (msec < this.predictorLenMsec) {
+        if ((markers.length > 0) && (msec < this.predictorLenMsec)) {
           const highMarkers = this.getMarkers(predictor, [lowIdx + 1]);
           const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
 
-          for (let m = 0; m < markers.length; m++) {
-            for (let n of highMarkers) {
-              markers[m].time = msec;
-              markers[m].latLng = L.latLng(linearInterpolate(frac,
-                                               markers[m].latLng.lat,
-                                               n.latLng.lat),
-                                           linearInterpolate(frac,
-                                               markers[m].latLng.lng,
-                                               n.latLng.lng));
-              break;
-            }
+          if (highMarkers.length > 0) {
+            markers[0].time = msec;
+            markers[0].latLng = L.latLng(linearInterpolate(frac,
+                                             markers[0].latLng.lat,
+                                             highMarkers[0].latLng.lat),
+                                         linearInterpolate(frac,
+                                             markers[0].latLng.lng,
+                                             highMarkers[0].latLng.lng));
           }
         }
         return markers;
