@@ -571,9 +571,6 @@ export default {
       this.recalc();
     },
     markers (newVal) {
-      if (this.cfgExtraUiDebug) {
-        this.$store.dispatch('diagnostics/add', 'predictor: dot watch ' + this.dotDelay);
-      }
       if (typeof newVal[this.currentSteering] !== 'undefined') {
         let pts = newVal[this.currentSteering].dc;
         if (pts.length > 0) {
