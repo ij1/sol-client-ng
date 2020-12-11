@@ -434,7 +434,7 @@ export default {
 
       return t;
     },
-    dcPredCalc(pred, twa, t, endTime, state) {
+    dcPredCalc(pred, dummy, t, endTime, state) {
       let commandType = this.currentSteering;
       let commandValue = this[this.predictorDefs[commandType]['steer']];
       let dcIdx = 0;
