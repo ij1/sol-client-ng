@@ -378,7 +378,7 @@ export default {
       return Math.max(Math.min(firstStep, 1), 0);
     },
 
-    cogCalc (pred, cog, perf, t, endTime, firstStep) {
+    cogCalc (pred, cog, t, endTime, state) {
       const moveDelta = this.moveDelta;
       let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
@@ -389,8 +389,8 @@ export default {
         }
         const twa = cogTwdToTwa(cog, wind.twd);
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
-                      perf * firstStep;
-        firstStep = 1;
+                      state.perf * state.firstStep;
+        state.firstStep = 1;
 
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
         const dlon = moveDelta * speed * Math.sin(cog) / lonScaling;
@@ -400,14 +400,14 @@ export default {
                               lastLatLng.lng + dlon);
         pred.latLngs.push(Object.freeze(lastLatLng));
         t += this.timeDelta;
-        perf = Math.min(perf +
-                        PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
-                        1.0);
+        state.perf = Math.min(state.perf +
+                              PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
+                              1.0);
       }
 
       return t;
     },
-    twaCalc (pred, twa, perf, t, endTime, firstStep) {
+    twaCalc (pred, twa, t, endTime, state) {
       const moveDelta = this.moveDelta;
       let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
@@ -417,8 +417,8 @@ export default {
           return null;
         }
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
-                      perf * firstStep;
-        firstStep = 1;
+                      state.perf * state.firstStep;
+        state.firstStep = 1;
 
         const course = twaTwdToCog(twa, wind.twd);
         const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
@@ -429,14 +429,14 @@ export default {
                               lastLatLng.lng + dlon);
         pred.latLngs.push(Object.freeze(lastLatLng));
         t += this.timeDelta;
-        perf = Math.min(perf +
-                        PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
-                        1.0);
+        state.perf = Math.min(state.perf +
+                              PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
+                              1.0);
       }
 
       return t;
     },
-    dcPredCalc(pred, twa, perf, t, endTime, firstStep) {
+    dcPredCalc(pred, twa, t, endTime, state) {
       let commandType = this.currentSteering;
       let commandValue = this[this.predictorDefs[commandType]['steer']];
       let dcIdx = 0;
@@ -453,7 +453,7 @@ export default {
         }
 
         const func = this.predictorDefs[commandType]['calc'];
-        t = func(pred, commandValue, perf, t, nextEnd, firstStep);
+        t = func(pred, commandValue, t, nextEnd, state);
         if (t === null) {
           break;
         }
@@ -464,7 +464,6 @@ export default {
           commandValue = dc.value;
         }
         dcIdx++;
-        firstStep = 1;
       }
     },
     predCalc (predictor) {
@@ -484,18 +483,20 @@ export default {
       }
       pred.latLngs.push(Object.freeze(lastLatLng));
 
-      let perf = this.boatPerf;
-      let firstStep = 1;
+      let state = {
+        perf: this.boatPerf,
+        firstStep: 1,
+      };
 
       if (this.isTowbackPeriod) {
         t = this.consumeTowback(pred.latLngs, lastLatLng, t);
-        perf = 1.0;
-        firstStep = this.moveFractionAfterTowback(t);
+        state.perf = 1.0;
+        state.firstStep = this.moveFractionAfterTowback(t);
       }
 
       const steer = this.predictorDefs[predictor]['steer'];
       const func = this.predictorDefs[predictor]['calc'];
-      func(pred, this[steer], perf, t, endTime, firstStep);
+      func(pred, this[steer], t, endTime, state);
       Object.freeze(pred.latLngs);
 
       return pred;
