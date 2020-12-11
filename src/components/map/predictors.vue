@@ -253,15 +253,6 @@ export default {
     }),
   },
   methods: {
-    isEnabled (predictor) {
-      if (!this.allowControl) {
-        return false;
-      }
-      if (this.currentSteering === predictor) {
-        return this.cfgPredictors !== 'none';
-      }
-      return this.cfgPredictors === 'both';
-    },
     predictorColor (predictor) {
       return this.currentSteering === predictor ?
              this.commandBoatColor : this.inactiveColor;
