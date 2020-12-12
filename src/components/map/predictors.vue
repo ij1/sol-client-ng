@@ -337,7 +337,7 @@ export default {
       ctx.fillStyle = color;
 
       ctx.beginPath();
-      const radius = (this.currentSteering === pt.type) ?
+      const radius = (this.activePredictor === pt.type) ?
                      this.plottedDelayRadius : this.otherDelayRadius;
       ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
       ctx.fill();
@@ -539,7 +539,8 @@ export default {
     interpolateMarkers (predictor, msec) {
       const pred = this.predictors[predictor];
 
-      if ((msec > this.predictorLenMsec) || (pred.firstLatLng === null)) {
+      if ((typeof pred === 'undefined') ||
+          (msec > this.predictorLenMsec) || (pred.firstLatLng === null)) {
         return [];
       } else {
         const idx = msec / this.timeDelta;
