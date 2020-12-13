@@ -6,6 +6,7 @@
     }"
     :active = "resizeHandlers"
     :dragSelector = "dragSelector"
+    :disableAttributes = "['w', 'h']"
     top = "50%"
     left = "50%"
     height = ""
