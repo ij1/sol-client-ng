@@ -43,7 +43,7 @@ export function ownBoatVisibleFilter(store, commandBoat) {
     return false;
   }
   if (cfgFleetBoatMode === 'select' &&
-      !store.getters['race/fleet/selectedFiltered'].hasOwnProperty('' + ownBoatId)) {
+      !Object.prototype.hasOwnProperty.call(store.getters['race/fleet/selectedFiltered'], '' + ownBoatId)) {
     return false;
   }
   return true;

@@ -264,7 +264,7 @@ export default {
         if (useFetch) {
           len = response.headers.get('Content-Length');
         } else {
-          if (response.headers.hasOwnProperty('content-length')) {
+          if (Object.prototype.hasOwnProperty.call(response.headers, 'content-length')) {
             len = response.headers['content-length'];
           }
         }
@@ -380,7 +380,7 @@ export default {
         throw new SolapiError('parsing', err.message);
       }
 
-      if (!(result.hasOwnProperty(reqDef.dataField))) {
+      if (!Object.prototype.hasOwnProperty.call(result, reqDef.dataField)) {
         throw new SolapiError('response', "Response missing datafield: " + reqDef.dataField);
       }
       commit('noError', reqDef.apiCall);
@@ -501,7 +501,7 @@ export default {
           } catch(err) {
             throw new SolapiError('response', err.message);
           }
-          if (!(result.hasOwnProperty(reqDef.dataField))) {
+          if (!Object.prototype.hasOwnProperty.call(result, reqDef.dataField)) {
             throw new SolapiError('response', "Response missing datafield: " +
                                               reqDef.dataField);
           }
