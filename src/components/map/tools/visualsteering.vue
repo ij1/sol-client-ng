@@ -89,8 +89,11 @@ export default {
     steerLine () {
       return [this.visualPosition, this.target];
     },
+    targetPath () {
+      return loxoCalc(this.visualPosition, this.target);
+    },
     cog () {
-      return loxoCalc(this.visualPosition, this.target).startBearing;
+      return this.targetPath.startBearing;
     },
     twa () {
       return cogTwdToTwa(this.cog, this.twd);
