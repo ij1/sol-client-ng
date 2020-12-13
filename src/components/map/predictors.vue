@@ -483,7 +483,7 @@ export default {
     },
     predCalc (predictor) {
       let t = this.timeOrigo;
-      const endTime = t + hToMsec(this.predictorLen);
+      const endTime = t + this.predictorLenMsec;
       let lastLatLng = this.visualPosition;
 
       let pred = {
