@@ -77,9 +77,9 @@ export default {
     setSteering(state, cmd) {
       state.plottedSteering.type = cmd.type;
       if (cmd.type === 'cc') {
-        state.plottedSteering.cc = cmd.value;
+        state.plottedSteering.cc = cmd.valueText;
       } else {
-        state.plottedSteering.twa = cmd.value;
+        state.plottedSteering.twa = cmd.valueText;
       }
     },
     setDelayOn(state, delayOn) {

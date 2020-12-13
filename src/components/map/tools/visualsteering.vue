@@ -134,26 +134,30 @@ export default {
     }),
   },
   methods: {
-    onClick (e) {
-      const res = loxoCalc(this.visualPosition, e.latlng);
-      if (this.maxPixelDistance(e.latlng) < this.minSteeringDistance) {
-        return;
-      }
+    getCommand(path) {
       let type = 'cc';
       if (this.cfgPreserveSteeringType.value) {
         type = this.plottedSteering.type;
       }
       let val;
       if (type === 'cc') {
-        val = roundToFixed(radToDeg(res.startBearing), 3);
+        val = roundToFixed(radToDeg(path.startBearing), 3);
       } else {
-        val = roundToFixed(radToDeg(cogTwdToTwa(res.startBearing, this.twd)), 3);
+        val = roundToFixed(radToDeg(cogTwdToTwa(path.startBearing, this.twd)), 3);
         val = twaTextPrefix(val) + val;
       }
-      this.$store.commit('boat/steering/setSteering', {
+      return {
         type: type,
-        value: val,
-      });
+        value: degToRad(val),
+        valueText: val,
+      };
+    },
+    onClick (e) {
+      const path = loxoCalc(this.visualPosition, e.latlng);
+      if (this.maxPixelDistance(e.latlng) < this.minSteeringDistance) {
+        return;
+      }
+      this.$store.commit('boat/steering/setSteering', this.getCommand(path));
       this.map.off('click', this.onClick, this);
       this.$store.dispatch('ui/cancelUiMode');
     },
