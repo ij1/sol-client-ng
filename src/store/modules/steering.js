@@ -10,6 +10,7 @@ export default {
     /* Steering UI related state */
     plottedSteering: {
       type: 'cc',
+      /* These 2 hold raw, unvalidated values in degrees from steering panel */
       cc: '',
       twa: '',
       delayOn: false,
