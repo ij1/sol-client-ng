@@ -465,7 +465,7 @@ export default {
         while (dcIdx < dcList.length) {
           const dc = dcList[dcIdx];
           if (t + this.timeDelta < dc.time) {
-            nextEnd = dc.time - this.timeDelta;
+            nextEnd = Math.min(endTime, dc.time - this.timeDelta);
             break;
           }
           // FIXME: perf is not returned nor perf loss applied
