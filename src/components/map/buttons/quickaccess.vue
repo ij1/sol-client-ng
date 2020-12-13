@@ -1,6 +1,7 @@
 <template>
   <l-control
     :position = "'bottomright'"
+    :disableClickPropagation = "false"
   >
     <div id = "quick-access-container">
       <transition-group name = "fade" tag = "div">

@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import L from 'leaflet';
 import { LControl } from 'vue2-leaflet';
 import { holdRepeatMixin } from './holdrepeat.js';
 import { OLD_CLIENT_MAXZOOM } from '../../../lib/sol.js';
@@ -47,7 +46,6 @@ export default {
     },
   },
   mounted () {
-    L.DomEvent.disableClickPropagation(this.$refs['zoom-in-button']);
     this.$on('holdrepeat', this.onRepeat);
   },
   beforeDestroy () {

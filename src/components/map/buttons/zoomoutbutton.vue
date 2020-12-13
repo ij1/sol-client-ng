@@ -17,7 +17,6 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import L from 'leaflet';
 import { holdRepeatMixin } from './holdrepeat.js';
 import { LControl } from 'vue2-leaflet';
 
@@ -63,7 +62,6 @@ export default {
     },
   },
   mounted () {
-    L.DomEvent.disableClickPropagation(this.$refs['zoom-out-button']);
     this.$on('holdrepeat', this.onRepeat);
   },
   beforeDestroy () {

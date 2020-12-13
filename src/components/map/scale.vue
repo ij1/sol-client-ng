@@ -1,6 +1,7 @@
 <template>
   <l-control
     :position = "'bottomleft'"
+    :disableClickPropagation = "false"
   >
     <div id = "map-scale" :style = "{'min-width': (pxWidth - 2) + 'px'}">
       {{alignedNmWidth}}nm

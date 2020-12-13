@@ -6,7 +6,6 @@
     <div
       v-if = "showLegend && combinedIds.length > 0"
       id = "legend-info"
-      ref = "legend-info"
     >
       <div
         class = "legend-row"
@@ -37,7 +36,6 @@
 </template>
 
 <script>
-import L from 'leaflet';
 import { mapGetters, mapState } from 'vuex';
 import { EventBus } from '../../lib/event-bus.js';
 import { LControl } from 'vue2-leaflet';
@@ -75,11 +73,6 @@ export default {
       hoverObj: state => state.race.fleet.hover,
       cfgKeys: state => state.map.cfg.boatKeys.value,
     }),
-  },
-  updated () {
-    if (typeof this.$refs['legend-info'] !== 'undefined') {
-      L.DomEvent.disableClickPropagation(this.$refs['legend-info']);
-    }
   },
   methods: {
     highlightBoat (e, boatId) {

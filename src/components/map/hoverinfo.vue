@@ -2,6 +2,7 @@
   <l-control
     id = "hover-info"
     :position = "'topright'"
+    :disableClickPropagation = "false"
   >
     <div>
       <map-coordinate :lat-lng = "wrappedHoverLatLng"/>

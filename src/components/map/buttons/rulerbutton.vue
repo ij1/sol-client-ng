@@ -1,6 +1,7 @@
 <template>
   <l-control
     :position = "'topleft'"
+    :disableClickPropagation = "false"
   >
     <div id = "ruler-container">
       <div

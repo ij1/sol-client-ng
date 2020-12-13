@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import L from 'leaflet';
 import { mapState, mapGetters } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 
@@ -68,9 +67,6 @@ export default {
         param: showPolar,
       });
     },
-  },
-  mounted () {
-    L.DomEvent.disableClickPropagation(this.$refs['steer-button']);
   },
 }
 </script>

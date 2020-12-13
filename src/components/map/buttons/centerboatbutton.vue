@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import L from 'leaflet';
 import { mapState } from 'vuex';
 import { EventBus } from '../../../lib/event-bus.js';
 import { LControl } from 'vue2-leaflet';
@@ -41,8 +40,5 @@ export default {
       }
     },
   },
- mounted () {
-   L.DomEvent.disableClickPropagation(this.$refs['center-boat-button']);
- },
 }
 </script>
