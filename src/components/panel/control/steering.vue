@@ -138,11 +138,12 @@ export default {
 
   /* The computed properties are tricky in this component! As COG/TWA fields
    * have cross depency based on the radio button, the reactivity might cause
-   * infinite loops if not dealt correctly. There are toTwa & toCc computed
-   * properties and associated watches for them to deal with the cross copy.
-   * The copy is only performed if the radio button is in the correct position.
-   * After copy, the other toXX chain will trigger but since the radio button
-   * prevents copying to value back, the infinite loop is avoided.
+   * infinite loops if not dealt correctly. There are validatedTwa &
+   * validatedCc computed properties and associated watches for them to deal
+   * with the cross copy. The copy is only performed if the radio button is
+   * in the correct position. After copy, the other validatedXX chain will
+   * trigger but since the radio button prevents copying to value back, the
+   * infinite loop is avoided.
    *
    * Touching any unnecessary variables before ensuring the input is valid
    * must be avoided because of the infinite loop threat.
@@ -319,7 +320,7 @@ export default {
              ((this.type === 'twa') && this.isTwaValid);
     },
 
-    toTwa () {
+    validatedCc () {
       if (!this.isCcValid) {
         return null;
       }
@@ -340,7 +341,7 @@ export default {
 
       return roundToFixed(diff, this.copyDecimals);
     },
-    toCc () {
+    validatedTwa () {
       if (!this.isTwaValid) {
         return null;
       }
@@ -454,7 +455,7 @@ export default {
   },
 
   watch: {
-    toCc: {
+    validatedTwa: {
       handler: function (value) {
         if ((this.type === 'cc') || (value === null)) {
           return;
@@ -463,7 +464,7 @@ export default {
       },
       immediate: true,
     },
-    toTwa: {
+    validatedCc: {
       handler: function (value) {
         if ((this.type === 'twa') || (value === null)) {
           return;
