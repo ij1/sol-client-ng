@@ -25,7 +25,7 @@
     "vue-resizable": "^1.2.5",
     "vue2-leaflet": "^2.6.0",
     "vuejs-datepicker": "git+https://github.com/ij1/vuejs-datepicker.git#typeable-utc-fix-dist",
-    "vuex": "^3.0.1",
+    "vuex": "^3.6.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
