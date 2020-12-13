@@ -355,7 +355,8 @@ export default {
       }
 
       const z = this.zoom;
-      p.moveTo(0, 0);
+      let tmp = this.$parent.map.project(firstPt, z).round().subtract(this.boatOrigo);
+      p.moveTo(tmp.x, tmp.y);
       for (let pt of otherPts) {
         let tmp = this.$parent.map.project(pt, z).round().subtract(this.boatOrigo);
         p.lineTo(tmp.x, tmp.y);
