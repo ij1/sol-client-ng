@@ -27,6 +27,7 @@ export default {
     lastRoundedMark: 0,
     finishTime: null,
     currentSteering: 'twa',
+    currentSteeringInvalid: false,
     /*
      * Stores the visual offset (multiple of 360) that brings the boat
      * closest to the map center.
@@ -48,7 +49,12 @@ export default {
       state.ranking = parseInt(data.ranking);
       state.dtg = parseFloat(data.dtg);
       state.finishTime = data.finish_time;
-      state.currentSteering = data.last_cmd_type;
+      if (data.last_cmd_type === 'cc' || data.last_cmd_type === 'twa') {
+        state.currentSteering = data.last_cmd_type;
+        state.currentSteeringInvalid = false;
+      } else {
+        state.currentSteeringInvalid = true;
+      }
     },
 
     setType (state, type) {
@@ -201,6 +207,11 @@ export default {
         if (!firstFetch && (boatData.boat.time < oldTime)) {
           dispatch('diagnostics/add', 'boat: timestamp reversion!', {root: true});
           throw new SolapiError('data', 'Boat timestamp reversion!');
+        }
+
+        if ((boatData.boat.last_cmd_type !== 'cc') &&
+            (boatData.boat.last_cmd_type !== 'twa')) {
+          dispatch('diagnostics/add', 'boat: current steering missing!', {root: true});
         }
 
         boatData.boat.latLng =  L.latLng(boatData.boat.lat, boatData.boat.lon);
