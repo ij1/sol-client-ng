@@ -89,7 +89,7 @@ export default {
       groundAlertSound: {
         value: false,
         type: 'boolean',
-        cfgText: 'Ground alert sound',
+        cfgText: 'Grounding alert sound',
       },
     },
   },
