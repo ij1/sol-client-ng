@@ -392,7 +392,7 @@ export default {
       while (t < endTime) {
         const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
         if (wind === null) {
-          break;
+          return null;
         }
         const twa = cogTwdToTwa(cog, wind.twd);
         const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
