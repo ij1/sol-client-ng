@@ -27,7 +27,7 @@ export default {
         return false;
       }
       /* API returns sometimes non-zero TWA (very very small) for TWA=0 */
-      if (this.boatTwa > 0.000001) {
+      if (Math.abs(this.boatTwa) > 0.000001) {
         return false;
       }
       if (this.boatPosition.equals(this.raceStartPosition)) {
