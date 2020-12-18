@@ -19,7 +19,8 @@ export default {
   },
   computed: {
     groundAlert () {
-      if (!this.boatLoaded || this.publicBoat || !this.cfgGroundAlertSound) {
+      if ((this.boatLoaded === null) || this.publicBoat ||
+          !this.cfgGroundAlertSound) {
         return false;
       }
       if (!this.isRaceStarted || (this.boatFinishTime !== null)) {
