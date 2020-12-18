@@ -1,5 +1,5 @@
 <template>
-  <l-layer-group>
+  <l-layer-group v-if="rulerShowSegments">
     <ruler-segment
       v-for = "(segment, index) in rulerSegments"
       :key = "segment.id"
@@ -27,6 +27,7 @@ export default {
     },
     ...mapState({
       rulerSegments: state => state.ui.ruler.rulerSegments,
+      rulerShowSegments: state => state.ui.ruler.showSegments,
     }),
     ...mapGetters({
       currentDayNight: 'ui/currentDayNight',

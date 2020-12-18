@@ -36,6 +36,17 @@
         >
           Delete All
         </div>
+        <div
+          :class = "showHideClasses"
+          ref = "show-hide-button"
+          key = "show-hide-button"
+          v-if = "canDel"
+          @click.stop.prevent = "onShowHide"
+          @touchstart.stop.prevent = "onShowHide"
+          @touchend.stop.prevent
+        >
+          Hide Lines
+        </div>
       </transition-group>
     </div>
   </l-control>
@@ -58,6 +69,14 @@ export default {
         this.rulerEnabled ? 'tool-button-enabled' : ''
       ];
     },
+    showHideClasses () {
+      return [
+        'tool-button',
+        'tool-subbutton',
+        this.rulerSegments.length === 0 ? 'tool-button-disabled' :
+          (!this.rulerShowSegments ? 'tool-button-enabled' : ''),
+      ];
+    },
     canDel () {
       return (this.rulerSegments.length > 0) ||
              (this.rulerPendingPosition !== null);
@@ -67,6 +86,7 @@ export default {
       rulerEnabled: state => state.ui.ruler.enabled,
       rulerSegments: state => state.ui.ruler.rulerSegments,
       rulerPendingPosition: state => state.ui.ruler.rulerPendingPosition,
+      rulerShowSegments: state => state.ui.ruler.showSegments,
     }),
   },
   methods: {
@@ -83,16 +103,19 @@ export default {
     onDelAll () {
       this.$store.commit('ui/ruler/delAll');
     },
+    onShowHide () {
+      this.$store.commit('ui/ruler/toggleShowHide');
+    },
   },
   mounted () {
     L.DomEvent.disableClickPropagation(this.$refs['ruler-button']);
   },
   updated () {
-    if (typeof this.$refs['del-last-button'] !== 'undefined') {
-      L.DomEvent.disableClickPropagation(this.$refs['del-last-button']);
-    }
-    if (typeof this.$refs['del-all-button'] !== 'undefined') {
-      L.DomEvent.disableClickPropagation(this.$refs['del-all-button']);
+    const buttons = ['del-last-button', 'del-all-button', 'show-hide-button'];
+    for (let b of buttons) {
+      if (typeof this.$refs[b] !== 'undefined') {
+        L.DomEvent.disableClickPropagation(this.$refs[b]);
+      }
     }
   },
 }

@@ -5,6 +5,7 @@ export default {
 
   state: {
     enabled: false,
+    showSegments: true,
     rulerSegments: [],
     rulerPendingPosition: null,
     segmentId: 0,
@@ -46,13 +47,22 @@ export default {
         state.rulerPendingPosition = null;
       }
       state.rulerSegments.pop();
+      if (state.rulerSegments.length === 0) {
+        state.showSegments = true;
+      }
     },
     delAll (state) {
       state.rulerSegments = [];
       state.rulerPendingPosition = null;
+      state.showSegments = true;
     },
     setPendingPosition (state, pendingPosition) {
       state.rulerPendingPosition = pendingPosition;
+    },
+    toggleShowHide (state) {
+      if (state.rulerSegments.length > 0) {
+        state.showSegments = !state.showSegments;
+      }
     },
   },
   getters: {
