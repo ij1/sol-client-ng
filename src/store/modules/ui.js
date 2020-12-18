@@ -86,6 +86,11 @@ export default {
         type: 'values',
         cfgText: 'Boat icons at night',
       },
+      groundAlertSound: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Ground alert sound',
+      },
     },
   },
 

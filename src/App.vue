@@ -10,6 +10,7 @@
     <portal-target name="boatlist-editor-dest"/>
     <main-view/>
     <weather-sound/>
+    <ground-alert-sound/>
   </div>
 </template>
 
@@ -22,6 +23,7 @@ import RaceMessagesPopup from './components/racemessagespopup.vue';
 import QuickHelpPopup from './components/quickhelppopup.vue';
 import MainView from './components/mainview.vue';
 import WeatherSound from './components/weathersound.vue';
+import GroundAlertSound from './components/groundalertsound.vue';
 
 export default {
   name: 'app',
@@ -34,6 +36,7 @@ export default {
     'quick-help-popup': QuickHelpPopup,
     'main-view': MainView,
     'weather-sound': WeatherSound,
+    'ground-alert-sound': GroundAlertSound,
   },
 }
 </script>
