@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     groundAlert () {
-      if (!this.boatLoaded || this.publicBoat) {
+      if (!this.boatLoaded || this.publicBoat || !this.cfgGroundAlertSound) {
         return false;
       }
       if (!this.isRaceStarted || (this.boatFinishTime !== null)) {
@@ -47,12 +47,27 @@ export default {
       publicBoat: 'boat/publicBoat',
     }),
   },
+  methods: {
+    stopSound () {
+      this.$el.pause();
+      this.$el.loop = false;
+    },
+  },
+  mounted () {
+    this.stopSound();
+  },
   watch: {
+    cfgGroundAlertSound (newVal) {
+      if (!newVal) {
+        this.stopSound();
+      }
+    },
     groundAlert (newVal, oldVal) {
+      this.$el.pause();
       if (!this.cfgGroundAlertSound || (oldVal === null)) {
+        this.$el.loop = false;
         return;
       }
-      this.$el.pause();
       if (newVal && !oldVal) {
         this.$el.currentTime = 0;
         this.$el.loop = true;
