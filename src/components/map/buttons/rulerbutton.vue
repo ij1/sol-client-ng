@@ -16,6 +16,17 @@
       <transition-group name = "fade" tag="div">
         <div
           class = "tool-button tool-subbutton"
+          ref = "del-first-button"
+          key = "first-button"
+          v-if = "canDel"
+          @click.stop.prevent = "onDelFirst"
+          @touchstart.stop.prevent = "onDelFirst"
+          @touchend.stop.prevent
+        >
+          Delete First
+        </div>
+        <div
+          class = "tool-button tool-subbutton"
           ref = "del-last-button"
           key = "last-button"
           v-if = "canDel"
@@ -97,6 +108,9 @@ export default {
         newMode: newMode,
       });
     },
+    onDelFirst () {
+      this.$store.commit('ui/ruler/delFirstSegment');
+    },
     onDelLast () {
       this.$store.commit('ui/ruler/delSegment');
     },
@@ -111,7 +125,8 @@ export default {
     L.DomEvent.disableClickPropagation(this.$refs['ruler-button']);
   },
   updated () {
-    const buttons = ['del-last-button', 'del-all-button', 'show-hide-button'];
+    const buttons = ['del-first-button', 'del-last-button',
+                     'del-all-button', 'show-hide-button'];
     for (let b of buttons) {
       if (typeof this.$refs[b] !== 'undefined') {
         L.DomEvent.disableClickPropagation(this.$refs[b]);

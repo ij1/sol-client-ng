@@ -51,6 +51,16 @@ export default {
         state.showSegments = true;
       }
     },
+    delFirstSegment (state) {
+      if (state.rulerSegments.length === 0) {
+        state.rulerPendingPosition = null;
+      } else {
+        state.rulerSegments.shift();
+      }
+      if (state.rulerSegments.length === 0) {
+        state.showSegments = true;
+      }
+    },
     delAll (state) {
       state.rulerSegments = [];
       state.rulerPendingPosition = null;
