@@ -8,7 +8,7 @@
       {{ instrument.name }} [{{ instrument.unit }}]
     </div>
     <div class="boat-instrument-value" :style = '{color: color}'>
-      {{ instrument | format($store.state) }}
+      {{ instrument | format($store.state, $store.getters) }}
     </div>
   </div>
 </template>
@@ -52,14 +52,20 @@ export default {
     }),
   },
   filters: {
-    format (instrument, state) {
-      if (instrument.value === null) {
+    format (instrument, state, getters) {
+      let val;
+      if (typeof instrument.calculate === 'undefined') {
+        val = instrument.value;
+      } else {
+        val = instrument.calculate(state.boat.instruments, getters);
+      }
+      if (val === null) {
         return '--.--';
       }
       if (typeof instrument.format !== 'undefined') {
-        return instrument.format(instrument, state);
+        return instrument.format(val, instrument, state);
       }
-      return instrument.value;
+      return val;
     }
   }
 }

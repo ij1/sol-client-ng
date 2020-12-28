@@ -9,27 +9,27 @@ import { configSetValue } from '../../components/config/configstore.js';
 const API_DOWN_DELAY = minToMsec(1);
 const activeSteeringColor = 'rgba(255, 255, 0, 0.6)';
 
-function defaultFormat (instrument, state) {
+function defaultFormat (value, instrument, state) {
   const decimals = Math.max(instrument.minDecimals,
                             state.boat.instruments.cfg.instrumentDecimals.value);
-  return roundToFixed(instrument.value * instrument.mult, decimals);
+  return roundToFixed(value * instrument.mult, decimals);
 }
 
-function twaFormat (instrument, state) {
-  return twaTextPrefix(instrument.value) + defaultFormat(instrument, state);
+function twaFormat (value, instrument, state) {
+  return twaTextPrefix(value) + defaultFormat(value, instrument, state);
 }
 
 const snHemispheres = ['S', 'N'];
 const weHemispheres = ['W', 'E'];
 
-function latFormat (instrument, state) {
-  return formatCoordinate(instrument.value, snHemispheres,
+function latFormat (value, instrument, state) {
+  return formatCoordinate(value, snHemispheres,
                           instrument.minDecimals,
                           state.ui.cfg.coordinateFormat.value);
 }
 
-function lonFormat (instrument, state) {
-  return formatCoordinate(instrument.value, weHemispheres,
+function lonFormat (value, instrument, state) {
+  return formatCoordinate(value, weHemispheres,
                           instrument.minDecimals,
                           state.ui.cfg.coordinateFormat.value);
 }
@@ -123,28 +123,32 @@ export default {
       format: defaultFormat,
     },
     vmg: {
-      value: null,
       name: "VMG",
       unit: "kn",
       mult: 1,
-      calculate: function (data) {
-        return speedTowardsBearing(data.speed.value,
-                                   data.course.value,
-                                   data.twd.value);
+      calculate: function (state) {
+        if (state.speed.value === null) {
+          return null;
+        }
+        return speedTowardsBearing(state.speed.value,
+                                   state.course.value,
+                                   state.twd.value);
       },
       minDecimals: 1,
       format: defaultFormat,
     },
     vmc: {
-      value: null,
       name: "VMC",
       unit: "kn",
       mult: 1,
-      calculate: function (data, rootGetters) {
-        const gcPath = gcCalc(L.latLng(data.lat.value, data.lon.value),
+      calculate: function (state, rootGetters) {
+        if (state.speed.value === null) {
+          return null;
+        }
+        const gcPath = gcCalc(L.latLng(state.lat.value, state.lon.value),
                                rootGetters['ui/currentTarget'].latLng);
-        return speedTowardsBearing(data.speed.value,
-                                   data.course.value,
+        return speedTowardsBearing(state.speed.value,
+                                   state.course.value,
                                    gcPath.startBearing);
       },
       minDecimals: 1,
@@ -177,11 +181,11 @@ export default {
       name: "TIME",
       unit: "UTC",
       datafield: 'time',
-      format: function (instrument) {
-        if (instrument.value === 0) {
+      format: function (value) {
+        if (value === 0) {
           return '--:--';
         }
-        const d = new Date(instrument.value);
+        const d = new Date(value);
         return ("0" + d.getUTCHours()).slice(-2) + ':' +
                ("0" + d.getUTCMinutes()).slice(-2);
       },
@@ -199,11 +203,11 @@ export default {
       name: "DATE",
       unit: "UTC",
       datafield: 'time',
-      format: function (instrument) {
-        if (instrument.value === 0) {
+      format: function (value) {
+        if (value === 0) {
           return '--/--';
         }
-        const d = new Date(instrument.value);
+        const d = new Date(value);
         return MONTHS_TXT[d.getUTCMonth()] + ' ' +
                ("0" + d.getUTCDate()).slice(-2);
       },
@@ -248,20 +252,18 @@ export default {
     configSetValue,
   },
   actions: {
-    updateInstruments ({state, rootGetters, commit}, data) {
+    updateInstruments ({state, commit}, data) {
       let updateList = {};
 
       for (let i of state.list) {
         let val;
-        if (typeof state[i].calculate !== 'undefined') {
-          val = state[i].calculate(updateList, rootGetters);
-        } else {
+        if (typeof state[i].calculate === 'undefined') {
           val = data[state[i].datafield];
-        }
-        if (typeof state[i].notNum === 'undefined') {
-          val = parseFloat(val);
-          if (!Number.isFinite(val)) {
-            val = undefined;
+          if (typeof state[i].notNum === 'undefined') {
+            val = parseFloat(val);
+            if (!Number.isFinite(val)) {
+              val = undefined;
+            }
           }
         }
 
