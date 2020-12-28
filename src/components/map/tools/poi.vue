@@ -45,8 +45,6 @@ import MapPolar from '../mappolar.vue';
 import { publicPath } from '../../../lib/sol.js';
 import { latLngAddOffset } from '../../../lib/utils.js';
 
-const iconUrl = publicPath + 'images/poi-icon.png';
-
 export default {
   name: 'MapPoi',
   components: {
@@ -75,7 +73,6 @@ export default {
         autoPan: false,
       },
       baseWrapList: [-360, 0, 360],
-      iconUrl: iconUrl,
       recursionTrap: false,
     }
   },
@@ -91,9 +88,15 @@ export default {
     butterflyButtonText () {
       return this.poi.showButterfly ? "Hide butterfly" : "Show butterfly";
     },
+    isTarget () {
+      return this.poiTargetId === this.poi.id;
+    },
     selectTargetText () {
-      return this.poiTargetId === this.poi.id ? "Unset target" :
-                                                "Set as target";
+      return this.isTarget ? "Unset target" : "Set as target";
+    },
+    iconUrl () {
+      const icon = !this.isTarget ? 'poi' : 'tgt';
+      return publicPath + 'images/' + icon + '-icon.png';
     },
     open () {
       return this.poi.open;
@@ -137,7 +140,7 @@ export default {
     },
     onSelectTarget () {
       let tgtId = this.poi.id;
-      if (this.poiTargetId === this.poi.id) {
+      if (this.isTarget) {
         tgtId = null;
       }
       this.$store.commit('ui/poi/setTarget', tgtId);
