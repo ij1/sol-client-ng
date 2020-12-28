@@ -54,7 +54,7 @@ export default {
       predictorLen: {
         value: '6 h',
         type: 'values',
-        values: ['6 h', '12 h', '24 h', '36 h', '48 h'],
+        values: ['6 h', '12 h', '24 h', '36 h', '48 h', '72h', '120 h', '168 h'],
         cfgText: 'Predictor(s) length:',
       },
       preserveSteeringType: {
