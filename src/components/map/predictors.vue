@@ -93,9 +93,6 @@ export default {
       return fromPred;
     },
 
-    moveDelta () {
-      return (this.timeDelta/1000 / 3600) / 60;  /* m/s -> nm -> deg (in deg) */
-    },
     inactiveColor () {
       const rgba = this.commandBoatColor.match(/[0-9a-fA-F]{2}/g);
       return 'rgba(' +
@@ -443,7 +440,6 @@ export default {
       let state = {
         perf: this.boatPerf,
         firstStep: 1,
-        moveDelta: this.moveDelta,
         timeDelta: this.timeDelta,
       };
 

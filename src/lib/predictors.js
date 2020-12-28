@@ -4,7 +4,8 @@ import { cogTwdToTwa, twaTwdToCog } from './nav.js';
 import { PERF_RECOVERY_MULT } from './sol.js';
 
 export function cogPredictor (pred, cog, t, endTime, state, getters) {
-  const moveDelta = state.moveDelta;
+  /* m/s -> nm -> deg (in deg) */
+  const moveDelta = (state.timeDelta / 1000 / 3600) / 60;
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
   while (t < endTime) {
@@ -34,7 +35,8 @@ export function cogPredictor (pred, cog, t, endTime, state, getters) {
 }
 
 export function twaPredictor (pred, twa, t, endTime, state, getters) {
-  const moveDelta = state.moveDelta;
+  /* m/s -> nm -> deg (in deg) */
+  const moveDelta = (state.timeDelta / 1000 / 3600) / 60;
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
   while (t < endTime) {
