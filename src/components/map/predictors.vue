@@ -1,9 +1,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
-import { degToRad, hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
-import { cogTwdToTwa, twaTwdToCog } from '../../lib/nav.js';
-import { PERF_RECOVERY_MULT } from '../../lib/sol.js';
+import { hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
+import { cogPredictor, twaPredictor } from '../../lib/predictors.js';
 
 export default {
   name: 'SteeringPredictors',
@@ -44,12 +43,12 @@ export default {
       },
       predictorDefs: {
         'cog': {
-          'calc': this.cogCalc,
+          'calc': cogPredictor,
           'steer': 'boatCog',
           'path': 'cogPath',
         },
         'twa': {
-          'calc': this.twaCalc,
+          'calc': twaPredictor,
           'steer': 'boatTwa',
           'path': 'twaPath',
         },
@@ -385,65 +384,7 @@ export default {
       return Math.max(Math.min(firstStep, 1), 0);
     },
 
-    cogCalc (pred, cog, t, endTime, state) {
-      const moveDelta = this.moveDelta;
-      let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
-
-      while (t < endTime) {
-        const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
-        if (wind === null) {
-          return null;
-        }
-        const twa = cogTwdToTwa(cog, wind.twd);
-        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
-                      state.perf * state.firstStep;
-        state.firstStep = 1;
-
-        const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
-        const dlon = moveDelta * speed * Math.sin(cog) / lonScaling;
-        const dlat = moveDelta * speed * Math.cos(cog);
-
-        lastLatLng = L.latLng(lastLatLng.lat + dlat,
-                              lastLatLng.lng + dlon);
-        pred.latLngs.push(Object.freeze(lastLatLng));
-        t += this.timeDelta;
-        state.perf = Math.min(state.perf +
-                              PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
-                              1.0);
-      }
-
-      return t;
-    },
-    twaCalc (pred, twa, t, endTime, state) {
-      const moveDelta = this.moveDelta;
-      let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
-
-      while (t < endTime) {
-        const wind = this.$store.getters['weather/latLngWind'](lastLatLng, t);
-        if (wind === null) {
-          return null;
-        }
-        const speed = this.$store.getters['boat/polar/getSpeed'](wind.ms, twa) *
-                      state.perf * state.firstStep;
-        state.firstStep = 1;
-
-        const course = twaTwdToCog(twa, wind.twd);
-        const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
-        const dlon = moveDelta * speed * Math.sin(course) / lonScaling;
-        const dlat = moveDelta * speed * Math.cos(course);
-
-        lastLatLng = L.latLng(lastLatLng.lat + dlat,
-                              lastLatLng.lng + dlon);
-        pred.latLngs.push(Object.freeze(lastLatLng));
-        t += this.timeDelta;
-        state.perf = Math.min(state.perf +
-                              PERF_RECOVERY_MULT * this.timeDelta / Math.abs(speed),
-                              1.0);
-      }
-
-      return t;
-    },
-    dcPredCalc(pred, dummy, t, endTime, state) {
+    dcPredCalc(pred, dummy, t, endTime, state, getters) {
       let commandType = this.currentSteering;
       let commandValue = this[this.predictorDefs[commandType]['steer']];
       let dcIdx = 0;
@@ -476,7 +417,7 @@ export default {
         }
 
         const func = this.predictorDefs[commandType]['calc'];
-        t = func(pred, commandValue, t, nextEnd, state);
+        t = func(pred, commandValue, t, nextEnd, state, getters);
         if (t === null) {
           break;
         }
@@ -502,6 +443,8 @@ export default {
       let state = {
         perf: this.boatPerf,
         firstStep: 1,
+        moveDelta: this.moveDelta,
+        timeDelta: this.timeDelta,
       };
 
       if (this.isTowbackPeriod) {
@@ -512,7 +455,7 @@ export default {
 
       const steer = this.predictorDefs[predictor]['steer'];
       const func = this.predictorDefs[predictor]['calc'];
-      func(pred, this[steer], t, endTime, state);
+      func(pred, this[steer], t, endTime, state, this.$store.getters);
       Object.freeze(pred.latLngs);
 
       return pred;
