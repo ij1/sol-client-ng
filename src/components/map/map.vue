@@ -33,6 +33,7 @@
 
       <default-ui-mode v-if = "map !== null && inDefaultUiMode" :map = "map"/>
       <map-pois v-if = "map !== null"/>
+      <map-isochrones v-if = "map !== null"/>
       <visual-steering v-if = "map !== null && visualSteeringEnabled" :map = "map"/>
       <ruler-paths v-if = "map !== null"/>
       <ruler-tool v-if = "map !== null && rulerEnabled" :map = "map"/>
@@ -83,6 +84,7 @@ import PlayerBoat from './playerboat';
 
 import DefaultUiMode from './defaultuimode.vue';
 import MapPois from './tools/pois.vue';
+import MapIsochrones from './tools/isochrones.vue';
 import VisualSteering from './tools/visualsteering';
 import RulerPaths from './tools/rulerpaths';
 import RulerTool from './tools/rulertool';
@@ -124,6 +126,7 @@ export default {
 
     'default-ui-mode': DefaultUiMode,
     'map-pois': MapPois,
+    'map-isochrones': MapIsochrones,
     'visual-steering': VisualSteering,
     'ruler-paths': RulerPaths,
     'ruler-tool': RulerTool,
