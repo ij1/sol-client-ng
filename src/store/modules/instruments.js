@@ -142,13 +142,19 @@ export default {
       mult: 1,
       calculate: function (data, rootGetters) {
         const gcPath = gcCalc(L.latLng(data.lat.value, data.lon.value),
-                               rootGetters['race/nextWaypoint'].latLng);
+                               rootGetters['ui/currentTarget'].latLng);
         return speedTowardsBearing(data.speed.value,
                                    data.course.value,
                                    gcPath.startBearing);
       },
       minDecimals: 1,
       format: defaultFormat,
+      color: function (instrument, state) {
+        if (state.ui.poi.targetId !== -1) {
+          return 'red';
+        }
+        return null;
+      },
       enabled: {
         value: false,
         type: 'boolean',

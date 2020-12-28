@@ -4,6 +4,7 @@ export default {
   state: {
     pois: [],
     poiId: 0,
+    targetId: -1,
   },
 
   mutations: {
@@ -16,6 +17,9 @@ export default {
       state.pois.push(poi);
     },
     delPoi (state, id) {
+      if (state.targetId === id) {
+        state.targetId = -1;
+      }
       state.pois = state.pois.filter(i => i.id !== id);
     },
     setOpen (state, data) {
@@ -31,6 +35,26 @@ export default {
         if (poi.id === id) {
           poi.showButterfly = !poi.showButterfly;
           return;
+        }
+      }
+    },
+    setTarget (state, id) {
+      if (id === null) {
+        state.targetId = -1;
+      } else {
+        state.targetId = id;
+      }
+    }
+  },
+  getters: {
+    target: (state) => {
+      if (state.targetId === -1) {
+        return null;
+      } else {
+        for (let poi of state.pois) {
+          if (poi.id === state.targetId) {
+            return poi;
+          }
         }
       }
     },

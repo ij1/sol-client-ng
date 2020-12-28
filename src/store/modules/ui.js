@@ -144,6 +144,10 @@ export default {
     allowNavLights: (state, getters, rootState) => {
       return rootState.ui.cfg.nightIcons.value !== 'hull';
     },
+    currentTarget: (state, getters, rootState, rootGetters) => {
+      const poiTgt = rootGetters['ui/poi/target'];
+      return poiTgt === null ? rootGetters['race/nextWaypoint'] : poiTgt;
+    },
   },
   actions: {
     setUiMode({state, commit}, uiMode) {

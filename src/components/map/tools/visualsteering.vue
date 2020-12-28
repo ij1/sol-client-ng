@@ -106,7 +106,7 @@ export default {
     },
     vmc () {
       const gcPath = gcCalc(this.visualPosition,
-                            this.$store.getters['race/nextWaypoint'].latLng);
+                            this.$store.getters['ui/currentTarget'].latLng);
       return speedTowardsBearing(this.sog, this.cog, gcPath.startBearing);
     },
     color () {

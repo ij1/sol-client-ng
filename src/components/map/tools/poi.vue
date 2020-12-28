@@ -19,6 +19,9 @@
           <form @submit.prevent = "onButterfly">
             <button type="submit">{{butterflyButtonText}}</button>
           </form>
+          <form @submit.prevent = "onSelectTarget">
+            <button type="submit">{{selectTargetText}}</button>
+          </form>
           <form @submit.prevent = "onDelete">
             <button type="submit">Delete</button>
           </form>
@@ -88,6 +91,10 @@ export default {
     butterflyButtonText () {
       return this.poi.showButterfly ? "Hide butterfly" : "Show butterfly";
     },
+    selectTargetText () {
+      return this.poiTargetId === this.poi.id ? "Unset target" :
+                                                "Set as target";
+    },
     open () {
       return this.poi.open;
     },
@@ -118,6 +125,7 @@ export default {
     ...mapState({
       wxTime: state => state.weather.time,
       tripleBounds: state => state.map.tripleBounds,
+      poiTargetId: state => state.ui.poi.targetId,
     }),
   },
   methods: {
@@ -126,6 +134,13 @@ export default {
     },
     onButterfly () {
       this.$store.commit('ui/poi/toggleButterfly', this.poi.id);
+    },
+    onSelectTarget () {
+      let tgtId = this.poi.id;
+      if (this.poiTargetId === this.poi.id) {
+        tgtId = null;
+      }
+      this.$store.commit('ui/poi/setTarget', tgtId);
     },
     updatePopupState () {
       if (this.recursionTrap || (typeof this.$refs.popupctrl === "undefined")) {
