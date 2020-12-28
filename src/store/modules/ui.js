@@ -21,6 +21,7 @@ export default {
       showEditor: false,
     },
     showHelp: false,
+    showTools: false,
     uiComponent: Object.assign(
       {
         controlPanel: true,
@@ -118,6 +119,12 @@ export default {
     },
     closeQuickHelp(state) {
       state.showHelp = false;
+    },
+    showTools(state) {
+      state.showTools = true;
+    },
+    closeTools(state) {
+      state.showTools = false;
     },
     configLoaded(state) {
       state.config.loaded = true;

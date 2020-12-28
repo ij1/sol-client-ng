@@ -18,6 +18,11 @@
         Settings
       </button>
       <button
+        @click = "$store.commit('ui/showTools')"
+      >
+        Tools
+      </button>
+      <button
         @click = "$store.commit('ui/showQuickHelp')"
       >
         Quick Help

@@ -6,6 +6,7 @@
     <config-editor/>
     <race-messages-popup/>
     <quick-help-popup/>
+    <tools-popup/>
     <portal-target name="dc-editor-dest"/>
     <portal-target name="boatlist-editor-dest"/>
     <main-view/>
@@ -21,6 +22,7 @@ import NotificationsPopup from './components/notificationspopup.vue';
 import ConfigEditor from './components/config/configeditor.vue';
 import RaceMessagesPopup from './components/racemessagespopup.vue';
 import QuickHelpPopup from './components/quickhelppopup.vue';
+import ToolsPopup from './components/tools/toolspopup.vue';
 import MainView from './components/mainview.vue';
 import WeatherSound from './components/weathersound.vue';
 import GroundAlertSound from './components/groundalertsound.vue';
@@ -34,6 +36,7 @@ export default {
     'config-editor': ConfigEditor,
     'race-messages-popup': RaceMessagesPopup,
     'quick-help-popup': QuickHelpPopup,
+    'tools-popup': ToolsPopup,
     'main-view': MainView,
     'weather-sound': WeatherSound,
     'ground-alert-sound': GroundAlertSound,
