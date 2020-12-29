@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div>Isochrone calculator</div>
     <button
       :disabled = "!allowIsochrones"
       @click.prevent = "isochrone('cog')"
