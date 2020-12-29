@@ -123,12 +123,14 @@ export default {
         const speed = getters['getSpeed'](ms, twa);
         curve.values.push({twa: twa, speed: speed});
 
-        if (speedTowardsBearing(speed, twa, 0) > curve.maxvmg.up.vmg) {
-          curve.maxvmg.up.vmg = speedTowardsBearing(speed, twa, 0);
+        let vmgspeed = speedTowardsBearing(speed, twa, 0);
+        if (vmgspeed > curve.maxvmg.up.vmg) {
+          curve.maxvmg.up.vmg = vmgspeed;
           curve.maxvmg.up.twa = twa;
         }
-        if (speedTowardsBearing(speed, twa, Math.PI) < curve.maxvmg.down.vmg) {
-          curve.maxvmg.down.vmg = speedTowardsBearing(speed, twa, Math.PI);
+        vmgspeed = speedTowardsBearing(speed, twa, Math.PI);
+        if (vmgspeed < curve.maxvmg.down.vmg) {
+          curve.maxvmg.down.vmg = vmgspeed;
           curve.maxvmg.down.twa = twa;
         }
         if (speed > curve.maxspeed.speed) {
