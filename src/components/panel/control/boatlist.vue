@@ -154,6 +154,12 @@ export default {
           align: 'l', visible: this.multiClassRace, localSort: false,
           dummyData: 'class',
         },
+        {
+          dataField: 'log', th: 'LOG\xa0',
+          align: 'r', visible: true, localeSort: false,
+          dummyData: '19999.99',
+          round: 2,
+        },
       ];
     },
     visibleColumnsWithSort () {
