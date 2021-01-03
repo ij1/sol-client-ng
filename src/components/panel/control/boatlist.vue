@@ -108,8 +108,8 @@ export default {
   },
   filters: {
     prettyPrint (value, column) {
-      if (column.dataField === 'dtg' || column.dataField === 'dbl') {
-        return roundToFixed(value, 2);
+      if (typeof column.round !== 'undefined') {
+        return roundToFixed(value, column.round);
       }
       return value;
     }
@@ -141,16 +141,24 @@ export default {
           dataField: 'dtg', th: 'DTF\xa0',
           align: 'r', visible: true, localeSort: false,
           dummyData: '19999.99',
+          round: 2,
         },
         {
           dataField: 'dbl', th: 'DBL\xa0',
           align: 'r', visible: !this.isTimedRace, localeSort: false,
           dummyData: '19999.99',
+          round: 2,
         },
         {
           dataField: 'type', th: 'Boat Type',
           align: 'l', visible: this.multiClassRace, localSort: false,
           dummyData: 'class',
+        },
+        {
+          dataField: 'log', th: 'LOG\xa0',
+          align: 'r', visible: true, localeSort: false,
+          dummyData: '19999.99',
+          round: 2,
         },
       ];
     },
