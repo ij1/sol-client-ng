@@ -49,12 +49,21 @@
         />
       </div>
       <div>
+        <label for = "max-tack">Tack:</label>
+        <span>
+          <input type="radio" id="starboard" value="1" v-model="tack"/>
+          <label for="starboard">Starboard</label>
+          <input type="radio" id="port" value="-1" v-model="tack"/>
+          <label for="port">Port</label>
+        </span>
+      </div>
+      <div>
         <div>Max VMG</div>
         <label for = "vmg-up" class = "vmg-label">&#8593;:</label>
         <vmcvmg-detail
           id = "vmg-up"
           v-if = "curve !== null && twdValid"
-          :twa = "twaSign * curve.maxvmg.up.twa"
+          :twa = "tack * curve.maxvmg.up.twa"
           :val = "curve.maxvmg.up.vmg"
           :twd = "twdRad"
           label = "VMG"
@@ -65,7 +74,7 @@
         <vmcvmg-detail
           id = "vmg-down"
           v-if = "curve !== null && twdValid"
-          :twa = "twaSign * curve.maxvmg.down.twa"
+          :twa = "tack * curve.maxvmg.down.twa"
           :val = "curve.maxvmg.down.vmg"
           :twd = "twdRad"
           label = "VMG"
@@ -75,7 +84,7 @@
         <label for = "bearing">Max BS</label>
         <vmcvmg-detail
           v-if = "curve !== null && twdValid"
-          :twa = "twaSign * curve.maxspeed.twa"
+          :twa = "tack * curve.maxspeed.twa"
           :val = "curve.maxspeed.speed"
           :twd = "twdRad"
           label = "BS"
@@ -104,6 +113,7 @@ export default {
       tws: '',         /* In knots */
       twd: '',
       bearing: '',
+      tack: 1,
     };
   },
   computed: {
@@ -113,10 +123,6 @@ export default {
     },
     twdValid () {
       return isCcValid(this.twd);
-    },
-    twaSign () {
-      return this.fromInstruments && this.boatLoaded !== null &&
-             this.boatTwa < 0 ? -1 : 1;
     },
     twdRad () {
       return this.twdValid ? degToRad(this.twd) : null;
@@ -156,6 +162,7 @@ export default {
     if (this.fromInstruments) {
       this.updateFromInstruments();
     }
+    this.tack = this.boatTwa >= 0 ? 1 : -1;
   },
   methods: {
     updateFromInstruments () {
