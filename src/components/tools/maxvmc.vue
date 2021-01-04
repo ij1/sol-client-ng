@@ -17,6 +17,7 @@
           v-model.trim = "tws"
           maxlength = 8
           size = 8
+          :readonly="fromInstruments"
         />
       </div>
       <div>
@@ -26,6 +27,7 @@
           v-model.trim = "twd"
           maxlength = 8
           size = 8
+          :readonly="fromInstruments"
         />
       </div>
       <div>
@@ -35,6 +37,7 @@
           v-model.trim = "bearing"
           maxlength = 8
           size = 8
+          :readonly="fromInstruments"
         />
       </div>
       <div>
