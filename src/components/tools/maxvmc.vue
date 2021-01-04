@@ -39,7 +39,7 @@
       </div>
       <div>
         <div>Max VMG</div>
-        <label for = "vmg-up">up</label>
+        <label for = "vmg-up" class = "vmg-label">&#8593;:</label>
         <vmcvmg-detail
           id = "vmg-up"
           v-if = "curve !== null && twdValid"
@@ -50,7 +50,7 @@
         />
       </div>
       <div>
-        <label for = "vmg-down">down</label>
+        <label for = "vmg-down" class = "vmg-label">&#8595;:</label>
         <vmcvmg-detail
           id = "vmg-down"
           v-if = "curve !== null && twdValid"
@@ -186,5 +186,9 @@ export default {
 <style scoped>
 .tools-popup {
   width: 10%;
+}
+
+.vmg-label {
+  margin-left: 8px;
 }
 </style>
