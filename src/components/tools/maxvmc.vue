@@ -38,8 +38,10 @@
         />
       </div>
       <div>
-        <label for = "bearing">Max VMG up</label>
+        <div>Max VMG</div>
+        <label for = "vmg-up">up</label>
         <vmcvmg-detail
+          id = "vmg-up"
           v-if = "curve !== null && twdValid"
           :twa = "twaSign * curve.maxvmg.up.twa"
           :val = "curve.maxvmg.up.vmg"
@@ -48,8 +50,9 @@
         />
       </div>
       <div>
-        <label for = "bearing">Max VMG down</label>
+        <label for = "vmg-down">down</label>
         <vmcvmg-detail
+          id = "vmg-down"
           v-if = "curve !== null && twdValid"
           :twa = "twaSign * curve.maxvmg.down.twa"
           :val = "curve.maxvmg.down.vmg"
@@ -58,8 +61,9 @@
         />
       </div>
       <div>
-        <label for = "bearing">Max VMC</label>
+        <label for = "vmc-detail">Max VMC</label>
         <vmcvmg-detail
+          id = "vmc-detail"
           v-if = "maxvmc !== null"
           :twa = "maxvmc.twa"
           :val = "maxvmc.vmc"
