@@ -53,7 +53,7 @@ export default {
       for (let time = state.isochroneTimeStep; time <= state.isochroneTimeLen; time += state.isochroneTimeStep) {
         let isochrone = {
           type: type,
-          color: 'orange',
+          color: type === 'cog' ? 'orange' : 'cyan',
           line: [],
         };
 
