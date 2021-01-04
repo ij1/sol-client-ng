@@ -40,7 +40,7 @@ export default {
 
 <style scoped>
 .tools-popup {
-  width: 15%;
+  width: 18%;
 }
 </style>
 
