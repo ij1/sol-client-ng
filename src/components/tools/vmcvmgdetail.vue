@@ -2,7 +2,7 @@
   <span v-if="valid">
     TWA: {{twaTxt}}&deg;
     COG: {{cogTxt}}&deg;
-    {{label}}: {{valTxt}} kn
+    {{valTxt}} kn
   </span>
 </template>
 
