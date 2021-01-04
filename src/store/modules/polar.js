@@ -1,5 +1,5 @@
 import { degToRad, bsearchLeft, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
-import { speedTowardsBearing } from '../../lib/nav.js';
+import { speedTowardsBearing, cogTwdToTwa } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { SolapiDataError } from '../../lib/solapi.js';
 
@@ -163,6 +163,7 @@ export default {
       let curve = {
         ms: ms,
         knots: knots,
+        interval: degToRad(interval),
         maxvmg: {
           up: { twa: 0, vmg: 0, },
           down: { twa: 0, vmg: 0, },
@@ -223,6 +224,67 @@ export default {
       }
 
       return curve;
+    },
+
+    maxvmc: (state, getters) => (curve, absBearing, twd) => {
+      const windAngleRaw = cogTwdToTwa(absBearing, twd);
+      const windAngle = Math.abs(windAngleRaw);   /* Sign is fixed at the end */
+
+      let startIdx = Math.round(windAngle / curve.interval);
+
+      let res = {
+        vmc: 0,
+        twa: 0,
+      };
+
+      /* We start from the center (windAngle) and process to both directions
+       * due to how the maxBs filter allows terminating as soon as it is no
+       * longer possible to find larger values.
+       */
+      let idx = 0;
+      while (true) {
+        let thisIdx = startIdx + idx * (idx & 1 ? -1 : 1);
+        if ((thisIdx < 0) || (thisIdx >= curve.values.length - 1)) {
+          idx++;
+          continue;
+        }
+
+        let values0 = curve.values[thisIdx];
+        let values1 = curve.values[thisIdx + 1];
+
+        /* Stop when even max is less than what we have so far */
+        if (curve.maxspeed.speed * Math.cos(Math.abs(idx - 1) * curve.interval) < res.vmc) {
+          break;
+        }
+
+        let vmcspeed = speedTowardsBearing(values0.speed, values0.twa, windAngle);
+        if (vmcspeed > res.vmc) {
+          res.vmc = vmcspeed;
+          res.twa = values0.twa;
+        }
+
+        let slope = polarSlope(values0.twa - windAngle, values0.speed,
+                               values1.twa - windAngle, values1.speed);
+        let dy0 = slopeDy(values0.twa - windAngle, slope);
+        let dy1 = slopeDy(values1.twa - windAngle, slope);
+        let sign0 = Math.sign(dy0);
+        let sign1 = Math.sign(dy1);
+        if (sign0 !== 0 && sign0 !== 0 && sign0 !== sign1) {
+          let zeroTwa = findZeroSlope(values0.twa - windAngle,
+                                      values1.twa - windAngle, slope) + windAngle;
+          let speed = getters['getSpeed'](curve.ms, zeroTwa);
+          let vmcspeed = speedTowardsBearing(speed, zeroTwa, windAngle);
+          if (vmcspeed > res.vmc) {
+            res.vmc = vmcspeed;
+            res.twa = zeroTwa;
+          }
+        }
+
+        idx++;
+      }
+
+      res.twa = res.twa * (windAngleRaw < 0 ? -1 : 1);
+      return res;
     },
 
     staticCurves: (state, getters) => {
