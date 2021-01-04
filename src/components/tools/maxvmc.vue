@@ -38,6 +38,17 @@
         />
       </div>
       <div>
+        <label for = "vmc-detail">Max VMC</label>
+        <vmcvmg-detail
+          id = "vmc-detail"
+          v-if = "maxvmc !== null"
+          :twa = "maxvmc.twa"
+          :val = "maxvmc.vmc"
+          :twd = "twdRad"
+          label = "VMC"
+        />
+      </div>
+      <div>
         <div>Max VMG</div>
         <label for = "vmg-up" class = "vmg-label">&#8593;:</label>
         <vmcvmg-detail
@@ -58,17 +69,6 @@
           :val = "curve.maxvmg.down.vmg"
           :twd = "twdRad"
           label = "VMG"
-        />
-      </div>
-      <div>
-        <label for = "vmc-detail">Max VMC</label>
-        <vmcvmg-detail
-          id = "vmc-detail"
-          v-if = "maxvmc !== null"
-          :twa = "maxvmc.twa"
-          :val = "maxvmc.vmc"
-          :twd = "twdRad"
-          label = "VMC"
         />
       </div>
       <div>
