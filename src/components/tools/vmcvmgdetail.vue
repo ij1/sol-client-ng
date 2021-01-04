@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <span v-if="valid">
-      TWA: {{twaTxt}}&deg;
-      COG: {{cogTxt}}&deg;
-      {{label}}: {{valTxt}} kts
-    </span>
-  </div>
+  <span v-if="valid">
+    TWA: {{twaTxt}}&deg;
+    COG: {{cogTxt}}&deg;
+    {{label}}: {{valTxt}} kts
+  </span>
 </template>
 
 <script>
