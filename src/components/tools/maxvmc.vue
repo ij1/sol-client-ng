@@ -162,7 +162,7 @@ export default {
     if (this.fromInstruments) {
       this.updateFromInstruments();
     }
-    this.tack = this.boatTwa >= 0 ? 1 : -1;
+    this.updateTack();
   },
   methods: {
     updateFromInstruments () {
@@ -174,6 +174,9 @@ export default {
       const gcPath = gcCalc(this.visualPosition, this.currentTarget.latLng);
       this.bearing = roundToFixed(radToDeg(gcPath.startBearing), 3);
     },
+    updateTack () {
+      this.tack = this.boatTwa >= 0 ? 1 : -1;
+    },
   },
   watch: {
     boatTws () {
@@ -184,6 +187,12 @@ export default {
     currentTarget () {
       if (this.fromInstruments) {
         this.updateFromInstruments();
+      }
+    },
+    fromInstruments () {
+      if (this.fromInstruments) {
+        this.updateFromInstruments();
+        this.updateTack();
       }
     },
   },
