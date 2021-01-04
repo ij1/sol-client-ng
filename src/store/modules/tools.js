@@ -10,8 +10,8 @@ export default {
     isochroneId: 0,
     isochroneCalculating: null,
     isochroneAngleStep: 2,
-    isochroneTimeStep: hToMsec(1),
-    isochroneTimeLen: hToMsec(24),
+    isochroneTimeStep: 1,
+    isochroneTimeLen: 24,
   },
 
   mutations: {
@@ -37,6 +37,9 @@ export default {
       commit('isochroneCalculationState', type);
       commit('clearIsochrones', type);
 
+      const timeStep = hToMsec(state.isochroneTimeStep);
+      const timeLen = hToMsec(state.isochroneTimeLen);
+
       let startTime = !rootGetters['race/isTowbackPeriod'] ?
                       rootGetters['boat/time'] :
                       rootState.race.info.startTime;
@@ -50,7 +53,7 @@ export default {
       let prev = null;
       let lastLatLng;
 
-      for (let time = state.isochroneTimeStep; time <= state.isochroneTimeLen; time += state.isochroneTimeStep) {
+      for (let time = timeStep; time <= timeLen; time += timeStep) {
         let isochrone = {
           type: type,
           color: type === 'cog' ? 'orange' : 'cyan',
@@ -76,12 +79,12 @@ export default {
           };
           if (type === 'cog') {
             cogPredictor(pred, degToRad(angle),
-                         startTime, startTime + state.isochroneTimeStep,
+                         startTime, startTime + timeStep,
                          predState, rootGetters);
           } else if (type === 'twa') {
             const twa = angle - 180
             twaPredictor(pred, degToRad(twa),
-                       startTime, startTime + state.isochroneTimeStep,
+                       startTime, startTime + timeStep,
                        predState, rootGetters);
           }
           let latLng = pred.latLngs[pred.latLngs.length - 1];
@@ -93,7 +96,7 @@ export default {
         commit('addIsochrone', isochrone);
 
         prev = isochrone;
-        startTime += state.isochroneTimeStep;
+        startTime += timeStep;
 
         await lowPrioTask.idle();
       }
