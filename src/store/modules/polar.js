@@ -15,6 +15,57 @@ function diffCurves(prev, next) {
   return maxDiff;
 }
 
+function polarSlope (twa0, value0, twa1, value1) {
+  const dy = value1 - value0;
+  const dx = twa1 - twa0;
+  const k = dy / dx;
+
+  return {
+    k: k,
+    b: value0 - k * twa0,
+  };
+}
+
+/* We use the dx from polar coordinate equation here (our coordinates are
+ * rotated compared with the mathematical axis, thus dx is the correct one):
+ *  r'(x)*cos(x) - r(x)*sin(x)
+ *  k*cos(x) - (k*x+b)*sin(x)
+ */
+function slopeDy (twa, slope) {
+  return slope.k * Math.cos(twa) - (slope.k * twa + slope.b) * Math.sin(twa);
+}
+
+function findZeroSlope (twa0, twa1, slope, acc=null) {
+  let min = twa0;
+  let max = twa1;
+  if (acc === null) {
+    acc = degToRad(0.0005);
+  }
+
+  const firstVal = slopeDy(min, slope);
+  if (firstVal === 0) {
+    return min;
+  }
+
+  let dir = 1;
+  if (firstVal > 0) {
+    dir = -1;
+  }
+
+  while (max - min > acc) {
+    let mid = (max + min) / 2;
+    let val = slopeDy(mid, slope) * dir;
+    if (val === 0) {
+      return mid;
+    } else if (val < 0) {
+      min = mid;
+    } else {
+      max = mid;
+    }
+  }
+  return min;
+}
+
 export default {
   namespaced: true,
 
@@ -121,10 +172,14 @@ export default {
         },
         values: [],
       }
+
+      let prevSpeed = 0;
+      let prevTwa = 0;
+
       for (let twad = 0; twad <= 180; twad += interval) {
         const twa = degToRad(twad);
 
-        const speed = getters['getSpeed'](ms, twa);
+        let speed = getters['getSpeed'](ms, twa);
         curve.values.push({twa: twa, speed: speed});
 
         let vmgspeed = speedTowardsBearing(speed, twa, 0);
@@ -140,8 +195,32 @@ export default {
           curve.maxspeed.speed = speed;
           curve.maxspeed.twa = twa;
         }
+
+        /* Refine maxvmg calculations */
+        if (twad > 0) {
+          let slope = polarSlope(prevTwa, prevSpeed, twa, speed);
+          let dy0 = slopeDy(prevTwa, slope);
+          let dy1 = slopeDy(twa, slope);
+          let sign0 = Math.sign(dy0);
+          let sign1 = Math.sign(dy1);
+
+          if (sign0 !== 0 && sign0 !== 0 && sign0 !== sign1) {
+            let zeroTwa = findZeroSlope(prevTwa, twa, slope);
+            speed = getters['getSpeed'](ms, zeroTwa);
+            vmgspeed = speedTowardsBearing(speed, zeroTwa, 0);
+            if (vmgspeed > curve.maxvmg.up.vmg) {
+              curve.maxvmg.up.vmg = vmgspeed;
+              curve.maxvmg.up.twa = zeroTwa;
+            }
+            if (vmgspeed < curve.maxvmg.down.vmg) {
+              curve.maxvmg.down.vmg = vmgspeed;
+              curve.maxvmg.down.twa = zeroTwa;
+            }
+          }
+        }
+        prevSpeed = speed;
+        prevTwa = twa;
       }
-      // ADDME: refine maxvmg calculations!
 
       return curve;
     },
