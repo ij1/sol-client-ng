@@ -128,7 +128,6 @@ export default {
           curve.maxvmg.up.vmg = vmgspeed;
           curve.maxvmg.up.twa = twa;
         }
-        vmgspeed = speedTowardsBearing(speed, twa, Math.PI);
         if (vmgspeed < curve.maxvmg.down.vmg) {
           curve.maxvmg.down.vmg = vmgspeed;
           curve.maxvmg.down.twa = twa;
