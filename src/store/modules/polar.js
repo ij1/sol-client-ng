@@ -103,8 +103,12 @@ export default {
       return linearInterpolate(twaFactor, a, b);
     },
 
-    curve: (state, getters) => (knots, interval) => {
+    curve: (state, getters) => (knots, interval = null) => {
       const ms = knots / MS_TO_KNT;
+      if (interval === null) {
+        interval = state.twaInterval;
+      }
+
       let curve = {
         ms: ms,
         knots: knots,
@@ -150,7 +154,7 @@ export default {
       let maxBs = 0;
       let prevCurve = null;
       for (let knots of getters.windKeys) {
-        const curve = getters['curve'](knots, state.twaInterval)
+        const curve = getters['curve'](knots)
         if ((knots <= 30) || (maxBs * 1.02 < state.maxBs.speed) ||
             (prevCurve !== null && diffCurves(prevCurve, curve) > 0.02)) {
           res.push(curve);
@@ -165,7 +169,7 @@ export default {
         return null;
       }
       const knots = rootState.boat.instruments.tws.value * MS_TO_KNT;
-      return getters['curve'](knots, state.twaInterval);
+      return getters['curve'](knots);
     },
   },
   actions: {
