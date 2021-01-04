@@ -8,6 +8,7 @@
     v-if = "showTools"
   >
     <isochrones-tool/>
+    <maxvmc-tool/>
   </popup-window>
 </template>
 
@@ -15,12 +16,14 @@
 import { mapState } from 'vuex';
 import PopupWindow from '../popupwindow.vue';
 import IsochronesTool from './isochrones.vue';
+import MaxvmcTool from './maxvmc.vue';
 
 export default {
   name: 'ToolsPopup',
   components: {
     'popup-window': PopupWindow,
     'isochrones-tool': IsochronesTool,
+    'maxvmc-tool': MaxvmcTool,
   },
   computed: {
     ...mapState({
@@ -37,6 +40,6 @@ export default {
 
 <style scoped>
 .tools-popup {
-  width: 10%;
+  width: 15%;
 }
 </style>
