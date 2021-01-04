@@ -423,7 +423,8 @@ export default {
     predCalc (predictor) {
       let t = this.timeOrigo;
       const endTime = t + this.predictorLenMsec;
-      let lastLatLng = this.visualPosition;
+      /* Use safe due to freeze */
+      let lastLatLng = this.safeLatLng(this.visualPosition);
 
       let pred = {
         time: t,
@@ -503,6 +504,10 @@ export default {
         }
         return markers;
       }
+    },
+    /* Creates a copy of latLng (to be freezed) */
+    safeLatLng (latLng) {
+      return L.latLng(latLng.lat, latLng.lng);
     },
     recalc () {
       if (this.boatId === null) {
