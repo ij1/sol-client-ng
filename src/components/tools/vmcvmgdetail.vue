@@ -1,13 +1,13 @@
 <template>
   <span v-if="valid">
-    TWA: {{twaTxt}}&deg;
-    COG: {{cogTxt}}&deg;
+    TWA={{twaTxt}}&deg;
+    COG={{cogTxt}}&deg;
     {{valTxt}} kn
   </span>
 </template>
 
 <script>
-import { twaTwdToCog } from '../../lib/nav.js';
+import { twaTwdToCog, twaTextPrefix } from '../../lib/nav.js';
 import { radToDeg } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 
@@ -36,7 +36,9 @@ export default {
       return this.twa !== null && this.twd !== null && this.value !== null;
     },
     twaTxt () {
-      return this.valid ? roundToFixed(radToDeg(this.twa), 3): '';
+      return this.valid ? twaTextPrefix(this.twa) +
+                          roundToFixed(radToDeg(this.twa), 3) :
+                          '';
     },
     cogTxt () {
       return this.valid ? roundToFixed(radToDeg(twaTwdToCog(this.twa, this.twd)), 3): '';

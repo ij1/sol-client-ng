@@ -38,7 +38,7 @@
         />
       </div>
       <div>
-        <label for = "vmc-detail">Max VMC</label>
+        <label for = "vmc-detail">Max VMC:</label>
         <vmcvmg-detail
           id = "vmc-detail"
           v-if = "maxvmc !== null"
@@ -81,7 +81,7 @@
         />
       </div>
       <div>
-        <label for = "bearing">Max BS</label>
+        <label for = "bearing">Max BS:</label>
         <vmcvmg-detail
           v-if = "curve !== null && twdValid"
           :twa = "tack * curve.maxspeed.twa"
