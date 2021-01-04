@@ -7,20 +7,20 @@
         @click.prevent = "isochrone('cog')"
         @keydown.enter.prevent = "isochrone('cog')"
       >
-        COG isochrones
+        COG
       </button>
       <button
         :disabled = "!allowIsochrones"
         @click.prevent = "isochrone('twa')"
         @keydown.enter.prevent = "isochrone('twa')"
       >
-        TWA isochrones
+        TWA
       </button>
       <button
         @click.prevent = "clearIsochrones"
         @keydown.enter.prevent = "clearIsochrones"
       >
-        Clear isochrones
+        Clear
       </button>
     </div>
   </div>
