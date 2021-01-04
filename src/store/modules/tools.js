@@ -27,7 +27,12 @@ export default {
     isochroneCalculationState(state, type) {
       state.isochroneCalculating = type;
     },
-    
+    isochroneLen(state, len) {
+      state.isochroneTimeLen = len;
+    },
+    isochroneStep(state, step) {
+      state.isochroneTimeStep = step;
+    },
   },
   actions: {
     async calculateIsochrone ({state, rootGetters, rootState, commit}, type) {
