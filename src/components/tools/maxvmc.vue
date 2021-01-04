@@ -1,80 +1,82 @@
 <template>
   <div>
-    <div>Max calculator</div>
-    <div>
-      <label for = "fromInstruments">From instruments:</label>
-      <input
-        id = "fromInstruments"
-        type = "checkbox"
-        v-model = "fromInstruments"
-      />
-    </div>
-    <div>
-      <label for = "tws">TWS:</label>
-      <input
-        id = "tws"
-        v-model.trim = "tws"
-        maxlength = 8
-        size = 8
-      />
-    </div>
-    <div>
-      <label for = "twd">TWD:</label>
-      <input
-        id = "twd"
-        v-model.trim = "twd"
-        maxlength = 8
-        size = 8
-      />
-    </div>
-    <div>
-      <label for = "bearing">Bearing:</label>
-      <input
-        id = "bearing"
-        v-model.trim = "bearing"
-        maxlength = 8
-        size = 8
-      />
-    </div>
-    <div>
-      <label for = "bearing">Max VMG up</label>
-      <vmcvmg-detail
-        v-if = "curve !== null && twdValid"
-        :twa = "twaSign * curve.maxvmg.up.twa"
-        :val = "curve.maxvmg.up.vmg"
-        :twd = "twdRad"
-        label = "VMG"
-      />
-    </div>
-    <div>
-      <label for = "bearing">Max VMG down</label>
-      <vmcvmg-detail
-        v-if = "curve !== null && twdValid"
-        :twa = "twaSign * curve.maxvmg.down.twa"
-        :val = "curve.maxvmg.down.vmg"
-        :twd = "twdRad"
-        label = "VMG"
-      />
-    </div>
-    <div>
-      <label for = "bearing">Max VMC</label>
-      <vmcvmg-detail
-        v-if = "maxvmc !== null"
-        :twa = "maxvmc.twa"
-        :val = "maxvmc.vmc"
-        :twd = "twdRad"
-        label = "VMC"
-      />
-    </div>
-    <div>
-      <label for = "bearing">Max BS</label>
-      <vmcvmg-detail
-        v-if = "curve !== null && twdValid"
-        :twa = "twaSign * curve.maxspeed.twa"
-        :val = "curve.maxspeed.speed"
-        :twd = "twdRad"
-        label = "BS"
-      />
+    <div class = "tools-header">Max calculator</div>
+    <div class = "tools-content">
+      <div>
+        <label for = "fromInstruments">From instruments:</label>
+        <input
+          id = "fromInstruments"
+          type = "checkbox"
+          v-model = "fromInstruments"
+        />
+      </div>
+      <div>
+        <label for = "tws">TWS:</label>
+        <input
+          id = "tws"
+          v-model.trim = "tws"
+          maxlength = 8
+          size = 8
+        />
+      </div>
+      <div>
+        <label for = "twd">TWD:</label>
+        <input
+          id = "twd"
+          v-model.trim = "twd"
+          maxlength = 8
+          size = 8
+        />
+      </div>
+      <div>
+        <label for = "bearing">Bearing:</label>
+        <input
+          id = "bearing"
+          v-model.trim = "bearing"
+          maxlength = 8
+          size = 8
+        />
+      </div>
+      <div>
+        <label for = "bearing">Max VMG up</label>
+        <vmcvmg-detail
+          v-if = "curve !== null && twdValid"
+          :twa = "twaSign * curve.maxvmg.up.twa"
+          :val = "curve.maxvmg.up.vmg"
+          :twd = "twdRad"
+          label = "VMG"
+        />
+      </div>
+      <div>
+        <label for = "bearing">Max VMG down</label>
+        <vmcvmg-detail
+          v-if = "curve !== null && twdValid"
+          :twa = "twaSign * curve.maxvmg.down.twa"
+          :val = "curve.maxvmg.down.vmg"
+          :twd = "twdRad"
+          label = "VMG"
+        />
+      </div>
+      <div>
+        <label for = "bearing">Max VMC</label>
+        <vmcvmg-detail
+          v-if = "maxvmc !== null"
+          :twa = "maxvmc.twa"
+          :val = "maxvmc.vmc"
+          :twd = "twdRad"
+          label = "VMC"
+        />
+      </div>
+      <div>
+        <label for = "bearing">Max BS</label>
+        <vmcvmg-detail
+          v-if = "curve !== null && twdValid"
+          :twa = "twaSign * curve.maxspeed.twa"
+          :val = "curve.maxspeed.speed"
+          :twd = "twdRad"
+          label = "BS"
+        />
+      </div>
     </div>
   </div>
 </template>

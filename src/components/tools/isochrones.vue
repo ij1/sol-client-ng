@@ -1,26 +1,28 @@
 <template>
   <div>
-    <div>Isochrone calculator</div>
-    <button
-      :disabled = "!allowIsochrones"
-      @click.prevent = "isochrone('cog')"
-      @keydown.enter.prevent = "isochrone('cog')"
-    >
-      COG isochrones
-    </button>
-    <button
-      :disabled = "!allowIsochrones"
-      @click.prevent = "isochrone('twa')"
-      @keydown.enter.prevent = "isochrone('twa')"
-    >
-      TWA isochrones
-    </button>
-    <button
-      @click.prevent = "clearIsochrones"
-      @keydown.enter.prevent = "clearIsochrones"
-    >
-      Clear isochrones
-    </button>
+    <div class = "tools-header">Isochrone calculator</div>
+    <div class = "tools-content">
+      <button
+        :disabled = "!allowIsochrones"
+        @click.prevent = "isochrone('cog')"
+        @keydown.enter.prevent = "isochrone('cog')"
+      >
+        COG isochrones
+      </button>
+      <button
+        :disabled = "!allowIsochrones"
+        @click.prevent = "isochrone('twa')"
+        @keydown.enter.prevent = "isochrone('twa')"
+      >
+        TWA isochrones
+      </button>
+      <button
+        @click.prevent = "clearIsochrones"
+        @keydown.enter.prevent = "clearIsochrones"
+      >
+        Clear isochrones
+      </button>
+    </div>
   </div>
 </template>
 

@@ -43,3 +43,16 @@ export default {
   width: 15%;
 }
 </style>
+
+<style>
+.tools-header {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 5px;
+  margin-left: 0px;
+}
+
+.tools-content {
+  font-size: 12px;
+}
+</style>
