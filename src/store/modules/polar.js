@@ -241,11 +241,12 @@ export default {
        * due to how the maxBs filter allows terminating as soon as it is no
        * longer possible to find larger values.
        */
-      let idx = 0;
+      let i = 1;
       while (true) {
-        let thisIdx = startIdx + idx * (idx & 1 ? -1 : 1);
+        let delta = (i >> 1) * (i & 1 ? -1 : 1);
+        let thisIdx = startIdx + delta;
         if ((thisIdx < 0) || (thisIdx >= curve.values.length - 1)) {
-          idx++;
+          i++;
           continue;
         }
 
@@ -253,7 +254,7 @@ export default {
         let values1 = curve.values[thisIdx + 1];
 
         /* Stop when even max is less than what we have so far */
-        if (curve.maxspeed.speed * Math.cos(Math.abs(idx - 1) * curve.interval) < res.vmc) {
+        if (curve.maxspeed.speed * Math.cos(Math.abs(delta - 1) * curve.interval) < res.vmc) {
           break;
         }
 
@@ -280,7 +281,7 @@ export default {
           }
         }
 
-        idx++;
+        i++;
       }
 
       res.twa = res.twa * (windAngleRaw < 0 ? -1 : 1);
