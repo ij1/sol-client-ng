@@ -24,7 +24,16 @@ export default {
   computed: {
     ...mapState({
       isochrones: state => state.ui.tools.isochrones,
+      visualLngOffset: state => state.boat.visualLngOffset,
     }),
+  },
+  watch: {
+    visualLngOffset (newOffset) {
+      if (this.isochrones.length === 0) {
+        return;
+      }
+      this.$store.commit('ui/tools/relocateIsochrones', newOffset);
+    },
   },
 }
 </script>

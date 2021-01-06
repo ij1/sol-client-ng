@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { hToMsec, secToMsec, degToRad } from '../../lib/utils.js';
+import { hToMsec, secToMsec, degToRad, latLngArrayAddOffset } from '../../lib/utils.js';
 import { cogPredictor, twaPredictor } from '../../lib/predictors.js';
 import { lowPrioTask } from '../../lib/lowprio.js';
 
@@ -33,6 +33,14 @@ export default {
     isochroneStep(state, step) {
       state.isochroneTimeStep = step;
     },
+    relocateIsochrones(state, newOffset) {
+      for (let i of state.isochrones) {
+        if (i.visualOffset !== newOffset) {
+          i.line = latLngArrayAddOffset(i.line, newOffset - i.visualOffset);
+          i.visualOffset = newOffset;
+        }
+      }
+    },
   },
   actions: {
     async calculateIsochrone ({state, rootGetters, rootState, commit}, type) {
@@ -62,6 +70,7 @@ export default {
         let isochrone = {
           type: type,
           color: type === 'cog' ? 'orange' : 'cyan',
+          visualOffset: rootState.boat.visualLngOffset,
           line: [],
         };
 
