@@ -241,11 +241,16 @@ export default {
        * due to how the maxBs filter allows terminating as soon as it is no
        * longer possible to find larger values.
        */
+      const maxDelta = Math.max(curve.values.length - startIdx, startIdx);
       let i = 1;
       while (true) {
         let delta = (i >> 1) * (i & 1 ? -1 : 1);
         let thisIdx = startIdx + delta;
         if ((thisIdx < 0) || (thisIdx >= curve.values.length - 1)) {
+          /* Make sure the loop terminates robustly */
+          if (delta > maxDelta) {
+            break;
+          }
           i++;
           continue;
         }
