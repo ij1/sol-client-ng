@@ -259,7 +259,7 @@ export default {
         let values1 = curve.values[thisIdx + 1];
 
         /* Stop when even max is less than what we have so far */
-        if (curve.maxspeed.speed * Math.cos(Math.abs(delta - 1) * curve.interval) < res.vmc) {
+        if (curve.maxspeed.speed * Math.cos(Math.max(delta - 1, 0) * curve.interval) < res.vmc) {
           break;
         }
 
