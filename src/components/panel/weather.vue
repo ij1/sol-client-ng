@@ -80,7 +80,7 @@
       </span>
       <span class = "text-placeholder-container">
         <span class = "text-dummy">
-          (+9d29.9h)
+          (+9d29.99h)
         </span>
         <span
           class = "text-real"
@@ -342,10 +342,10 @@ export default {
     formatOffset (value) {
       const h = msecToH(value);
       let d = msecToDays(value);
-      let hTxt = roundToFixed(h - Math.floor(d) * 24, 1);
-      if (hTxt === '24.0') {
+      let hTxt = roundToFixed(h - Math.floor(d) * 24, 2);
+      if (hTxt === '24.00') {
         d += 1;
-        hTxt = '0.0';
+        hTxt = '0.00';
       }
       return (d < 1 ? '' : (Math.floor(d) + 'd')) + hTxt + 'h';
     }
