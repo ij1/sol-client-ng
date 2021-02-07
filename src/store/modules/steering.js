@@ -49,7 +49,7 @@ export default {
       predictorDcs: {
         value: false,
         type: 'boolean',
-        cfgText: 'Show DC-aware predictor',
+        cfgText: 'Show DC-aware predictor (EXPERIMENTAL)',
       },
       predictorLen: {
         value: '6 h',
