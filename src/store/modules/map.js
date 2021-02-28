@@ -190,6 +190,7 @@ export default {
       rootState.race.fleet.searchTreeStamp;
       rootState.weather.data.updated;
       rootState.ui.cfg.nightIcons.value;
+      rootGetters['ui/isDark'];
       state.zoom;
       state.cfg.fleetBoatMode.value;
       rootGetters['race/fleet/selectedFiltered'];
