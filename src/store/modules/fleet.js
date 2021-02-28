@@ -489,6 +489,11 @@ export default {
             b = Math.round(b * correctionFactor);
           }
         }
+        if (r + g > 2 * colorCorrectionLimitWhite) {
+          const deSaturationFactor = (colorCorrectionLimitWhite * 2) / (r + g);
+          r = Math.round(r * deSaturationFactor);
+          g = Math.round(g * deSaturationFactor);
+        }
       }
       return 'rgba(' + r + ',' + g + ',' + b + ', 0.8)';
     },
