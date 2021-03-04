@@ -18,6 +18,7 @@ export const darkSeaColor = '#00004f';
 export const DARK_SEA_BLUE = 79;
 
 export const SERVER_TICK_SAFETY_SECS = 15;
+export const SOL_TICK_PROCESSING = 1000;
 
 /* Returns true if the boat is ok to draw / control */
 export function solBoatPolicy(boatname, rootGetters) {

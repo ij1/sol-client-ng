@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { radToDeg, degToRad, UTCToMsec, minToMsec } from '../../lib/utils.js';
 import { minTurnAngle } from '../../lib/nav.js';
-import { solBoatPolicy, PR_MARK_BOAT } from '../../lib/sol.js';
+import { solBoatPolicy, PR_MARK_BOAT, SOL_TICK_PROCESSING } from '../../lib/sol.js';
 import polarModule from './polar';
 import steeringModule from './steering';
 import instrumentModule from './instruments';
@@ -26,6 +26,7 @@ export default {
     position: null,
     lastRoundedMark: 0,
     finishTime: null,
+    tickLen: null,
     currentSteering: 'twa',
     currentSteeringInvalid: false,
     /*
@@ -74,6 +75,9 @@ export default {
       if (state.visualLngOffset != newOffset) {
         state.visualLngOffset = newOffset;
       }
+    },
+    updateTickLen (state, newTick) {
+      state.tickLen = newTick;
     },
 
     degradedToChatless (state, chatless) {
@@ -239,6 +243,43 @@ export default {
           delta: oldTime > 0 ? state.instruments.time.value - oldTime : null,
         }, {root: true});
 
+        if (state.instruments.time.value == oldTime) {
+          if (state.tickLen !== null) {
+            if (state.instruments.time.value + state.tickLen < now) {
+              dispatch('diagnostics/add', 'net: boat fetched too early', {root: true});
+            } else {
+              if (rootState.diagnostics.cfg.extraNetDebug.value) {
+                dispatch('diagnostics/add', 'net: boat expected early fetch', {root: true});
+              }
+            }
+          }
+        } else {
+          let tickLen = null;
+          if (!firstFetch && state.finishTime === null && oldTime > 0) {
+            tickLen = state.instruments.time.value - oldTime;
+            if (tickLen < 0 || tickLen > 35000) {
+              dispatch('diagnostics/add', 'net: boat rejected tick len ' +
+                       tickLen, {root: true});
+              tickLen = null;
+            }
+            if (tickLen !== null) {
+              if (state.tickLen !== null &&
+                  Math.abs(tickLen - state.tickLen) > 5000) {
+                dispatch('diagnostics/add', 'net: boat tick len changed from ' +
+                         state.tickLen + ' to ' + tickLen, {root: true});
+              }
+              commit('updateTickLen', tickLen);
+            }
+          }
+
+          if (rootState.diagnostics.cfg.extraNetDebug.value) {
+            const latency = now - state.instruments.time.value;
+            dispatch('diagnostics/add', 'net: boat fetch latency ' + latency +
+                     (tickLen !== null ? (' tick length: ' + tickLen) : ''),
+                     {root: true});
+          }
+        }
+
         if (typeof boatData.lmi !== 'undefined') {
           let lmi = parseInt(boatData.lmi);
           if (Number.isFinite(lmi)) {
@@ -277,7 +318,29 @@ export default {
         /* Backup fetch if boat API is down, still try the others */
         dispatch('race/fetchRaceComponents', null, {root: true});
       } finally {
-        solapiRetryDispatch(dispatch, 'fetch', undefined, 10000);
+        const now = rootGetters['time/now']();
+
+        let next_fetch = state.instruments.time.value +
+                         10000 + SOL_TICK_PROCESSING;
+        let delay = next_fetch - now;
+
+        if (state.finishTime !== null) {
+          delay = 30000;
+        } else if (state.tickLen === null) {
+          delay = 10000;
+        } else if (delay < 0 && state.tickLen > 15000) {
+          delay += Math.ceil(delay / -10000) * 10000;
+          delay = Math.max(delay, 1000);
+        } else {
+          delay = Math.max(delay, delay < -3000 ? 10000 : 1000);
+          delay = Math.min(delay, 15000);
+        }
+
+        if (delay < 3000 || rootState.diagnostics.cfg.extraNetDebug.value) {
+            dispatch('diagnostics/add', 'net: boat fetch delay ' + delay,
+                     {root: true});
+        }
+        solapiRetryDispatch(dispatch, 'fetch', undefined, delay);
       }
     },
   },
