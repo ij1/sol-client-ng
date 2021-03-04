@@ -337,9 +337,10 @@ export default {
           delay = Math.min(delay, 15000);
         }
 
-        if (delay < 3000 || rootState.diagnostics.cfg.extraNetDebug.value) {
-            dispatch('diagnostics/add', 'net: boat fetch delay ' + delay,
-                     {root: true});
+        if (delay < 3000 || delay > 40000 ||
+            rootState.diagnostics.cfg.extraNetDebug.value) {
+          dispatch('diagnostics/add', 'net: boat fetch delay ' + delay,
+                   {root: true});
         }
         solapiRetryDispatch(dispatch, 'fetch', undefined, delay);
       }
