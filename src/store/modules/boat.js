@@ -193,7 +193,12 @@ export default {
 
         boatData.boat.finish_time = UTCToMsec(boatData.boat.finish_time);
         if (boatData.boat.finish_time !== null) {
-          boatData.boat.time = Math.max(boatData.boat.finish_time, now);
+          /* Boat update timestamp does not update after finish */
+          let newTime = Math.max(boatData.boat.finish_time, now)
+          if (!firstFetch && oldTime > 0) {
+            newTime = Math.max(newTime, oldTime);
+          }
+          boatData.boat.time = newTime;
         } else {
           /* Rough clock correctness check (compare to server timestamp) */
           if (Math.abs(now - boatData.boat.time) > minToMsec(2)) {
