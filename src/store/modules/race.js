@@ -3,7 +3,7 @@ import rbush from 'rbush';
 import raceMessageModule from './racemessages.js';
 import fleetModule from './fleet.js';
 import { solapiRetryDispatch, SolapiError } from '../../lib/solapi.js';
-import { degToRad, minToMsec, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
+import { degToRad, secToMsec, minToMsec, hToMsec, UTCToMsec, msecToUTCString } from '../../lib/utils.js';
 import { minTurnAngle, loxoCalc } from '../../lib/nav.js';
 
 export default {
@@ -288,8 +288,8 @@ export default {
         }
         commit('solapi/lock', 'raceinfo', {root: true});
         if (!state.loaded) {
-          commit('boat/instruments/initTime', now, {root: true});
-          commit('weather/initTime', now, {root: true});
+          commit('boat/instruments/initTime', now - secToMsec(30), {root: true});
+          commit('weather/initTime', now - secToMsec(30), {root: true});
         }
 
         let raceInfo = await dispatch('solapi/get', getDef, {root: true});
