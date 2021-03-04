@@ -332,6 +332,7 @@ export default {
           delay += Math.ceil(delay / -10000) * 10000;
           delay = Math.max(delay, 1000);
         } else {
+          /* Switch to 10s interval at +3s */
           delay = Math.max(delay, delay < -3000 ? 10000 : 1000);
           delay = Math.min(delay, 15000);
         }
