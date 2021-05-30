@@ -9,6 +9,7 @@
     @submit = "onSubmit"
     :can-submit = "canSubmit"
     v-if = "$store.state.ui.config.showEditor"
+    @popupscroll = "onScroll"
   >
     <template v-slot:extrabuttons>
       <button
@@ -48,6 +49,7 @@
             v-if = "cfg.cfgObj.type === 'color'"
             :cfg = "cfg.cfgObj"
             :value.sync = "config[cfg.idx]"
+            :scrollStamp = "scrollStamp"
           />
         </div>
       </div>
@@ -78,6 +80,7 @@ export default {
   },
   data () {
     return {
+      scrollStamp: 0,
       default: [],
       config: [],
       committed: [],
@@ -280,6 +283,9 @@ export default {
       } catch(err) {
         // NOP
       }
+    },
+    onScroll () {
+      this.scrollStamp = Date.now();
     },
   },
   watch: {

@@ -9,11 +9,14 @@
       <photoshop-picker
         v-if = "pickerOpen"
         id = "color-picker"
+        :style = "{top: pickerTop + 'px'}"
         :head = "cfg.cfgText"
         :value = "value"
         @input = "doInput"
         @ok = "pickerOpen = false"
         @cancel = "doCancel"
+        ref = "color-picker"
+        @hook:mounted="pickerMounted"
       />
     </span>
   </div>
@@ -44,10 +47,15 @@ export default {
       type: String,
       required: true,
     },
+    scrollStamp: {
+      type: Number,
+      required: true,
+    },
   },
   data () {
     return {
       pickerOpen: false,
+      pickerTop: 0,
       oldValue: null,
     }
   },
@@ -59,11 +67,31 @@ export default {
       if (!this.pickerOpen) {
         this.oldValue = this.value;
       }
+      this.setPosition();
       this.pickerOpen = true;
+    },
+    setPosition () {
+      const r = this.$el.getBoundingClientRect();
+      const p = this.$el.offsetParent.getBoundingClientRect();
+      this.pickerTop = r.top - p.top + 3;
+    },
+    pickerMounted () {
+      const p = this.$el.offsetParent.getBoundingClientRect();
+      const ch = this.$refs['color-picker'].$el.clientHeight;
+      if (this.pickerTop + ch > p.height - 16) {
+        this.pickerTop = p.height - 16 - ch;
+      }
     },
     doCancel () {
       this.pickerOpen = false;
       this.$emit('update:value', this.oldValue);
+    },
+  },
+  watch: {
+    scrollStamp () {
+      if (this.pickerOpen) {
+        this.doCancel();
+      }
     },
   },
 }
