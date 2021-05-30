@@ -1,20 +1,29 @@
 <template>
-  <span v-if="valid">
-    TWA={{twaTxt}}&deg;
+  <span>
+    <span class = "text-placeholder-container">
+      <span class = "text-dummy">TWA=+179.999&deg;</span>
+      <span class = "text-real" v-if="valid">TWA={{twaTxt}}&deg;</span>
+    </span>
     <button
       class = "to-steering-btn"
       @click = "setSteering('twa', twaTxt)"
     >
       <img src="../../images/wheel.png"/>
     </button>
-    COG={{cogTxt}}&deg;
+    <span class = "text-placeholder-container">
+      <span class = "text-dummy">COG=359.999&deg;</span>
+      <span class = "text-real" v-if="valid">COG={{cogTxt}}&deg;</span>
+    </span>
     <button
       class = "to-steering-btn"
       @click = "setSteering('cc', cogTxt)"
     >
       <img src="../../images/wheel.png"/>
     </button>
-    {{valTxt}} kn
+    <span class = "text-placeholder-container">
+     <span class = "text-dummy">99.999</span>
+     <span class = "text-real" v-if="valid">{{valTxt}}</span>
+    </span> kn
   </span>
 </template>
 
@@ -80,5 +89,21 @@ export default {
   padding: 0px;
   margin: 0px;
   margin-right: 5px;
+}
+
+.text-placeholder-container {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.text-dummy {
+  opacity: 0;
+  text-weight: bold;
+  user-select: none;
+}
+.text-real {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 </style>
