@@ -5,6 +5,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { uiModeMixin } from '../mixins/uimode.js';
+import { EventBus } from '../../lib/event-bus.js';
 
 export default {
   name: 'DefaultUiMode',
@@ -36,6 +37,8 @@ export default {
         this.$store.commit('ui/poi/newPoi', {
           latLng: e.latlng.wrap(),
         });
+      } else {
+        EventBus.$emit('pick-from-map', e.latlng);
       }
     },
   },
