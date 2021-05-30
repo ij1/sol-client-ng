@@ -1,14 +1,26 @@
 <template>
   <span v-if="valid">
     TWA={{twaTxt}}&deg;
+    <button
+      class = "to-steering-btn"
+      @click = "setSteering('twa', twaTxt)"
+    >
+      <img src="../../images/wheel.png"/>
+    </button>
     COG={{cogTxt}}&deg;
+    <button
+      class = "to-steering-btn"
+      @click = "setSteering('cc', cogTxt)"
+    >
+      <img src="../../images/wheel.png"/>
+    </button>
     {{valTxt}} kn
   </span>
 </template>
 
 <script>
 import { twaTwdToCog, twaTextPrefix } from '../../lib/nav.js';
-import { radToDeg } from '../../lib/utils.js';
+import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 
 export default {
@@ -47,5 +59,26 @@ export default {
       return this.valid ? roundToFixed(this.val, 3) : '';
     },
   },
+  methods: {
+    setSteering (type, val) {
+      if (!this.valid) {
+        return;
+      }
+      this.$store.commit('ui/setActiveTab', 0);
+      this.$store.commit('boat/steering/setSteering', {
+        type: type,
+        value: degToRad(val),
+        valueText: val,
+      });
+    },
+  },
 }
 </script>
+<style scoped>
+.to-steering-btn {
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+  margin-right: 5px;
+}
+</style>
