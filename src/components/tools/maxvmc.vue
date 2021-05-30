@@ -118,6 +118,7 @@ import { MS_TO_KNT } from '../../lib/sol.js';
 import { gcCalc, loxoCalc, isCcValid, minTurnAngle } from '../../lib/nav.js';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
+import { EventBus } from '../../lib/event-bus.js';
 import vmcvmgDetail from './vmcvmgdetail.vue';
 
 export default {
@@ -193,6 +194,10 @@ export default {
       this.updateFromInstruments();
     }
     this.updateTack();
+    EventBus.$on('pick-from-map', this.pickFromMap);
+  },
+  beforeDestroy () {
+    EventBus.$off('pick-from-map', this.pickFromMap);
   },
   methods: {
     updateWind(tws, twd) {
@@ -217,6 +222,16 @@ export default {
     },
     updateTack () {
       this.tack = this.boatTwa >= 0 ? 1 : -1;
+    },
+    pickFromMap (latLng) {
+      if (!this.fromInstruments) {
+        const wind = this.$store.getters['weather/latLngWind'](latLng,
+                                                               this.wxTime);
+        if (wind === null) {
+          return;
+        }
+        this.updateWind(wind.knots, wind.twd);
+      }
     },
   },
   watch: {
