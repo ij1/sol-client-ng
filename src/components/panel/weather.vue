@@ -558,6 +558,7 @@ export default {
 .text-dummy {
   opacity: 0;
   text-weight: bold;
+  user-select: none;
 }
 .text-real {
   position: absolute;
