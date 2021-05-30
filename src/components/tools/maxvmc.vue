@@ -167,6 +167,10 @@ export default {
       if (this.fromInstruments) {
         return this.fgCurve;
       } else if (this.twsValid) {
+        /* Avoid low-order digit variations when toggling from instruments off */
+        if (roundToFixed(this.boatTws * MS_TO_KNT, 3) === this.tws) {
+          return this.fgCurve;
+        }
         return this.$store.getters['boat/polar/curve'](this.tws);
       }
       return null;
