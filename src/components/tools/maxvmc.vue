@@ -262,11 +262,6 @@ export default {
         this.updateFromInstruments();
       }
     },
-    boatTwa () {
-      if (this.fromInstruments) {
-        this.updateTack();
-      }
-    },
     currentTarget () {
       if (this.fromInstruments) {
         this.updateFromInstruments();
