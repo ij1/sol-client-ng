@@ -26,6 +26,7 @@
     >
       <div
         class = "popup-content"
+        @scroll = "$emit('popupscroll')"
         :style = "{'overflow-y' : contentOverflow}"
       >
         <slot></slot>
