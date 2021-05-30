@@ -216,6 +216,9 @@ export default {
       return state.route[0].latLng;
     },
     nextWaypoint: (state, getters, rootState) => {
+      if (!state.loaded) {
+        return null;
+      }
       return state.route[rootState.boat.lastRoundedMark+1];
     },
 
