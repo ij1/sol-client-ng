@@ -39,6 +39,20 @@
           size = 8
           :readonly="fromInstruments"
         />
+        <span>
+          <input
+            type="radio"
+            :value="true"
+            v-model="gcMode"
+            :readonly="!fromInstruments"
+          />GC
+          <input
+            type="radio"
+            :value="false"
+            v-model="gcMode"
+            :readonly="!fromInstruments"
+          />Rh
+        </span>
       </div>
       <div>
         <label for = "vmc-detail">Max VMC:</label>
@@ -99,8 +113,9 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import L from 'leaflet';
 import { MS_TO_KNT } from '../../lib/sol.js';
-import { gcCalc, isCcValid } from '../../lib/nav.js';
+import { gcCalc, loxoCalc, isCcValid, minTurnAngle } from '../../lib/nav.js';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import vmcvmgDetail from './vmcvmgdetail.vue';
@@ -117,6 +132,7 @@ export default {
       twd: '',
       bearing: '',
       tack: 1,
+      gcMode: this.$store.state.ui.cfg.gcMode.value,
     };
   },
   computed: {
@@ -149,6 +165,17 @@ export default {
                                                       degToRad(this.bearing),
                                                       this.twdRad);
     },
+    nearestWrapOfTarget () {
+      if (this.currentTarget === null) {
+        return null;
+      }
+
+      const diff = minTurnAngle(degToRad(this.visualPosition.lng),
+                                degToRad(this.currentTarget.latLng.lng));
+
+      return L.latLng(this.currentTarget.latLng.lat,
+                      this.visualPosition.lng + radToDeg(diff));
+    },
     ...mapState({
       boatTws: state => state.boat.instruments.tws.value,
       boatTwd: state => state.boat.instruments.twd.value,
@@ -174,8 +201,16 @@ export default {
       }
       this.tws = roundToFixed(this.boatTws * MS_TO_KNT, 3);
       this.twd = roundToFixed(radToDeg(this.boatTwd), 3);
-      const gcPath = gcCalc(this.visualPosition, this.currentTarget.latLng);
-      this.bearing = roundToFixed(radToDeg(gcPath.startBearing), 3);
+      this.updatePath();
+    },
+    updatePath () {
+      if (this.boatLoaded === null) {
+        return;
+      }
+      const path = this.gcMode ?
+                   gcCalc(this.visualPosition, this.currentTarget.latLng) :
+                   loxoCalc(this.visualPosition, this.nearestWrapOfTarget);
+      this.bearing = roundToFixed(radToDeg(path.startBearing), 3);
     },
     updateTack () {
       this.tack = this.boatTwa >= 0 ? 1 : -1;
@@ -201,6 +236,11 @@ export default {
       if (this.fromInstruments) {
         this.updateFromInstruments();
         this.updateTack();
+      }
+    },
+    gcMode () {
+      if (this.fromInstruments) {
+        this.updatePath();
       }
     },
   },
