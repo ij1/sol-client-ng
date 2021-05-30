@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { configSetValue } from '../../components/config/configstore.js';
 import { hToMsec, secToMsec, degToRad, latLngArrayAddOffset } from '../../lib/utils.js';
 import { cogPredictor, twaPredictor } from '../../lib/predictors.js';
 import { lowPrioTask } from '../../lib/lowprio.js';
@@ -12,6 +13,18 @@ export default {
     isochroneAngleStep: 2,
     isochroneTimeStep: 1,
     isochroneTimeLen: 24,
+    cfg: {
+      isochroneCogColor: {
+        value: 'orange',
+        type: 'color',
+        cfgText: 'Isochrone COG color',
+      },
+      isochroneTwaColor: {
+        value: 'cyan',
+        type: 'color',
+        cfgText: 'Isochrone TWA color',
+      },
+    },
   },
 
   mutations: {
@@ -41,6 +54,7 @@ export default {
         }
       }
     },
+    configSetValue,
   },
   actions: {
     async calculateIsochrone ({state, rootGetters, rootState, commit}, type) {
@@ -69,7 +83,8 @@ export default {
       for (let time = timeStep; time <= timeLen; time += timeStep) {
         let isochrone = {
           type: type,
-          color: type === 'cog' ? 'orange' : 'cyan',
+          color: type === 'cog' ? state.cfg.isochroneCogColor.value :
+                                  state.cfg.isochroneTwaColor.value,
           visualOffset: rootState.boat.visualLngOffset,
           line: [],
         };

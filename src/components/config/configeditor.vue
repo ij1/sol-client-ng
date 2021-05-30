@@ -138,6 +138,12 @@ export default {
           }],
         },
         {
+          title: 'Tools',
+          cfgs: [{
+            base: 'ui/tools',
+          }],
+        },
+        {
           title: 'Workarounds and Diagnostics',
           cfgs: [{
             base: 'diagnostics',
