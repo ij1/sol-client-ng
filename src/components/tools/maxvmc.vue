@@ -195,12 +195,15 @@ export default {
     this.updateTack();
   },
   methods: {
+    updateWind(tws, twd) {
+      this.tws = roundToFixed(tws, 3);
+      this.twd = roundToFixed(radToDeg(twd), 3);
+    },
     updateFromInstruments () {
       if (this.boatLoaded === null) {
         return;
       }
-      this.tws = roundToFixed(this.boatTws * MS_TO_KNT, 3);
-      this.twd = roundToFixed(radToDeg(this.boatTwd), 3);
+      this.updateWind(this.boatTws * MS_TO_KNT, this.boatTwd);
       this.updatePath();
     },
     updatePath () {
