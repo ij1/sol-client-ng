@@ -58,7 +58,6 @@
         <label for = "vmc-detail">Max VMC:</label>
         <vmcvmg-detail
           id = "vmc-detail"
-          v-if = "maxvmc !== null"
           :twa = "maxvmc.twa"
           :val = "maxvmc.vmc"
           :twd = "twdRad"
@@ -79,9 +78,8 @@
         <label for = "vmg-up" class = "vmg-label">&#8593;:</label>
         <vmcvmg-detail
           id = "vmg-up"
-          v-if = "curve !== null && twdValid"
-          :twa = "tack * curve.maxvmg.up.twa"
-          :val = "curve.maxvmg.up.vmg"
+          :twa = "tack * curveObj.maxvmg.up.twa"
+          :val = "curveObj.maxvmg.up.vmg"
           :twd = "twdRad"
           label = "VMG"
         />
@@ -90,9 +88,8 @@
         <label for = "vmg-down" class = "vmg-label">&#8595;:</label>
         <vmcvmg-detail
           id = "vmg-down"
-          v-if = "curve !== null && twdValid"
-          :twa = "tack * curve.maxvmg.down.twa"
-          :val = "curve.maxvmg.down.vmg"
+          :twa = "tack * curveObj.maxvmg.down.twa"
+          :val = "curveObj.maxvmg.down.vmg"
           :twd = "twdRad"
           label = "VMG"
         />
@@ -100,9 +97,8 @@
       <div>
         <label for = "bearing">Max BS:</label>
         <vmcvmg-detail
-          v-if = "curve !== null && twdValid"
-          :twa = "tack * curve.maxspeed.twa"
-          :val = "curve.maxspeed.speed"
+          :twa = "tack * curveObj.maxspeed.twa"
+          :val = "curveObj.maxspeed.speed"
           :twd = "twdRad"
           label = "BS"
         />
@@ -120,6 +116,23 @@ import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { EventBus } from '../../lib/event-bus.js';
 import vmcvmgDetail from './vmcvmgdetail.vue';
+
+const emptyCurve = {
+  maxvmg: {
+    up: {
+      twa: null,
+      vmg: null,
+    },
+    down: {
+      twa: null,
+      vmg: null,
+    },
+  },
+  maxspeed: {
+    twa: null,
+    speed: null,
+  },
+};
 
 export default {
   name: 'MaxvmcTool',
@@ -158,9 +171,18 @@ export default {
       }
       return null;
     },
+    curveObj () {
+      if (this.curve === null) {
+        return emptyCurve;
+      }
+      return this.curve;
+    },
     maxvmc () {
       if (this.curve === null || !this.twdValid || !this.bearingValid) {
-        return null;
+        return {
+          twa: null,
+          vmc: null,
+        };
       }
       return this.$store.getters['boat/polar/maxvmc'](this.curve,
                                                       degToRad(this.bearing),
