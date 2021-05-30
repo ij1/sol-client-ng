@@ -38,12 +38,6 @@ export default {
 }
 </script>
 
-<style scoped>
-.tools-popup {
-  width: 18%;
-}
-</style>
-
 <style>
 .tools-header {
   font-size: 14px;
