@@ -289,5 +289,6 @@ export default {
 <style scoped>
 .vmg-label {
   margin-left: 8px;
+  font-size: 12px;
 }
 </style>
