@@ -287,10 +287,6 @@ export default {
 </script>
 
 <style scoped>
-.tools-popup {
-  width: 10%;
-}
-
 .vmg-label {
   margin-left: 8px;
 }
