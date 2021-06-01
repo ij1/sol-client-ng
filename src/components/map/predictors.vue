@@ -232,6 +232,7 @@ export default {
     },
     ...mapGetters({
       wxValid: 'weather/valid',
+      wxLastTimestamp: 'weather/lastTimestamp',
       boatTime: 'boat/time',
       visualPosition: 'boat/visualPosition',
       isTowbackPeriod: 'race/isTowbackPeriod',
@@ -422,7 +423,7 @@ export default {
     },
     predCalc (predictor) {
       let t = this.timeOrigo;
-      const endTime = t + this.predictorLenMsec;
+      const endTime = Math.min(t + this.predictorLenMsec, this.wxLastTimestamp);
       /* Use safe due to freeze */
       let lastLatLng = this.safeLatLng(this.visualPosition);
 
