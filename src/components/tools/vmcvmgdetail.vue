@@ -8,7 +8,7 @@
       class = "to-steering-btn"
       @click = "setSteering('twa', twaTxt)"
     >
-      <img src="../../images/wheel.png"/>
+      &#8680;<img src="../../images/wheel.png"/>
     </button>
     <span class = "text-placeholder-container">
       <span class = "text-dummy">COG=359.999&deg;</span>
@@ -18,7 +18,7 @@
       class = "to-steering-btn"
       @click = "setSteering('cc', cogTxt)"
     >
-      <img src="../../images/wheel.png"/>
+      &#8680;<img src="../../images/wheel.png"/>
     </button>
     <span class = "text-placeholder-container">
      <span class = "text-dummy">99.999</span>
@@ -85,10 +85,26 @@ export default {
 </script>
 <style scoped>
 .to-steering-btn {
-  border: 0px;
-  padding: 0px;
+  border: 1px solid #c0c0c0;
+  padding: 0px 2px;
   margin: 0px;
   margin-right: 5px;
+  background-color: rgba(12, 12, 12, 0.1);
+  border-radius: 4px;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.to-steering-btn img {
+  vertical-align: -2px;
+}
+
+.to-steering-btn:hover {
+  background-color: rgba(12, 12, 12, 0.05);
+}
+
+.to-steering-btn:active {
+  background-color: rgba(12, 12, 12, 0.3);
 }
 
 .text-placeholder-container {
