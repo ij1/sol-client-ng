@@ -39,6 +39,10 @@ export default {
 </script>
 
 <style>
+.tools-popup {
+  min-width: 320px;
+}
+
 .tools-header {
   font-size: 14px;
   font-weight: bold;
