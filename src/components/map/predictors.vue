@@ -44,19 +44,20 @@ export default {
       predictorDefs: {
         'cog': {
           'calc': cogPredictor,
-          'steer': 'boatCog',
           'path': 'cogPath',
         },
         'twa': {
           'calc': twaPredictor,
-          'steer': 'boatTwa',
           'path': 'twaPath',
         },
         'dcPred': {
           'calc': this.dcPredCalc,
-          'steer': 'boatCog',                    /* Dummy value */
           'path': 'dcPredPath',
         },
+      },
+      steerTypeToValue: {
+        'cog': 'boatCog',
+        'twa': 'boatTwa',
       },
     }
   },
@@ -384,7 +385,7 @@ export default {
 
     dcPredCalc(pred, dummy, t, endTime, state, getters) {
       let commandType = this.currentSteering;
-      let commandValue = this[this.predictorDefs[commandType]['steer']];
+      let commandValue = this[this.steerTypeToValue[commandType]];
       let dcIdx = 0;
       const dcList = this.$store.state.boat.steering.dcs.list;
 
@@ -451,9 +452,9 @@ export default {
         state.firstStep = this.moveFractionAfterTowback(t);
       }
 
-      const steer = this.predictorDefs[predictor]['steer'];
+      const steerValue = this[this.steerTypeToValue[predictor]];
       const func = this.predictorDefs[predictor]['calc'];
-      func(pred, this[steer], t, endTime, state, this.$store.getters);
+      func(pred, steerValue, t, endTime, state, this.$store.getters);
       Object.freeze(pred.latLngs);
 
       return pred;
