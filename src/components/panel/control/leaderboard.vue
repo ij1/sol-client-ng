@@ -106,6 +106,14 @@ export default {
           return this.boatlistInfo.filter.boattype.has(i.type);
         });
       }
+      if (!this.isPracticePeriod) {
+        res = res.filter(i => {
+          if (i.practiceMark) {
+            return false;
+          }
+          return true;
+        });
+      }
       return res;
     },
     name () {
@@ -122,6 +130,7 @@ export default {
     }),
     ...mapGetters({
       selectedObj: 'race/fleet/selectedFiltered',
+      isPracticePeriod: 'race/isPracticePeriod',
     }),
   },
   methods: {
