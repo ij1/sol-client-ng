@@ -82,7 +82,7 @@
     <div>
       <div class="misc-header">About</div>
       <div class="misc-small">
-        Version identifier {{version}} (GPL v2) ij 2018-2020.
+        Version identifier {{version}} (GPL v2) ij 2018-2021.
       </div>
     </div>
   </div>
