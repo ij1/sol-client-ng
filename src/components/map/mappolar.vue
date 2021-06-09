@@ -27,7 +27,14 @@ export default {
       type: Number,
       required: true,
     },
+    tws: {
+      type: Number,
+    },
     showPolar: {
+      type: Boolean,
+      default: true,
+    },
+    useCurrentCurve: {
       type: Boolean,
       default: true,
     },
@@ -62,6 +69,15 @@ export default {
       }
       return this.polarSize / this.polarHeadroom / this.polarCurve.maxspeed.speed;
     },
+    polarCurve () {
+      if (this.useCurrentCurve) {
+        return this.currentCurve;
+      }
+      if (!this.tws) {
+        return null;
+      }
+      return this.$store.getters['boat/polar/curve'](this.tws);
+    },
     needsRedraw () {
       if (this.showPolar) {
         this.polarCurve;
@@ -74,7 +90,7 @@ export default {
       mapSize: state => state.map.size,
     }),
     ...mapGetters({
-      polarCurve: 'boat/polar/currentCurve',
+      currentCurve: 'boat/polar/currentCurve',
     }),
   },
 

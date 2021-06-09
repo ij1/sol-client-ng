@@ -10,7 +10,7 @@
       <div>
         <path-distance :path = "gcPath"/>
       </div>
-      <div>{{wind}}</div>
+      <div>{{windTxt}}</div>
       <div>
         VMG: {{vmg}}kn
       </div>
@@ -37,6 +37,9 @@ export default {
       type: Object,
       required: true,
     },
+    wind: {
+      type: Object,
+    },
   },
   computed: {
     gcPath () {
@@ -47,9 +50,8 @@ export default {
                                               this.gcPath.startBearing),
                           this.instrumentDecimals);
     },
-    wind () {
-      const wind = this.$store.getters['weather/latLngWind'](this.poi.latLng);
-      return windToText(wind);
+    windTxt () {
+      return windToText(this.wind);
     },
     loxoPath () {
       // FIXME: Handle wraps better, maybe do different loxoCalc function?

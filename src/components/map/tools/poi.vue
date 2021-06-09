@@ -15,7 +15,7 @@
           @add = "onOpen"
           @remove = "onClose"
         >
-          <poi-info :poi = "poi"/>
+          <poi-info :poi = "poi" :wind = "wind"/>
           <form @submit.prevent = "onButterfly">
             <button type="submit">{{butterflyButtonText}}</button>
           </form>
@@ -31,6 +31,8 @@
         v-if = "poi.showButterfly && twd !== null"
         :lat-lng = "latLngAddOffset(poi.latLng, offset)"
         :twd = "twd"
+        :tws = "tws"
+        :use-current-curve = "false"
       />
     </l-layer-group>
   </l-layer-group>
@@ -77,13 +79,21 @@ export default {
     }
   },
   computed: {
+    wind () {
+      return this.$store.getters['weather/latLngWind'](this.poi.latLng,
+                                                       this.wxTime);
+    },
     twd () {
-      const wind = this.$store.getters['weather/latLngWind'](this.poi.latLng,
-                                                             this.wxTime)
-      if (wind === null) {
+      if (this.wind === null) {
         return null;
       }
-      return wind.twd;
+      return this.wind.twd;
+    },
+    tws () {
+      if (this.wind === null) {
+        return null;
+      }
+      return this.wind.knots;
     },
     butterflyButtonText () {
       return this.poi.showButterfly ? "Hide butterfly" : "Show butterfly";
@@ -136,6 +146,9 @@ export default {
       this.$store.commit('ui/poi/delPoi', this.poi.id);
     },
     onButterfly () {
+      if (this.wind === null) {
+        return;
+      }
       this.$store.commit('ui/poi/toggleButterfly', this.poi.id);
     },
     onSelectTarget () {
