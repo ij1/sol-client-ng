@@ -29,9 +29,9 @@
 <script>
 import L from 'leaflet';
 import { mapState, mapGetters } from 'vuex';
-import { degToRad, radToDeg } from '../../../lib/utils.js';
+import { degToRad, radToDeg, bsearchLeft } from '../../../lib/utils.js';
 import { roundToFixed, canvasAlignToPixelCenter } from '../../../lib/quirks.js';
-import { windToColor } from '../../../lib/sol.js';
+import { windToColor, MS_TO_KNT } from '../../../lib/sol.js';
 import { speedTowardsBearing, atan2Bearing, twaTextPrefix } from '../../../lib/nav.js';
 import { polarMixin } from '../../mixins/polar.js';
 import WindKey from './windkey.vue';
@@ -77,11 +77,22 @@ export default {
       return Math.max(maxScale * this.polarSizeLimit.maxWidth - this.margin * 2,
                       180);
     },
+
+    scaleCurveIdx () {
+      return Math.min(bsearchLeft(this.windKeys, this.boatTws * MS_TO_KNT) + 1,
+                      this.windKeys.length - 1);
+    },
+    scaleCurves () {
+      if (this.polarCurveMode === 'auto') {
+        return this.bgCurves.slice(0, this.scaleCurveIdx + 1);
+      }
+      return this.bgCurves;
+    },
     maxSpeed () {
-      return Math.max(...this.bgCurves.map(c => c.maxspeed.speed), 1) * this.polarHeadroom;
+      return Math.max(...this.scaleCurves.map(c => c.maxspeed.speed), 1) * this.polarHeadroom;
     },
     maxVmgUp () {
-      return Math.max(...this.bgCurves.map(c => c.maxvmg.up.vmg), 1);
+      return Math.max(...this.scaleCurves.map(c => c.maxvmg.up.vmg), 1);
     },
     gridIntervalKnots () {
       return Math.ceil(this.maxSpeed / (this.maxWidth / this.gridMinSpacing));
@@ -142,6 +153,7 @@ export default {
     bgNeedRedraw () {
       this.bgCurves;
       this.firstCurveKnots;
+      this.scaleCurves;
       this.gridSize;
 
       return Date.now();
@@ -163,11 +175,13 @@ export default {
       boatTwa: state => state.boat.instruments.twa.value,
       boatTws: state => state.boat.instruments.tws.value,
       visualSteeringTwa: state => state.boat.steering.visualSteering.twa,
+      polarCurveMode: state => state.boat.polar.polarMode,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
       bgCurves: 'boat/polar/staticCurves',
       fgCurve: 'boat/polar/currentCurve',
+      windKeys: 'boat/polar/windKeys',
     }),
   },
   methods: {
