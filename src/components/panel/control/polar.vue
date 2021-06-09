@@ -123,10 +123,25 @@ export default {
                               this.gridScale, 5).y + 10 +
              this.gridOrigoY + this.margin;
     },
+    sortedCurves () {
+      if (this.boatTws === null) {
+        return this.bgCurves;
+      }
+
+      return [].concat(this.bgCurves).sort((a, b) => {
+        return Math.abs(this.boatTws - b.ms) -
+               Math.abs(this.boatTws - a.ms);
+      });
+    },
+    /* For reduced dependency tracking to avoid unnecessary reloads */
+    firstCurveKnots () {
+      return this.sortedCurves[this.sortedCurves.length - 1].knots;
+    },
 
     /* Deps access to trigger redraw correctly */
     bgNeedRedraw () {
       this.bgCurves;
+      this.firstCurveKnots;
       this.gridSize;
 
       return Date.now();
@@ -181,14 +196,7 @@ export default {
       this.drawGrid(gridctx);
       this.drawLabels(labelctx);
 
-      let sortedCurves = this.bgCurves;
-      if (this.boatTws !== null) {
-        sortedCurves = [].concat(this.bgCurves).sort((a, b) => {
-          return Math.abs(this.boatTws - b.ms) -
-                 Math.abs(this.boatTws - a.ms);
-        });
-      }
-      for (let curve of sortedCurves) {
+      for (let curve of this.sortedCurves) {
         curvectx.strokeStyle = windToColor(curve.knots);
         curvectx.lineWidth = 2;
         this.drawPolarCurve(curvectx, curve, this.gridScale, this.gridMaxKnots);
