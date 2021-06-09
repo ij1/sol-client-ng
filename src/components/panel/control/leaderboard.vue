@@ -88,32 +88,23 @@ export default {
     boatList () {
       let res = this.$store.state.race.fleet.boat;
       this.boatlistInfo.filter.filterStamp;
-      if (this.boatlistInfo.filter.boats !== null) {
-        res = res.filter(i => {
-          return this.boatlistInfo.filter.boats.has(i.name);
-        });
-      }
-      if (this.boatlistInfo.filter.distance !== null) {
-        res = res.filter(i => i.distance <= this.boatlistInfo.filter.distance);
-      }
-      if (this.boatlistInfo.filter.country !== null) {
-        res = res.filter(i => {
-          return this.boatlistInfo.filter.country.has(i.country);
-        });
-      }
-      if (this.boatlistInfo.filter.boattype !== null) {
-        res = res.filter(i => {
-          return this.boatlistInfo.filter.boattype.has(i.type);
-        });
-      }
-      if (!this.isPracticePeriod) {
-        res = res.filter(i => {
-          if (i.practiceMark) {
-            return false;
-          }
-          return true;
-        });
-      }
+
+      res = res.filter(i => {
+        return (this.isPracticePeriod || !i.practiceMark) &&
+
+               ((this.boatlistInfo.filter.boats === null ||
+                 this.boatlistInfo.filter.boats.has(i.name)) &&
+
+                (this.boatlistInfo.filter.distance === null ||
+                 i.distance <= this.boatlistInfo.filter.distance) &&
+
+                (this.boatlistInfo.filter.country === null ||
+                 this.boatlistInfo.filter.country.has(i.country)) &&
+
+                (this.boatlistInfo.filter.boattype === null ||
+                 this.boatlistInfo.filter.boattype.has(i.type)));
+      });
+
       return res;
     },
     name () {
