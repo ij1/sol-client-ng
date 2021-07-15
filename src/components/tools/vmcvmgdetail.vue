@@ -10,11 +10,12 @@
     >
       &#8680;<img src="../../images/wheel.png"/>
     </button>
-    <span class = "text-placeholder-container">
+    <span v-if = "showCog" class = "text-placeholder-container">
       <span class = "text-dummy">COG=359.{{placeHolderDecimalTxt}}&deg;</span>
       <span class = "text-real" v-if="valid">COG={{cogTxt}}&deg;</span>
     </span>
     <button
+      v-if = "showCog"
       class = "to-steering-btn"
       @click = "setSteering('cc', cogTxt)"
     >
@@ -74,6 +75,7 @@ export default {
     },
     ...mapState({
       instrumentDecimals: state => state.boat.instruments.cfg.instrumentDecimals.value,
+      showCog: state => state.ui.tools.cfg.cogInMaxCalculator.value,
     }),
   },
   methods: {

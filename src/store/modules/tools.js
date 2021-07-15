@@ -24,6 +24,11 @@ export default {
         type: 'color',
         cfgText: 'Isochrone TWA color',
       },
+      cogInMaxCalculator: {
+        value: true,
+        type: 'boolean',
+        cfgText: 'Show COG in max calculator',
+      },
     },
   },
 
