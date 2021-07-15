@@ -40,7 +40,7 @@ export default {
 
 <style>
 .tools-popup {
-  min-width: 320px;
+  min-width: 150px;
 }
 
 .tools-header {
