@@ -1,7 +1,7 @@
 <template>
   <span>
     <span class = "text-placeholder-container">
-      <span class = "text-dummy">TWA=+179.999&deg;</span>
+      <span class = "text-dummy">TWA=+179.{{placeHolderDecimalTxt}}&deg;</span>
       <span class = "text-real" v-if="valid">TWA={{twaTxt}}&deg;</span>
     </span>
     <button
@@ -11,7 +11,7 @@
       &#8680;<img src="../../images/wheel.png"/>
     </button>
     <span class = "text-placeholder-container">
-      <span class = "text-dummy">COG=359.999&deg;</span>
+      <span class = "text-dummy">COG=359.{{placeHolderDecimalTxt}}&deg;</span>
       <span class = "text-real" v-if="valid">COG={{cogTxt}}&deg;</span>
     </span>
     <button
@@ -21,13 +21,14 @@
       &#8680;<img src="../../images/wheel.png"/>
     </button>
     <span class = "text-placeholder-container">
-     <span class = "text-dummy">99.999</span>
+     <span class = "text-dummy">99.{{placeHolderDecimalTxt}}</span>
      <span class = "text-real" v-if="valid">{{valTxt}}</span>
     </span> kn
   </span>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { twaTwdToCog, twaTextPrefix } from '../../lib/nav.js';
 import { radToDeg, degToRad } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
@@ -58,15 +59,22 @@ export default {
     },
     twaTxt () {
       return this.valid ? twaTextPrefix(this.twa) +
-                          roundToFixed(radToDeg(this.twa), 3) :
+                          roundToFixed(radToDeg(this.twa), this.instrumentDecimals) :
                           '';
     },
     cogTxt () {
-      return this.valid ? roundToFixed(radToDeg(twaTwdToCog(this.twa, this.twd)), 3): '';
+      return this.valid ? roundToFixed(radToDeg(twaTwdToCog(this.twa, this.twd)),
+                                       this.instrumentDecimals): '';
     },
     valTxt () {
-      return this.valid ? roundToFixed(this.val, 3) : '';
+      return this.valid ? roundToFixed(this.val, this.instrumentDecimals) : '';
     },
+    placeHolderDecimalTxt () {
+      return "9".repeat(this.instrumentDecimals);
+    },
+    ...mapState({
+      instrumentDecimals: state => state.boat.instruments.cfg.instrumentDecimals.value,
+    }),
   },
   methods: {
     setSteering (type, val) {
