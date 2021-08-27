@@ -32,9 +32,9 @@
         :class = "{'active': command.id === selected }"
         @click = "selectDC(command.id)"
       >
-        <td>{{ command.time | msecToUTCString }}</td>
-        <td>{{ command.type | cctocog }}</td>
-        <td>{{ command | formatValue }}</td>
+        <td>{{ msecToUTCString(command.time) }}</td>
+        <td>{{ cctocog(command.type) }}</td>
+        <td>{{ formatValue(command) }}</td>
       </tr>
     </scrollable-table>
     <portal to="dc-editor-dest" v-if="dcToEdit !== null">
@@ -68,17 +68,6 @@ export default {
       dcToEdit: null,
     }
   },
-  filters: {
-    msecToUTCString (msec) {
-      return msecToUTCString(msec);
-    },
-    formatValue (dc) {
-      return dcTwaTextPrefix(dc) + roundToFixed(radToDeg(dc.value), 3);
-    },
-    cctocog (type) {
-      return type === 'cc' ? 'cog' : type;
-    },
-  },
   computed: {
     canEdit () {
       return this.allowControl &&
@@ -103,6 +92,13 @@ export default {
     }),
   },
   methods: {
+    msecToUTCString,
+    formatValue (dc) {
+      return dcTwaTextPrefix(dc) + roundToFixed(radToDeg(dc.value), 3);
+    },
+    cctocog (type) {
+      return type === 'cc' ? 'cog' : type;
+    },
     doRefresh () {
       this.$store.dispatch('boat/steering/fetchDCs');
     },

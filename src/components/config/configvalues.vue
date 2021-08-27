@@ -10,7 +10,7 @@
         :value = "!Array.isArray(v) ? v : v[0]"
         :key = "!Array.isArray(v) ? v : v[0]"
       >
-        {{v | format}}
+        {{format(v)}}
       </option>
     </select>
   </div>
@@ -44,7 +44,7 @@ export default {
       required: true,
     },
   },
-  filters: {
+  methods: {
     format (value) {
       return !Array.isArray(value) ? value : value[1];
     },

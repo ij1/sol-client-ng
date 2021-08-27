@@ -46,8 +46,8 @@
         <span
           v-if = "wxLoaded"
         >
-          {{wxCellSize[0] | formatDeg}}&deg; x
-          {{wxCellSize[1] | formatDeg}}&deg;
+          {{formatDeg(wxCellSize[0])}}&deg; x
+          {{formatDeg(wxCellSize[1])}}&deg;
         </span>
       </div>
       <div>
@@ -59,7 +59,7 @@
             v-for = "(t, index) in wxUpdateTimes"
             :key = "'t' + index"
           >
-            {{t | formatTime}}
+            {{formatTime(t)}}
           </span>
           UTC
         </span>
@@ -138,16 +138,6 @@ export default {
       version: process.env.VUE_APP_GIT_REV,
     }
   },
-  filters: {
-    formatDeg (d) {
-      return d.toFixed(3).replace(/\.?0*$/,'');
-    },
-    formatTime (t) {
-      const h = Math.floor(t / 60);
-      return ('00' + h.toFixed(0)).slice(-2) + ':' +
-             ('00' + ((t - h * 60) % 60).toFixed(0)).slice(-2);
-    },
-  },
   computed: {
     links () {
       let res = [];
@@ -188,6 +178,16 @@ export default {
       wxCellSize: state => state.weather.data.cellSize,
       wxUpdateTimes: state => state.weather.updateTimes,
     }),
+  },
+  methods: {
+    formatDeg (d) {
+      return d.toFixed(3).replace(/\.?0*$/,'');
+    },
+    formatTime (t) {
+      const h = Math.floor(t / 60);
+      return ('00' + h.toFixed(0)).slice(-2) + ':' +
+             ('00' + ((t - h * 60) % 60).toFixed(0)).slice(-2);
+    },
   },
 }
 </script>

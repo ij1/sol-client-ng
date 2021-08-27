@@ -36,7 +36,7 @@
         <l-tooltip
           :options="lineTooltipOptions"
         >
-          {{segment.totalDistance | distance}}nm
+          {{formatDistance(segment.totalDistance)}}nm
         </l-tooltip>
       </l-circle-marker>
     </l-layer-group>

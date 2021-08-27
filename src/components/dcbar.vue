@@ -2,8 +2,8 @@
   <l-control :position = "'topright'">
     <div id = "dc-bar" v-if = "uiComponentDcBar && nextDC !== null">
       Next DC:
-      {{ nextDC.type | cctocog }}={{ nextDC | prettyDegrees }}
-      in {{ nextDCDelay | formatNextDCTime }}
+      {{ cctocog(nextDC.type) }}={{ prettyDegrees(nextDC) }}
+      in {{ formatNextDCTime(nextDCDelay) }}
     </div>
   </l-control>
 </template>
@@ -20,7 +20,16 @@ export default {
   components: {
     'l-control': LControl,
   },
-  filters: {
+  computed: {
+    ...mapState({
+      uiComponentDcBar: state => state.ui.uiComponent.dcBar,
+    }),
+    ...mapGetters({
+      nextDC: 'boat/steering/nextDC',
+      nextDCDelay: 'boat/steering/nextDCDelay',
+    }),
+  },
+  methods: {
     prettyDegrees (dc) {
       return dcTwaTextPrefix(dc) +
              roundToFixed(radToDeg(dc.value), 3).replace(/\.*0*$/, '');
@@ -42,15 +51,6 @@ export default {
              ((d > 0 || h > 0 || m > 0) ? m + 'm ' : '') +
              secs + 's';
     }
-  },
-  computed: {
-    ...mapState({
-      uiComponentDcBar: state => state.ui.uiComponent.dcBar,
-    }),
-    ...mapGetters({
-      nextDC: 'boat/steering/nextDC',
-      nextDCDelay: 'boat/steering/nextDCDelay',
-    }),
   },
   watch: {
     nextDCDelay (value) {

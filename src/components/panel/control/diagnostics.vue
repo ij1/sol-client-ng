@@ -8,9 +8,9 @@
       >
         {{call.apiCall}}
         {{call.received}}{{call.len !== null ? '/' + call.len : ''}}B
-        {{call.firstByteDelay | formatSec}}s
-        {{call.readDelayMax | formatSec}}s
-        {{call.lastUpdate | elapsedSinceLastUpdate(siteTime)}}s
+        {{formatSec(call.firstByteDelay)}}s
+        {{formatSec(call.readDelayMax)}}s
+        {{elapsedSinceLastUpdate(call.lastUpdate, siteTime)}}s
       </div>
       <div>Old API calls:</div>
       <div
@@ -20,10 +20,10 @@
       >
         {{call.apiCall}}
         {{call.received}}{{call.len !== null ? '/' + call.len : ''}}B
-        {{call.duration | formatSec}}s
+        {{formatSec(call.duration)}}s
         {{call.status}}
-        {{call.firstByteDelay | formatSec}}s
-        {{call.readDelayMax | formatSec}}s
+        {{formatSec(call.firstByteDelay)}}s
+        {{formatSec(call.readDelayMax)}}s
       </div>
     </div>
     <div>
@@ -45,11 +45,11 @@
         >
           E:{{apiCall.errors}}
         </span>
-        {{apiCall.size.avg | roundSize}}/{{apiCall.size.max | roundSize}}B
-        {{apiCall.duration.avg | formatSec}}/{{apiCall.duration.max | formatSec}}s
+        {{roundSize(apiCall.size.avg)}}/{{roundSize(apiCall.size.max)}}B
+        {{formatSec(apiCall.duration.avg)}}/{{formatSec(apiCall.duration.max)}}s
         <span v-if = "cfgExtraNetDebug">
-          {{apiCall.firstByteDelay.avg | formatSec}}/{{apiCall.firstByteDelay.max | formatSec}}s
-          {{apiCall.readDelay.avg | formatSec}}/{{apiCall.readDelay.max | formatSec}}s
+          {{formatSec(apiCall.firstByteDelay.avg)}}/{{formatSec(apiCall.firstByteDelay.max)}}s
+          {{formatSec(apiCall.readDelay.avg)}}/{{formatSec(apiCall.readDelay.max)}}s
         </span>
       </div>
     </div>
@@ -65,7 +65,7 @@
         v-for = "message in diagnosticsMessages"
         :key = "message.id"
       >
-        {{message.time | msecFormat}} {{message.message}}
+        {{msecFormat(message.time)}} {{message.message}}
       </div>
     </div>
   </div>
@@ -78,29 +78,6 @@ import { msecToUTCString } from '../../../lib/utils.js';
 
 export default {
   name: 'ClientDiagnostics',
-  filters: {
-    msecFormat (msec) {
-      if (msec === null) {
-        return '---';
-      }
-      return msecToUTCString(msec) + '.' + ('000' + (msec % 1000)).slice(-3);
-    },
-    formatSec (msec) {
-      if (msec === null) {
-        return '---';
-      }
-      return (msec / 1000).toFixed(3);
-    },
-    elapsedSinceLastUpdate (msec, siteTime) {
-      return Math.round((siteTime - msec) / 1000);
-    },
-    roundSize(val) {
-      if (val === null) {
-        return '-';
-      }
-      return val.toFixed(0);
-    },
-  },
   computed: {
     apiLocks () {
       this.$store.state.solapi.apiLocksStamp;
@@ -123,6 +100,29 @@ export default {
       siteTime: state => state.time.siteTime,
       cfgExtraNetDebug: state => state.diagnostics.cfg.extraNetDebug.value,
     }),
+  },
+  methods: {
+    msecFormat (msec) {
+      if (msec === null) {
+        return '---';
+      }
+      return msecToUTCString(msec) + '.' + ('000' + (msec % 1000)).slice(-3);
+    },
+    formatSec (msec) {
+      if (msec === null) {
+        return '---';
+      }
+      return (msec / 1000).toFixed(3);
+    },
+    elapsedSinceLastUpdate (msec, siteTime) {
+      return Math.round((siteTime - msec) / 1000);
+    },
+    roundSize(val) {
+      if (val === null) {
+        return '-';
+      }
+      return val.toFixed(0);
+    },
   },
 }
 </script>

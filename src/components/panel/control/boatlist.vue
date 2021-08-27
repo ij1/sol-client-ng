@@ -52,7 +52,7 @@
           :syc = "boat[column.dataField]"
         />
         <span v-else>
-          {{boat[column.dataField] | prettyPrint(column) }}
+          {{prettyPrint(boat[column.dataField], column) }}
         </span>
       </td>
     </tr>
@@ -104,14 +104,6 @@ export default {
       sortKey: 'ranking',
       sortDir: 'asc',
       localeSort: false,
-    }
-  },
-  filters: {
-    prettyPrint (value, column) {
-      if (typeof column.round !== 'undefined') {
-        return roundToFixed(value, column.round);
-      }
-      return value;
     }
   },
   computed: {
@@ -212,6 +204,12 @@ export default {
     }),
   },
   methods: {
+    prettyPrint (value, column) {
+      if (typeof column.round !== 'undefined') {
+        return roundToFixed(value, column.round);
+      }
+      return value;
+    },
     selectSort (column, localeSort) {
       if (this.sortKey === column) {
         this.sortDir = (this.sortDir === 'asc' ? 'desc' : 'asc');

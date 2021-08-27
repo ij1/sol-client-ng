@@ -60,11 +60,11 @@
           :value = "timescale.idx"
           :key = "timescale.idx"
         >
-          {{ timescale.range | formatTimescale(fullTimescale) }}
+          {{ formatTimescale(timescale.range, fullTimescale) }}
         </option>
       </select>
       <span>
-        (Issued {{ wxUpdated | formatTime }}):
+        (Issued {{ formatTime(wxUpdated) }}):
       </span>
       <span class = "text-placeholder-container">
         <span class = "text-dummy">
@@ -75,7 +75,7 @@
           :style = "{'font-weight': wxMode === 'time' ? 'bold' : 'normal'}"
           @click.prevent = "setMode('time')"
         >
-          {{ wxTime | formatTime }}
+          {{ formatTime(wxTime) }}
         </span>
       </span>
       <span class = "text-placeholder-container">
@@ -87,7 +87,7 @@
           :style = "{'font-weight': wxMode === 'offset' ? 'bold' : 'normal'}"
           @click.prevent = "setMode('offset')"
         >
-          (+{{ timeOffset | formatOffset }})
+          (+{{ formatOffset(timeOffset) }})
         </span>
       </span>
       <button
@@ -114,7 +114,7 @@
           :value = "step"
           :key = "step"
         >
-          {{ step | formatStep }}
+          {{ formatStep(step) }}
         </option>
       </select>
       <span>steps.</span>
@@ -313,7 +313,7 @@ export default {
     }),
   },
 
-  filters: {
+  methods: {
     formatTimescale (value, fullTimescale) {
       if (value === -1) {
         value = fullTimescale;
@@ -348,10 +348,8 @@ export default {
         hTxt = '0.00';
       }
       return (d < 1 ? '' : (Math.floor(d) + 'd')) + hTxt + 'h';
-    }
-  },
+    },
 
-  methods: {
     onPlay () {
       if (this.playTimer === null) {
         this.playTimer = setInterval(this.onPlayTick.bind(this), this.tickInterval);

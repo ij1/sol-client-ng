@@ -1,9 +1,9 @@
 <template>
   <span>
-    {{path.distance | distance}}nm
+    {{formatDistance(path.distance)}}nm
     <span v-if = "path.startBearing !== null">
-      @{{path.startBearing | bearing }}&deg;
-      {{path.navMode | navMode}}
+      @{{formatBearing(path.startBearing) }}&deg;
+      {{formatNavMode(path.navMode)}}
     </span>
   </span>
 </template>
@@ -21,11 +21,11 @@ export default {
       type: Object,
     }
   },
-  filters: {
-    bearing (value) {
+  methods: {
+    formatBearing (value) {
       return roundToFixed(radToDeg(value), 2);
     },
-    navMode (value) {
+    formatNavMode (value) {
       if (value === 'ortho') {
         return 'GC';
       }

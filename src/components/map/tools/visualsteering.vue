@@ -25,14 +25,14 @@
     >
       <l-tooltip :options = "tooltipOptions">
         <div id = "visual-steering-info">
-          <div>COG: {{cog | formatAngle }}</div>
-          <div>TWA: {{twa | formatAngle }}</div>
-          <div>SOG: {{sog | formatValue }}</div>
-          <div>VMG: {{vmg | formatValue }}</div>
+          <div>COG: {{formatAngle(cog)}}</div>
+          <div>TWA: {{formatAngle(twa)}}</div>
+          <div>SOG: {{formatValue(sog)}}</div>
+          <div>VMG: {{formatValue(vmg)}}</div>
           <div
             v-if = "cfgVmc"
           >
-            VMC: {{vmc | formatValue}}
+            VMC: {{formatValue(vmc)}}
           </div>
         </div>
       </l-tooltip>
@@ -69,14 +69,6 @@ export default {
     return {
       minSteeringDistance: 3,
     }
-  },
-  filters: {
-    formatAngle (value) {
-      return roundToFixed(radToDeg(value), 3);
-    },
-    formatValue (value) {
-      return roundToFixed(value, 3);
-    },
   },
   computed: {
     target () {
@@ -134,6 +126,12 @@ export default {
     }),
   },
   methods: {
+    formatAngle (value) {
+      return roundToFixed(radToDeg(value), 3);
+    },
+    formatValue (value) {
+      return roundToFixed(value, 3);
+    },
     getCommand(path) {
       let type = 'cc';
       if (this.cfgPreserveSteeringType.value) {

@@ -8,7 +8,7 @@
       :id = "z"
       :key = "z"
       :ref = "'zoom' + z"
-      :z-index = "z | calczindex(zoom)"
+      :z-index = "calczindex(z, zoom)"
     >
       <map-tile
         v-for = "tile in tileList[z]"
@@ -52,12 +52,6 @@ export default {
     }
   },
 
-  filters: {
-    calczindex (z, zoom) {
-      return 200 - Math.round(Math.abs(zoom - z) * 10);
-    },
-  },
-
   computed: {
     maxTileset() {
       if (this.$store.state.race.loaded)
@@ -67,6 +61,9 @@ export default {
     },
   },
   methods: {
+    calczindex (z, zoom) {
+      return 200 - Math.round(Math.abs(zoom - z) * 10);
+    },
     updateDrawBounds (zoom) {
       const min = this.pixelBounds.min.subtract(this.padding);
       const max = this.pixelBounds.max.add(this.padding);
