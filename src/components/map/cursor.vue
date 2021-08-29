@@ -255,8 +255,7 @@ export default {
       if (pt === null) {
         return;
       }
-      const latLng = this.map.containerPointToLatLng(pt);
-      this.$store.commit('map/setHover', latLng);
+      this.$store.commit('map/setHover', this.map.containerPointToLatLng(pt));
       this.mousePos = pt;
     },
   },

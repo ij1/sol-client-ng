@@ -49,10 +49,10 @@ export default {
       /* Anything > 1/2 boat size is fine */
       const halfsize = Math.ceil(boatScale * 40 / 2);
 
-      const latLngBounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
-      const sw = map.project(latLngBounds.getSouthWest(), this.coords.z);
-      const ne = map.project(latLngBounds.getNorthEast(), this.coords.z);
-      const res = this.$store.getters['race/fleet/searchBBox'](latLngBounds, this.zoom, halfsize);
+      const bounds = map.wrapLatLngBounds(this.$parent.mapObject._tileCoordsToBounds(this.coords));
+      const sw = map.project(bounds.getSouthWest(), this.coords.z);
+      const ne = map.project(bounds.getNorthEast(), this.coords.z);
+      const res = this.$store.getters['race/fleet/searchBBox'](bounds, this.zoom, halfsize);
 
       ctx.save();
       ctx.lineWidth = 1.0 / boatSizeScale;

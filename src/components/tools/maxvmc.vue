@@ -249,9 +249,9 @@ export default {
     updateTack () {
       this.tack = this.boatTwa >= 0 ? 1 : -1;
     },
-    pickFromMap (latLng) {
+    pickFromMap (pickLatLng) {
       if (!this.fromInstruments) {
-        const wind = this.$store.getters['weather/latLngWind'](latLng,
+        const wind = this.$store.getters['weather/latLngWind'](pickLatLng,
                                                                this.wxTime);
         if (wind === null) {
           return;

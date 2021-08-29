@@ -159,8 +159,8 @@ export default {
       this.map.off('click', this.onClick, this);
       this.$store.dispatch('ui/cancelUiMode');
     },
-    maxPixelDistance (latLng) {
-      const pxDst = pixelDistanceCalc(this.visualPosition, latLng, this.zoom);
+    maxPixelDistance (mapLatLng) {
+      const pxDst = pixelDistanceCalc(this.visualPosition, mapLatLng, this.zoom);
       return Math.max(Math.abs(pxDst.dx), Math.abs(pxDst.dy));
     },
   },

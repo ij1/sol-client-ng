@@ -66,8 +66,7 @@ export default {
     }),
   },
   methods: {
-    limitTarget (latLng) {
-      let target = latLng;
+    limitTarget (target) {
       const lngDiff = target.lng - this.pendingPosition.lng;
       /* Truncate to 179 degrees to avoid UI inconsistencies */
       if (lngDiff > 179) {

@@ -508,8 +508,8 @@ export default {
       }
     },
     /* Creates a copy of latLng (to be freezed) */
-    safeLatLng (latLng) {
-      return L.latLng(latLng.lat, latLng.lng);
+    safeLatLng (origLatLng) {
+      return L.latLng(origLatLng.lat, origLatLng.lng);
     },
     recalc () {
       if (this.boatId === null) {

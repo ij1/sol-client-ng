@@ -135,11 +135,11 @@ export let uiModeMixin = {
       this.uiModeAddTouchHooks();
       this.uiModeData.inTouch = true;
 
-      const latLng = this.touchPointToLatLng(e.touches[0]);
-      if (latLng !== null) {
+      const touchLatLng = this.touchPointToLatLng(e.touches[0]);
+      if (touchLatLng !== null) {
         this.$emit('touchstart-committed', {
           originalEvent: e,
-          latlng: latLng,
+          latlng: touchLatLng,
         });
       }
     },
@@ -150,11 +150,11 @@ export let uiModeMixin = {
       this.uiModeLog('touchend');
 
       if (e.changedTouches.length === 1) {
-        const latLng = this.touchPointToLatLng(e.changedTouches[0]);
-        if (latLng !== null) {
+        const touchLatLng = this.touchPointToLatLng(e.changedTouches[0]);
+        if (touchLatLng !== null) {
           this.$emit('touchend-committed', {
             originalEvent: e,
-            latlng: latLng,
+            latlng: touchLatLng,
           });
         }
         this.uiModeData.touchEndTime = Date.now();

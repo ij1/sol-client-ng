@@ -63,13 +63,13 @@ export default {
       for (let id of this.showIds) {
         let boat = this.fleetBoatFromId(id)
         for (let w of wrapList) {
-          let latLng = latLngAddOffset(boat.latLng, w);
-          if (!this.tripleBounds.contains(latLng)) {
+          let wrappedLatLng = latLngAddOffset(boat.latLng, w);
+          if (!this.tripleBounds.contains(wrappedLatLng)) {
             continue;
           }
 
           res.push({
-            latLng: latLng,
+            latLng: wrappedLatLng,
             key: 'k_' + boat.id + '_' + w,
             boat: boat,
           });

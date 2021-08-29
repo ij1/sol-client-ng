@@ -106,8 +106,8 @@ export default {
   },
 
   methods: {
-    latLngToTilePoint(latLng) {
-      return this.$parent.map.project(latLng, this.id.z).round().subtract(this.projectedOrigo);
+    latLngToTilePoint(mapLatLng) {
+      return this.$parent.map.project(mapLatLng, this.id.z).round().subtract(this.projectedOrigo);
     },
     tileToLayerPoint() {
       const nw = this.bounds.getNorthWest();
