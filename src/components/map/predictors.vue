@@ -213,7 +213,7 @@ export default {
       for (let pred of this.predictorList) {
         this.predictors[pred];
       }
-      this.wxUpdated;
+      this.wxDataStamp;
       this.dotDelay;
       this.wxDelay;
       this.predictorLen;
@@ -242,7 +242,7 @@ export default {
     }),
     ...mapState({
       boatId: state => state.boat.id,
-      wxUpdated: state => state.weather.data.updated,
+      wxDataStamp: state => state.weather.dataStamp,
       wxTime: state => state.weather.time,
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
@@ -527,7 +527,7 @@ export default {
     boatDataUpdated () {
       this.recalc();
     },
-    wxUpdated () {
+    wxDataStamp () {
       this.recalc();
     },
     predictorLen () {
