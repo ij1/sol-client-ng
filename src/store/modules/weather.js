@@ -138,11 +138,10 @@ function boundTime(time) {
   if (state.loaded) {
     if (time < state.minTime) {
       return state.minTime;
-    } else if (time < timeSeries[0]) {
-      return timeSeries[0];
-    } else if (time > timeSeries[timeSeries.length - 1]) {
-      return Math.max(timeSeries[timeSeries.length - 1],
-                      state.minTime);
+    } else if (time < state.firstTimestamp) {
+      return state.firstTimestamp;
+    } else if (time > state.lastTimestamp) {
+      return Math.max(state.lastTimestamp, state.minTime);
     }
   }
   return null;
@@ -199,7 +198,7 @@ export default {
       if (boundedTime !== null) {
         store.dispatch(
           'diagnostics/add',
-          "WARNING: time outside boattime/wx, fixing: " + state.time + " vs " + timeSeries[0] + "-" + timeSeries[timeSeries.length - 1]
+          "WARNING: time outside boattime/wx, fixing: " + state.time + " vs " + state.firstTimestamp + "-" + state.lastTimestamp
         );
         if (state.time !== boundedTime) {
           state.time = boundedTime;
