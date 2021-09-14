@@ -5,6 +5,113 @@ import { UVToWind } from '../../lib/sol.js';
 import { configSetValue } from '../../components/config/configstore.js';
 import { lowPrioTask } from '../../lib/lowprio.js';
 
+/*
+ * These are outside of reactive parts as they're large arrays
+ * and performance critical
+ */
+let timeSeries = [];
+let windMap = [];      /* format: [time][lon][lat][u,v] */
+
+const state = {
+  loaded: false,
+  time: 0,
+  minTime: 0,
+  mode: 'time',
+  fetchTime: 0,
+  fetchPeriod: {
+    hot: {
+      minWait: 30,
+      variation: 60,
+    },
+    cold: {
+      minWait: 3 * 60,
+      variation: 10 * 60,
+    },
+  },
+  updateTimes: [4*60 + 30, 10*60 + 30, 16*60 + 30, 22*60 + 30],
+  dataStamp: 0,
+  data: {
+    url: null,
+    updated: null,
+    boundary: null,
+    origo: [],
+    cellSize: [],
+    cells: [],
+  },
+  cfg: {
+    arrowsBarbs: {
+      value: 'arrows',
+      type: 'values',
+      values: ['arrows', 'barbs', 'none'],
+      cfgText: 'Wind arrows / barbs',
+    },
+    sound: {
+      value: false,
+      type: 'boolean',
+      cfgText: 'New weather sound',
+    },
+    start24h: {
+      value: false,
+      type: 'boolean',
+      cfgText: 'Start with 24h weather',
+    },
+    startStep: {
+      value: '3',
+      type: 'values',
+      values: [
+        ['0.5', '30 min'],
+        ['1', '1 h'],
+        ['2', '2 h'],
+        ['3', '3 h'],
+      ],
+      cfgText: 'Start with weather step',
+    },
+    startMode: {
+      value: 'time',
+      type: 'values',
+      values: [
+        ['time', 'keep time constant'],
+        ['offset', 'keep offset constant'],
+      ],
+      cfgText: 'Start with time/offset mode',
+    },
+    gridInterval: {
+      value: 48,
+      type: 'range',
+      low: 24,
+      high: 128,
+      lowText: 'high',
+      highText: 'low',
+      reverse: true,
+      cfgText: 'Wind grid density',
+    },
+    twsDensity: {
+      value: 2,
+      type: 'range',
+      low: 0,
+      high: 4,
+      lowText: 'off',
+      highText: 'high',
+      cfgText: 'Wind speed contours density',
+    },
+    twsTxt: {
+      value: false,
+      type: 'boolean',
+      cfgText: 'Show wind speed',
+    },
+    twdTxt: {
+      value: false,
+      type: 'boolean',
+      cfgText: 'Show wind direction',
+    },
+    quickAccessButtons: {
+      value: false,
+      type: 'boolean',
+      cfgText: 'Quick-access buttons for TWS/TWD'
+    },
+  },
+};
+
 function wxLinearInterpolate(factor, startData, endData) {
   return [
     linearInterpolate(factor, startData[0], endData[0]),
@@ -57,116 +164,10 @@ const contourDefs = [
   ],
 ];
 
-/*
- * These are outside of reactive parts as they're large arrays
- * and performance critical
- */
-let timeSeries = [];
-let windMap = [];      /* format: [time][lon][lat][u,v] */
-
 export default {
   namespaced: true,
 
-  state: {
-    loaded: false,
-    time: 0,
-    minTime: 0,
-    mode: 'time',
-    fetchTime: 0,
-    fetchPeriod: {
-      hot: {
-        minWait: 30,
-        variation: 60,
-      },
-      cold: {
-        minWait: 3 * 60,
-        variation: 10 * 60,
-      },
-    },
-    updateTimes: [4*60 + 30, 10*60 + 30, 16*60 + 30, 22*60 + 30],
-    dataStamp: 0,
-    data: {
-      url: null,
-      updated: null,
-      boundary: null,
-      origo: [],
-      cellSize: [],
-      cells: [],
-    },
-    cfg: {
-      arrowsBarbs: {
-        value: 'arrows',
-        type: 'values',
-        values: ['arrows', 'barbs', 'none'],
-        cfgText: 'Wind arrows / barbs',
-      },
-      sound: {
-        value: false,
-        type: 'boolean',
-        cfgText: 'New weather sound',
-      },
-      start24h: {
-        value: false,
-        type: 'boolean',
-        cfgText: 'Start with 24h weather',
-      },
-      startStep: {
-        value: '3',
-        type: 'values',
-        values: [
-          ['0.5', '30 min'],
-          ['1', '1 h'],
-          ['2', '2 h'],
-          ['3', '3 h'],
-        ],
-        cfgText: 'Start with weather step',
-      },
-      startMode: {
-        value: 'time',
-        type: 'values',
-        values: [
-          ['time', 'keep time constant'],
-          ['offset', 'keep offset constant'],
-        ],
-        cfgText: 'Start with time/offset mode',
-      },
-      gridInterval: {
-        value: 48,
-        type: 'range',
-        low: 24,
-        high: 128,
-        lowText: 'high',
-        highText: 'low',
-        reverse: true,
-        cfgText: 'Wind grid density',
-      },
-      twsDensity: {
-        value: 2,
-        type: 'range',
-        low: 0,
-        high: 4,
-        lowText: 'off',
-        highText: 'high',
-        cfgText: 'Wind speed contours density',
-      },
-      twsTxt: {
-        value: false,
-        type: 'boolean',
-        cfgText: 'Show wind speed',
-      },
-      twdTxt: {
-        value: false,
-        type: 'boolean',
-        cfgText: 'Show wind direction',
-      },
-      quickAccessButtons: {
-        value: false,
-        type: 'boolean',
-        cfgText: 'Quick-access buttons for TWS/TWD'
-      },
-    },
-  },
-
+  state,
   mutations: {
     initTime(state, time) {
       if (state.minTime === 0 || state.minTime === state.time) {
