@@ -132,7 +132,7 @@ function wxTimeInterpolate(factor, startData, endData) {
 /* Bounds the given time between wx data range, return null if no bound
  * applies
  */
-function boundTime(state, time) {
+function boundTime(time) {
   if (state.loaded) {
     if (time < state.minTime) {
       return state.minTime;
@@ -187,7 +187,7 @@ export default {
        * error that truncated it such that the current wx time is beyond
        * the tail of the wx, fix the wx time index to avoid issues
        */
-      const boundedTime = boundTime(state, state.time);
+      const boundedTime = boundTime(state.time);
       if (boundedTime !== null) {
         store.dispatch(
           'diagnostics/add',
@@ -207,7 +207,7 @@ export default {
         newTime = state.time + timeData.delta;
       }
       if (state.loaded) {
-        const boundedMinTime = boundTime(state, newTime);
+        const boundedMinTime = boundTime(newTime);
         if (boundedMinTime !== null) {
           newTime = boundedMinTime;
         }
@@ -218,7 +218,7 @@ export default {
     },
     setTime(state, time) {
       if (state.loaded) {
-        const boundedTime = boundTime(state, time);
+        const boundedTime = boundTime(time);
         if (boundedTime !== null) {
           time = boundedTime;
         }
