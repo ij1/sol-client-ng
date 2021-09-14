@@ -57,6 +57,12 @@ const contourDefs = [
   ],
 ];
 
+/*
+ * These are outside of reactive parts as they're large arrays
+ * and performance critical
+ */
+let windMap = [];      /* format: [time][lon][lat][u,v] */
+
 export default {
   namespaced: true,
 
@@ -85,7 +91,6 @@ export default {
       origo: [],
       cellSize: [],
       cells: [],
-      windMap: [],      /* format: [time][lon][lat][u,v] */
     },
     cfg: {
       arrowsBarbs: {
@@ -169,6 +174,8 @@ export default {
       }
     },
     update(state, weatherData) {
+      windMap = weatherData.windMap;
+      delete weatherData.windMap;
       state.data = weatherData;
       state.loaded = true;
       /* wx begins only after our current timestamp or the new wx had an
@@ -356,8 +363,8 @@ export default {
         for (let x = 0; x <= 1; x++) {
           firstRes[t][x] = wxLinearInterpolate(
             firstFactor,
-            state.data.windMap[timeIdx+t][lonIdx+x][latIdx],
-            state.data.windMap[timeIdx+t][lonIdx+x][latIdx+1]
+            windMap[timeIdx+t][lonIdx+x][latIdx],
+            windMap[timeIdx+t][lonIdx+x][latIdx+1]
           );
         }
       }
@@ -390,7 +397,7 @@ export default {
 
       /* Sanity check wx data */
       if ((timeIdx === null) ||
-          (typeof state.data.windMap[timeIdx+1] === 'undefined') ||
+          (typeof windMap[timeIdx+1] === 'undefined') ||
           (state.data.timeSeries[timeIdx+1] < timeVal)) {
         return null;
       }
@@ -418,7 +425,7 @@ export default {
 
       /* Sanity check wx data */
       if ((timeIdx === null) ||
-          (state.data.windMap.length < timeIdx+1 + 1) ||
+          (windMap.length < timeIdx+1 + 1) ||
           (state.data.timeSeries[timeIdx+1] < timeVal)) {
         return null;
       }
@@ -441,8 +448,8 @@ export default {
         for (let x = 0; x <= 1; x++) {
           wind.push(wxTimeInterpolate(
             timeFactor,
-            state.data.windMap[timeIdx][lonIdx+x][latIdx+y],
-            state.data.windMap[timeIdx+1][lonIdx+x][latIdx+y]
+            windMap[timeIdx][lonIdx+x][latIdx+y],
+            windMap[timeIdx+1][lonIdx+x][latIdx+y]
           ));
         }
       }
