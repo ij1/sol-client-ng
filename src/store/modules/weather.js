@@ -146,6 +146,10 @@ function boundTime(time) {
   return null;
 }
 
+function checkTimeIdx(idx, timestamp) {
+  return timeSeries[idx] <= timestamp && timestamp <= timeSeries[idx+1];
+}
+
 const contourDefs = [
   [],
   [6, 12, 20, 30, 40, 50],
@@ -286,8 +290,7 @@ export default {
         return null;
       }
       /* For now, check that the result is valid, */
-      if ((timeSeries[idx] > state.time) ||
-          (timeSeries[idx+1] < state.time)) {
+      if (!checkTimeIdx(idx, state.time)) {
         /* Warn only when it's a bug. If wx data is invalid, no log spam */
         if (getters.valid) {
           store.dispatch(
@@ -324,8 +327,7 @@ export default {
       }
 
       /* For now, check that the result is valid, */
-      if ((timeSeries[idx] > timestamp) ||
-          (timeSeries[idx+1] < timestamp)) {
+      if (!checkTimeIdx(idx, timestamp)) {
         /* Warn only when it's a bug. If wx data is invalid, no log spam */
         if (getters.valid) {
           store.dispatch(
