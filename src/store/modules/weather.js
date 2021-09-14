@@ -29,10 +29,10 @@ function boundTime(state, time) {
   if (state.loaded) {
     if (time < state.minTime) {
       return state.minTime;
-    } else if (time < state.data.timeSeries[0]) {
-      return state.data.timeSeries[0];
-    } else if (time > state.data.timeSeries[state.data.timeSeries.length - 1]) {
-      return Math.max(state.data.timeSeries[state.data.timeSeries.length - 1],
+    } else if (time < timeSeries[0]) {
+      return timeSeries[0];
+    } else if (time > timeSeries[timeSeries.length - 1]) {
+      return Math.max(timeSeries[timeSeries.length - 1],
                       state.minTime);
     }
   }
@@ -61,6 +61,7 @@ const contourDefs = [
  * These are outside of reactive parts as they're large arrays
  * and performance critical
  */
+let timeSeries = [];
 let windMap = [];      /* format: [time][lon][lat][u,v] */
 
 export default {
@@ -88,7 +89,6 @@ export default {
       url: null,
       updated: null,
       boundary: null,
-      timeSeries: [],
       origo: [],
       cellSize: [],
       cells: [],
@@ -176,7 +176,9 @@ export default {
     },
     update(state, weatherData) {
       windMap = weatherData.windMap;
+      timeSeries = weatherData.timeSeries;
       delete weatherData.windMap;
+      delete weatherData.timeSeries;
       state.data = weatherData;
       state.dataStamp++;
       state.loaded = true;
@@ -188,7 +190,7 @@ export default {
       if (boundedTime !== null) {
         store.dispatch(
           'diagnostics/add',
-          "WARNING: time outside boattime/wx, fixing: " + state.time + " vs " + state.data.timeSeries[0] + "-" + state.data.timeSeries[state.data.timeSeries.length - 1]
+          "WARNING: time outside boattime/wx, fixing: " + state.time + " vs " + timeSeries[0] + "-" + timeSeries[timeSeries.length - 1]
         );
         if (state.time !== boundedTime) {
           state.time = boundedTime;
@@ -241,10 +243,12 @@ export default {
 
   getters: {
     firstTimestamp: (state) => {
-      return state.data.timeSeries[0];
+      state.dataStamp;
+      return timeSeries[0];
     },
     lastTimestamp: (state) => {
-      return state.data.timeSeries[state.data.timeSeries.length - 1];
+      state.dataStamp;
+      return timeSeries[timeSeries.length - 1];
     },
     dataTimescale: (state, getters) => {
       return getters.lastTimestamp - state.minTime;
@@ -267,24 +271,27 @@ export default {
 
     timeIndex: (state, getters) => {
       let idx;
+
+      state.dataStamp;
+
       /* Short-circuit for the common case near the beginning of the wx series */
-      if (state.time <= state.data.timeSeries[1]) {
+      if (state.time <= timeSeries[1]) {
         idx = 0;
       } else {
-        idx = bsearchLeft(state.data.timeSeries, state.time, 2, state.data.timeSeries.length - 1) - 1;
+        idx = bsearchLeft(timeSeries, state.time, 2, timeSeries.length - 1) - 1;
       }
       /* Sanity check frames */
-      if ((idx < 0) || (state.data.timeSeries.length < idx+1)) {
+      if ((idx < 0) || (timeSeries.length < idx+1)) {
         return null;
       }
       /* For now, check that the result is valid, */
-      if ((state.data.timeSeries[idx] > state.time) ||
-          (state.data.timeSeries[idx+1] < state.time)) {
+      if ((timeSeries[idx] > state.time) ||
+          (timeSeries[idx+1] < state.time)) {
         /* Warn only when it's a bug. If wx data is invalid, no log spam */
         if (getters.valid) {
           store.dispatch(
             'diagnostics/add',
-            "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + state.time + "<=" + state.data.timeSeries[idx+1] + "?!?"
+            "WX time-search out-of-range: " + timeSeries[idx] + "<=" + state.time + "<=" + timeSeries[idx+1] + "?!?"
           );
         }
         return null;
@@ -293,33 +300,36 @@ export default {
     },
     timeIndexAny: (state, getters) => (timestamp) => {
       let idx;
+
+      state.dataStamp;
+
       /* Short-circuit for the common case near the beginning of the wx series */
-      if (timestamp <= state.data.timeSeries[1]) {
+      if (timestamp <= timeSeries[1]) {
         idx = 0;
       } else {
         let min = 2;
-        let max = state.data.timeSeries.length - 1;
-        if (state.data.timeSeries[getters.timeIndex+1] < timestamp) {
+        let max = timeSeries.length - 1;
+        if (timeSeries[getters.timeIndex+1] < timestamp) {
           min = getters.timeIndex + 2;
-        } else if (state.data.timeSeries[getters.timeIndex] > timestamp) {
+        } else if (timeSeries[getters.timeIndex] > timestamp) {
           max = getters.timeIndex;
         }
 
-        idx = bsearchLeft(state.data.timeSeries, timestamp, min, max) - 1;
+        idx = bsearchLeft(timeSeries, timestamp, min, max) - 1;
       }
       /* Sanity check frames */
-      if ((idx < 0) || (state.data.timeSeries.length < idx+1)) {
+      if ((idx < 0) || (timeSeries.length < idx+1)) {
         return null;
       }
 
       /* For now, check that the result is valid, */
-      if ((state.data.timeSeries[idx] > timestamp) ||
-          (state.data.timeSeries[idx+1] < timestamp)) {
+      if ((timeSeries[idx] > timestamp) ||
+          (timeSeries[idx+1] < timestamp)) {
         /* Warn only when it's a bug. If wx data is invalid, no log spam */
         if (getters.valid) {
           store.dispatch(
             'diagnostics/add',
-            "WX time-search out-of-range: " + state.data.timeSeries[idx] + "<=" + timestamp + "<=" + state.data.timeSeries[idx+1] + "?!?"
+            "WX time-search out-of-range: " + timeSeries[idx] + "<=" + timestamp + "<=" + timeSeries[idx+1] + "?!?"
           );
         }
         return null;
@@ -400,7 +410,7 @@ export default {
       /* Sanity check wx data */
       if ((timeIdx === null) ||
           (typeof windMap[timeIdx+1] === 'undefined') ||
-          (state.data.timeSeries[timeIdx+1] < timeVal)) {
+          (timeSeries[timeIdx+1] < timeVal)) {
         return null;
       }
 
@@ -410,9 +420,9 @@ export default {
       }
       /* time (z) solution */
       const thirdFactor = interpolateFactor(
-        state.data.timeSeries[timeIdx],
+        timeSeries[timeIdx],
         timeVal,
-        state.data.timeSeries[timeIdx+1],
+        timeSeries[timeIdx+1],
       );
       return UVToWind(wxTimeInterpolate(
         thirdFactor,
@@ -428,7 +438,7 @@ export default {
       /* Sanity check wx data */
       if ((timeIdx === null) ||
           (windMap.length < timeIdx+1 + 1) ||
-          (state.data.timeSeries[timeIdx+1] < timeVal)) {
+          (timeSeries[timeIdx+1] < timeVal)) {
         return null;
       }
 
@@ -441,9 +451,9 @@ export default {
 
       /* time (z) solution */
       const timeFactor = interpolateFactor(
-        state.data.timeSeries[timeIdx],
+        timeSeries[timeIdx],
         timeVal,
-        state.data.timeSeries[timeIdx+1],
+        timeSeries[timeIdx+1],
       );
 
       for (let y = 0; y <= 1; y++) {
