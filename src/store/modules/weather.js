@@ -83,6 +83,7 @@ export default {
       },
     },
     updateTimes: [4*60 + 30, 10*60 + 30, 16*60 + 30, 22*60 + 30],
+    dataStamp: 0,
     data: {
       url: null,
       updated: null,
@@ -177,6 +178,7 @@ export default {
       windMap = weatherData.windMap;
       delete weatherData.windMap;
       state.data = weatherData;
+      state.dataStamp++;
       state.loaded = true;
       /* wx begins only after our current timestamp or the new wx had an
        * error that truncated it such that the current wx time is beyond
