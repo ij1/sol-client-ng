@@ -30,6 +30,8 @@ const state = {
   },
   updateTimes: [4*60 + 30, 10*60 + 30, 16*60 + 30, 22*60 + 30],
   dataStamp: 0,
+  firstTimestamp: 0,
+  lastTimestamp: 0,
   data: {
     url: null,
     updated: null,
@@ -185,6 +187,8 @@ export default {
       delete weatherData.windMap;
       delete weatherData.timeSeries;
       state.data = weatherData;
+      state.firstTimestamp = timeSeries[0];
+      state.lastTimestamp = timeSeries[timeSeries.length - 1];
       state.dataStamp++;
       state.loaded = true;
       /* wx begins only after our current timestamp or the new wx had an
@@ -247,21 +251,13 @@ export default {
   },
 
   getters: {
-    firstTimestamp: (state) => {
-      state.dataStamp;
-      return timeSeries[0];
+    dataTimescale: (state) => {
+      return state.lastTimestamp - state.minTime;
     },
-    lastTimestamp: (state) => {
-      state.dataStamp;
-      return timeSeries[timeSeries.length - 1];
-    },
-    dataTimescale: (state, getters) => {
-      return getters.lastTimestamp - state.minTime;
-    },
-    valid: (state, getters) => {
+    valid: (state) => {
       return state.loaded &&
-             (getters.firstTimestamp <= state.minTime) &&
-             (getters.lastTimestamp > state.minTime);
+             (state.firstTimestamp <= state.minTime) &&
+             (state.lastTimestamp > state.minTime);
     },
 
     twsContours: (state, getters, rootState) => {

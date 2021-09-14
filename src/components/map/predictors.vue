@@ -233,7 +233,6 @@ export default {
     },
     ...mapGetters({
       wxValid: 'weather/valid',
-      wxLastTimestamp: 'weather/lastTimestamp',
       boatTime: 'boat/time',
       visualPosition: 'boat/visualPosition',
       isTowbackPeriod: 'race/isTowbackPeriod',
@@ -244,6 +243,7 @@ export default {
       boatId: state => state.boat.id,
       wxDataStamp: state => state.weather.dataStamp,
       wxTime: state => state.weather.time,
+      wxLastTimestamp: state => state.weather.lastTimestamp,
       raceLoaded: state => state.race.loaded,
       raceStartTime: state => state.race.info.startTime,
       currentSteeringApi: state => state.boat.currentSteering,
