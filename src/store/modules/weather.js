@@ -336,9 +336,6 @@ export default {
     },
 
     __latLngWind: (state) => (latLng, timeIdx) => {
-      if (state.data.boundary === null) {
-        return null;
-      }
       const wxLat = latLng.lat;
       let wxLng = latLng.lng;
       /* Try to dewrap into wx coordinate area */
@@ -406,7 +403,8 @@ export default {
       }
 
       /* Sanity check wx data */
-      if ((timeIdx === null) ||
+      if (!state.dataStamp ||
+          (timeIdx === null) ||
           (typeof windMap[timeIdx+1] === 'undefined') ||
           (timeSeries[timeIdx+1] < timeVal)) {
         return null;
