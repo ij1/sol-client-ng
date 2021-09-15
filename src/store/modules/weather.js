@@ -180,12 +180,12 @@ export default {
         state.minTime = time;
       }
     },
-    update(state, weatherData) {
-      windMap = weatherData.windMap;
-      timeSeries = weatherData.timeSeries;
-      delete weatherData.windMap;
-      delete weatherData.timeSeries;
-      state.data = weatherData;
+    update(state, weatherTile) {
+      windMap = weatherTile.windMap;
+      timeSeries = weatherTile.timeSeries;
+      delete weatherTile.windMap;
+      delete weatherTile.timeSeries;
+      state.data = weatherTile;
       state.firstTimestamp = timeSeries[0];
       state.lastTimestamp = timeSeries[timeSeries.length - 1];
       state.dataStamp++;
@@ -652,7 +652,7 @@ export default {
         cells = Object.freeze(cells);
         boundary = Object.freeze(boundary);
 
-        let weatherInfo = {
+        let weatherTile = {
           url: dataUrl,
           updated: updated,
           boundary: boundary,
@@ -662,7 +662,7 @@ export default {
           cells: cells,
           windMap: windMap,
         };
-        commit('update', weatherInfo);
+        commit('update', weatherTile);
         const now = rootGetters['time/now']();
         commit('updateFetchTime', now);
         if (!firstWeather) {
