@@ -188,7 +188,7 @@ export default {
     },
     fleetTilesNeedRedraw: (state, getters, rootState, rootGetters) => {
       rootState.race.fleet.searchTreeStamp;
-      rootState.weather.data.updated;
+      rootState.weather.dataStamp;
       rootState.ui.cfg.nightIcons.value;
       rootGetters['ui/isDark'];
       state.zoom;
