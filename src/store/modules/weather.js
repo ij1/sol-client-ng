@@ -394,12 +394,15 @@ export default {
     },
 
     latLngWind: (state, getters) => (latLng, timestamp) => {
-      let timeIdx = getters.timeIndex;
-      let timeVal = state.time;
+      let timeIdx;
+      let timeVal;
 
       if (typeof timestamp !== 'undefined') {
         timeVal = timestamp;
         timeIdx = getters['timeIndexAny'](timestamp);
+      } else {
+        timeVal = state.time;
+        timeIdx = getters.timeIndex
       }
 
       /* Sanity check wx data */
