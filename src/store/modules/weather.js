@@ -29,6 +29,67 @@ function findWeatherLayer(url) {
   return null;
 }
 
+function __latLngWind(latLng, timeIdx) {
+  const weatherLayer = weatherData[0];
+  const wxLat = latLng.lat;
+  let wxLng = latLng.lng;
+  /* Try to dewrap into wx coordinate area */
+  while (wxLng >= weatherLayer.boundary.getNorthEast().lng) {
+    wxLng -= 360;
+  }
+  while (wxLng < weatherLayer.origo[1]) {
+    wxLng += 360;
+  }
+  /*
+   * .contains() doesn't prevent access to undefined item at race boundary
+   * so we have to do the checks manually. Lng is linearized above, thus
+   * only >= check is needed for it.
+   */
+  if ((wxLng >= weatherLayer.boundary.getNorthEast().lng) ||
+      (wxLat < weatherLayer.boundary.getSouthWest().lat) ||
+      (wxLat >= weatherLayer.boundary.getNorthEast().lat)) {
+    return null;
+  }
+
+  const windMap = weatherLayer.windMap;
+
+  const lonIdx = Math.floor((wxLng - weatherLayer.origo[1]) / weatherLayer.cellSize[1]);
+  const latIdx = Math.floor((wxLat - weatherLayer.origo[0]) / weatherLayer.cellSize[0]);
+
+  /* latitude (y) solution */
+  let firstRes = [[], []];
+  const firstFactor = interpolateFactor(
+    latIdx * weatherLayer.cellSize[0] + weatherLayer.origo[0],
+    wxLat,
+    (latIdx + 1) * weatherLayer.cellSize[0] + weatherLayer.origo[0]
+  );
+  for (let t = 0; t <= 1; t++) {
+    for (let x = 0; x <= 1; x++) {
+      firstRes[t][x] = wxLinearInterpolate(
+        firstFactor,
+        windMap[timeIdx+t][lonIdx+x][latIdx],
+        windMap[timeIdx+t][lonIdx+x][latIdx+1]
+      );
+    }
+  }
+
+  /* longitude (x) solution */
+  let secondRes = [];
+  const secondFactor = interpolateFactor(
+    lonIdx * weatherLayer.cellSize[1] + weatherLayer.origo[1],
+    wxLng,
+    (lonIdx + 1) * weatherLayer.cellSize[1] + weatherLayer.origo[1]
+  );
+  for (let t = 0; t <= 1; t++) {
+      secondRes[t] = wxLinearInterpolate(
+        secondFactor,
+        firstRes[t][0],
+        firstRes[t][1]
+      );
+  }
+  return secondRes;
+}
+
 const state = {
   loaded: false,
   time: 0,
@@ -367,66 +428,6 @@ export default {
       return idx;
     },
 
-    __latLngWind: () => (latLng, timeIdx) => {
-      const weatherLayer = weatherData[0];
-      const wxLat = latLng.lat;
-      let wxLng = latLng.lng;
-      /* Try to dewrap into wx coordinate area */
-      while (wxLng >= weatherLayer.boundary.getNorthEast().lng) {
-        wxLng -= 360;
-      }
-      while (wxLng < weatherLayer.origo[1]) {
-        wxLng += 360;
-      }
-      /*
-       * .contains() doesn't prevent access to undefined item at race boundary
-       * so we have to do the checks manually. Lng is linearized above, thus
-       * only >= check is needed for it.
-       */
-      if ((wxLng >= weatherLayer.boundary.getNorthEast().lng) ||
-          (wxLat < weatherLayer.boundary.getSouthWest().lat) ||
-          (wxLat >= weatherLayer.boundary.getNorthEast().lat)) {
-        return null;
-      }
-
-      const windMap = weatherLayer.windMap;
-
-      const lonIdx = Math.floor((wxLng - weatherLayer.origo[1]) / weatherLayer.cellSize[1]);
-      const latIdx = Math.floor((wxLat - weatherLayer.origo[0]) / weatherLayer.cellSize[0]);
-
-      /* latitude (y) solution */
-      let firstRes = [[], []];
-      const firstFactor = interpolateFactor(
-        latIdx * weatherLayer.cellSize[0] + weatherLayer.origo[0],
-        wxLat,
-        (latIdx + 1) * weatherLayer.cellSize[0] + weatherLayer.origo[0]
-      );
-      for (let t = 0; t <= 1; t++) {
-        for (let x = 0; x <= 1; x++) {
-          firstRes[t][x] = wxLinearInterpolate(
-            firstFactor,
-            windMap[timeIdx+t][lonIdx+x][latIdx],
-            windMap[timeIdx+t][lonIdx+x][latIdx+1]
-          );
-        }
-      }
-
-      /* longitude (x) solution */
-      let secondRes = [];
-      const secondFactor = interpolateFactor(
-        lonIdx * weatherLayer.cellSize[1] + weatherLayer.origo[1],
-        wxLng,
-        (lonIdx + 1) * weatherLayer.cellSize[1] + weatherLayer.origo[1]
-      );
-      for (let t = 0; t <= 1; t++) {
-          secondRes[t] = wxLinearInterpolate(
-            secondFactor,
-            firstRes[t][0],
-            firstRes[t][1]
-          );
-      }
-      return secondRes;
-    },
 
     latLngWind: (state, getters) => (latLng, timestamp) => {
       /* Sanity check wx data */
@@ -454,7 +455,7 @@ export default {
         return null;
       }
 
-      const secondRes = getters.__latLngWind(latLng, timeIdx);
+      const secondRes = __latLngWind(latLng, timeIdx);
       if (secondRes === null) {
         return null;
       }
