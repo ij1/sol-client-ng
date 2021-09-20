@@ -603,6 +603,12 @@ export default {
         let boundary = L.latLngBounds(
           L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
           L.latLng(weatherData.$.lat_max, weatherData.$.lon_max));
+        let cells = [parseInt(weatherData.$.lat_n_points) - 1,
+                     parseInt(weatherData.$.lon_n_points) - 1];
+        let origo = [parseFloat(weatherData.$.lat_min),
+                     parseFloat(weatherData.$.lon_min)];
+        let cellSize = [parseFloat(weatherData.$.lat_increment),
+                         parseFloat(weatherData.$.lon_increment)];
 
         const updated = UTCToMsec(weatherData.$.last_updated);
         if (updated === null) {
@@ -613,9 +619,6 @@ export default {
           );
           return;
         }
-
-        let cells = [parseInt(weatherData.$.lat_n_points) - 1,
-                     parseInt(weatherData.$.lon_n_points) - 1];
 
         for (let frame of weatherData.frames.frame) {
           frame.utc = UTCToMsec(frame.$.target_time);
@@ -685,11 +688,6 @@ export default {
           await lowPrioTask.idle();
         }
         windMap = Object.freeze(windMap);
-
-        let origo = [parseFloat(weatherData.$.lat_min),
-                     parseFloat(weatherData.$.lon_min)];
-        let cellSize = [parseFloat(weatherData.$.lat_increment),
-                         parseFloat(weatherData.$.lon_increment)];
 
         /* Improve performance by freezing all interpolation related
          * array objects. This avoid adding unnecessary reactivity detectors.
