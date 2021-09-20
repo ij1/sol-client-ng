@@ -262,7 +262,7 @@ export default {
         updated: layerInfo.updated,
         url: layerInfo.url,
         boundary: layerInfo.boundary,
-        timeSeries: layerInfo.timeSeries,
+        timeSeries: null,
         origo: layerInfo.origo,
         cellSize: layerInfo.cellSize,
         cells: layerInfo.cells,
@@ -272,6 +272,9 @@ export default {
     },
     updateTile(state, weatherTile) {
       const weatherLayer = weatherTile.weatherLayer;
+      if (weatherLayer.timeSeries === null) {
+        weatherLayer.timeSeries = weatherTile.timeSeries;
+      }
       weatherLayer.windMap = weatherTile.windMap;
     },
     update(state, weatherLayer) {
@@ -703,7 +706,6 @@ export default {
           updated: updated,
           url: dataUrl,
           boundary: boundary,
-          timeSeries: timeSeries,
           origo: origo,
           cellSize: cellSize,
           cells: cells,
@@ -712,6 +714,7 @@ export default {
 
         const weatherTile = {
           weatherLayer: findWeatherLayer(dataUrl),
+          timeSeries: timeSeries,
           windMap: windMap,
         };
         commit('updateTile', weatherTile);
