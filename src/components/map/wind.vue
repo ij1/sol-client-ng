@@ -4,6 +4,7 @@ import L from 'leaflet';
 import { windToColor, MS_TO_KNT, darkSeaColor } from '../../lib/sol.js';
 import { radToDeg, bsearchLeft } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
+import { weatherData } from '../../store/modules/weather.js';
 
 function compareCrossing(a, b) {
   return a[0] - b[0];
@@ -50,10 +51,6 @@ export default {
     },
     ...mapState({
       wxTime: state => state.weather.time,
-      wxOrigo: state => state.weather.data.origo,
-      wxCellSize: state => state.weather.data.cellSize,
-      wxCells: state => state.weather.data.cells,
-      wxBoundary: state => state.weather.data.boundary,
       center: state => state.map.center,
       gridInterval: state => state.weather.cfg.gridInterval.value,
       cfgArrowsBarbs: state => state.weather.cfg.arrowsBarbs.value,
@@ -275,24 +272,30 @@ export default {
 
       let yToLat = [];
 
+      const windLayer = weatherData[0];
+      const wxOrigo = windLayer.origo;
+      const wxCellSize = windLayer.cellSize;
+      const wxCells = windLayer.cells;
+      const wxBoundary = windLayer.boundary;
+
       const bounds = this.$parent.map.getBounds();
       const sw = bounds.getSouthWest();
       const ne = bounds.getNorthEast();
-      let latCells = L.point(sw.lat - this.wxOrigo[0],
-                             ne.lat - this.wxOrigo[0])
-                        .divideBy(this.wxCellSize[0])
+      let latCells = L.point(sw.lat - wxOrigo[0],
+                             ne.lat - wxOrigo[0])
+                        .divideBy(wxCellSize[0])
                         .floor();
       latCells = L.point(Math.max(latCells.x, 0),
-                         Math.min(latCells.y, this.wxCells[0] - 1));
+                         Math.min(latCells.y, wxCells[0] - 1));
 
-      let boundLat = latCells.x * this.wxCellSize[0] + this.wxOrigo[0];
+      let boundLat = latCells.x * wxCellSize[0] + wxOrigo[0];
       let yStart;
       if (boundLat < sw.lat) {
         yStart = this.mapSize.y;
       } else {
         yStart = Math.floor(this.$parent.map.latLngToContainerPoint(L.latLng(boundLat, 0)).y) - 1;
       }
-      boundLat = (latCells.y + 1) * this.wxCellSize[0] + this.wxOrigo[0];
+      boundLat = (latCells.y + 1) * wxCellSize[0] + wxOrigo[0];
       let yEnd;
       if (boundLat > ne.lat) {
         yEnd = 0;
@@ -303,17 +306,17 @@ export default {
       for (let y = yStart; y >= yEnd; y--) {
         yToLat[y] = this.$parent.map.containerPointToLatLng(L.point(0, y)).lat;
       }
-      if ((yToLat[yStart] < this.wxOrigo[0]) ||
-          (yToLat[yEnd] > this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0])) {
+      if ((yToLat[yStart] < wxOrigo[0]) ||
+          (yToLat[yEnd] > wxCells[0] * wxCellSize[0] + wxOrigo[0])) {
         this.logError('contour lat ' + yToLat[yStart] + '-' + yToLat[yEnd] +
-                      ' exceeding wx boundaries ' + this.wxOrigo[0] + '-' +
-                      (this.wxCells[0] * this.wxCellSize[0] + this.wxOrigo[0]));
+                      ' exceeding wx boundaries ' + wxOrigo[0] + '-' +
+                      (wxCells[0] * wxCellSize[0] + wxOrigo[0]));
         return;
       }
 
-      let minFrac = (sw.lng - this.wxOrigo[1]) / 360.0;
-      let maxFrac = (ne.lng - this.wxOrigo[1]) / 360.0;
-      let maxWxFrac = (this.wxBoundary.getEast() - this.wxOrigo[1]) / 360.0;
+      let minFrac = (sw.lng - wxOrigo[1]) / 360.0;
+      let maxFrac = (ne.lng - wxOrigo[1]) / 360.0;
+      let maxWxFrac = (wxBoundary.getEast() - wxOrigo[1]) / 360.0;
 
       let minWrap = Math.floor(minFrac);
       const maxWrap = Math.floor(maxFrac);
@@ -331,19 +334,19 @@ export default {
         return;
       }
 
-      let minCell = Math.floor(minFrac / maxWxFrac * this.wxCells[1]);
-      let maxCell = Math.min(Math.floor(maxFrac / maxWxFrac * this.wxCells[1]),
-                             this.wxCells[1] - 1);
+      let minCell = Math.floor(minFrac / maxWxFrac * wxCells[1]);
+      let maxCell = Math.min(Math.floor(maxFrac / maxWxFrac * wxCells[1]),
+                             wxCells[1] - 1);
 
-      const cellStep = this.mapSize.x / (ne.lng - sw.lng) * this.wxCellSize[1];
+      const cellStep = this.mapSize.x / (ne.lng - sw.lng) * wxCellSize[1];
 
       /* WX wrapping? */
       let firstMaxCell = maxCell;
       if (maxWrap > minWrap) {
-        firstMaxCell = this.wxCells[1] - 1;
+        firstMaxCell = wxCells[1] - 1;
       }
 
-      this.__drawContours(ctx, ctx2,
+      this.__drawContours(ctx, ctx2, wxOrigo, wxCellSize,
                           minCell, firstMaxCell, latCells.x, latCells.y,
                           yToLat, yStart, yEnd, cellStep,
                           minWrap, maxWrap);
@@ -354,13 +357,13 @@ export default {
         if (maxWrap - minWrap > 1) {
           maxCell = minCell;
         }
-        this.__drawContours(ctx, ctx2,
+        this.__drawContours(ctx, ctx2, wxOrigo, wxCellSize,
                             0, maxCell, latCells.x, latCells.y,
                             yToLat, yStart, yEnd, cellStep,
                             minWrap + 1, maxWrap);
       }
     },
-    __drawContours (ctx, ctx2,
+    __drawContours (ctx, ctx2, wxOrigo, wxCellSize,
                     minLngCell, maxLngCell, minLatCell, maxLatCell,
                     yToLat, yStart, yEnd, cellStep, minWrap, maxWrap) {
       const baseWrap = minWrap === maxWrap ? minWrap : 0;
@@ -383,7 +386,7 @@ export default {
 
       for (let lngCell = minLngCell; lngCell <= maxLngCell; lngCell++) {
         let y = yStart;
-        let lngStart = lngCell * this.wxCellSize[1] + this.wxOrigo[1];
+        let lngStart = lngCell * wxCellSize[1] + wxOrigo[1];
         const xStart = this.$parent.map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
 
         for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
@@ -406,7 +409,7 @@ export default {
             this.logError('skipped contour cell ' + latCell + ' ' + lngCell);
             return;
           }
-          let latStart = latCell * this.wxCellSize[0] + this.wxOrigo[0];
+          let latStart = latCell * wxCellSize[0] + wxOrigo[0];
 
           let minTwsMs = 0;
           let maxTwsMs = 0;
@@ -453,7 +456,7 @@ export default {
           maxTwsMs = Math.sqrt(maxTwsMs);
           minTwsMs = Math.sqrt(minTwsMs);
 
-          const cellEndLat = (latCell + 1) * this.wxCellSize[0] + this.wxOrigo[0];
+          const cellEndLat = (latCell + 1) * wxCellSize[0] + wxOrigo[0];
 
           let minTwsIdx = bsearchLeft(this.twsContours, minTwsMs * MS_TO_KNT);
           let maxTwsIdx = Math.min(bsearchLeft(this.twsContours,
@@ -461,7 +464,7 @@ export default {
                                    this.twsContours.length - 1);
 
           const yInCellStart = (y > yStart) ? 0 :
-                               (yToLat[y] - latStart) / this.wxCellSize[0];
+                               (yToLat[y] - latStart) / wxCellSize[0];
 
           for (let twsIdx = minTwsIdx; twsIdx <= maxTwsIdx; twsIdx++) {
             let twsData = twsDatas[twsIdx];
@@ -539,7 +542,7 @@ export default {
               }
 
               lat = yToLat[y];
-              yInCell = (lat - latStart) / this.wxCellSize[0];
+              yInCell = (lat - latStart) / wxCellSize[0];
               if ((nextEdge !== null) && nextEdge < yInCell) {
                 yInCell = nextEdge;
                 nextY = y;

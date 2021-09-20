@@ -92,6 +92,7 @@
 import { mapState } from 'vuex';
 import RaceGpx from './racegpx.vue';
 import SycBanner from '../../sycbanner.vue';
+import { weatherData } from '../../../store/modules/weather.js';
 
 export default {
   name: 'ControlMisc',
@@ -169,14 +170,21 @@ export default {
       });
       return res;
     },
+    wxCellSize() {
+      this.wxDataStamp;
+      if (typeof weatherData[0] === 'undefined') {
+        return null;
+      }
+      return weatherData[0].cellSize;
+    },
     ...mapState({
       raceLoaded: state => state.race.loaded,
       raceId: state => state.race.info.id,
       raceTilemap: state => state.race.info.tilemap,
       boatId: state => state.boat.id,
       wxLoaded: state => state.weather.loaded,
-      wxCellSize: state => state.weather.data.cellSize,
       wxUpdateTimes: state => state.weather.updateTimes,
+      wxDataStamp: state => state.weather.dataStamp,
     }),
   },
   methods: {

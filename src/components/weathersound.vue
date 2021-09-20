@@ -20,7 +20,7 @@ export default {
   computed: {
     ...mapState({
       cfgNewWxSound: state => state.weather.cfg.sound.value,
-      wxUpdated: state => state.weather.data.updated,
+      wxUpdated: state => state.weather.updated,
     }),
   },
   watch: {

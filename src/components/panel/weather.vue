@@ -301,7 +301,7 @@ export default {
       wxLoaded: state => state.weather.loaded,
       wxTime: state => state.weather.time,
       wxMode: state => state.weather.mode,
-      wxUpdated: state => state.weather.data.updated,
+      wxUpdated: state => state.weather.updated,
       wxUpdateTimes: state => state.weather.updateTimes,
       wxStartMode: state => state.weather.cfg.startMode.value,
       raceStartTime: state => state.race.info.startTime,

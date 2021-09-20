@@ -10,7 +10,24 @@ import { lowPrioTask } from '../../lib/lowprio.js';
  * and performance critical
  */
 let timeSeries = [];
-let windMap = [];      /* format: [time][lon][lat][u,v] */
+/* format: [layer]
+ *   name
+ *   updated
+ *   url
+ *   timeSeries: []
+ *   ...
+ *   windMap: [time][lon][lat][u,v]
+ */
+export let weatherData = [];
+
+function findWeatherLayer(url) {
+  for (let layer of weatherData) {
+    if (layer.url === url) {
+      return layer;
+    }
+  }
+  return null;
+}
 
 const state = {
   loaded: false,
@@ -30,16 +47,9 @@ const state = {
   },
   updateTimes: [4*60 + 30, 10*60 + 30, 16*60 + 30, 22*60 + 30],
   dataStamp: 0,
+  updated: null,
   firstTimestamp: 0,
   lastTimestamp: 0,
-  data: {
-    url: null,
-    updated: null,
-    boundary: null,
-    origo: [],
-    cellSize: [],
-    cells: [],
-  },
   cfg: {
     arrowsBarbs: {
       value: 'arrows',
@@ -180,15 +190,37 @@ export default {
         state.minTime = time;
       }
     },
-    update(state, weatherTile) {
-      windMap = weatherTile.windMap;
-      timeSeries = weatherTile.timeSeries;
-      delete weatherTile.windMap;
-      delete weatherTile.timeSeries;
-      state.data = weatherTile;
-      state.firstTimestamp = timeSeries[0];
-      state.lastTimestamp = timeSeries[timeSeries.length - 1];
+    setupLayer(state, layerInfo) {
+      let weatherLayer = findWeatherLayer(layerInfo.name);
+      if (weatherLayer !== null) {
+        return;
+      }
+
+      weatherLayer = {
+        name: layerInfo.name,
+        updated: layerInfo.updated,
+        url: layerInfo.url,
+        boundary: layerInfo.boundary,
+        timeSeries: layerInfo.timeSeries,
+        origo: layerInfo.origo,
+        cellSize: layerInfo.cellSize,
+        cells: layerInfo.cells,
+        windMap: [],
+      }
+      weatherData[weatherData.length] = weatherLayer;
+    },
+    updateTile(state, weatherTile) {
+      const weatherLayer = weatherTile.weatherLayer;
+      weatherLayer.windMap = weatherTile.windMap;
+    },
+    update(state, weatherLayer) {
       state.dataStamp++;
+      state.firstTimestamp = weatherLayer.timeSeries[0];
+      state.lastTimestamp = weatherLayer.timeSeries[weatherLayer.timeSeries.length - 1];
+      timeSeries = weatherLayer.timeSeries;
+      if (state.updated === null || weatherLayer.updated > state.updated) {
+        state.updated = weatherLayer.updated;
+      }
       state.loaded = true;
       /* wx begins only after our current timestamp or the new wx had an
        * error that truncated it such that the current wx time is beyond
@@ -335,14 +367,15 @@ export default {
       return idx;
     },
 
-    __latLngWind: (state) => (latLng, timeIdx) => {
+    __latLngWind: () => (latLng, timeIdx) => {
+      const weatherLayer = weatherData[0];
       const wxLat = latLng.lat;
       let wxLng = latLng.lng;
       /* Try to dewrap into wx coordinate area */
-      while (wxLng >= state.data.boundary.getNorthEast().lng) {
+      while (wxLng >= weatherLayer.boundary.getNorthEast().lng) {
         wxLng -= 360;
       }
-      while (wxLng < state.data.origo[1]) {
+      while (wxLng < weatherLayer.origo[1]) {
         wxLng += 360;
       }
       /*
@@ -350,21 +383,23 @@ export default {
        * so we have to do the checks manually. Lng is linearized above, thus
        * only >= check is needed for it.
        */
-      if ((wxLng >= state.data.boundary.getNorthEast().lng) ||
-          (wxLat < state.data.boundary.getSouthWest().lat) ||
-          (wxLat >= state.data.boundary.getNorthEast().lat)) {
+      if ((wxLng >= weatherLayer.boundary.getNorthEast().lng) ||
+          (wxLat < weatherLayer.boundary.getSouthWest().lat) ||
+          (wxLat >= weatherLayer.boundary.getNorthEast().lat)) {
         return null;
       }
 
-      const lonIdx = Math.floor((wxLng - state.data.origo[1]) / state.data.cellSize[1]);
-      const latIdx = Math.floor((wxLat - state.data.origo[0]) / state.data.cellSize[0]);
+      const windMap = weatherLayer.windMap;
+
+      const lonIdx = Math.floor((wxLng - weatherLayer.origo[1]) / weatherLayer.cellSize[1]);
+      const latIdx = Math.floor((wxLat - weatherLayer.origo[0]) / weatherLayer.cellSize[0]);
 
       /* latitude (y) solution */
       let firstRes = [[], []];
       const firstFactor = interpolateFactor(
-        latIdx * state.data.cellSize[0] + state.data.origo[0],
+        latIdx * weatherLayer.cellSize[0] + weatherLayer.origo[0],
         wxLat,
-        (latIdx + 1) * state.data.cellSize[0] + state.data.origo[0]
+        (latIdx + 1) * weatherLayer.cellSize[0] + weatherLayer.origo[0]
       );
       for (let t = 0; t <= 1; t++) {
         for (let x = 0; x <= 1; x++) {
@@ -379,9 +414,9 @@ export default {
       /* longitude (x) solution */
       let secondRes = [];
       const secondFactor = interpolateFactor(
-        lonIdx * state.data.cellSize[1] + state.data.origo[1],
+        lonIdx * weatherLayer.cellSize[1] + weatherLayer.origo[1],
         wxLng,
-        (lonIdx + 1) * state.data.cellSize[1] + state.data.origo[1]
+        (lonIdx + 1) * weatherLayer.cellSize[1] + weatherLayer.origo[1]
       );
       for (let t = 0; t <= 1; t++) {
           secondRes[t] = wxLinearInterpolate(
@@ -394,6 +429,11 @@ export default {
     },
 
     latLngWind: (state, getters) => (latLng, timestamp) => {
+      /* Sanity check wx data */
+      if (!state.dataStamp) {
+        return null;
+      }
+
       let timeIdx;
       let timeVal;
 
@@ -405,9 +445,10 @@ export default {
         timeIdx = getters.timeIndex
       }
 
-      /* Sanity check wx data */
-      if (!state.dataStamp ||
-          (timeIdx === null) ||
+      const weatherLayer = weatherData[0];
+      const windMap = weatherLayer.windMap;
+
+      if ((timeIdx === null) ||
           (typeof windMap[timeIdx+1] === 'undefined') ||
           (timeSeries[timeIdx+1] < timeVal)) {
         return null;
@@ -434,6 +475,9 @@ export default {
       let timeIdx = getters.timeIndex;
       let timeVal = state.time;
 
+      const weatherLayer = weatherData[0];
+      const windMap = weatherLayer.windMap;
+
       /* Sanity check wx data */
       if ((timeIdx === null) ||
           (windMap.length < timeIdx+1 + 1) ||
@@ -441,8 +485,8 @@ export default {
         return null;
       }
 
-      if ((lonIdx < 0) || (lonIdx >= state.data.cells[1]) ||
-          (latIdx < 0) || (latIdx >= state.data.cells[0])) {
+      if ((lonIdx < 0) || (lonIdx >= weatherLayer.cells[1]) ||
+          (latIdx < 0) || (latIdx >= weatherLayer.cells[0])) {
         return null;
       }
 
@@ -473,11 +517,11 @@ export default {
       let fetchPeriod = state.fetchPeriod.cold;
 
       /* First fetch(es) failed so far, retry soon enough */
-      if (state.data.updated === null) {
+      if (state.updated === null) {
         fetchPeriod = state.fetchPeriod.hot;
 
       /* No hot periods within 1h from last wx update */
-      } else if (state.data.updated + hToMsec(1) < now) {
+      } else if (state.updated + hToMsec(1) < now) {
         const d = new Date(now);
         const nowMinutes = d.getUTCHours() * 60 + d.getUTCMinutes();
 
@@ -503,7 +547,7 @@ export default {
   actions: {
     // ADDME: when to fetch the next wx, add the support in a concurrency
     // safe way to avoid multiple overlapping weather fetches.
-    fetchInfo ({state, rootState, rootGetters, dispatch, commit}) {
+    fetchInfo ({rootState, rootGetters, dispatch, commit}) {
       const getDef = {
         apiCall: 'weather',
         url: rootState.race.info.weatherurl,
@@ -521,7 +565,7 @@ export default {
       dispatch('solapi/get', getDef, {root: true})
       .then(weatherInfo => {
         let dataUrl = weatherInfo.url;
-        if (dataUrl === state.data.url) {
+        if (findWeatherLayer(dataUrl) !== null) {
           commit('solapi/unlock', 'weather', {root: true});
           commit('updateFetchTime', rootGetters['time/now']());
           return;
@@ -553,7 +597,7 @@ export default {
         };
 
         let weatherData = await dispatch('solapi/get', getDef, {root: true});
-        const firstWeather = (state.data.updated === null);
+        const firstWeather = (state.updated === null);
 
         let boundary = L.latLngBounds(
           L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
@@ -655,21 +699,29 @@ export default {
         cells = Object.freeze(cells);
         boundary = Object.freeze(boundary);
 
-        let weatherTile = {
-          url: dataUrl,
+        let weatherLayerInfo = {
+          name: '',
           updated: updated,
+          url: dataUrl,
           boundary: boundary,
           timeSeries: timeSeries,
           origo: origo,
           cellSize: cellSize,
           cells: cells,
+        };
+        commit('setupLayer', weatherLayerInfo);
+
+        const weatherTile = {
+          weatherLayer: findWeatherLayer(dataUrl),
           windMap: windMap,
         };
-        commit('update', weatherTile);
+        commit('updateTile', weatherTile);
+        commit('update', weatherTile.weatherLayer);
+
         const now = rootGetters['time/now']();
         commit('updateFetchTime', now);
         if (!firstWeather) {
-          const d = new Date(state.data.updated);
+          const d = new Date(state.updated);
           dispatch('notifications/add', {
             text: 'Weather updated at ' + msecToUTCHourMinString(d),
           }, {root: true});
