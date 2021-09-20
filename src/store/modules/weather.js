@@ -29,8 +29,7 @@ function findWeatherLayer(url) {
   return null;
 }
 
-function __latLngWind(latLng, timeIdx) {
-  const weatherLayer = weatherData[0];
+function __latLngWind(latLng, weatherLayer, timeIdx) {
   const wxLat = latLng.lat;
   let wxLng = latLng.lng;
   /* Try to dewrap into wx coordinate area */
@@ -458,7 +457,7 @@ export default {
         return null;
       }
 
-      const secondRes = __latLngWind(latLng, timeIdx);
+      const secondRes = __latLngWind(latLng, weatherLayer, timeIdx);
       if (secondRes === null) {
         return null;
       }
