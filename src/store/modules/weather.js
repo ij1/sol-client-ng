@@ -278,6 +278,10 @@ export default {
     },
     update(state, weatherLayer) {
       state.dataStamp++;
+
+      weatherData = weatherData.filter((layer) => layer.url !== weatherLayer.url);
+      weatherData[0] = weatherLayer;
+
       state.firstTimestamp = weatherLayer.timeSeries[0];
       state.lastTimestamp = weatherLayer.timeSeries[weatherLayer.timeSeries.length - 1];
       timeSeries = weatherLayer.timeSeries;
