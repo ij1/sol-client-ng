@@ -588,7 +588,7 @@ export default {
       });
     },
 
-    async fetchData ({state, rootState, rootGetters, commit, dispatch}, dataUrl) {
+    async fetchData ({state, rootGetters, commit, dispatch}, dataUrl) {
       let getDef = {
         apiCall: 'weatherdata',
       };
@@ -596,9 +596,7 @@ export default {
         getDef = {
           apiCall: 'weatherdata',
           url: dataUrl,
-          params: {
-            token: rootState.auth.token,
-          },
+          params: {},
           useArrays: false,
           dataField: 'weathersystem',
         };
