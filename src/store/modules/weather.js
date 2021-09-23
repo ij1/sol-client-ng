@@ -484,31 +484,34 @@ export default {
       return latLngWind(latLng, timestamp)
     },
 
-    idxToCell: (state, getters) => (latIdx, lonIdx) => {
-      let timeIdx = getters.timeIndex;
-      let timeVal = state.time;
-
+    idxToCell: (state) => (latIdx, lonIdx) => {
       const weatherLayer = weatherData[0];
       const windMap = weatherLayer.windMap;
-
-      /* Sanity check wx data */
-      if ((timeIdx === null) ||
-          (windMap.length < timeIdx+1 + 1) ||
-          (timeSeries[timeIdx+1] < timeVal)) {
-        return null;
-      }
 
       if ((lonIdx < 0) || (lonIdx >= weatherLayer.cells[1]) ||
           (latIdx < 0) || (latIdx >= weatherLayer.cells[0])) {
         return null;
       }
 
+      let timeIdx = weatherLayer.cachedTimeIdx;
+      let timestamp = state.time;
+      if (!checkTimeIdx(timeIdx, timestamp)) {
+        timeIdx++;
+        if (!checkTimeIdx(timeIdx, timestamp)) {
+          timeIdx = bsearchLeft(weatherLayer.timeSeries, timestamp) - 1;
+          if (!checkTimeIdx(timeIdx, timestamp)) {
+            return null;
+          }
+        }
+      }
+      weatherLayer.cachedTimeIdx = timeIdx;
+
       let wind = [];
 
       /* time (z) solution */
       const timeFactor = interpolateFactor(
         timeSeries[timeIdx],
-        timeVal,
+        timestamp,
         timeSeries[timeIdx+1],
       );
 
