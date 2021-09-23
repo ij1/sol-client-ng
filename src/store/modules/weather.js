@@ -29,7 +29,9 @@ function findWeatherLayer(url) {
 }
 
 function checkTimeIdx(timeSeries, idx, timestamp) {
-  return timeSeries[idx] <= timestamp && timestamp <= timeSeries[idx+1];
+  return timeSeries[idx] <= timestamp &&
+         idx + 1 < timeSeries.length &&
+         timestamp <= timeSeries[idx+1];
 }
 
 let firstRes = [
