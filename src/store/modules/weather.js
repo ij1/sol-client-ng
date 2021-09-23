@@ -124,7 +124,7 @@ export function latLngWind(latLng, timestamp = null) {
   if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
     timeIdx++;
     if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
-      timeIdx = bsearchLeft(timeSeries, timestamp) - 1;
+      timeIdx = bsearchLeft(timeSeries, timestamp, 1) - 1;
       if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
         return null;
       }
@@ -166,7 +166,7 @@ export function idxToCell(latIdx, lonIdx) {
   if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
     timeIdx++;
     if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
-      timeIdx = bsearchLeft(timeSeries, timestamp) - 1;
+      timeIdx = bsearchLeft(timeSeries, timestamp, 1) - 1;
       if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
         return null;
       }
