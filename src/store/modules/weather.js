@@ -33,6 +33,22 @@ function checkTimeIdx(idx, timestamp) {
   return timeSeries[idx] <= timestamp && timestamp <= timeSeries[idx+1];
 }
 
+let firstRes = [
+  [
+    [0, 0],
+    [0, 0],
+  ],
+  [
+    [0, 0],
+    [0, 0],
+  ]
+];
+let secondRes = [
+  [0, 0],
+  [0, 0],
+];
+let thirdRes = [0, 0];
+
 function __latLngWind(latLng, weatherLayer, timeIdx) {
   const wxLat = latLng.lat;
   let wxLng = latLng.lng;
@@ -60,7 +76,6 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
   const latIdx = Math.floor((wxLat - weatherLayer.origo[0]) / weatherLayer.cellSize[0]);
 
   /* latitude (y) solution */
-  let firstRes = [[], []];
   const firstFactor = interpolateFactor(
     latIdx * weatherLayer.cellSize[0] + weatherLayer.origo[0],
     wxLat,
@@ -68,26 +83,27 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
   );
   for (let t = 0; t <= 1; t++) {
     for (let x = 0; x <= 1; x++) {
-      firstRes[t][x] = wxLinearInterpolate(
+      wxLinearInterpolate(
         firstFactor,
         windMap[timeIdx+t][lonIdx+x][latIdx],
-        windMap[timeIdx+t][lonIdx+x][latIdx+1]
+        windMap[timeIdx+t][lonIdx+x][latIdx+1],
+        firstRes[t][x]
       );
     }
   }
 
   /* longitude (x) solution */
-  let secondRes = [];
   const secondFactor = interpolateFactor(
     lonIdx * weatherLayer.cellSize[1] + weatherLayer.origo[1],
     wxLng,
     (lonIdx + 1) * weatherLayer.cellSize[1] + weatherLayer.origo[1]
   );
   for (let t = 0; t <= 1; t++) {
-      secondRes[t] = wxLinearInterpolate(
+      wxLinearInterpolate(
         secondFactor,
         firstRes[t][0],
-        firstRes[t][1]
+        firstRes[t][1],
+        secondRes[t]
       );
   }
   return secondRes;
@@ -124,13 +140,15 @@ export function latLngWind(latLng, timestamp = null) {
   const thirdFactor = interpolateFactor(
     timeSeries[timeIdx],
     timestamp,
-    timeSeries[timeIdx+1],
+    timeSeries[timeIdx+1]
   );
-  return UVToWind(wxTimeInterpolate(
+  wxTimeInterpolate(
     thirdFactor,
     secondRes[0],
-    secondRes[1]
-  ));
+    secondRes[1],
+    thirdRes
+  )
+  return UVToWind(thirdRes);
 }
 
 export function idxToCell(latIdx, lonIdx) {
@@ -166,11 +184,14 @@ export function idxToCell(latIdx, lonIdx) {
 
   for (let y = 0; y <= 1; y++) {
     for (let x = 0; x <= 1; x++) {
-      wind.push(wxTimeInterpolate(
+      let res = [0, 0];
+      wxTimeInterpolate(
         timeFactor,
         windMap[timeIdx][lonIdx+x][latIdx+y],
-        windMap[timeIdx+1][lonIdx+x][latIdx+y]
-      ));
+        windMap[timeIdx+1][lonIdx+x][latIdx+y],
+        res
+      )
+      wind.push(res);
     }
   }
 
@@ -272,21 +293,17 @@ const state = {
   },
 };
 
-function wxLinearInterpolate(factor, startData, endData) {
-  return [
-    linearInterpolate(factor, startData[0], endData[0]),
-    linearInterpolate(factor, startData[1], endData[1]),
-  ];
+function wxLinearInterpolate(factor, startData, endData, result) {
+  result[0] = linearInterpolate(factor, startData[0], endData[0]);
+  result[1] = linearInterpolate(factor, startData[1], endData[1]);
 }
 
-function wxTimeInterpolate(factor, startData, endData) {
+function wxTimeInterpolate(factor, startData, endData, result) {
   const fEnd = -2 * Math.pow(factor, 3) + 3 * Math.pow(factor, 2)
   const fStart = 1 - fEnd;
 
-  return [
-    fStart * startData[0] + fEnd * endData[0],
-    fStart * startData[1] + fEnd * endData[1],
-  ];
+  result[0] = fStart * startData[0] + fEnd * endData[0];
+  result[1] = fStart * startData[1] + fEnd * endData[1];
 }
 
 /* Bounds the given time between wx data range, return null if no bound
