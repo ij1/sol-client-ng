@@ -3,6 +3,30 @@ import { minToMsec, UTCToMsec } from '../../lib/utils.js';
 import { configSetValue } from '../../components/config/configstore.js';
 import { solapiRetryDispatch } from '../../lib/solapi.js';
 
+export let predictorData = {
+  cog: {
+    time: 0,
+    cog: 0,
+    firstLatLng: null,
+    latLngs: [],
+    cachedPath: new Path2D(),
+  },
+  twa: {
+    time: 0,
+    twa: 0,
+    firstLatLng: null,
+    latLngs: [],
+    cachedPath: new Path2D(),
+  },
+  dcPred: {
+    time: 0,
+    twa: 0,
+    firstLatLng: null,
+    latLngs: [],
+    cachedPath: new Path2D(),
+  },
+};
+
 export default {
   namespaced: true,
 
@@ -33,6 +57,8 @@ export default {
       showPolar: false,
       twa: null,
     },
+
+    predictorStamp: 0,
 
     cfg: {
       showPolarImmediately: {
@@ -128,6 +154,16 @@ export default {
     visualSteeringSetTwa (state, twa) {
       state.visualSteering.twa = twa;
     },
+
+    updatePredictor (state, data) {
+      predictorData[data.predictor] = data.data;
+      predictorData[data.predictor].cachedPath = new Path2D();
+      state.predictorStamp++;
+    },
+    updatePredictorPath (state, data) {
+      predictorData[data.predictor].cachedPath = data.path;
+    },
+
     configSetValue,
   },
   getters: {

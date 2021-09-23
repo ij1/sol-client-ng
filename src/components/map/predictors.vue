@@ -3,6 +3,7 @@ import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
 import { cogPredictor, twaPredictor } from '../../lib/predictors.js';
+import { predictorData } from '../../store/modules/steering.js';
 
 export default {
   name: 'SteeringPredictors',
@@ -23,29 +24,6 @@ export default {
 
       oldPathStamp: -1,
 
-      predictors: {
-        cog: {
-          time: 0,
-          cog: 0,
-          firstLatLng: null,
-          latLngs: [],
-          cachedPath: new Path2D(),
-        },
-        twa: {
-          time: 0,
-          twa: 0,
-          firstLatLng: null,
-          latLngs: [],
-          cachedPath: new Path2D(),
-        },
-        dcPred: {
-          time: 0,
-          twa: 0,
-          firstLatLng: null,
-          latLngs: [],
-          cachedPath: new Path2D(),
-        },
-      },
       predictorDefs: {
         'cog': {
           'calc': cogPredictor,
@@ -193,10 +171,7 @@ export default {
     },
 
     pathsNeedRedraw() {
-      for (let predictor of this.predictorList) {
-        this.predictors[predictor].time;
-      }
-
+      this.predictorStamp;
       this.boatOrigo;
       this.zoom;
 
@@ -204,9 +179,7 @@ export default {
     },
 
     needsRedraw() {
-      for (let pred of this.predictorList) {
-        this.predictors[pred];
-      }
+      this.predictorStamp;
       this.wxDataStamp;
       this.dotDelay;
       this.wxDelay;
@@ -246,6 +219,7 @@ export default {
       boatPerf: state => state.boat.instruments.perf.value,
       plottedDcDelay: state => state.boat.steering.plottedSteering.delayTime,
       dcFetchTime: state => state.boat.steering.dcs.fetchTime,
+      predictorStamp: state => state.boat.steering.predictorStamp,
       viewUpdateStamp: state => state.map.viewUpdateStamp,
       zoom: state => state.map.zoom,
       cfgPredictors: state => state.boat.steering.cfg.predictors.value,
@@ -282,7 +256,7 @@ export default {
                     this.boatOrigo.y - this.viewOrigo.y);
       for (let pred of this.predictorList) {
         ctx.strokeStyle = this.predictorColor(pred);
-        ctx.stroke(this.predictors[pred].cachedPath);
+        ctx.stroke(predictorData[pred].cachedPath);
 
         for (let pt of this.markers[pred].hour) {
           let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
@@ -343,7 +317,7 @@ export default {
     },
 
     precalcPath(predictor) {
-      let pred = this.predictors[predictor];
+      let pred = predictorData[predictor];
       let firstPt = pred.firstLatLng;
       let otherPts = pred.latLngs;
 
@@ -364,7 +338,7 @@ export default {
       return p;
     },
     cogPath (predictor) {
-      let cog = this.predictors[predictor];
+      let cog = predictorData[predictor];
 
       let p = new Path2D();
       if (cog.firstLatLng === null) {
@@ -381,7 +355,8 @@ export default {
     __precalcPaths () {
       for (let pred of this.predictorList) {
         let pathFunc = this.predictorDefs[pred].path;
-        this.predictors[pred].cachedPath = this[pathFunc](pred);
+        this.$store.commit('boat/steering/updatePredictorPath',
+                           {predictor: pred, path: this[pathFunc](pred)});
       }
     },
 
@@ -484,8 +459,8 @@ export default {
     },
 
     getMarkers (predictor, indexes) {
-      const pred = this.predictors[predictor];
-      pred.time;
+      const pred = predictorData[predictor];
+      this.predictorStamp;
 
       if (pred.firstLatLng === null) {
         return [];
@@ -503,7 +478,7 @@ export default {
       return res;
     },
     interpolateMarkers (predictor, msec) {
-      const pred = this.predictors[predictor];
+      const pred = predictorData[predictor];
 
       if ((typeof pred === 'undefined') ||
           (msec > this.predictorLenMsec) || (pred.firstLatLng === null)) {
@@ -539,7 +514,8 @@ export default {
         return;
       }
       for (let pred of this.predictorList) {
-        this.predictors[pred] = this.predCalc(pred);
+        this.$store.commit('boat/steering/updatePredictor',
+                           {predictor: pred, data: this.predCalc(pred)});
       }
     },
   },
