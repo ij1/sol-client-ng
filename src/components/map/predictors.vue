@@ -21,24 +21,29 @@ export default {
       plottedDelayRadius: 5,
       otherDelayRadius: 2,
 
+      oldPathStamp: -1,
+
       predictors: {
         cog: {
           time: 0,
           cog: 0,
           firstLatLng: null,
           latLngs: [],
+          cachedPath: new Path2D(),
         },
         twa: {
           time: 0,
           twa: 0,
           firstLatLng: null,
           latLngs: [],
+          cachedPath: new Path2D(),
         },
         dcPred: {
           time: 0,
           twa: 0,
           firstLatLng: null,
           latLngs: [],
+          cachedPath: new Path2D(),
         },
       },
       predictorDefs: {
@@ -48,11 +53,11 @@ export default {
         },
         'twa': {
           'calc': twaPredictor,
-          'path': 'twaPath',
+          'path': 'precalcPath',
         },
         'dcPred': {
           'calc': this.dcPredCalc,
-          'path': 'dcPredPath',
+          'path': 'precalcPath',
         },
       },
       steerTypeToValue: {
@@ -146,28 +151,6 @@ export default {
       }
       return res;
     },
-    cogPath () {
-      let cog = this.predictors.cog;
-      cog.time;
-
-      let p = new Path2D();
-      if (cog.firstLatLng === null) {
-        return p;
-      }
-      const z = this.zoom;
-
-      p.moveTo(0, 0);
-      let tmp = this.$parent.map.project(cog.latLngs[cog.latLngs.length - 1], z).round().subtract(this.boatOrigo);
-      p.lineTo(tmp.x, tmp.y);
-
-      return p;
-    },
-    twaPath () {
-      return this.precalcPath('twa')
-    },
-    dcPredPath () {
-      return this.precalcPath('dcPred');
-    },
     wxDelay () {
       if (!this.wxValid) {
         return null;
@@ -207,6 +190,17 @@ export default {
     },
     currentSteering () {
       return this.currentSteeringApi === 'cc' ? 'cog' : this.currentSteeringApi;
+    },
+
+    pathsNeedRedraw() {
+      for (let predictor of this.predictorList) {
+        this.predictors[predictor].time;
+      }
+
+      this.boatOrigo;
+      this.zoom;
+
+      return Date.now();
     },
 
     needsRedraw() {
@@ -271,6 +265,13 @@ export default {
              this.commandBoatColor : this.inactiveColor;
     },
     redraw (ctx, ctx2) {
+      /* Hack to workaround challenging reactive & non-reactive interactions */
+      const pathStamp = this.pathsNeedRedraw;
+      if (pathStamp != this.oldPathStamp) {
+        this.__precalcPaths();
+        this.oldPathStamp = pathStamp;
+      }
+
       this.__redraw(!this.isDark ? ctx : ctx2);
     },
     __redraw (ctx) {
@@ -281,7 +282,7 @@ export default {
                     this.boatOrigo.y - this.viewOrigo.y);
       for (let pred of this.predictorList) {
         ctx.strokeStyle = this.predictorColor(pred);
-        ctx.stroke(this[this.predictorDefs[pred]['path']]);
+        ctx.stroke(this.predictors[pred].cachedPath);
 
         for (let pt of this.markers[pred].hour) {
           let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
@@ -340,9 +341,9 @@ export default {
       ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
       ctx.fill();
     },
+
     precalcPath(predictor) {
       let pred = this.predictors[predictor];
-      pred.time;                             /* Dummy dep */
       let firstPt = pred.firstLatLng;
       let otherPts = pred.latLngs;
 
@@ -361,6 +362,27 @@ export default {
         p.lineTo(tmp.x, tmp.y);
       }
       return p;
+    },
+    cogPath (predictor) {
+      let cog = this.predictors[predictor];
+
+      let p = new Path2D();
+      if (cog.firstLatLng === null) {
+        return p;
+      }
+      const z = this.zoom;
+
+      p.moveTo(0, 0);
+      let tmp = this.$parent.map.project(cog.latLngs[cog.latLngs.length - 1], z).round().subtract(this.boatOrigo);
+      p.lineTo(tmp.x, tmp.y);
+
+      return p;
+    },
+    __precalcPaths () {
+      for (let pred of this.predictorList) {
+        let pathFunc = this.predictorDefs[pred].path;
+        this.predictors[pred].cachedPath = this[pathFunc](pred);
+      }
     },
 
     consumeTowback (latLngs, pos, t) {
