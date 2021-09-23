@@ -370,6 +370,7 @@ export default {
       const wrapOffset = 256 * 2 ** this.zoom;
       const baseOffset = baseWrap * wrapOffset;
       const twsContours = this.twsContours;
+      const map = this.$parent.map;
 
       let coeffs = [
         [[], [], []],
@@ -388,7 +389,7 @@ export default {
       for (let lngCell = minLngCell; lngCell <= maxLngCell; lngCell++) {
         let y = yStart;
         let lngStart = lngCell * wxCellSize[1] + wxOrigo[1];
-        const xStart = this.$parent.map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
+        const xStart = map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
 
         for (let twsIdx = 0; twsIdx < twsContours.length; twsIdx++) {
           twsDatas[twsIdx] = {
