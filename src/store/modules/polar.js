@@ -9,6 +9,45 @@ let polarData = {
   bs: [],
 };
 
+export function getSpeed(twsms, twa) {
+  twa = Math.abs(twa);
+
+  let twsidx = bsearchLeft(polarData.twsval, twsms);
+  let twaidx = bsearchLeft(polarData.twaval, twa);
+  if (twsidx > 0) {
+    /* Wind beyond the max tws defined by the polar? */
+    if (twsms > polarData.twsval[polarData.twsval.length - 1]) {
+      twsidx = polarData.twsval.length - 1;
+      twsms = polarData.twsval[twsidx];
+    }
+    twsidx--;
+  }
+  if (twaidx > 0) {
+    /* Make sure different roundings of +/-180 don't overflow the index */
+    if (twaidx > polarData.twaval.length - 1) {
+      twaidx = polarData.twaval.length - 1;
+      twa = polarData.twaval[twaidx];
+    }
+    twaidx--;
+  }
+
+  const twsFactor = interpolateFactor(polarData.twsval[twsidx],
+                                      twsms,
+                                      polarData.twsval[twsidx+1]);
+  const twaFactor = interpolateFactor(polarData.twaval[twaidx],
+                                      twa,
+                                      polarData.twaval[twaidx+1]);
+
+  const a = linearInterpolate(twsFactor,
+                              polarData.bs[twaidx][twsidx],
+                              polarData.bs[twaidx][twsidx+1]);
+  const b = linearInterpolate(twsFactor,
+                              polarData.bs[twaidx+1][twsidx],
+                              polarData.bs[twaidx+1][twsidx+1]);
+
+  return linearInterpolate(twaFactor, a, b);
+}
+
 function diffCurves(prev, next) {
   let maxDiff = 0;
   for (let i = 0; i < prev.values.length; i++) {
@@ -121,42 +160,7 @@ export default {
       return state.polarModes[state.polarMode].curves;
     },
     getSpeed: () => (twsms, twa) => {
-      twa = Math.abs(twa);
-
-      let twsidx = bsearchLeft(polarData.twsval, twsms);
-      let twaidx = bsearchLeft(polarData.twaval, twa);
-      if (twsidx > 0) {
-        /* Wind beyond the max tws defined by the polar? */
-        if (twsms > polarData.twsval[polarData.twsval.length - 1]) {
-          twsidx = polarData.twsval.length - 1;
-          twsms = polarData.twsval[twsidx];
-        }
-        twsidx--;
-      }
-      if (twaidx > 0) {
-        /* Make sure different roundings of +/-180 don't overflow the index */
-        if (twaidx > polarData.twaval.length - 1) {
-          twaidx = polarData.twaval.length - 1;
-          twa = polarData.twaval[twaidx];
-        }
-        twaidx--;
-      }
-
-      const twsFactor = interpolateFactor(polarData.twsval[twsidx],
-                                          twsms,
-                                          polarData.twsval[twsidx+1]);
-      const twaFactor = interpolateFactor(polarData.twaval[twaidx],
-                                          twa,
-                                          polarData.twaval[twaidx+1]);
-
-      const a = linearInterpolate(twsFactor,
-                                  polarData.bs[twaidx][twsidx],
-                                  polarData.bs[twaidx][twsidx+1]);
-      const b = linearInterpolate(twsFactor,
-                                  polarData.bs[twaidx+1][twsidx],
-                                  polarData.bs[twaidx+1][twsidx+1]);
-
-      return linearInterpolate(twaFactor, a, b);
+      return getSpeed(twsms, twa);
     },
 
     curve: (state, getters) => (knots, interval = null) => {
