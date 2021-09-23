@@ -14,38 +14,40 @@ let cachedTwsidx = 0;
 let cachedTwaidx = 0;
 
 export function getSpeed(twsms, twa) {
+  const twsval = polarData.twsval;
+  const twaval = polarData.twaval;
+  const bs = polarData.bs;
+
   /* Make sure different roundings of +/-180 don't overflow the index */
   twa = Math.min(Math.abs(twa), polarData.maxtwa);
   /* Wind beyond the max tws in polar */
   twsms = Math.min(twsms, polarData.maxtwsms);
 
   let twsidx = cachedTwsidx;
-  if (polarData.twsval[twsidx] > twsms || polarData.twsval[twsidx+1] < twsms) {
-    twsidx = bsearchLeft(polarData.twsval, twsms,
-                         1, polarData.twsval.length - 1) - 1;
+  if (twsval[twsidx] > twsms || twsval[twsidx+1] < twsms) {
+    twsidx = bsearchLeft(twsval, twsms, 1, twsval.length - 1) - 1;
   }
   cachedTwsidx = twsidx;
 
   let twaidx = cachedTwaidx;
-  if (polarData.twaval[twaidx] > twa || polarData.twaval[twaidx+1] < twa) {
-    twaidx = bsearchLeft(polarData.twaval, twa,
-                         1, polarData.twaval.length - 1) - 1;
+  if (twaval[twaidx] > twa || twaval[twaidx+1] < twa) {
+    twaidx = bsearchLeft(twaval, twa, 1, twaval.length - 1) - 1;
   }
   cachedTwaidx = twaidx;
 
-  const twsFactor = interpolateFactor(polarData.twsval[twsidx],
+  const twsFactor = interpolateFactor(twsval[twsidx],
                                       twsms,
-                                      polarData.twsval[twsidx+1]);
-  const twaFactor = interpolateFactor(polarData.twaval[twaidx],
+                                      twsval[twsidx+1]);
+  const twaFactor = interpolateFactor(twaval[twaidx],
                                       twa,
-                                      polarData.twaval[twaidx+1]);
+                                      twaval[twaidx+1]);
 
   const a = linearInterpolate(twsFactor,
-                              polarData.bs[twaidx][twsidx],
-                              polarData.bs[twaidx][twsidx+1]);
+                              bs[twaidx][twsidx],
+                              bs[twaidx][twsidx+1]);
   const b = linearInterpolate(twsFactor,
-                              polarData.bs[twaidx+1][twsidx],
-                              polarData.bs[twaidx+1][twsidx+1]);
+                              bs[twaidx+1][twsidx],
+                              bs[twaidx+1][twsidx+1]);
 
   return linearInterpolate(twaFactor, a, b);
 }
