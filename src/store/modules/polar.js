@@ -7,29 +7,31 @@ let polarData = {
   twsval: [],
   twaval: [],
   bs: [],
+  maxtwsms: 0,
+  maxtwa: 0,
 };
+let cachedTwsidx = 0;
+let cachedTwaidx = 0;
 
 export function getSpeed(twsms, twa) {
-  twa = Math.abs(twa);
+  /* Make sure different roundings of +/-180 don't overflow the index */
+  twa = Math.min(Math.abs(twa), polarData.maxtwa);
+  /* Wind beyond the max tws in polar */
+  twsms = Math.min(twsms, polarData.maxtwsms);
 
-  let twsidx = bsearchLeft(polarData.twsval, twsms);
-  let twaidx = bsearchLeft(polarData.twaval, twa);
-  if (twsidx > 0) {
-    /* Wind beyond the max tws defined by the polar? */
-    if (twsms > polarData.twsval[polarData.twsval.length - 1]) {
-      twsidx = polarData.twsval.length - 1;
-      twsms = polarData.twsval[twsidx];
-    }
-    twsidx--;
+  let twsidx = cachedTwsidx;
+  if (polarData.twsval[twsidx] > twsms || polarData.twsval[twsidx+1] < twsms) {
+    twsidx = bsearchLeft(polarData.twsval, twsms,
+                         1, polarData.twsval.length - 1) - 1;
   }
-  if (twaidx > 0) {
-    /* Make sure different roundings of +/-180 don't overflow the index */
-    if (twaidx > polarData.twaval.length - 1) {
-      twaidx = polarData.twaval.length - 1;
-      twa = polarData.twaval[twaidx];
-    }
-    twaidx--;
+  cachedTwsidx = twsidx;
+
+  let twaidx = cachedTwaidx;
+  if (polarData.twaval[twaidx] > twa || polarData.twaval[twaidx+1] < twa) {
+    twaidx = bsearchLeft(polarData.twaval, twa,
+                         1, polarData.twaval.length - 1) - 1;
   }
+  cachedTwaidx = twaidx;
 
   const twsFactor = interpolateFactor(polarData.twsval[twsidx],
                                       twsms,
@@ -146,6 +148,8 @@ export default {
       polarData.twsval = data.twsval;
       polarData.twaval = data.twaval;
       polarData.bs = data.bs;
+      polarData.maxtwsms = polarData.twsval[polarData.twsval.length - 1];
+      polarData.maxtwa = polarData.twaval[polarData.twaval.length - 1];
 
       state.maxBs = data.max;
       state.loaded = true;
