@@ -3,6 +3,12 @@ import { speedTowardsBearing, cogTwdToTwa } from '../../lib/nav.js';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { SolapiDataError } from '../../lib/solapi.js';
 
+let polarData = {
+  twsval: [],
+  twaval: [],
+  bs: [],
+};
+
 function diffCurves(prev, next) {
   let maxDiff = 0;
   for (let i = 0; i < prev.values.length; i++) {
@@ -71,9 +77,6 @@ export default {
 
   state: {
     loaded: false,
-    twsval: [],
-    twaval: [],
-    bs: [],
     maxBs: null,
 
     twaInterval: 1,
@@ -100,11 +103,12 @@ export default {
   },
 
   mutations: {
-    set(state, polarData) {
-      state.twsval = polarData.twsval;
-      state.twaval = polarData.twaval;
-      state.bs = polarData.bs;
-      state.maxBs = polarData.max;
+    set(state, data) {
+      polarData.twsval = data.twsval;
+      polarData.twaval = data.twaval;
+      polarData.bs = data.bs;
+
+      state.maxBs = data.max;
       state.loaded = true;
     },
     setPolarMode(state, newMode) {
@@ -113,47 +117,44 @@ export default {
   },
 
   getters: {
-    maxTws: (state) => {
-      return state.twsval[state.twsval.length - 1];
-    },
     windKeys: (state) => {
       return state.polarModes[state.polarMode].curves;
     },
-    getSpeed: (state, getters) => (twsms, twa) => {
+    getSpeed: () => (twsms, twa) => {
       twa = Math.abs(twa);
 
-      let twsidx = bsearchLeft(state.twsval, twsms);
-      let twaidx = bsearchLeft(state.twaval, twa);
+      let twsidx = bsearchLeft(polarData.twsval, twsms);
+      let twaidx = bsearchLeft(polarData.twaval, twa);
       if (twsidx > 0) {
         /* Wind beyond the max tws defined by the polar? */
-        if (twsms > getters.maxTws) {
-          twsidx = state.twsval.length - 1;
-          twsms = state.twsval[twsidx];
+        if (twsms > polarData.twsval[polarData.twsval.length - 1]) {
+          twsidx = polarData.twsval.length - 1;
+          twsms = polarData.twsval[twsidx];
         }
         twsidx--;
       }
       if (twaidx > 0) {
         /* Make sure different roundings of +/-180 don't overflow the index */
-        if (twaidx > state.twaval.length - 1) {
-          twaidx = state.twaval.length - 1;
-          twa = state.twaval[twaidx];
+        if (twaidx > polarData.twaval.length - 1) {
+          twaidx = polarData.twaval.length - 1;
+          twa = polarData.twaval[twaidx];
         }
         twaidx--;
       }
 
-      const twsFactor = interpolateFactor(state.twsval[twsidx],
+      const twsFactor = interpolateFactor(polarData.twsval[twsidx],
                                           twsms,
-                                          state.twsval[twsidx+1]);
-      const twaFactor = interpolateFactor(state.twaval[twaidx],
+                                          polarData.twsval[twsidx+1]);
+      const twaFactor = interpolateFactor(polarData.twaval[twaidx],
                                           twa,
-                                          state.twaval[twaidx+1]);
+                                          polarData.twaval[twaidx+1]);
 
       const a = linearInterpolate(twsFactor,
-                                  state.bs[twaidx][twsidx],
-                                  state.bs[twaidx][twsidx+1]);
+                                  polarData.bs[twaidx][twsidx],
+                                  polarData.bs[twaidx][twsidx+1]);
       const b = linearInterpolate(twsFactor,
-                                  state.bs[twaidx+1][twsidx],
-                                  state.bs[twaidx+1][twsidx+1]);
+                                  polarData.bs[twaidx+1][twsidx],
+                                  polarData.bs[twaidx+1][twsidx+1]);
 
       return linearInterpolate(twaFactor, a, b);
     },
