@@ -133,6 +133,50 @@ export function latLngWind(latLng, timestamp = null) {
   ));
 }
 
+export function idxToCell(latIdx, lonIdx) {
+  const weatherLayer = weatherData[0];
+  const windMap = weatherLayer.windMap;
+
+  if ((lonIdx < 0) || (lonIdx >= weatherLayer.cells[1]) ||
+      (latIdx < 0) || (latIdx >= weatherLayer.cells[0])) {
+    return null;
+  }
+
+  let timeIdx = weatherLayer.cachedTimeIdx;
+  let timestamp = state.time;
+  if (!checkTimeIdx(timeIdx, timestamp)) {
+    timeIdx++;
+    if (!checkTimeIdx(timeIdx, timestamp)) {
+      timeIdx = bsearchLeft(weatherLayer.timeSeries, timestamp) - 1;
+      if (!checkTimeIdx(timeIdx, timestamp)) {
+        return null;
+      }
+    }
+  }
+  weatherLayer.cachedTimeIdx = timeIdx;
+
+  let wind = [];
+
+  /* time (z) solution */
+  const timeFactor = interpolateFactor(
+    timeSeries[timeIdx],
+    timestamp,
+    timeSeries[timeIdx+1],
+  );
+
+  for (let y = 0; y <= 1; y++) {
+    for (let x = 0; x <= 1; x++) {
+      wind.push(wxTimeInterpolate(
+        timeFactor,
+        windMap[timeIdx][lonIdx+x][latIdx+y],
+        windMap[timeIdx+1][lonIdx+x][latIdx+y]
+      ));
+    }
+  }
+
+  return wind;
+}
+
 const state = {
   loaded: false,
   time: 0,
@@ -417,49 +461,6 @@ export default {
       return latLngWind(latLng, timestamp)
     },
 
-    idxToCell: (state) => (latIdx, lonIdx) => {
-      const weatherLayer = weatherData[0];
-      const windMap = weatherLayer.windMap;
-
-      if ((lonIdx < 0) || (lonIdx >= weatherLayer.cells[1]) ||
-          (latIdx < 0) || (latIdx >= weatherLayer.cells[0])) {
-        return null;
-      }
-
-      let timeIdx = weatherLayer.cachedTimeIdx;
-      let timestamp = state.time;
-      if (!checkTimeIdx(timeIdx, timestamp)) {
-        timeIdx++;
-        if (!checkTimeIdx(timeIdx, timestamp)) {
-          timeIdx = bsearchLeft(weatherLayer.timeSeries, timestamp) - 1;
-          if (!checkTimeIdx(timeIdx, timestamp)) {
-            return null;
-          }
-        }
-      }
-      weatherLayer.cachedTimeIdx = timeIdx;
-
-      let wind = [];
-
-      /* time (z) solution */
-      const timeFactor = interpolateFactor(
-        timeSeries[timeIdx],
-        timestamp,
-        timeSeries[timeIdx+1],
-      );
-
-      for (let y = 0; y <= 1; y++) {
-        for (let x = 0; x <= 1; x++) {
-          wind.push(wxTimeInterpolate(
-            timeFactor,
-            windMap[timeIdx][lonIdx+x][latIdx+y],
-            windMap[timeIdx+1][lonIdx+x][latIdx+y]
-          ));
-        }
-      }
-
-      return wind;
-    },
 
     nextTimeToFetch: (state, getters, rootState, rootGetters) => {
       const now = rootGetters['time/now']();

@@ -4,7 +4,7 @@ import L from 'leaflet';
 import { windToColor, MS_TO_KNT, darkSeaColor } from '../../lib/sol.js';
 import { radToDeg, bsearchLeft } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
-import { weatherData } from '../../store/modules/weather.js';
+import { weatherData, latLngWind, idxToCell } from '../../store/modules/weather.js';
 
 function compareCrossing(a, b) {
   return a[0] - b[0];
@@ -182,7 +182,7 @@ export default {
           windPoint = this.$parent.map.containerPointToLatLng(L.point(x, y));
           if (windPoint !== null) {
             windPoint = this.$parent.map.wrapLatLng(windPoint);
-            const wind = this.$store.getters['weather/latLngWind'](windPoint);
+            const wind = latLngWind(windPoint);
             /* Filter out out-of-area winds that are contain valid data (0,0) */
             if (wind !== null && (wind.twd !== 0.0 || wind.knots > 0.0)) {
               ctx.rotate(wind.twd);
@@ -404,7 +404,7 @@ export default {
 
 
         for (let latCell = minLatCell; latCell <= maxLatCell; latCell++) {
-          let wind = this.$store.getters['weather/idxToCell'](latCell, lngCell);
+          let wind = idxToCell(latCell, lngCell);
           if (wind === null) {
             this.logError('skipped contour cell ' + latCell + ' ' + lngCell);
             return;
