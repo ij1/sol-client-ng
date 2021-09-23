@@ -45,7 +45,10 @@ export default {
     updateBoat (state, data) {
       state.id = data.id;
       state.name = data.name;
-      state.position = L.latLng(data.lat, data.lon);
+      const ll = L.latLng(data.lat, data.lon);
+      if (state.position === null || state.position.lat !== ll.lat || state.position.lng != ll.lng) {
+        state.position = ll;
+      }
       state.lastRoundedMark = parseInt(data.current_leg);
       state.ranking = parseInt(data.ranking);
       state.dtg = parseFloat(data.dtg);
