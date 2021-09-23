@@ -97,7 +97,7 @@ export default {
       if (this.visualPosition === null) {
         return this.viewOrigo;
       }
-      return this.$parent.map.project(this.visualPosition, z).round();
+      return this.$parent.map.project(this.visualPosition, z)._round();
     },
     timeOrigo () {
       return this.boatTime;
@@ -259,7 +259,7 @@ export default {
         ctx.stroke(predictorData[pred].cachedPath);
 
         for (let pt of this.markers[pred].hour) {
-          let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+          let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
           ctx.strokeStyle = this.predictorColor(pt.type);
           ctx.fillStyle = ctx.strokeStyle;
           ctx.beginPath();
@@ -276,7 +276,7 @@ export default {
         }
 
         for (let pt of this.markers[pred].quarter) {
-          let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+          let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
           ctx.fillStyle = this.predictorColor(pt.type);
           ctx.beginPath();
           ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
@@ -286,7 +286,7 @@ export default {
           if (this.zoom < 12) {
             continue;
           }
-          let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+          let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
           ctx.strokeStyle = this.predictorColor(pt.type);
           ctx.beginPath();
           ctx.arc(tmp.x, tmp.y, this.first15minRadius, 0, Math.PI*2);
@@ -306,7 +306,7 @@ export default {
       }
     },
     drawDot(ctx, z, pt, color) {
-      let tmp = this.$parent.map.project(pt.latLng, z).round().subtract(this.boatOrigo);
+      let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
       ctx.fillStyle = color;
 
       ctx.beginPath();
@@ -329,10 +329,10 @@ export default {
 
       const boatOrigo = this.boatOrigo;
       const z = this.zoom;
-      let tmp = this.$parent.map.project(firstPt, z).round().subtract(boatOrigo);
+      let tmp = this.$parent.map.project(firstPt, z)._round()._subtract(boatOrigo);
       p.moveTo(tmp.x, tmp.y);
       for (let pt of otherPts) {
-        let tmp = this.$parent.map.project(pt, z).round().subtract(boatOrigo);
+        let tmp = this.$parent.map.project(pt, z)._round()._subtract(boatOrigo);
         p.lineTo(tmp.x, tmp.y);
       }
       return p;
@@ -347,7 +347,7 @@ export default {
       const z = this.zoom;
 
       p.moveTo(0, 0);
-      let tmp = this.$parent.map.project(cog.latLngs[cog.latLngs.length - 1], z).round().subtract(this.boatOrigo);
+      let tmp = this.$parent.map.project(cog.latLngs[cog.latLngs.length - 1], z)._round()._subtract(this.boatOrigo);
       p.lineTo(tmp.x, tmp.y);
 
       return p;
