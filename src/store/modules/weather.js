@@ -9,7 +9,6 @@ import { lowPrioTask } from '../../lib/lowprio.js';
  * These are outside of reactive parts as they're large arrays
  * and performance critical
  */
-let timeSeries = [];
 /* format: [layer]
  *   name
  *   updated
@@ -29,7 +28,7 @@ function findWeatherLayer(url) {
   return null;
 }
 
-function checkTimeIdx(idx, timestamp) {
+function checkTimeIdx(timeSeries, idx, timestamp) {
   return timeSeries[idx] <= timestamp && timestamp <= timeSeries[idx+1];
 }
 
@@ -119,13 +118,14 @@ export function latLngWind(latLng, timestamp = null) {
   }
 
   const weatherLayer = weatherData[0];
+  const timeSeries = weatherLayer.timeSeries;
   let timeIdx = weatherLayer.cachedTimeIdx;
 
-  if (!checkTimeIdx(timeIdx, timestamp)) {
+  if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
     timeIdx++;
-    if (!checkTimeIdx(timeIdx, timestamp)) {
-      timeIdx = bsearchLeft(weatherLayer.timeSeries, timestamp) - 1;
-      if (!checkTimeIdx(timeIdx, timestamp)) {
+    if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
+      timeIdx = bsearchLeft(timeSeries, timestamp) - 1;
+      if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
         return null;
       }
     }
@@ -160,13 +160,14 @@ export function idxToCell(latIdx, lonIdx) {
     return null;
   }
 
+  const timeSeries = weatherLayer.timeSeries;
   let timeIdx = weatherLayer.cachedTimeIdx;
   let timestamp = state.time;
-  if (!checkTimeIdx(timeIdx, timestamp)) {
+  if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
     timeIdx++;
-    if (!checkTimeIdx(timeIdx, timestamp)) {
-      timeIdx = bsearchLeft(weatherLayer.timeSeries, timestamp) - 1;
-      if (!checkTimeIdx(timeIdx, timestamp)) {
+    if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
+      timeIdx = bsearchLeft(timeSeries, timestamp) - 1;
+      if (!checkTimeIdx(timeSeries, timeIdx, timestamp)) {
         return null;
       }
     }
@@ -386,7 +387,6 @@ export default {
 
       state.firstTimestamp = weatherLayer.timeSeries[0];
       state.lastTimestamp = weatherLayer.timeSeries[weatherLayer.timeSeries.length - 1];
-      timeSeries = weatherLayer.timeSeries;
       if (state.updated === null || weatherLayer.updated > state.updated) {
         state.updated = weatherLayer.updated;
       }
