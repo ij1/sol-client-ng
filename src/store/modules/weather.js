@@ -93,6 +93,46 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
   return secondRes;
 }
 
+export function latLngWind(latLng, timestamp = null) {
+  if (!state.dataStamp) {
+    return null;
+  }
+
+  if (timestamp === null) {
+    timestamp = state.time;
+  }
+
+  const weatherLayer = weatherData[0];
+  let timeIdx = weatherLayer.cachedTimeIdx;
+
+  if (!checkTimeIdx(timeIdx, timestamp)) {
+    timeIdx++;
+    if (!checkTimeIdx(timeIdx, timestamp)) {
+      timeIdx = bsearchLeft(weatherLayer.timeSeries, timestamp) - 1;
+      if (!checkTimeIdx(timeIdx, timestamp)) {
+        return null;
+      }
+    }
+  }
+  weatherLayer.cachedTimeIdx = timeIdx;
+
+  const secondRes = __latLngWind(latLng, weatherLayer, timeIdx);
+  if (secondRes === null) {
+    return null;
+  }
+  /* time (z) solution */
+  const thirdFactor = interpolateFactor(
+    timeSeries[timeIdx],
+    timestamp,
+    timeSeries[timeIdx+1],
+  );
+  return UVToWind(wxTimeInterpolate(
+    thirdFactor,
+    secondRes[0],
+    secondRes[1]
+  ));
+}
+
 const state = {
   loaded: false,
   time: 0,
@@ -265,6 +305,7 @@ export default {
         origo: layerInfo.origo,
         cellSize: layerInfo.cellSize,
         cells: layerInfo.cells,
+        cachedTimeIdx: 0,
         windMap: [],
       }
       weatherData[weatherData.length] = weatherLayer;
@@ -435,47 +476,12 @@ export default {
     },
 
 
-    latLngWind: (state, getters) => (latLng, timestamp) => {
-      /* Sanity check wx data */
+    latLngWind: (state) => (latLng, timestamp = null) => {
       if (!state.dataStamp) {
         return null;
       }
 
-      let timeIdx;
-      let timeVal;
-
-      if (typeof timestamp !== 'undefined') {
-        timeVal = timestamp;
-        timeIdx = getters['timeIndexAny'](timestamp);
-      } else {
-        timeVal = state.time;
-        timeIdx = getters.timeIndex
-      }
-
-      const weatherLayer = weatherData[0];
-      const windMap = weatherLayer.windMap;
-
-      if ((timeIdx === null) ||
-          (typeof windMap[timeIdx+1] === 'undefined') ||
-          (timeSeries[timeIdx+1] < timeVal)) {
-        return null;
-      }
-
-      const secondRes = __latLngWind(latLng, weatherLayer, timeIdx);
-      if (secondRes === null) {
-        return null;
-      }
-      /* time (z) solution */
-      const thirdFactor = interpolateFactor(
-        timeSeries[timeIdx],
-        timeVal,
-        timeSeries[timeIdx+1],
-      );
-      return UVToWind(wxTimeInterpolate(
-        thirdFactor,
-        secondRes[0],
-        secondRes[1]
-      ));
+      return latLngWind(latLng, timestamp)
     },
 
     idxToCell: (state, getters) => (latIdx, lonIdx) => {
