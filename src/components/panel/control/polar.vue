@@ -33,6 +33,7 @@ import { degToRad, radToDeg, bsearchLeft } from '../../../lib/utils.js';
 import { roundToFixed, canvasAlignToPixelCenter } from '../../../lib/quirks.js';
 import { windToColor, MS_TO_KNT } from '../../../lib/sol.js';
 import { speedTowardsBearing, atan2Bearing, twaTextPrefix } from '../../../lib/nav.js';
+import { getSpeed } from '../../../store/modules/polar.js';
 import { polarMixin } from '../../mixins/polar.js';
 import WindKey from './windkey.vue';
 
@@ -425,8 +426,7 @@ export default {
     visualSteeringTwa (twaVal, oldVal) {
       if (twaVal !== null) {
         this.hover.twa = twaTextPrefix(twaVal) + roundToFixed(radToDeg(twaVal), 1);
-        this.hover.sog = this.$store.getters['boat/polar/getSpeed'](this.boatTws,
-                                                                    twaVal);
+        this.hover.sog = getSpeed(this.boatTws, twaVal);
         this.hover.vmg = speedTowardsBearing(this.hover.sog, twaVal, 0);
       } else if (oldVal !== null) {
         this.clearHoverInfo();

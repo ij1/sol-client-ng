@@ -46,6 +46,7 @@ import { LLayerGroup, LCircle, LPolyline, LTooltip } from 'vue2-leaflet';
 import { radToDeg, degToRad } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { speedTowardsBearing, cogTwdToTwa, loxoCalc, gcCalc, pixelDistanceCalc, twaTextPrefix } from '../../../lib/nav.js';
+import { getSpeed } from '../../../store/modules/polar.js';
 import SailBoat from '../sailboat.vue';
 import { uiModeMixin } from '../../mixins/uimode.js';
 
@@ -91,7 +92,7 @@ export default {
       return cogTwdToTwa(this.cog, this.twd);
     },
     sog () {
-      return this.$store.getters['boat/polar/getSpeed'](this.tws, this.twa);
+      return getSpeed(this.tws, this.twa);
     },
     vmg () {
       return speedTowardsBearing(this.sog, this.twa, 0);

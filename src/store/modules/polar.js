@@ -159,11 +159,8 @@ export default {
     windKeys: (state) => {
       return state.polarModes[state.polarMode].curves;
     },
-    getSpeed: () => (twsms, twa) => {
-      return getSpeed(twsms, twa);
-    },
 
-    curve: (state, getters) => (knots, interval = null) => {
+    curve: (state) => (knots, interval = null) => {
       const ms = knots / MS_TO_KNT;
       if (interval === null) {
         interval = state.twaInterval;
@@ -189,7 +186,7 @@ export default {
       for (let twad = 0; twad <= 180; twad += interval) {
         const twa = degToRad(twad);
 
-        let speed = getters['getSpeed'](ms, twa);
+        let speed = getSpeed(ms, twa);
         curve.values.push({twa: twa, speed: speed});
 
         let vmgspeed = speedTowardsBearing(speed, twa, 0);
@@ -216,7 +213,7 @@ export default {
 
           if (sign0 !== 0 && sign0 !== 0 && sign0 !== sign1) {
             let zeroTwa = findZeroSlope(prevTwa, twa, slope);
-            speed = getters['getSpeed'](ms, zeroTwa);
+            speed = getSpeed(ms, zeroTwa);
             vmgspeed = speedTowardsBearing(speed, zeroTwa, 0);
             if (vmgspeed > curve.maxvmg.up.vmg) {
               curve.maxvmg.up.vmg = vmgspeed;
@@ -235,7 +232,7 @@ export default {
       return curve;
     },
 
-    maxvmc: (state, getters) => (curve, absBearing, twd) => {
+    maxvmc: () => (curve, absBearing, twd) => {
       const windAngleRaw = cogTwdToTwa(absBearing, twd);
       const windAngle = Math.abs(windAngleRaw);   /* Sign is fixed at the end */
 
@@ -287,7 +284,7 @@ export default {
         if (sign0 !== 0 && sign0 !== 0 && sign0 !== sign1) {
           let zeroTwa = findZeroSlope(values0.twa - windAngle,
                                       values1.twa - windAngle, slope) + windAngle;
-          let speed = getters['getSpeed'](curve.ms, zeroTwa);
+          let speed = getSpeed(curve.ms, zeroTwa);
           let vmcspeed = speedTowardsBearing(speed, zeroTwa, windAngle);
           if (vmcspeed > res.vmc) {
             res.vmc = vmcspeed;
