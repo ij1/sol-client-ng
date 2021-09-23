@@ -329,10 +329,11 @@ export default {
 
       const boatOrigo = this.boatOrigo;
       const z = this.zoom;
-      let tmp = this.$parent.map.project(firstPt, z)._round()._subtract(boatOrigo);
+      const map = this.$parent.map;
+      let tmp = map.project(firstPt, z)._round()._subtract(boatOrigo);
       p.moveTo(tmp.x, tmp.y);
       for (let pt of otherPts) {
-        let tmp = this.$parent.map.project(pt, z)._round()._subtract(boatOrigo);
+        let tmp = map.project(pt, z)._round()._subtract(boatOrigo);
         p.lineTo(tmp.x, tmp.y);
       }
       return p;
