@@ -2,6 +2,7 @@ import L from 'leaflet';
 import { degToRad } from './utils.js';
 import { cogTwdToTwa, twaTwdToCog } from './nav.js';
 import { PERF_RECOVERY_MULT } from './sol.js';
+import { latLngWind } from '../store/modules/weather.js';
 
 export function cogPredictor (pred, cog, t, endTime, state, getters) {
   /* m/s -> nm -> deg (in deg) */
@@ -9,7 +10,7 @@ export function cogPredictor (pred, cog, t, endTime, state, getters) {
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
   while (t < endTime) {
-    const wind = getters['weather/latLngWind'](lastLatLng, t);
+    const wind = latLngWind(lastLatLng, t);
     if (wind === null) {
       return null;
     }
@@ -40,7 +41,7 @@ export function twaPredictor (pred, twa, t, endTime, state, getters) {
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
   while (t < endTime) {
-    const wind = getters['weather/latLngWind'](lastLatLng, t);
+    const wind = latLngWind(lastLatLng, t);
     if (wind === null) {
       return null;
     }
