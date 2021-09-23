@@ -113,13 +113,11 @@ export default {
           };
           if (type === 'cog') {
             cogPredictor(pred, degToRad(angle),
-                         startTime, startTime + timeStep,
-                         predState, rootGetters);
+                         startTime, startTime + timeStep, predState);
           } else if (type === 'twa') {
             const twa = angle - 180
             twaPredictor(pred, degToRad(twa),
-                       startTime, startTime + timeStep,
-                       predState, rootGetters);
+                       startTime, startTime + timeStep, predState);
           }
           let latLng = pred.latLngs[pred.latLngs.length - 1];
           /* Reactivate reactiviness */

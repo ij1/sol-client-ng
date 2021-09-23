@@ -3,8 +3,9 @@ import { degToRad } from './utils.js';
 import { cogTwdToTwa, twaTwdToCog } from './nav.js';
 import { PERF_RECOVERY_MULT } from './sol.js';
 import { latLngWind } from '../store/modules/weather.js';
+import { getSpeed } from '../store/modules/polar.js';
 
-export function cogPredictor (pred, cog, t, endTime, state, getters) {
+export function cogPredictor (pred, cog, t, endTime, state) {
   /* m/s -> nm -> deg (in deg) */
   const moveDelta = (state.timeDelta / 1000 / 3600) / 60;
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
@@ -15,8 +16,7 @@ export function cogPredictor (pred, cog, t, endTime, state, getters) {
       return null;
     }
     const twa = cogTwdToTwa(cog, wind.twd);
-    const speed = getters['boat/polar/getSpeed'](wind.ms, twa) *
-                  state.perf * state.firstStep;
+    const speed = getSpeed(wind.ms, twa) * state.perf * state.firstStep;
     state.firstStep = 1;
 
     const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
@@ -35,7 +35,7 @@ export function cogPredictor (pred, cog, t, endTime, state, getters) {
   return t;
 }
 
-export function twaPredictor (pred, twa, t, endTime, state, getters) {
+export function twaPredictor (pred, twa, t, endTime, state) {
   /* m/s -> nm -> deg (in deg) */
   const moveDelta = (state.timeDelta / 1000 / 3600) / 60;
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
@@ -45,8 +45,7 @@ export function twaPredictor (pred, twa, t, endTime, state, getters) {
     if (wind === null) {
       return null;
     }
-    const speed = getters['boat/polar/getSpeed'](wind.ms, twa) *
-                  state.perf * state.firstStep;
+    const speed = getSpeed(wind.ms, twa) * state.perf * state.firstStep;
     state.firstStep = 1;
 
     const course = twaTwdToCog(twa, wind.twd);

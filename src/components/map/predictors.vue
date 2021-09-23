@@ -383,7 +383,7 @@ export default {
       return Math.max(Math.min(firstStep, 1), 0);
     },
 
-    dcPredCalc(pred, dummy, t, endTime, state, getters) {
+    dcPredCalc(pred, dummy, t, endTime, state) {
       let commandType = this.currentSteering;
       let commandValue = this[this.steerTypeToValue[commandType]];
       let dcIdx = 0;
@@ -416,7 +416,7 @@ export default {
         }
 
         const func = this.predictorDefs[commandType]['calc'];
-        t = func(pred, commandValue, t, nextEnd, state, getters);
+        t = func(pred, commandValue, t, nextEnd, state);
         if (t === null) {
           break;
         }
@@ -454,7 +454,7 @@ export default {
 
       const steerValue = this[this.steerTypeToValue[predictor]];
       const func = this.predictorDefs[predictor]['calc'];
-      func(pred, steerValue, t, endTime, state, this.$store.getters);
+      func(pred, steerValue, t, endTime, state);
       Object.freeze(pred.latLngs);
 
       return pred;
