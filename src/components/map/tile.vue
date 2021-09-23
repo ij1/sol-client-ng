@@ -106,8 +106,11 @@ export default {
   },
 
   methods: {
+    __latLngToTilePoint(mapLatLng, map) {
+      return map.project(mapLatLng, this.id.z)._round()._subtract(this.projectedOrigo);
+    },
     latLngToTilePoint(mapLatLng) {
-      return this.$parent.map.project(mapLatLng, this.id.z)._round()._subtract(this.projectedOrigo);
+      return this.__latLngToTilePoint(mapLatLng, this.$parent.map);
     },
     tileToLayerPoint() {
       const nw = this.bounds.getNorthWest();
@@ -144,6 +147,8 @@ export default {
       this.animFrame = null;
     },
     drawPolys (ctx) {
+      const map = this.$parent.map;
+
       const cfgTinyIslands = this.$store.state.map.cfg.tinyIslands.value;
       const detectTinyIslands = cfgTinyIslands !== 'default';
       const tinyIslandSize = cfgTinyIslands === '1px' ? 1 :
@@ -168,7 +173,7 @@ export default {
           let first = true;
           ctx.beginPath();
           for (let pt of poly) {
-            const drawCoords = this.latLngToTilePoint(pt);
+            const drawCoords = this.__latLngToTilePoint(pt, map);
             if (first) {
               ctx.moveTo(drawCoords.x, drawCoords.y);
               first = false;
@@ -200,7 +205,7 @@ export default {
               (pt.lng === boundE ? 2 :
                (pt.lng === boundW ? 8 : 0));
 
-            const drawCoords = this.latLngToTilePoint(pt);
+            const drawCoords = this.__latLngToTilePoint(pt, map);
 
             /* Larger than a tiny island (<=1px) detection */
             if (first) {
@@ -252,7 +257,7 @@ export default {
           } else {
             /* Complete the poly but only conditionally */
             if ((firstAtBorder & prevAtBorder) === 0) {
-              const drawCoords = this.latLngToTilePoint(poly[0]);
+              const drawCoords = this.__latLngToTilePoint(poly[0], map);
               ctx.lineTo(drawCoords.x, drawCoords.y);
             }
             ctx.stroke();
