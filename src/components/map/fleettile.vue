@@ -75,7 +75,7 @@ export default {
           }
         }
         /* 'i' has both coords for search purposes (with correct lng offset) */
-        const center = map.project(i, this.coords.z).subtract(L.point(sw.x, ne.y));
+        const center = map.project(i, this.coords.z)._subtract(L.point(sw.x, ne.y));
         const color = this.boatColor(boat);
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
