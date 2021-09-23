@@ -369,6 +369,7 @@ export default {
       const baseWrap = minWrap === maxWrap ? minWrap : 0;
       const wrapOffset = 256 * 2 ** this.zoom;
       const baseOffset = baseWrap * wrapOffset;
+      const twsContours = this.twsContours;
 
       let coeffs = [
         [[], [], []],
@@ -389,7 +390,7 @@ export default {
         let lngStart = lngCell * wxCellSize[1] + wxOrigo[1];
         const xStart = this.$parent.map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
 
-        for (let twsIdx = 0; twsIdx < this.twsContours.length; twsIdx++) {
+        for (let twsIdx = 0; twsIdx < twsContours.length; twsIdx++) {
           twsDatas[twsIdx] = {
             paths: [new Path2D(), new Path2D()],
             useMove: [true, true],
@@ -458,10 +459,10 @@ export default {
 
           const cellEndLat = (latCell + 1) * wxCellSize[0] + wxOrigo[0];
 
-          let minTwsIdx = bsearchLeft(this.twsContours, minTwsMs * MS_TO_KNT);
-          let maxTwsIdx = Math.min(bsearchLeft(this.twsContours,
+          let minTwsIdx = bsearchLeft(twsContours, minTwsMs * MS_TO_KNT);
+          let maxTwsIdx = Math.min(bsearchLeft(twsContours,
                                                maxTwsMs * MS_TO_KNT),
-                                   this.twsContours.length - 1);
+                                   twsContours.length - 1);
 
           const yInCellStart = (y > yStart) ? 0 :
                                (yToLat[y] - latStart) / wxCellSize[0];
@@ -471,7 +472,7 @@ export default {
             twsData.edgeCrossing = [];
 
             for (let e = 0; e <= 1; e++) {
-              let twsms = this.twsContours[twsIdx] / MS_TO_KNT;
+              let twsms = twsContours[twsIdx] / MS_TO_KNT;
               let a = 0;
               let b = 0;
               let c = -(twsms * twsms);
@@ -617,7 +618,7 @@ export default {
                 continue;
               }
 
-              let twsms = this.twsContours[twsIdx] / MS_TO_KNT;
+              let twsms = twsContours[twsIdx] / MS_TO_KNT;
               let c = qc[0] - twsms * twsms;
 
               /*
@@ -731,7 +732,7 @@ export default {
         }
 
         /* Flush the full column of contours */
-        for (let twsIdx = this.twsContours.length - 1; twsIdx >= 0; twsIdx--) {
+        for (let twsIdx = twsContours.length - 1; twsIdx >= 0; twsIdx--) {
           for (let r = 0; r <= 1; r++) {
             let twsData = twsDatas[twsIdx];
             if (twsData.draw[r]) {
