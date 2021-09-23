@@ -29,6 +29,10 @@ function findWeatherLayer(url) {
   return null;
 }
 
+function checkTimeIdx(idx, timestamp) {
+  return timeSeries[idx] <= timestamp && timestamp <= timeSeries[idx+1];
+}
+
 function __latLngWind(latLng, weatherLayer, timeIdx) {
   const wxLat = latLng.lat;
   let wxLng = latLng.lng;
@@ -215,10 +219,6 @@ function boundTime(time) {
     }
   }
   return null;
-}
-
-function checkTimeIdx(idx, timestamp) {
-  return timeSeries[idx] <= timestamp && timestamp <= timeSeries[idx+1];
 }
 
 const contourDefs = [
