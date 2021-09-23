@@ -5,6 +5,7 @@ import { degToRad } from '../../lib/utils.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
 import { boatScaleDivisor, drawBoat, drawNavLights } from '../../lib/boatshape.js';
 import { ownBoatVisibleFilter } from '../../lib/sol.js';
+import { latLngWind } from '../../store/modules/weather.js';
 
 export default {
   name: 'FleetTile',
@@ -43,6 +44,8 @@ export default {
       if (zoomScale >= 2) {
         return;
       }
+
+      const fleetTime = this.$store.state.race.fleet.fleetTime;
       const cfgAllowNavLights = this.$store.getters['ui/allowNavLights'];
       const boatScale = zoomScale * boatSizeScale;
       const boatDescale = zoomDescale / boatSizeScale;
@@ -77,8 +80,7 @@ export default {
         ctx.translate(center.x - prev.x, center.y - prev.y);
         ctx.beginPath();
         if (boat.dtg > 0) {
-          const wind = this.$store.getters['weather/latLngWind'](boat.latLng,
-                                                                 this.$store.state.race.fleet.fleetTime);
+          const wind = latLngWind(boat.latLng, fleetTime);
           let twa = (wind !== null) ? cogTwdToTwa(boat.cog, wind.twd) : 0;
           /* TWA=0 heuristics for <0.5deg to handle wx & fleet time
            * mismatch and numeric precision challenges
