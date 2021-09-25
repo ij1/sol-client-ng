@@ -213,6 +213,28 @@ export default {
         }
         for (let dc of dcList) {
           dc.time = UTCToMsec(dc.time);
+          dc.valid = true;
+          dc.origValue = dc.value;
+          if (dc.type === 'cc') {
+            if (dc.value >= Math.PI * 2) {
+              dc.valid = false;
+              dc.value = Math.PI * 2;
+            }
+            if (dc.value < 0.0) {
+              dc.valid = false;
+              dc.value = 0;
+            }
+          }
+          if (dc.type === 'twa') {
+            if (dc.value < -Math.PI) {
+              dc.valid = false;
+              dc.value = -Math.PI;
+            }
+            if (dc.value > Math.PI) {
+              dc.valid = false;
+              dc.value = Math.PI;
+            }
+          }
         }
         commit('updateDCs', {
           dcList: dcList,
