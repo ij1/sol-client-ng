@@ -10,6 +10,7 @@ export default {
   data () {
     return { 
       time: 0,
+      wxValid: false,
       // ADDME: support 10s for the first 10 minutes
       timeDelta: secToMsec(30),
 
@@ -54,7 +55,7 @@ export default {
     },
     predictorList () {
       let res = [];
-      if (!this.allowControl || !this.wxValid) {
+      if (!this.allowControl) {
         return res;
       }
 
@@ -199,7 +200,7 @@ export default {
       return Date.now();
     },
     ...mapGetters({
-      wxValid: 'weather/valid',
+      wxValidOrig: 'weather/valid',
       boatTime: 'boat/time',
       visualPosition: 'boat/visualPosition',
       isTowbackPeriod: 'race/isTowbackPeriod',
@@ -543,6 +544,12 @@ export default {
         }
       }
       this.$store.commit('boat/steering/setDelayLatLng', null);
+    },
+    wxValidOrig (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.wxValid = newVal;
+      }
+      this.recalc();
     },
   },
   render () {
