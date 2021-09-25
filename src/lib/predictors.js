@@ -30,6 +30,7 @@ export function cogPredictor (pred, cog, t, endTime, state) {
     state.perf = Math.min(state.perf +
                           PERF_RECOVERY_MULT * state.timeDelta / Math.abs(speed),
                           1.0);
+    pred.perf.push(state.perf);
   }
 
   return t;
@@ -60,6 +61,7 @@ export function twaPredictor (pred, twa, t, endTime, state) {
     state.perf = Math.min(state.perf +
                           PERF_RECOVERY_MULT * state.timeDelta / Math.abs(speed),
                           1.0);
+    pred.perf.push(state.perf);
   }
 
   return t;

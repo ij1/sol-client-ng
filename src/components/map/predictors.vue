@@ -4,6 +4,9 @@ import L from 'leaflet';
 import { hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
 import { cogPredictor, twaPredictor } from '../../lib/predictors.js';
 import { predictorData } from '../../store/modules/steering.js';
+import { cogTwdToTwa } from '../../lib/nav.js';
+import { latLngWind } from '../../store/modules/weather.js';
+import { getSpeed } from '../../store/modules/polar.js';
 
 export default {
   name: 'SteeringPredictors',
@@ -362,10 +365,15 @@ export default {
       }
     },
 
-    consumeTowback (latLngs, pos, t) {
+    consumeTowback (pred, pos, t) {
       while (t <= this.raceStartTime - this.timeDelta) {
-        latLngs.push(pos);
+        pred.latLngs.push(pos);
         t += this.timeDelta;
+        /*
+         * This might not match what server does during towback but the
+         * error is meaningless for anything.
+         */
+        pred.perf.push(1.0);
       }
       return t;
     },
@@ -381,6 +389,29 @@ export default {
       let firstStep = 1.0 - ((this.raceStartTime - t) / this.timeDelta);
       /* These safety bounds should be unncessary */
       return Math.max(Math.min(firstStep, 1), 0);
+    },
+    calculatePerfLoss (pred, state, t, oldCommand, oldValue, newCommand, newValue) {
+      if (state.perf <= 0.93) {
+        return;
+      }
+
+      const lastLatLng = pred.latLngs[pred.latLngs.length - 1];
+      const wind = latLngWind(lastLatLng, t);
+
+      if (oldCommand == 'cog') {
+        oldValue = cogTwdToTwa(oldValue, wind.twd);
+      }
+      if (newCommand == 'cog') {
+        newValue = cogTwdToTwa(newValue, wind.twd);
+      }
+
+      const speed = getSpeed(wind.ms, oldValue) * state.perf;
+      if ((newValue < 0 && oldValue > 0) || (newValue > 0 && oldValue < 0)) {
+        state.perf *= 1 - speed / 200.0;
+      } else {
+        const dTwa = Math.abs(oldValue) - Math.abs(newValue);
+        state.perf *= 1 - Math.abs(dTwa) / 25.0;
+      }
     },
 
     dcPredCalc(pred, dummy, t, endTime, state) {
@@ -409,9 +440,13 @@ export default {
             nextEnd = Math.min(endTime, dc.time - this.timeDelta);
             break;
           }
-          // FIXME: perf is not returned nor perf loss applied
+          const oldType = commandType;
+          const oldValue = commandValue;
           commandType = dc.type === 'cc' ? 'cog' : dc.type;
           commandValue = dc.value;
+          this.calculatePerfLoss(pred, state, t,
+                                 oldType, oldValue,
+                                 commandType, commandValue);
           dcIdx++;
         }
 
@@ -432,22 +467,24 @@ export default {
         time: t,
         firstLatLng: lastLatLng,
         latLngs: [],
+        perf: [],
       };
 
       if (!this.wxValid) {
         pred.firstLatLng = null;
         return pred;
       }
-      pred.latLngs.push(Object.freeze(lastLatLng));
 
       let state = {
         perf: this.boatPerf,
         firstStep: 1,
         timeDelta: this.timeDelta,
       };
+      pred.latLngs.push(Object.freeze(lastLatLng));
+      pred.perf.push(state.perf);
 
       if (this.isTowbackPeriod) {
-        t = this.consumeTowback(pred.latLngs, lastLatLng, t);
+        t = this.consumeTowback(pred, lastLatLng, t, state);
         state.perf = 1.0;
         state.firstStep = this.moveFractionAfterTowback(t);
       }
@@ -456,6 +493,7 @@ export default {
       const func = this.predictorDefs[predictor]['calc'];
       func(pred, steerValue, t, endTime, state);
       Object.freeze(pred.latLngs);
+      Object.freeze(pred.perf);
 
       return pred;
     },
