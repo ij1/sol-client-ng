@@ -288,15 +288,13 @@ export default {
         ctx.strokeStyle = this.predictorColor(pred);
         ctx.stroke(predictorData[pred].cachedPath);
 
-        for (let pt of this.markers[pred].hour) {
+        for (let i = 0; i < this.markers[pred].hour.length; i++) {
+          let pt = this.markers[pred].hour[i];
           this.drawDot(ctx, z, pt, null, this.hourRadius, false);
 
-          if (this.predictorLen > 6) {
-            /* Draw solid circle every 6 hours */
-            let inHours = pt.time / hToMsec(6);
-            if (Math.abs(inHours - Math.floor(inHours)) < 0.001) {
-              ctx.fill();
-            }
+          /* Draw solid circle every 6 hours */
+          if ((this.predictorLen > 6) && (i > 0) && (i % 6 === 0)) {
+            ctx.fill();
           }
         }
 
