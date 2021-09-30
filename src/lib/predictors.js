@@ -8,7 +8,7 @@ import { getSpeed } from '../store/modules/polar.js';
 export function cogPredictor (pred, cog, t, endTime, state) {
   let timeDelta = state.timeDelta;
   /* m/s -> nm -> deg (in deg) */
-  const moveDelta = (timeDelta / 1000 / 3600) / 60;
+  let moveDelta = (timeDelta / 1000 / 3600) / 60;
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
   while (t < endTime) {
@@ -19,13 +19,19 @@ export function cogPredictor (pred, cog, t, endTime, state) {
     const twa = cogTwdToTwa(cog, wind.twd);
     const speed = getSpeed(wind.ms, twa) * state.perf;
 
+    t += timeDelta;
+    if (t > endTime) {
+      timeDelta -= t - endTime;
+      moveDelta = (timeDelta / 1000 / 3600) / 60;
+      t = endTime;
+    }
+
     const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
     const dlon = moveDelta * speed * Math.sin(cog) / lonScaling;
     const dlat = moveDelta * speed * Math.cos(cog);
 
     lastLatLng = L.latLng(lastLatLng.lat + dlat,
                           lastLatLng.lng + dlon);
-    t += timeDelta;
     state.perf = Math.min(state.perf +
                           PERF_RECOVERY_MULT * timeDelta / Math.abs(speed),
                           1.0);
@@ -41,7 +47,7 @@ export function cogPredictor (pred, cog, t, endTime, state) {
 export function twaPredictor (pred, twa, t, endTime, state) {
   let timeDelta = state.timeDelta;
   /* m/s -> nm -> deg (in deg) */
-  const moveDelta = (timeDelta / 1000 / 3600) / 60;
+  let moveDelta = (timeDelta / 1000 / 3600) / 60;
   let lastLatLng = pred.latLngs[pred.latLngs.length - 1];
 
   while (t < endTime) {
@@ -51,6 +57,13 @@ export function twaPredictor (pred, twa, t, endTime, state) {
     }
     const speed = getSpeed(wind.ms, twa) * state.perf;
 
+    t += timeDelta;
+    if (t > endTime) {
+      timeDelta -= t - endTime;
+      moveDelta = (timeDelta / 1000 / 3600) / 60;
+      t = endTime;
+    }
+
     const course = twaTwdToCog(twa, wind.twd);
     const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
     const dlon = moveDelta * speed * Math.sin(course) / lonScaling;
@@ -58,7 +71,6 @@ export function twaPredictor (pred, twa, t, endTime, state) {
 
     lastLatLng = L.latLng(lastLatLng.lat + dlat,
                           lastLatLng.lng + dlon);
-    t += timeDelta;
     state.perf = Math.min(state.perf +
                           PERF_RECOVERY_MULT * timeDelta / Math.abs(speed),
                           1.0);

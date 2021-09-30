@@ -441,8 +441,8 @@ export default {
 
         while (dcIdx < dcList.length) {
           const dc = dcList[dcIdx];
-          if (t + this.timeDelta < dc.time) {
-            nextEnd = Math.min(endTime, dc.time - this.timeDelta);
+          if (t < dc.time) {
+            nextEnd = Math.min(endTime, dc.time);
             break;
           }
           const oldType = commandType;
