@@ -388,32 +388,12 @@ export default {
       }
     },
 
-    consumeTowback (pred, pos, t) {
-      while (t <= this.raceStartTime - this.timeDelta) {
-        t += this.timeDelta;
+    consumeTowback (pred, pos) {
+      pred.latLngs.push(pos);
+      pred.times.push(this.raceStartTime);
+      pred.perf.push(1.0);
 
-        pred.latLngs.push(pos);
-        pred.times.push(t);
-        /*
-         * This might not match what server does during towback but the
-         * error is meaningless for anything.
-         */
-        pred.perf.push(1.0);
-      }
-      return t;
-    },
-    /* When starting, part of the predictor belongs to towback and other
-     * part is after race start, this function calculates the fraction
-     * of the full movement the boat is already racing.
-     *
-     * Note: the DC dot interpolation won't be accurate for the first
-     * predictor segment but that's < 30s from start so it shouldn't
-     * matter.
-     */
-    moveFractionAfterTowback (t) {
-      let firstStep = 1.0 - ((this.raceStartTime - t) / this.timeDelta);
-      /* These safety bounds should be unncessary */
-      return Math.max(Math.min(firstStep, 1), 0);
+      return this.raceStartTime;
     },
     calculatePerfLoss (pred, state, t, oldCommand, oldValue, newCommand, newValue) {
       if (state.perf <= 0.93) {
@@ -512,9 +492,8 @@ export default {
       pred.times.push(t);
 
       if (this.isTowbackPeriod) {
-        t = this.consumeTowback(pred, lastLatLng, t, state);
+        t = this.consumeTowback(pred, lastLatLng);
         state.perf = 1.0;
-        state.firstStep = this.moveFractionAfterTowback(t);
       }
 
       const steerValue = this[this.steerTypeToValue[predictor]];
