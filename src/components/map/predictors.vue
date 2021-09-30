@@ -304,7 +304,7 @@ export default {
           this.drawDot(ctx, z, pt, null, this.quarterRadius, true);
         }
         for (let pt of this.markers[pred].first15min) {
-          if (this.zoom < 12) {
+          if (z < 12) {
             continue;
           }
           this.drawDot(ctx, z, pt, null, this.first15minRadius, false);
