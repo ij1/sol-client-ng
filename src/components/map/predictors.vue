@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
-import { hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate } from '../../lib/utils.js';
+import { hToMsec, minToMsec, secToMsec, interpolateFactor, linearInterpolate, bsearchLeft } from '../../lib/utils.js';
 import { cogPredictor, twaPredictor } from '../../lib/predictors.js';
 import { predictorData } from '../../store/modules/steering.js';
 import { cogTwdToTwa } from '../../lib/nav.js';
@@ -106,14 +106,14 @@ export default {
     timeOrigo () {
       return this.boatTime;
     },
-    hourIndexes () {
+    hourMarkerMsecs () {
       let res = [];
       for (let i = 0; i <= this.predictorLen; i++) {
-        res.push(Math.floor(hToMsec(i) / this.timeDelta));
+        res.push(hToMsec(i));
       }
       return res;
     },
-    quarterIndexes () {
+    quarterMarkerMsecs () {
       let res = [];
       for (let i = 1; i < 4 * Math.min(this.predictorLen, this.halfLimit); i++) {
         if ((i % 4) === 0) {
@@ -122,14 +122,14 @@ export default {
         if ((i >= 4 * this.quarterLimit) && (i % 4) !== 2) {
           continue;
         }
-        res.push(Math.floor(minToMsec(15) * i / this.timeDelta));
+        res.push(minToMsec(15) * i);
       }
       return res;
     },
-    first15minIndexes () {
+    first15minMarkerMsecs () {
       let res = [];
       for (let i = 1; i <= 14; i++) {
-        res.push(Math.floor(minToMsec(1) * i / this.timeDelta));
+        res.push(minToMsec(1) * i);
       }
       return res;
     },
@@ -153,19 +153,45 @@ export default {
       let res = {};
 
       for (let pred of this.predictorList) {
-        res[pred] = {};
-        res[pred].hour = this.getMarkers(pred, this.hourIndexes);
-        res[pred].quarter = this.getMarkers(pred, this.quarterIndexes);
-        res[pred].first15min = this.getMarkers(pred, this.first15minIndexes);
-        if (this.dotDelay === null) {
-          res[pred].dc = [];
-        } else {
-          res[pred].dc = this.interpolateMarkers(pred, hToMsec(this.dotDelay));
+        res[pred] = {
+          hour: [],
+          quarter: [],
+          first15min: [],
+          dc: [],
+          wx: [],
+        };
+
+        let marker;
+
+        for (let h of this.hourMarkerMsecs) {
+          marker = this.interpolateMarker(pred, h);
+          if (marker !== null) {
+            res[pred].hour.push(marker);
+          }
         }
-        if (this.wxDelay === null || this.wxDelay <= 0) {
-          res[pred].wx = [];
-        } else {
-          res[pred].wx = this.interpolateMarkers(pred, this.wxDelay);
+        for (let q of this.quarterMarkerMsecs) {
+          marker = this.interpolateMarker(pred, q);
+          if (marker !== null) {
+            res[pred].quarter.push(marker);
+          }
+        }
+        for (let f of this.first15minMarkerMsecs) {
+          marker = this.interpolateMarker(pred, f);
+          if (marker !== null) {
+            res[pred].first15min.push(marker);
+          }
+        }
+        if (this.dotDelay !== null) {
+          marker = this.interpolateMarker(pred, hToMsec(this.dotDelay));
+          if (marker !== null) {
+            res[pred].dc.push(marker);
+          }
+        }
+        if (this.wxDelay !== null && this.wxDelay > 0) {
+          marker = this.interpolateMarker(pred, this.wxDelay);
+          if (marker !== null) {
+            res[pred].wx.push(marker);
+          }
         }
       }
       return res;
@@ -503,52 +529,56 @@ export default {
       return pred;
     },
 
-    getMarkers (predictor, indexes) {
+    getMarker (predictor, idx) {
       const pred = predictorData[predictor];
-      this.predictorStamp;
 
-      if (pred.firstLatLng === null) {
-        return [];
+      if (idx >= pred.latLngs.length) {
+        return null;
       }
-      let res = [];
-      for (let i of indexes) {
-        if (i < pred.latLngs.length) {
-          res.push({
-            type: predictor,
-            time: i * this.timeDelta,
-            latLng: pred.latLngs[i],
-          });
-        }
-      }
-      return res;
+      return {
+        type: predictor,
+        latLng: pred.latLngs[idx],
+        time: pred.times[idx],
+        perf: pred.perf[idx],
+      };
     },
-    interpolateMarkers (predictor, msec) {
+    getMarkerLowIdx (predictor, msec) {
+      const pred = predictorData[predictor];
+      let idx = bsearchLeft(pred.times, msec, 1, pred.times.length - 1) - 1;
+      if (idx < 0) {
+        return null;
+      }
+      return idx;
+    },
+
+    interpolateMarker (predictor, msec) {
       const pred = predictorData[predictor];
 
       if ((typeof pred === 'undefined') ||
           (msec > this.predictorLenMsec) || (pred.firstLatLng === null)) {
-        return [];
-      } else {
-        const idx = msec / this.timeDelta;
-        const lowIdx = Math.floor(idx);
-        let markers = this.getMarkers(predictor, [lowIdx]);
-
-        if ((markers.length > 0) && (msec < this.predictorLenMsec)) {
-          const highMarkers = this.getMarkers(predictor, [lowIdx + 1]);
-          const frac = interpolateFactor(lowIdx, idx, lowIdx + 1);
-
-          if (highMarkers.length > 0) {
-            markers[0].time = msec;
-            markers[0].latLng = L.latLng(linearInterpolate(frac,
-                                             markers[0].latLng.lat,
-                                             highMarkers[0].latLng.lat),
-                                         linearInterpolate(frac,
-                                             markers[0].latLng.lng,
-                                             highMarkers[0].latLng.lng));
-          }
-        }
-        return markers;
+        return null;
       }
+
+      msec += pred.time;
+      const lowIdx = this.getMarkerLowIdx(predictor, msec);
+      if (lowIdx === null) {
+        return null;
+      }
+      const highMarker = this.getMarker(predictor, lowIdx + 1);
+      if (msec > highMarker.time) {
+        return null;
+      }
+      let marker = this.getMarker(predictor, lowIdx);
+      const frac = interpolateFactor(marker.time, msec, highMarker.time);
+
+      marker.time = msec;
+      marker.latLng = L.latLng(linearInterpolate(frac,
+                                                 marker.latLng.lat,
+                                                 highMarker.latLng.lat),
+                               linearInterpolate(frac,
+                                                 marker.latLng.lng,
+                                                 highMarker.latLng.lng));
+      return marker;
     },
     /* Creates a copy of latLng (to be freezed) */
     safeLatLng (origLatLng) {
