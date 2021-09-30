@@ -289,12 +289,7 @@ export default {
         ctx.stroke(predictorData[pred].cachedPath);
 
         for (let pt of this.markers[pred].hour) {
-          let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
-          ctx.strokeStyle = this.predictorColor(pt.type);
-          ctx.fillStyle = ctx.strokeStyle;
-          ctx.beginPath();
-          ctx.arc(tmp.x, tmp.y, this.hourRadius, 0, Math.PI*2);
-          ctx.stroke();
+          this.drawDot(ctx, z, pt, null, this.hourRadius, false);
 
           if (this.predictorLen > 6) {
             /* Draw solid circle every 6 hours */
@@ -306,24 +301,16 @@ export default {
         }
 
         for (let pt of this.markers[pred].quarter) {
-          let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
-          ctx.fillStyle = this.predictorColor(pt.type);
-          ctx.beginPath();
-          ctx.arc(tmp.x, tmp.y, this.quarterRadius, 0, Math.PI*2);
-          ctx.fill();
+          this.drawDot(ctx, z, pt, null, this.quarterRadius, true);
         }
         for (let pt of this.markers[pred].first15min) {
           if (this.zoom < 12) {
             continue;
           }
-          let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
-          ctx.strokeStyle = this.predictorColor(pt.type);
-          ctx.beginPath();
-          ctx.arc(tmp.x, tmp.y, this.first15minRadius, 0, Math.PI*2);
-          ctx.stroke();
+          this.drawDot(ctx, z, pt, null, this.first15minRadius, false);
         }
         for (let pt of this.markers[pred].wx) {
-          this.drawDot(ctx, z, pt, 'red');
+          this.drawDot(ctx, z, pt, 'red', null, true);
         }
         for (let pt of this.markers[pred].dc) {
           if (this.cfgExtraUiDebug) {
@@ -331,19 +318,30 @@ export default {
                                                     pt.type + ') redraw to ' +
                                                     pt.latLng.lat + ' ' + pt.latLng.lng);
           }
-          this.drawDot(ctx, z, pt, 'orange');
+          this.drawDot(ctx, z, pt, 'orange', null, true);
         }
       }
     },
-    drawDot(ctx, z, pt, color) {
+    drawDot(ctx, z, pt, color, radius, fill) {
       let tmp = this.$parent.map.project(pt.latLng, z)._round()._subtract(this.boatOrigo);
+      if (color === null) {
+        color = this.predictorColor(pt.type);
+      }
       ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+
+      if (radius === null) {
+        radius = (this.activePredictor === pt.type) ?
+                  this.plottedDelayRadius : this.otherDelayRadius;
+      }
 
       ctx.beginPath();
-      const radius = (this.activePredictor === pt.type) ?
-                     this.plottedDelayRadius : this.otherDelayRadius;
       ctx.arc(tmp.x, tmp.y, radius, 0, Math.PI*2);
-      ctx.fill();
+      if (fill) {
+        ctx.fill();
+      } else {
+        ctx.stroke();
+      }
     },
 
     precalcPath(predictor) {
