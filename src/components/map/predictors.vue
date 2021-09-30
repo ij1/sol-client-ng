@@ -367,8 +367,10 @@ export default {
 
     consumeTowback (pred, pos, t) {
       while (t <= this.raceStartTime - this.timeDelta) {
-        pred.latLngs.push(pos);
         t += this.timeDelta;
+
+        pred.latLngs.push(pos);
+        pred.times.push(t);
         /*
          * This might not match what server does during towback but the
          * error is meaningless for anything.
@@ -467,6 +469,7 @@ export default {
         time: t,
         firstLatLng: lastLatLng,
         latLngs: [],
+        times: [],
         perf: [],
       };
 
@@ -480,8 +483,10 @@ export default {
         firstStep: 1,
         timeDelta: this.timeDelta,
       };
+
       pred.latLngs.push(Object.freeze(lastLatLng));
       pred.perf.push(state.perf);
+      pred.times.push(t);
 
       if (this.isTowbackPeriod) {
         t = this.consumeTowback(pred, lastLatLng, t, state);

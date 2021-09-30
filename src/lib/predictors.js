@@ -25,11 +25,13 @@ export function cogPredictor (pred, cog, t, endTime, state) {
 
     lastLatLng = L.latLng(lastLatLng.lat + dlat,
                           lastLatLng.lng + dlon);
-    pred.latLngs.push(Object.freeze(lastLatLng));
     t += state.timeDelta;
     state.perf = Math.min(state.perf +
                           PERF_RECOVERY_MULT * state.timeDelta / Math.abs(speed),
                           1.0);
+
+    pred.latLngs.push(Object.freeze(lastLatLng));
+    pred.times.push(t);
     pred.perf.push(state.perf);
   }
 
@@ -56,11 +58,13 @@ export function twaPredictor (pred, twa, t, endTime, state) {
 
     lastLatLng = L.latLng(lastLatLng.lat + dlat,
                           lastLatLng.lng + dlon);
-    pred.latLngs.push(Object.freeze(lastLatLng));
     t += state.timeDelta;
     state.perf = Math.min(state.perf +
                           PERF_RECOVERY_MULT * state.timeDelta / Math.abs(speed),
                           1.0);
+
+    pred.latLngs.push(Object.freeze(lastLatLng));
+    pred.times.push(t);
     pred.perf.push(state.perf);
   }
 
