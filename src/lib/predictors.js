@@ -17,8 +17,7 @@ export function cogPredictor (pred, cog, t, endTime, state) {
       return null;
     }
     const twa = cogTwdToTwa(cog, wind.twd);
-    const speed = getSpeed(wind.ms, twa) * state.perf * state.firstStep;
-    state.firstStep = 1;
+    const speed = getSpeed(wind.ms, twa) * state.perf;
 
     const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));
     const dlon = moveDelta * speed * Math.sin(cog) / lonScaling;
@@ -50,8 +49,7 @@ export function twaPredictor (pred, twa, t, endTime, state) {
     if (wind === null) {
       return null;
     }
-    const speed = getSpeed(wind.ms, twa) * state.perf * state.firstStep;
-    state.firstStep = 1;
+    const speed = getSpeed(wind.ms, twa) * state.perf;
 
     const course = twaTwdToCog(twa, wind.twd);
     const lonScaling = Math.abs(Math.cos(degToRad(lastLatLng.lat)));

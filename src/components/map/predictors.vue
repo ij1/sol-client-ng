@@ -483,7 +483,6 @@ export default {
 
       let state = {
         perf: this.boatPerf,
-        firstStep: 1,
         timeDelta: this.timeDelta,
       };
 
