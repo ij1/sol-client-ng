@@ -150,6 +150,7 @@ export default {
       return this.plottedDcDelay;
     },
     markers () {
+      this.predictorStamp;
       let res = {};
 
       for (let pred of this.predictorList) {
