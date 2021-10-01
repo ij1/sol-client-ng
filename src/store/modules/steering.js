@@ -46,6 +46,7 @@ export default {
 
     dcs: {
       list: [],
+      selected: null,
       fetching: false,
       fetchTime: 0,
       dcFetchInterval: minToMsec(20),
@@ -128,6 +129,9 @@ export default {
     updateDCs (state, dcData) {
       state.dcs.list = orderBy(dcData.dcList, 'time', 'asc')
       state.dcs.fetchTime = dcData.fetchTime;
+    },
+    selectDC (state, dcId) {
+      state.dcs.selected = dcId;
     },
 
     setFetching (state, newState) {

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { radToDeg, msecToUTCString } from '../../../lib/utils.js';
 import { roundToFixed } from '../../../lib/quirks.js';
 import { dcTwaTextPrefix } from '../../../lib/nav.js';
@@ -64,7 +64,6 @@ export default {
     return {
       loading: true,
       commands: null,
-      selected: null,
       dcToEdit: null,
     }
   },
@@ -87,6 +86,9 @@ export default {
       }
       return null;
     },
+    ...mapState({
+      selected: state => state.boat.steering.dcs.selected,
+    }),
     ...mapGetters({
       allowControl: 'boat/allowControl',
     }),
@@ -126,14 +128,15 @@ export default {
       this.dcToEdit = Object.assign({}, this.selectedDC);
     },
     selectDC (id) {
-      this.selected = (this.selected === id) ? null : id;
+      this.$store.commit('boat/steering/selectDC',
+                         (this.selected === id) ? null : id);
     }
   },
   watch: {
     selectedDC (newValue) {
       /* The selected DC not found anymore, clear the stale selection */
       if ((newValue === null) && (this.selected !== null)) {
-        this.selected = null;
+        this.$store.commit('boat/steering/selectDC', null);
       }
     },
   }
