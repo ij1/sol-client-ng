@@ -8,6 +8,7 @@
        color = "#3f3fff"
        fill-color = "#cfcfffff"
        :fill = "true"
+       :bubbling-mouse-events = "false"
        @click = "selectDC(command.id)"
      />
   </l-layer-group>
