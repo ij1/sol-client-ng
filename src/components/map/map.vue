@@ -37,6 +37,7 @@
       <visual-steering v-if = "map !== null && visualSteeringEnabled" :map = "map"/>
       <ruler-paths v-if = "map !== null"/>
       <ruler-tool v-if = "map !== null && rulerEnabled" :map = "map"/>
+      <dc-markers v-if = "map !== null"/>
 
       <map-highlight v-if = "map !== null" :map = "map"/>
 
@@ -88,6 +89,7 @@ import MapIsochrones from './tools/isochrones.vue';
 import VisualSteering from './tools/visualsteering';
 import RulerPaths from './tools/rulerpaths';
 import RulerTool from './tools/rulertool';
+import DcMarkers from './dcmarkers.vue';
 
 import MapHighlight from './highlight';
 
@@ -130,6 +132,7 @@ export default {
     'visual-steering': VisualSteering,
     'ruler-paths': RulerPaths,
     'ruler-tool': RulerTool,
+    'dc-markers': DcMarkers,
 
     'map-highlight': MapHighlight,
 

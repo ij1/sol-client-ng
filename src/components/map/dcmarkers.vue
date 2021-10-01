@@ -1,0 +1,72 @@
+<template>
+  <l-layer-group v-if="inDefaultUiMode">
+     <l-circle-marker
+       v-for = "command in commands"
+       :key = "command.id"
+       :lat-lng = "command.latLng"
+       :radius = "8"
+       color = "#3f3fff"
+       fill-color = "#cfcfffff"
+       :fill = "true"
+       @click = "selectDC(command.id)"
+     />
+  </l-layer-group>
+</template>
+
+<script>
+import { mapState, mapGetters } from 'vuex';
+import { LLayerGroup, LCircleMarker } from 'vue2-leaflet';
+import { predictorData } from '../../store/modules/steering.js';
+
+export default {
+  name: 'DcMarkers',
+  components: {
+    'l-layer-group': LLayerGroup,
+    'l-circle-marker': LCircleMarker,
+  },
+  computed: {
+    commands () {
+      this.predictorStamp;
+      const dcList = this.$store.state.boat.steering.dcs.list;
+      const pred = predictorData['dcPred'];
+
+      let res = [];
+      for (let dcIdx = 0; dcIdx < dcList.length; dcIdx++) {
+        const dc = dcList[dcIdx];
+        const idx = pred.dcAt[dc.id];
+
+        if (typeof idx !== 'undefined') {
+          res.push({
+            id: dc.id,
+            latLng: pred.latLngs[idx],
+            commandData: dc,
+          });
+        }
+      }
+      return res;
+    },
+    ...mapState({
+      predictorStamp: state => state.boat.steering.predictorStamp,
+    }),
+    ...mapGetters({
+      inDefaultUiMode: 'ui/inDefaultUiMode',
+    }),
+  },
+  methods: {
+    selectDC(dcId) {
+      if (!this.inDefaultUiMode) {
+        return;
+      }
+      /* Make sure DC still exists */
+      const dcList = this.$store.state.boat.steering.dcs.list;
+      for (let dc of dcList) {
+        if (dc.id === dcId) {
+          this.$store.commit('boat/steering/selectDC', dcId);
+          this.$store.commit('ui/setActiveTab', 1);
+          break;
+        }
+      }
+    },
+  },
+}
+</script>
