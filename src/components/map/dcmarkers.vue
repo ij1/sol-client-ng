@@ -26,6 +26,9 @@ export default {
   },
   computed: {
     commands () {
+      if (!this.cfgPredictorDcs) {
+        return [];
+      }
       this.predictorStamp;
       const dcList = this.$store.state.boat.steering.dcs.list;
       const pred = predictorData['dcPred'];
@@ -46,6 +49,7 @@ export default {
       return res;
     },
     ...mapState({
+      cfgPredictorDcs: state => state.boat.steering.cfg.predictorDcs.value,
       predictorStamp: state => state.boat.steering.predictorStamp,
     }),
     ...mapGetters({
