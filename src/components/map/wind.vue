@@ -175,47 +175,56 @@ export default {
       ctx2.font = "9px Arial";
       ctx.translate(this.gridOrigo.x, this.gridOrigo.y);
       ctx2.translate(this.gridOrigo.x, this.gridOrigo.y);
-      for (let y = this.gridOrigo.y; y <= this.$parent.size.y; y += this.gridInterval) {
+
+      const useArrows = this.useArrows;
+      const useBarbs = this.useBarbs;
+      const isDark = this.isDark;
+      const gridOrigo = this.gridOrigo;
+      const size = this.$parent.size;
+      const gridInterval = this.gridInterval;
+      const map = this.$parent.map;
+
+      for (let y = gridOrigo.y; y <= size.y; y += gridInterval) {
         let xUndo = 0;
-        for (let x = this.gridOrigo.x; x <= this.$parent.size.x; x += this.gridInterval) {
+        for (let x = gridOrigo.x; x <= size.x; x += gridInterval) {
           let windPoint = null;
-          windPoint = this.$parent.map.containerPointToLatLng(L.point(x, y));
+          windPoint = map.containerPointToLatLng(L.point(x, y));
           if (windPoint !== null) {
-            windPoint = this.$parent.map.wrapLatLng(windPoint);
+            windPoint = map.wrapLatLng(windPoint);
             const wind = latLngWind(windPoint);
             /* Filter out out-of-area winds that are contain valid data (0,0) */
             if (wind !== null && (wind.twd !== 0.0 || wind.knots > 0.0)) {
               ctx.rotate(wind.twd);
               ctx2.rotate(wind.twd);
               const color = windToColor(wind.knots);
-              ctx.strokeStyle = !this.isDark ? color : darkSeaColor;
+              ctx.strokeStyle = !isDark ? color : darkSeaColor;
               ctx2.strokeStyle = color;
-              ctx.fillStyle = !this.isDark ? color : darkSeaColor;
+              ctx.fillStyle = !isDark ? color : darkSeaColor;
               ctx2.fillStyle = color;
 
-              if (this.useArrows) {
+              if (useArrows) {
                 this.drawArrow(ctx, wind.knots);
-                if (this.isDark) {
+                if (isDark) {
                   this.drawArrow(ctx2, wind.knots);
                 }
-              } else if (this.useBarbs) {
+              } else if (useBarbs) {
                 this.drawBarb(ctx, wind.knots, windPoint.lat);
-                if (this.isDark) {
+                if (isDark) {
                   this.drawBarb(ctx2, wind.knots, windPoint.lat);
                 }
               }
               ctx.rotate(-wind.twd);
               ctx2.rotate(-wind.twd);
 
-              this.drawWindLabels(!this.isDark ? ctx : ctx2, wind.twd, wind.knots);
+              this.drawWindLabels(!isDark ? ctx : ctx2, wind.twd, wind.knots);
             }
           }
-          ctx.translate(this.gridInterval, 0);
-          ctx2.translate(this.gridInterval, 0);
-          xUndo -= this.gridInterval;
+          ctx.translate(gridInterval, 0);
+          ctx2.translate(gridInterval, 0);
+          xUndo -= gridInterval;
         }
-        ctx.translate(xUndo, this.gridInterval);
-        ctx2.translate(xUndo, this.gridInterval);
+        ctx.translate(xUndo, gridInterval);
+        ctx2.translate(xUndo, gridInterval);
       }
     },
     logError (error) {
