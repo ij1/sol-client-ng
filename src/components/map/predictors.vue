@@ -453,6 +453,7 @@ export default {
                                  oldType, oldValue,
                                  commandType, commandValue);
           dcIdx++;
+          pred.dcAt[dc.id] = pred.times.length - 1;
         }
 
         const func = this.predictorDefs[commandType]['calc'];
@@ -474,6 +475,7 @@ export default {
         latLngs: [],
         times: [],
         perf: [],
+        dcAt: {},
       };
 
       if (!this.wxValid) {
