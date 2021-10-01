@@ -5,8 +5,8 @@
        :key = "command.id"
        :lat-lng = "command.latLng"
        :radius = "8"
-       color = "#3f3fff"
-       fill-color = "#cfcfff"
+       :color = "command.id === selected ? '#ff3f3f' : '#3f3fff'"
+       :fill-color = "command.id === selected ? '#ff3f3f' : '#cfcfff'"
        :fill-opacity = "0.2"
        :fill = "true"
        :bubbling-mouse-events = "false"
@@ -53,6 +53,7 @@ export default {
     ...mapState({
       cfgPredictorDcs: state => state.boat.steering.cfg.predictorDcs.value,
       predictorStamp: state => state.boat.steering.predictorStamp,
+      selected: state => state.boat.steering.dcs.selected,
     }),
     ...mapGetters({
       inDefaultUiMode: 'ui/inDefaultUiMode',
