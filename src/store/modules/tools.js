@@ -109,6 +109,8 @@ export default {
             time: startTime,
             firstLatLng: lastLatLng,
             latLngs: [lastLatLng],
+            times: [startTime],
+            perf: [1.0],
           };
           if (type === 'cog') {
             cogPredictor(pred, degToRad(angle),
