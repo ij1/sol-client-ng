@@ -78,7 +78,6 @@ export default {
 
       let predState = {
         perf: 1,
-        firstStep: 1,
         timeDelta: secToMsec(60),
       };
 
