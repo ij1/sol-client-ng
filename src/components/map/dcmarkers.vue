@@ -4,7 +4,7 @@
        v-for = "command in commands"
        :key = "command.id"
        :lat-lng = "command.latLng"
-       :radius = "8"
+       :radius = "cfgDcMarkerSize"
        :color = "command.id === selected ? '#ff3f3f' : '#3f3fff'"
        :fill-color = "command.id === selected ? '#ff3f3f' : '#cfcfff'"
        :fill-opacity = "0.2"
@@ -28,7 +28,8 @@ export default {
   },
   computed: {
     commands () {
-      if (!this.cfgPredictorDcs) {
+      if (!this.cfgPredictorDcs ||
+          (this.cfgDcMarkerSize <= this.cfgDcMarkerOff)) {
         return [];
       }
       this.predictorStamp;
@@ -52,6 +53,8 @@ export default {
     },
     ...mapState({
       cfgPredictorDcs: state => state.boat.steering.cfg.predictorDcs.value,
+      cfgDcMarkerSize: state => state.boat.steering.cfg.predictorDcMarkerSize.value,
+      cfgDcMarkerOff: state => state.boat.steering.cfg.predictorDcMarkerSize.low,
       predictorStamp: state => state.boat.steering.predictorStamp,
       selected: state => state.boat.steering.dcs.selected,
     }),
