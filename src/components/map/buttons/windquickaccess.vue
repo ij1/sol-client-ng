@@ -38,7 +38,7 @@ import { mapState } from 'vuex';
 import { LControl } from 'vue2-leaflet';
 
 export default {
-  name: 'QuickAccessButtons',
+  name: 'WindQuickAccessButtons',
   components: {
     'l-control': LControl,
   },
