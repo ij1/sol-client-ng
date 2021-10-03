@@ -57,6 +57,7 @@
       <fleet-legend v-if = "map !== null"/>
       <boat-name-tips v-if = "map !== null"/>
 
+      <dcs-quick-access-button v-if = "map !== null"/>
       <wind-quick-access-buttons v-if = "map !== null"/>
 
       <map-cursor v-if = "map !== null" :map = "map"/>
@@ -106,6 +107,8 @@ import HoverInfo from './hoverinfo';
 import MapScale from './scale.vue';
 import FleetLegend from './fleetlegend.vue';
 import BoatnameTips from './boatnametips.vue';
+
+import DCsQuickAccessButton from './buttons/dcsquickaccess.vue';
 import WindQuickAccessButtons from './buttons/windquickaccess.vue';
 
 import MapCursor from './cursor.vue';
@@ -149,6 +152,8 @@ export default {
     'map-scale': MapScale,
     'fleet-legend': FleetLegend,
     'boat-name-tips': BoatnameTips,
+
+    'dcs-quick-access-button': DCsQuickAccessButton,
     'wind-quick-access-buttons': WindQuickAccessButtons,
 
     'map-cursor': MapCursor,

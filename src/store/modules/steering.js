@@ -47,6 +47,7 @@ export default {
     dcs: {
       list: [],
       selected: null,
+      markerVisibility: true,
       fetching: false,
       fetchTime: 0,
       dcFetchInterval: minToMsec(20),
@@ -140,6 +141,9 @@ export default {
     },
     selectDC (state, dcId) {
       state.dcs.selected = dcId;
+    },
+    setDCMarkerVisibility (state, visibility) {
+      state.dcs.markerVisibility = visibility;
     },
 
     setFetching (state, newState) {
