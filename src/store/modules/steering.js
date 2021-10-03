@@ -87,6 +87,11 @@ export default {
         lowText: 'off',
         cfgText: 'DC-marker size'
       },
+      dcMarkerQuickAccessButton: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Quick-access button for DC markers',
+      },
       predictorLen: {
         value: '6 h',
         type: 'values',

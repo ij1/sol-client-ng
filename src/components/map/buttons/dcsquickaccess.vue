@@ -9,7 +9,7 @@
           :class = "dcClasses"
           ref = "quick-access-dcs"
           key = "qa-dcs"
-          v-if = "cfgPredictorDcs"
+          v-if = "visible"
           @click.stop.prevent = "onDcs"
           @touchstart.stop.prevent = "onDcs"
           @touchend.stop.prevent
@@ -32,6 +32,9 @@ export default {
     'l-control': LControl,
   },
   computed: {
+    visible () {
+      return this.cfgPredictorDcs && this.cfgQuickAccessButton;
+    },
     dcClasses () {
       return [
         'tool-button',
@@ -40,6 +43,7 @@ export default {
       ];
     },
     ...mapState({
+      cfgQuickAccessButton: state => state.boat.steering.cfg.dcMarkerQuickAccessButton.value,
       cfgPredictorDcs: state => state.boat.steering.cfg.predictorDcs.value,
       dcMarkerVisibility: state => state.boat.steering.dcs.markerVisibility,
     }),
