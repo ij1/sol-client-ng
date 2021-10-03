@@ -79,7 +79,7 @@ export default {
         type: 'boolean',
         cfgText: 'Show DC-aware predictor (EXPERIMENTAL)',
       },
-      predictorDcMarkerSize: {
+      dcMarkerSize: {
         value: 8,
         low: 4,
         high: 12,

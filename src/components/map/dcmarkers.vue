@@ -53,8 +53,8 @@ export default {
     },
     ...mapState({
       cfgPredictorDcs: state => state.boat.steering.cfg.predictorDcs.value,
-      cfgDcMarkerSize: state => state.boat.steering.cfg.predictorDcMarkerSize.value,
-      cfgDcMarkerOffSize: state => state.boat.steering.cfg.predictorDcMarkerSize.low,
+      cfgDcMarkerSize: state => state.boat.steering.cfg.dcMarkerSize.value,
+      cfgDcMarkerOffSize: state => state.boat.steering.cfg.dcMarkerSize.low,
       dcMarkerVisibility: state => state.boat.steering.dcs.markerVisibility,
       predictorStamp: state => state.boat.steering.predictorStamp,
       selected: state => state.boat.steering.dcs.selected,
