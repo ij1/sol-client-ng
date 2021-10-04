@@ -6,6 +6,7 @@
        :lat-lng = "command.latLng"
        :radius = "cfgDcMarkerSize"
        :color = "command.id === selected ? '#ff3f3f' : '#3f3fff'"
+       :weight = "1.5"
        :fill-color = "command.id === selected ? '#ff3f3f' : '#cfcfff'"
        :fill-opacity = "0.2"
        :fill = "true"
