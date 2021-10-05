@@ -24,6 +24,7 @@ export let predictorData = {
     firstLatLng: null,
     latLngs: [],
     cachedPath: new Path2D(),
+    dcAt: {},
   },
 };
 
