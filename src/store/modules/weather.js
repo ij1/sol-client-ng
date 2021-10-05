@@ -14,7 +14,11 @@ import { lowPrioTask } from '../../lib/lowprio.js';
  *   updated
  *   url
  *   timeSeries: []
- *   ...
+ *   boundary
+ *   origo
+ *   cellSize
+ *   cells
+ *   cachedTimeIdx
  *   windMap: [time][lon][lat][u,v]
  */
 export let weatherData = [];
