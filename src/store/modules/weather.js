@@ -58,13 +58,15 @@ let secondRes = [
 let thirdRes = [0, 0];
 
 function __latLngWind(latLng, weatherLayer, timeIdx) {
+  const origo = weatherLayer.origo;
+  const boundary_ne = weatherLayer.boundary.getNorthEast();
   const wxLat = latLng.lat;
   let wxLng = latLng.lng;
   /* Try to dewrap into wx coordinate area */
-  while (wxLng >= weatherLayer.boundary.getNorthEast().lng) {
+  while (wxLng >= boundary_ne.lng) {
     wxLng -= 360;
   }
-  while (wxLng < weatherLayer.origo[1]) {
+  while (wxLng < origo[1]) {
     wxLng += 360;
   }
   /*
@@ -72,16 +74,16 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
    * so we have to do the checks manually. Lng is linearized above, thus
    * only >= check is needed for it.
    */
-  if ((wxLng >= weatherLayer.boundary.getNorthEast().lng) ||
+  if ((wxLng >= boundary_ne.lng) ||
       (wxLat < weatherLayer.boundary.getSouthWest().lat) ||
-      (wxLat >= weatherLayer.boundary.getNorthEast().lat)) {
+      (wxLat >= boundary_ne.lat)) {
     return null;
   }
 
   const tileSize = weatherLayer.tileSize;
 
-  const lonTileVal = (wxLng - weatherLayer.origo[1]) / tileSize[1];
-  const latTileVal = (wxLat - weatherLayer.origo[0]) / tileSize[0];
+  const lonTileVal = (wxLng - origo[1]) / tileSize[1];
+  const latTileVal = (wxLat - origo[0]) / tileSize[0];
   const lonTileIdx = Math.floor(lonTileVal);
   const latTileIdx = Math.floor(latTileVal);
   const windMap = weatherLayer.windMap[lonTileIdx][latTileIdx];
@@ -89,14 +91,16 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
     return null;
   }
 
+  const cellSize = weatherLayer.cellSize;
+
   const lonIdx = Math.floor((lonTileVal - lonTileIdx * tileSize[1]) * weatherLayer.tileCells[1]);
   const latIdx = Math.floor((latTileVal - latTileIdx * tileSize[0]) * weatherLayer.tileCells[0]);
 
   /* latitude (y) solution */
   const firstFactor = interpolateFactor(
-    latIdx * weatherLayer.cellSize[0] + weatherLayer.origo[0],
+    latIdx * cellSize[0] + origo[0],
     wxLat - latTileIdx * tileSize[0],
-    (latIdx + 1) * weatherLayer.cellSize[0] + weatherLayer.origo[0]
+    (latIdx + 1) * cellSize[0] + origo[0]
   );
   for (let t = 0; t <= 1; t++) {
     for (let x = 0; x <= 1; x++) {
@@ -111,9 +115,9 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
 
   /* longitude (x) solution */
   const secondFactor = interpolateFactor(
-    lonIdx * weatherLayer.cellSize[1] + weatherLayer.origo[1],
+    lonIdx * cellSize[1] + origo[1],
     wxLng - lonTileIdx * tileSize[1],
-    (lonIdx + 1) * weatherLayer.cellSize[1] + weatherLayer.origo[1]
+    (lonIdx + 1) * cellSize[1] + origo[1]
   );
   for (let t = 0; t <= 1; t++) {
       wxLinearInterpolate(
