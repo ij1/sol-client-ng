@@ -91,17 +91,13 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
     return null;
   }
 
-  const cellSize = weatherLayer.cellSize;
-
-  const lonIdx = Math.floor((lonTileVal - lonTileIdx * tileSize[1]) * weatherLayer.tileCells[1]);
-  const latIdx = Math.floor((latTileVal - latTileIdx * tileSize[0]) * weatherLayer.tileCells[0]);
+  const lonVal = (lonTileVal - lonTileIdx) * weatherLayer.tileCells[1];
+  const latVal = (latTileVal - latTileIdx) * weatherLayer.tileCells[0];
+  const lonIdx = Math.floor(lonVal);
+  const latIdx = Math.floor(latVal);
 
   /* latitude (y) solution */
-  const firstFactor = interpolateFactor(
-    latIdx * cellSize[0] + origo[0],
-    wxLat - latTileIdx * tileSize[0],
-    (latIdx + 1) * cellSize[0] + origo[0]
-  );
+  const firstFactor = latVal - latIdx;
   for (let t = 0; t <= 1; t++) {
     for (let x = 0; x <= 1; x++) {
       wxLinearInterpolate(
@@ -114,11 +110,7 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
   }
 
   /* longitude (x) solution */
-  const secondFactor = interpolateFactor(
-    lonIdx * cellSize[1] + origo[1],
-    wxLng - lonTileIdx * tileSize[1],
-    (lonIdx + 1) * cellSize[1] + origo[1]
-  );
+  const secondFactor = lonVal - lonIdx;
   for (let t = 0; t <= 1; t++) {
       wxLinearInterpolate(
         secondFactor,
