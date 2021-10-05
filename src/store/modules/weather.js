@@ -75,7 +75,7 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
    * only >= check is needed for it.
    */
   if ((wxLng >= boundary_ne.lng) ||
-      (wxLat < weatherLayer.boundary.getSouthWest().lat) ||
+      (wxLat < origo[0]) ||
       (wxLat >= boundary_ne.lat)) {
     return null;
   }
