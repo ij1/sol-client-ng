@@ -84,8 +84,8 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
 
   const lonTileVal = (wxLng - origo[1]) / tileSize[1];
   const latTileVal = (wxLat - origo[0]) / tileSize[0];
-  const lonTileIdx = Math.floor(lonTileVal);
-  const latTileIdx = Math.floor(latTileVal);
+  const lonTileIdx = lonTileVal | 0;	/* Round down using bitops */
+  const latTileIdx = latTileVal | 0;
   const windMap = weatherLayer.windMap[lonTileIdx][latTileIdx];
   if (windMap === null) {
     return null;
@@ -93,8 +93,8 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
 
   const lonVal = (lonTileVal - lonTileIdx) * weatherLayer.tileCells[1];
   const latVal = (latTileVal - latTileIdx) * weatherLayer.tileCells[0];
-  const lonIdx = Math.floor(lonVal);
-  const latIdx = Math.floor(latVal);
+  const lonIdx = lonVal | 0;
+  const latIdx = latVal | 0;
 
   /* latitude (y) solution */
   const firstFactor = latVal - latIdx;
