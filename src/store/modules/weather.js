@@ -16,10 +16,13 @@ import { lowPrioTask } from '../../lib/lowprio.js';
  *   timeSeries: []
  *   boundary
  *   origo
+ *   tileSize
+ *   tiles
+ *   tileCells
  *   cellSize
  *   cells
  *   cachedTimeIdx
- *   windMap: [time][lon][lat][u,v]
+ *   windMap: [lontile][lattile][time][lon][lat][u,v]
  */
 export let weatherData = [];
 
@@ -75,15 +78,24 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
     return null;
   }
 
-  const windMap = weatherLayer.windMap;
+  const tileSize = weatherLayer.tileSize;
 
-  const lonIdx = Math.floor((wxLng - weatherLayer.origo[1]) / weatherLayer.cellSize[1]);
-  const latIdx = Math.floor((wxLat - weatherLayer.origo[0]) / weatherLayer.cellSize[0]);
+  const lonTileVal = (wxLng - weatherLayer.origo[1]) / tileSize[1];
+  const latTileVal = (wxLat - weatherLayer.origo[0]) / tileSize[0];
+  const lonTileIdx = Math.floor(lonTileVal);
+  const latTileIdx = Math.floor(latTileVal);
+  const windMap = weatherLayer.windMap[lonTileIdx][latTileIdx];
+  if (windMap === null) {
+    return null;
+  }
+
+  const lonIdx = Math.floor((lonTileVal - lonTileIdx * tileSize[1]) * weatherLayer.tileCells[1]);
+  const latIdx = Math.floor((latTileVal - latTileIdx * tileSize[0]) * weatherLayer.tileCells[0]);
 
   /* latitude (y) solution */
   const firstFactor = interpolateFactor(
     latIdx * weatherLayer.cellSize[0] + weatherLayer.origo[0],
-    wxLat,
+    wxLat - latTileIdx * tileSize[0],
     (latIdx + 1) * weatherLayer.cellSize[0] + weatherLayer.origo[0]
   );
   for (let t = 0; t <= 1; t++) {
@@ -100,7 +112,7 @@ function __latLngWind(latLng, weatherLayer, timeIdx) {
   /* longitude (x) solution */
   const secondFactor = interpolateFactor(
     lonIdx * weatherLayer.cellSize[1] + weatherLayer.origo[1],
-    wxLng,
+    wxLng - lonTileIdx * tileSize[1],
     (lonIdx + 1) * weatherLayer.cellSize[1] + weatherLayer.origo[1]
   );
   for (let t = 0; t <= 1; t++) {
@@ -159,9 +171,10 @@ export function latLngWind(latLng, timestamp = null) {
 
 export function idxToCell(latIdx, lonIdx) {
   const weatherLayer = weatherData[0];
-  const windMap = weatherLayer.windMap;
+  const windMap = weatherLayer.windMap[0][0];
 
-  if ((lonIdx < 0) || (lonIdx >= weatherLayer.cells[1]) ||
+  if ((windMap === null) ||
+      (lonIdx < 0) || (lonIdx >= weatherLayer.cells[1]) ||
       (latIdx < 0) || (latIdx >= weatherLayer.cells[0])) {
     return null;
   }
@@ -371,11 +384,24 @@ export default {
         boundary: layerInfo.boundary,
         timeSeries: null,
         origo: layerInfo.origo,
+        tileSize: layerInfo.tileSize,
+        tiles: layerInfo.tiles,
         cellSize: layerInfo.cellSize,
         cells: layerInfo.cells,
         cachedTimeIdx: 0,
         windMap: [],
       }
+
+      for (let x = 0; x < layerInfo.tiles[1]; x++) {
+        weatherLayer.windMap.push([]);
+        for (let y = 0; y < layerInfo.tiles[0]; y++) {
+          weatherLayer.windMap[x].push(null);
+        }
+        // FIXME: should these arrays be frozen?
+      }
+      weatherLayer.tileCells = [layerInfo.tileSize[0] / layerInfo.cellSize[0],
+                                layerInfo.tileSize[1] / layerInfo.cellSize[1]];
+
       weatherData[weatherData.length] = weatherLayer;
     },
     updateTile(state, weatherTile) {
@@ -383,7 +409,7 @@ export default {
       if (weatherLayer.timeSeries === null) {
         weatherLayer.timeSeries = weatherTile.timeSeries;
       }
-      weatherLayer.windMap = weatherTile.windMap;
+      weatherLayer.windMap[weatherTile.x][weatherTile.y] = weatherTile.windMap;
     },
     update(state, weatherLayer) {
       state.dataStamp++;
@@ -579,6 +605,8 @@ export default {
                      parseFloat(weatherData.$.lon_min)];
         let cellSize = [parseFloat(weatherData.$.lat_increment),
                          parseFloat(weatherData.$.lon_increment)];
+        let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
+        let tiles = [1, 1];
 
         const updated = UTCToMsec(weatherData.$.last_updated);
         if (updated === null) {
@@ -664,6 +692,7 @@ export default {
          */
         timeSeries = Object.freeze(timeSeries);
         origo = Object.freeze(origo);
+        tileSize = Object.freeze(tileSize);
         cellSize = Object.freeze(cellSize);
         cells = Object.freeze(cells);
         boundary = Object.freeze(boundary);
@@ -674,6 +703,8 @@ export default {
           url: dataUrl,
           boundary: boundary,
           origo: origo,
+          tileSize: tileSize,
+          tiles: tiles,
           cellSize: cellSize,
           cells: cells,
         };
@@ -681,6 +712,8 @@ export default {
 
         const weatherTile = {
           weatherLayer: findWeatherLayer(dataUrl),
+          x: 0,
+          y: 0,
           timeSeries: timeSeries,
           windMap: windMap,
         };
