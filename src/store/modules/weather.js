@@ -393,7 +393,6 @@ export default {
         for (let y = 0; y < layerInfo.tiles[0]; y++) {
           weatherLayer.windMap[x].push(null);
         }
-        // FIXME: should these arrays be frozen?
       }
       weatherLayer.tileCells = [layerInfo.tileSize[0] / layerInfo.cellSize[0],
                                 layerInfo.tileSize[1] / layerInfo.cellSize[1]];
