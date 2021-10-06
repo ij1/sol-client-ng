@@ -409,8 +409,8 @@ export default {
     update(state, weatherLayer) {
       state.dataStamp++;
 
-      weatherData = weatherData.filter((layer) => layer.url !== weatherLayer.url);
-      weatherData[0] = weatherLayer;
+      weatherData = weatherData.filter((layer) => layer.name !== weatherLayer.name);
+      weatherData.unshift(weatherLayer);
 
       state.firstTimestamp = weatherLayer.timeSeries[0];
       state.lastTimestamp = weatherLayer.timeSeries[weatherLayer.timeSeries.length - 1];
@@ -693,7 +693,7 @@ export default {
         boundary = Object.freeze(boundary);
 
         let weatherLayerInfo = {
-          name: '',
+          name: 'dummy',
           updated: updated,
           url: dataUrl,
           boundary: boundary,
