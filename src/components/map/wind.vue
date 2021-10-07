@@ -417,7 +417,6 @@ export default {
         for (let latCell = minLatCell; latCell <= maxLatCell; latCell++) {
           let wind = idxToCell(latCell, lngCell);
           if (wind === null) {
-            this.logError('skipped contour cell ' + latCell + ' ' + lngCell);
             return;
           }
           let latStart = latCell * wxCellSize[0] + wxOrigo[0];
