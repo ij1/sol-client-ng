@@ -167,11 +167,19 @@ export function latLngWind(latLng, timestamp = null) {
 
 export function idxToCell(latIdx, lonIdx) {
   const weatherLayer = weatherData[0];
-  const windMap = weatherLayer.windMap[0][0];
-
+  const tileSize = weatherLayer.tileSize;
+  // FIXME: move these divides into caller domain
+  const lonTileVal = lonIdx / tileSize[1];
+  const latTileVal = latIdx / tileSize[0];
+  const lonTileIdx = lonTileVal | 0;	/* Round down using bitops */
+  const latTileIdx = latTileVal | 0;
+  const windMap = weatherLayer.windMap[lonTileIdx][latTileIdx];
   if (windMap === null) {
     return null;
   }
+
+  lonIdx -= lonTileIdx * tileSize[1];
+  latIdx -= latTileIdx * tileSize[0]
 
   const timeSeries = weatherLayer.timeSeries;
   let timeIdx = weatherLayer.cachedTimeIdx;
