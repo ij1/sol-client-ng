@@ -593,7 +593,7 @@ export default {
       let boundary = L.latLngBounds(L.latLng(origo[0], origo[1]),
                                     L.latLng(lat_max, lon_max));
       let cellSize = [parseFloat(layerInfo.lat_increment),
-                       parseFloat(layerInfo.lon_increment)];
+                      parseFloat(layerInfo.lon_increment)];
       let cells = [Math.round((lat_max - origo[0]) / cellSize[0]),
                    Math.round((lon_max - origo[1]) / cellSize[1])];
       let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
