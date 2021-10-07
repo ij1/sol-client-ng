@@ -585,15 +585,17 @@ export default {
     async layerParser ({dispatch, commit}, layer) {
       const layerInfo = layer.info
 
-      let boundary = L.latLngBounds(
-        L.latLng(layerInfo.lat_min, layerInfo.lon_min),
-        L.latLng(layerInfo.lat_max, layerInfo.lon_max));
-      let cells = [parseInt(layerInfo.lat_n_points) - 1,
-                   parseInt(layerInfo.lon_n_points) - 1];
       let origo = [parseFloat(layerInfo.lat_min),
                    parseFloat(layerInfo.lon_min)];
+      const lat_max = parseFloat(layerInfo.lat_max);
+      const lon_max = parseFloat(layerInfo.lon_max);
+
+      let boundary = L.latLngBounds(L.latLng(origo[0], origo[1]),
+                                    L.latLng(lat_max, lon_max));
       let cellSize = [parseFloat(layerInfo.lat_increment),
                        parseFloat(layerInfo.lon_increment)];
+      let cells = [Math.round((lat_max - origo[0]) / cellSize[0]),
+                   Math.round((lon_max - origo[1]) / cellSize[1])];
       let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
       let tiles = [1, 1];
 
