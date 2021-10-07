@@ -595,7 +595,7 @@ export default {
         };
 
         let weatherData = await dispatch('solapi/get', getDef, {root: true});
-        const firstWeather = (state.updated === null);
+        const firstWeather = (state.dataStamp === 0);
 
         let boundary = L.latLngBounds(
           L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
