@@ -619,6 +619,28 @@ export default {
           return;
         }
 
+        /* Improve performance by freezing all interpolation related
+         * array objects. This avoid adding unnecessary reactivity detectors.
+         */
+        origo = Object.freeze(origo);
+        tileSize = Object.freeze(tileSize);
+        cellSize = Object.freeze(cellSize);
+        cells = Object.freeze(cells);
+        boundary = Object.freeze(boundary);
+
+        let weatherLayerInfo = {
+          name: 'dummy',
+          updated: updated,
+          url: dataUrl,
+          boundary: boundary,
+          origo: origo,
+          tileSize: tileSize,
+          tiles: tiles,
+          cellSize: cellSize,
+          cells: cells,
+        };
+        commit('setupLayer', weatherLayerInfo);
+
         for (let frame of weatherData.frames.frame) {
           frame.utc = UTCToMsec(frame.$.target_time);
           if (frame.utc === null) {
@@ -632,6 +654,7 @@ export default {
         }
         weatherData.frames.frame.sort((a, b) => { return a.utc - b.utc; });
         let timeSeries = weatherData.frames.frame.map(frame => frame.utc);
+        timeSeries = Object.freeze(timeSeries);
 
         let windMap = [];
         /* FIXME: It takes quite long time to parse&mangle the arrays here,
@@ -684,29 +707,6 @@ export default {
           await lowPrioTask.idle();
         }
         windMap = Object.freeze(windMap);
-
-        /* Improve performance by freezing all interpolation related
-         * array objects. This avoid adding unnecessary reactivity detectors.
-         */
-        timeSeries = Object.freeze(timeSeries);
-        origo = Object.freeze(origo);
-        tileSize = Object.freeze(tileSize);
-        cellSize = Object.freeze(cellSize);
-        cells = Object.freeze(cells);
-        boundary = Object.freeze(boundary);
-
-        let weatherLayerInfo = {
-          name: 'dummy',
-          updated: updated,
-          url: dataUrl,
-          boundary: boundary,
-          origo: origo,
-          tileSize: tileSize,
-          tiles: tiles,
-          cellSize: cellSize,
-          cells: cells,
-        };
-        commit('setupLayer', weatherLayerInfo);
 
         const weatherTile = {
           weatherLayer: findWeatherLayer(dataUrl),
