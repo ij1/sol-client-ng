@@ -630,10 +630,9 @@ export default {
             return;
           }
         }
-
         weatherData.frames.frame.sort((a, b) => { return a.utc - b.utc; });
+        let timeSeries = weatherData.frames.frame.map(frame => frame.utc);
 
-        let timeSeries = [];
         let windMap = [];
         /* FIXME: It takes quite long time to parse&mangle the arrays here,
          * perhaps use vue-worker for this but then also xml2js parsing will
@@ -642,8 +641,6 @@ export default {
          * for this conversion to take place.
          */
         for (let frame of weatherData.frames.frame) {
-          timeSeries.push(frame.utc);
-
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
           if ((u.length !== cells[1] + 2) || (u.length !== v.length)) {
