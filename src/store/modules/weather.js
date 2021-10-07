@@ -169,9 +169,7 @@ export function idxToCell(latIdx, lonIdx) {
   const weatherLayer = weatherData[0];
   const windMap = weatherLayer.windMap[0][0];
 
-  if ((windMap === null) ||
-      (lonIdx < 0) || (lonIdx >= weatherLayer.cells[1]) ||
-      (latIdx < 0) || (latIdx >= weatherLayer.cells[0])) {
+  if (windMap === null) {
     return null;
   }
 
