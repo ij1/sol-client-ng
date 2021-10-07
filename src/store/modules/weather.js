@@ -548,7 +548,7 @@ export default {
   actions: {
     // ADDME: when to fetch the next wx, add the support in a concurrency
     // safe way to avoid multiple overlapping weather fetches.
-    fetchInfo ({rootState, rootGetters, dispatch, commit}) {
+    async fetchInfo ({rootState, rootGetters, dispatch, commit}) {
       const getDef = {
         apiCall: 'weather',
         url: rootState.race.info.weatherurl,
@@ -563,23 +563,31 @@ export default {
       }
       commit('solapi/lock', 'weather', {root: true});
 
-      dispatch('solapi/get', getDef, {root: true})
-      .then(weatherInfo => {
+      try {
+        let weatherInfo = await dispatch('solapi/get', getDef, {root: true});
         let dataUrl = weatherInfo.url;
         if (findWeatherLayer(dataUrl) !== null) {
           commit('solapi/unlock', 'weather', {root: true});
           commit('updateFetchTime', rootGetters['time/now']());
           return;
         }
+
+        if (Object.prototype.hasOwnProperty.call(weatherInfo, 'layers')) {
+          const layerOk = await dispatch('layerParser',
+                                         {dataUrl: dataUrl, info: weatherInfo.layers.layer[0]});
+          if (!layerOk) {
+            commit('solapi/unlock', 'weather', {root: true});
+            return;
+          }
+        }
         dispatch('fetchData', dataUrl);
-      })
-      .catch(err => {
+      } catch(err) {
         commit('solapi/unlock', 'weather', {root: true});
         commit('solapi/logError', {
           request: getDef,
           error: err,
         }, {root: true});
-      });
+      }
     },
 
     async layerParser ({dispatch, commit}, layer) {
@@ -649,13 +657,17 @@ export default {
 
         let weatherData = await dispatch('solapi/get', getDef, {root: true});
         const firstWeather = (state.dataStamp === 0);
-        const layerOk = await dispatch('layerParser',
-                                       {dataUrl: dataUrl, info: weatherData.$});
-        if (!layerOk) {
-          return;
+
+        let weatherLayer = findWeatherLayer(dataUrl);
+        if (weatherLayer === null) {
+          const layerOk = await dispatch('layerParser',
+                                         {dataUrl: dataUrl, info: weatherData.$});
+          if (!layerOk) {
+            return;
+          }
         }
 
-        const weatherLayer = findWeatherLayer(dataUrl);
+        weatherLayer = findWeatherLayer(dataUrl);
         if (weatherLayer === null) {
           dispatch(
             'diagnostics/add',
