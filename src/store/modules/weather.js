@@ -405,11 +405,12 @@ export default {
 
       weatherData[weatherData.length] = weatherLayer;
     },
+    setTimeSeries(state, layerInfo) {
+      const weatherLayer = layerInfo.layer;
+      weatherLayer.timeSeries = layerInfo.timeSeries;
+    },
     updateTile(state, weatherTile) {
-      const weatherLayer = weatherTile.weatherLayer;
-      if (weatherLayer.timeSeries === null) {
-        weatherLayer.timeSeries = weatherTile.timeSeries;
-      }
+      let weatherLayer = weatherTile.layer;
       weatherLayer.windMap[weatherTile.x][weatherTile.y] = weatherTile.windMap;
     },
     update(state, weatherLayer) {
@@ -581,6 +582,56 @@ export default {
       });
     },
 
+    async layerParser ({dispatch, commit}, layer) {
+      const layerInfo = layer.info
+
+      let boundary = L.latLngBounds(
+        L.latLng(layerInfo.lat_min, layerInfo.lon_min),
+        L.latLng(layerInfo.lat_max, layerInfo.lon_max));
+      let cells = [parseInt(layerInfo.lat_n_points) - 1,
+                   parseInt(layerInfo.lon_n_points) - 1];
+      let origo = [parseFloat(layerInfo.lat_min),
+                   parseFloat(layerInfo.lon_min)];
+      let cellSize = [parseFloat(layerInfo.lat_increment),
+                       parseFloat(layerInfo.lon_increment)];
+      let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
+      let tiles = [1, 1];
+
+      const updated = UTCToMsec(layerInfo.last_updated);
+      if (updated === null) {
+        dispatch(
+          'diagnostics/add',
+          'DATA ERROR: Invalid date in weather data: ' + layerInfo.last_updated,
+          {root: true}
+        );
+        return false;
+      }
+
+      /* Improve performance by freezing all interpolation related
+       * array objects. This avoid adding unnecessary reactivity detectors.
+       */
+      origo = Object.freeze(origo);
+      tileSize = Object.freeze(tileSize);
+      cellSize = Object.freeze(cellSize);
+      cells = Object.freeze(cells);
+      boundary = Object.freeze(boundary);
+
+      let weatherLayerInfo = {
+        name: 'dummy',
+        updated: updated,
+        url: layer.dataUrl,
+        boundary: boundary,
+        origo: origo,
+        tileSize: tileSize,
+        tiles: tiles,
+        cellSize: cellSize,
+        cells: cells,
+      };
+      commit('setupLayer', weatherLayerInfo);
+
+      return true;
+    },
+
     async fetchData ({state, rootGetters, commit, dispatch}, dataUrl) {
       let getDef = {
         apiCall: 'weatherdata',
@@ -596,50 +647,21 @@ export default {
 
         let weatherData = await dispatch('solapi/get', getDef, {root: true});
         const firstWeather = (state.dataStamp === 0);
+        const layerOk = await dispatch('layerParser',
+                                       {dataUrl: dataUrl, info: weatherData.$});
+        if (!layerOk) {
+          return;
+        }
 
-        let boundary = L.latLngBounds(
-          L.latLng(weatherData.$.lat_min, weatherData.$.lon_min),
-          L.latLng(weatherData.$.lat_max, weatherData.$.lon_max));
-        let cells = [parseInt(weatherData.$.lat_n_points) - 1,
-                     parseInt(weatherData.$.lon_n_points) - 1];
-        let origo = [parseFloat(weatherData.$.lat_min),
-                     parseFloat(weatherData.$.lon_min)];
-        let cellSize = [parseFloat(weatherData.$.lat_increment),
-                         parseFloat(weatherData.$.lon_increment)];
-        let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
-        let tiles = [1, 1];
-
-        const updated = UTCToMsec(weatherData.$.last_updated);
-        if (updated === null) {
+        const weatherLayer = findWeatherLayer(dataUrl);
+        if (weatherLayer === null) {
           dispatch(
             'diagnostics/add',
-            'DATA ERROR: Invalid date in weather data: ' + weatherData.$.last_updated,
+            'WX SETUP ERROR: no weather layer for ' + dataUrl,
             {root: true}
           );
           return;
         }
-
-        /* Improve performance by freezing all interpolation related
-         * array objects. This avoid adding unnecessary reactivity detectors.
-         */
-        origo = Object.freeze(origo);
-        tileSize = Object.freeze(tileSize);
-        cellSize = Object.freeze(cellSize);
-        cells = Object.freeze(cells);
-        boundary = Object.freeze(boundary);
-
-        let weatherLayerInfo = {
-          name: 'dummy',
-          updated: updated,
-          url: dataUrl,
-          boundary: boundary,
-          origo: origo,
-          tileSize: tileSize,
-          tiles: tiles,
-          cellSize: cellSize,
-          cells: cells,
-        };
-        commit('setupLayer', weatherLayerInfo);
 
         for (let frame of weatherData.frames.frame) {
           frame.utc = UTCToMsec(frame.$.target_time);
@@ -655,6 +677,30 @@ export default {
         weatherData.frames.frame.sort((a, b) => { return a.utc - b.utc; });
         let timeSeries = weatherData.frames.frame.map(frame => frame.utc);
         timeSeries = Object.freeze(timeSeries);
+        if (weatherLayer.timeSeries === null) {
+          commit('setTimeSeries', {layer: weatherLayer, timeSeries: timeSeries});
+        }
+
+        if (timeSeries.length !== weatherLayer.timeSeries.length) {
+          dispatch(
+            'diagnostics/add',
+            'DATA ERROR: Incompatible frame timestamp count: ' +
+            timeSeries.length + ', expected ' + weatherLayer.timeSeries.length,
+            {root: true}
+          );
+          return;
+        }
+        for (let i = 0; i < timeSeries.length; i++) {
+          if (timeSeries[i] !== weatherLayer.timeSeries[i]) {
+            dispatch(
+              'diagnostics/add',
+              'DATA ERROR: Incompatible frame date in weather tile: ' +
+              timeSeries[i] + ', expected ' + weatherLayer.timeSeries[i],
+              {root: true}
+            );
+            return;
+          }
+        }
 
         let windMap = [];
         /* FIXME: It takes quite long time to parse&mangle the arrays here,
@@ -666,11 +712,12 @@ export default {
         for (let frame of weatherData.frames.frame) {
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
-          if ((u.length !== cells[1] + 2) || (u.length !== v.length)) {
+          if ((u.length !== weatherLayer.cells[1] + 2) ||
+              (u.length !== v.length)) {
             dispatch(
               'diagnostics/add',
               'DATA ERROR: Inconsistent weather lengths: ' +
-              (cells[1] + 2) + ' ' + u.length + ' ' + v.length,
+              (weatherLayer.cells[1] + 2) + ' ' + u.length + ' ' + v.length,
               {root: true}
             );
             return;
@@ -685,11 +732,12 @@ export default {
             let uu = u[i].trim().split(/\s+/);
             let vv = v[i].trim().split(/\s+/);
 
-            if ((uu.length !== cells[0] + 2) && (uu.length !== vv.length)) {
+            if ((uu.length !== weatherLayer.cells[0] + 2) &&
+                (uu.length !== vv.length)) {
               dispatch(
                 'diagnostics/add',
                 'DATA ERROR: Inconsistent weather lengths: ' +
-                (cells[0] + 2) + ' ' + uu.length + ' ' + vv.length,
+                (weatherLayer.cells[0] + 2) + ' ' + uu.length + ' ' + vv.length,
                 {root: true}
               );
               return;
@@ -709,14 +757,13 @@ export default {
         windMap = Object.freeze(windMap);
 
         const weatherTile = {
-          weatherLayer: findWeatherLayer(dataUrl),
+          layer: weatherLayer,
           x: 0,
           y: 0,
-          timeSeries: timeSeries,
           windMap: windMap,
         };
         commit('updateTile', weatherTile);
-        commit('update', weatherTile.weatherLayer);
+        commit('update', weatherTile.layer);
 
         const now = rootGetters['time/now']();
         commit('updateFetchTime', now);
