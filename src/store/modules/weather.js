@@ -604,8 +604,17 @@ export default {
                       parseFloat(layerInfo.lon_increment)];
       let cells = [Math.round((lat_max - origo[0]) / cellSize[0]),
                    Math.round((lon_max - origo[1]) / cellSize[1])];
+
       let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
       let tiles = [1, 1];
+      if (Object.prototype.hasOwnProperty.call(layer, 'lat_tile_increment') &&
+          Object.prototype.hasOwnProperty.call(layer, 'lon_tile_increment')) {
+        tileSize = [parseFloat(layerInfo.lat_tile_increment),
+                    parseFloat(layerInfo.lon_tile_increment)];
+        /* Pure ceil not safe here due to float precision (=x+epsilon) => x+1 */
+        tiles = [Math.ceil((lat_max - origo[0]) / tileSize[0] - 0.000001),
+                 Math.ceil((lon_max - origo[1]) / tileSize[1] - 0.000001)];
+      }
 
       const updated = UTCToMsec(layerInfo.last_updated);
       if (updated === null) {
