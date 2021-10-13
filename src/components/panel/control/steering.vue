@@ -481,6 +481,13 @@ export default {
       },
       immediate: true,
     },
+    delayRaw (newVal, oldVal) {
+      if (oldVal === "" && newVal.length > 0) {
+        if (!this.delayOn) {
+          this.delayOn = true;
+        }
+      }
+    },
   },
 
   methods: {
