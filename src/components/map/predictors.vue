@@ -224,6 +224,9 @@ export default {
     boatDataUpdated () {
       this.boatTime;
       this.visualPosition;
+      this.currentSteering;
+      this.boatCog;
+      this.boatTwa;
       this.dcFetchTime;
       this.predictorList;
 
