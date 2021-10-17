@@ -16,6 +16,7 @@ import { lowPrioTask } from '../../lib/lowprio.js';
  *   timeSeries: []
  *   boundary
  *   origo
+ *   tiled
  *   tileSize
  *   tiles
  *   tileCells
@@ -386,6 +387,7 @@ export default {
         boundary: layerInfo.boundary,
         timeSeries: null,
         origo: layerInfo.origo,
+        tiled: layerInfo.tiled,
         tileSize: layerInfo.tileSize,
         tiles: layerInfo.tiles,
         cellSize: layerInfo.cellSize,
@@ -548,7 +550,7 @@ export default {
   actions: {
     // ADDME: when to fetch the next wx, add the support in a concurrency
     // safe way to avoid multiple overlapping weather fetches.
-    async fetchInfo ({rootState, rootGetters, dispatch, commit}) {
+    async fetchInfo ({state, rootState, rootGetters, dispatch, commit}) {
       const getDef = {
         apiCall: 'weather',
         url: rootState.race.info.weatherurl,
@@ -580,7 +582,22 @@ export default {
             return;
           }
         }
-        dispatch('fetchData', dataUrl);
+        const firstWeather = (state.dataStamp === 0);
+        await dispatch('fetchTile', {dataUrl: dataUrl, tiled: false});
+
+        const weatherLayer = findWeatherLayer(dataUrl);
+        if (weatherLayer !== null) {
+          commit('update', weatherLayer);
+          const now = rootGetters['time/now']();
+          commit('updateFetchTime', now);
+          if (!firstWeather) {
+            const d = new Date(weatherLayer.updated);
+            dispatch('notifications/add', {
+              text: 'Weather updated at ' + msecToUTCHourMinString(d),
+            }, {root: true});
+          }
+        }
+
       } catch(err) {
         commit('solapi/unlock', 'weather', {root: true});
         commit('solapi/logError', {
@@ -604,6 +621,7 @@ export default {
                       parseFloat(layerInfo.lon_increment)];
       let cells = [Math.round((lat_max - origo[0]) / cellSize[0]),
                    Math.round((lon_max - origo[1]) / cellSize[1])];
+      let tiled = false;
 
       let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
       let tiles = [1, 1];
@@ -614,6 +632,7 @@ export default {
         /* Pure ceil not safe here due to float precision (=x+epsilon) => x+1 */
         tiles = [Math.ceil((lat_max - origo[0]) / tileSize[0] - 0.000001),
                  Math.ceil((lon_max - origo[1]) / tileSize[1] - 0.000001)];
+        tiled = true;
       }
 
       const updated = UTCToMsec(layerInfo.last_updated);
@@ -641,6 +660,7 @@ export default {
         url: layer.dataUrl,
         boundary: boundary,
         origo: origo,
+        tiled: tiled,
         tileSize: tileSize,
         tiles: tiles,
         cellSize: cellSize,
@@ -651,36 +671,36 @@ export default {
       return true;
     },
 
-    async fetchData ({state, rootGetters, commit, dispatch}, dataUrl) {
+    async fetchTile ({commit, dispatch}, tileDef) {
       let getDef = {
         apiCall: 'weatherdata',
       };
       try {
         getDef = {
           apiCall: 'weatherdata',
-          url: dataUrl,
+          url: tileDef.dataUrl,
           params: {},
           useArrays: false,
           dataField: 'weathersystem',
         };
 
         let weatherData = await dispatch('solapi/get', getDef, {root: true});
-        const firstWeather = (state.dataStamp === 0);
 
-        let weatherLayer = findWeatherLayer(dataUrl);
-        if (weatherLayer === null) {
+        let weatherLayer = findWeatherLayer(tileDef.dataUrl);
+        if (weatherLayer === null && !tileDef.tiled) {
           const layerOk = await dispatch('layerParser',
-                                         {dataUrl: dataUrl, info: weatherData.$});
+                                         {dataUrl: tileDef.dataUrl,
+                                          info: weatherData.$});
           if (!layerOk) {
             return;
           }
         }
 
-        weatherLayer = findWeatherLayer(dataUrl);
+        weatherLayer = findWeatherLayer(tileDef.dataUrl);
         if (weatherLayer === null) {
           dispatch(
             'diagnostics/add',
-            'WX SETUP ERROR: no weather layer for ' + dataUrl,
+            'WX SETUP ERROR: no weather layer for ' + tileDef.dataUrl,
             {root: true}
           );
           return;
@@ -786,16 +806,6 @@ export default {
           windMap: windMap,
         };
         commit('updateTile', weatherTile);
-        commit('update', weatherTile.layer);
-
-        const now = rootGetters['time/now']();
-        commit('updateFetchTime', now);
-        if (!firstWeather) {
-          const d = new Date(state.updated);
-          dispatch('notifications/add', {
-            text: 'Weather updated at ' + msecToUTCHourMinString(d),
-          }, {root: true});
-        }
       } catch(err) {
         commit('solapi/logError', {
           request: getDef,
