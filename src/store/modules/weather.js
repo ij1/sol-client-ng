@@ -607,13 +607,16 @@ export default {
           }
           dataUrl = await dispatch('layerParser',
                                    {dataUrl: dataUrl, info: layerInfo});
+          commit('solapi/unlock', 'weather', {root: true});
           if (dataUrl === null) {
-            commit('solapi/unlock', 'weather', {root: true});
             return;
           }
+          dispatch('fetchTiledWeather', dataUrl);
+
+        } else {
+          await dispatch('fetchTile', {dataUrl: dataUrl, tiled: false});
+          dispatch('updateSafe', dataUrl);
         }
-        await dispatch('fetchTile', {dataUrl: dataUrl, tiled: false});
-        dispatch('updateSafe', dataUrl);
 
       } catch(err) {
         commit('solapi/unlock', 'weather', {root: true});
@@ -688,6 +691,72 @@ export default {
       commit('setupLayer', weatherLayerInfo);
 
       return dataUrl;
+    },
+
+    async fetchTiledWeather({dispatch, rootGetters}, dataUrl) {
+      // FIXME: how to handle exclusion?
+      // FIXME: backoff on errors
+      // ADDME: load more than one wx tile in parallel
+      // ADDME: sort tiles based on closeness
+      // ADDME: limit loading to distance
+      let weatherLayer = findWeatherLayer(dataUrl);
+      const bounds = rootGetters['race/raceBounds'];
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+
+      let lonTiles = L.point(sw.lng - weatherLayer.origo[1],
+                             ne.lng - weatherLayer.origo[1])
+                        .divideBy(weatherLayer.tileSize[1])
+                        .floor();
+      let latTiles = L.point(sw.lat - weatherLayer.origo[0],
+                             ne.lat - weatherLayer.origo[0])
+                        .divideBy(weatherLayer.tileSize[0])
+                        .floor();
+
+      const maxLonTile = Math.floor(360 / weatherLayer.tileSize[1]);
+      let pending = [];
+      for (let y = latTiles.x; y <= latTiles.y; y++) {
+        for (let x = lonTiles.x; x <= lonTiles.y; x++) {
+          let tileX = x;
+          if (tileX >= maxLonTile) {
+            tileX %= maxLonTile;
+          }
+          if (tileX <= weatherLayer.tiles[1]) {
+            pending.push({x: tileX, y: y});
+          }
+        }
+      }
+
+      while (pending.length > 0) {
+        let tileCoords = pending.shift();
+        let res = await dispatch('fetchTile', {dataUrl: dataUrl, tiled: true,
+                                               x: tileCoords.x,
+                                               y: tileCoords.y});
+
+        if (!res) {
+          pending.push(tileCoords);
+          dispatch(
+            'diagnostics/add',
+            'WX ERROR: wx tile ' + tileCoords.x + ',' + tileCoords.y +
+            ' load failed!',
+            {root: true}
+          );
+        }
+
+        /* Weather layer still exists? */
+        if (findWeatherLayer(dataUrl) === null) {
+          const d = new Date(weatherLayer.updated);
+          dispatch(
+            'diagnostics/add',
+            'WX ERROR: wx update ' + msecToUTCHourMinString(d) +
+            ' superceded, aborting tile download!',
+            {root: true}
+          );
+          return;
+        }
+      }
+
+      dispatch('updateSafe', dataUrl);
     },
 
     async fetchTile ({commit, dispatch}, tileDef) {
@@ -846,7 +915,9 @@ export default {
         }, {root: true});
         return false;
       } finally {
-        commit('solapi/unlock', 'weather', {root: true});
+        if (!tileDef.tiled) {
+          commit('solapi/unlock', 'weather', {root: true});
+        }
       }
       return true;
     },
