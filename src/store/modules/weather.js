@@ -591,7 +591,7 @@ export default {
           return;
         }
 
-        if (Object.prototype.hasOwnProperty.call(weatherInfo, 'layers')) {
+        if (typeof weatherInfo.layers !== 'undefined') {
           let layerInfo;
           if (!Array.isArray(weatherInfo.layers.layer)) {
             layerInfo = weatherInfo.layers.layer;
