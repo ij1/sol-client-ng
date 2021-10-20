@@ -575,8 +575,14 @@ export default {
         }
 
         if (Object.prototype.hasOwnProperty.call(weatherInfo, 'layers')) {
+          let layerInfo;
+          if (!Array.isArray(weatherInfo.layers.layer)) {
+            layerInfo = weatherInfo.layers.layer;
+          } else {
+            layerInfo = weatherInfo.layers.layer[0];
+          }
           dataUrl = await dispatch('layerParser',
-                                   {dataUrl: dataUrl, info: weatherInfo.layers.layer[0]});
+                                   {dataUrl: dataUrl, info: layerInfo});
           if (dataUrl === null) {
             commit('solapi/unlock', 'weather', {root: true});
             return;
