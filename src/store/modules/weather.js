@@ -632,14 +632,15 @@ export default {
 
       let tileSize = [cells[0] * cellSize[0], cells[1] * cellSize[1]];
       let tiles = [1, 1];
-      if (Object.prototype.hasOwnProperty.call(layer, 'lat_tile_increment') &&
-          Object.prototype.hasOwnProperty.call(layer, 'lon_tile_increment')) {
+      if ((typeof layerInfo.lat_tile_increment !== 'undefined') &&
+          (typeof layerInfo.lon_tile_increment !== 'undefined')) {
         tileSize = [parseFloat(layerInfo.lat_tile_increment),
                     parseFloat(layerInfo.lon_tile_increment)];
         /* Pure ceil not safe here due to float precision (=x+epsilon) => x+1 */
         tiles = [Math.ceil((lat_max - origo[0]) / tileSize[0] - 0.000001),
                  Math.ceil((lon_max - origo[1]) / tileSize[1] - 0.000001)];
         tiled = true;
+        dataUrl = layerInfo.url;
       }
 
       const updated = UTCToMsec(layerInfo.last_updated);
