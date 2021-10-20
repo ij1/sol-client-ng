@@ -548,9 +548,26 @@ export default {
   },
 
   actions: {
+    async updateSafe ({dispatch, commit, rootGetters}, dataUrl) {
+      const firstWeather = (state.dataStamp === 0);
+      const weatherLayer = findWeatherLayer(dataUrl);
+
+      if (weatherLayer !== null) {
+        commit('update', weatherLayer);
+        const now = rootGetters['time/now']();
+        commit('updateFetchTime', now);
+        if (!firstWeather) {
+          const d = new Date(weatherLayer.updated);
+          dispatch('notifications/add', {
+            text: 'Weather updated at ' + msecToUTCHourMinString(d),
+          }, {root: true});
+        }
+      }
+    },
+
     // ADDME: when to fetch the next wx, add the support in a concurrency
     // safe way to avoid multiple overlapping weather fetches.
-    async fetchInfo ({state, rootState, rootGetters, dispatch, commit}) {
+    async fetchInfo ({rootState, rootGetters, dispatch, commit}) {
       const getDef = {
         apiCall: 'weather',
         url: rootState.race.info.weatherurl,
@@ -588,21 +605,8 @@ export default {
             return;
           }
         }
-        const firstWeather = (state.dataStamp === 0);
         await dispatch('fetchTile', {dataUrl: dataUrl, tiled: false});
-
-        const weatherLayer = findWeatherLayer(dataUrl);
-        if (weatherLayer !== null) {
-          commit('update', weatherLayer);
-          const now = rootGetters['time/now']();
-          commit('updateFetchTime', now);
-          if (!firstWeather) {
-            const d = new Date(weatherLayer.updated);
-            dispatch('notifications/add', {
-              text: 'Weather updated at ' + msecToUTCHourMinString(d),
-            }, {root: true});
-          }
-        }
+        dispatch('updateSafe', dataUrl);
 
       } catch(err) {
         commit('solapi/unlock', 'weather', {root: true});
