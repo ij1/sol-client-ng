@@ -592,6 +592,13 @@ export default {
         }
 
         if (typeof weatherInfo.layers !== 'undefined') {
+          if (typeof weatherInfo.layers.layer === 'undefined') {
+            commit('solapi/unlock', 'weather', {root: true});
+            dispatch('diagnostics/add', 'WX ERROR: Invalid layer definition!',
+                     {root: true});
+            return;
+          }
+
           let layerInfo;
           if (!Array.isArray(weatherInfo.layers.layer)) {
             layerInfo = weatherInfo.layers.layer;
