@@ -692,7 +692,7 @@ export default {
                                          {dataUrl: tileDef.dataUrl,
                                           info: weatherData.$});
           if (!layerOk) {
-            return;
+            return false;
           }
         }
 
@@ -703,7 +703,7 @@ export default {
             'WX SETUP ERROR: no weather layer for ' + tileDef.dataUrl,
             {root: true}
           );
-          return;
+          return false;
         }
 
         for (let frame of weatherData.frames.frame) {
@@ -714,7 +714,7 @@ export default {
               'DATA ERROR: Invalid date in weather data: ' + frame.$.target_time,
               {root: true}
             );
-            return;
+            return false;
           }
         }
         weatherData.frames.frame.sort((a, b) => { return a.utc - b.utc; });
@@ -741,7 +741,7 @@ export default {
               timeSeries[i] + ', expected ' + weatherLayer.timeSeries[i],
               {root: true}
             );
-            return;
+            return false;
           }
         }
 
@@ -763,7 +763,7 @@ export default {
               (weatherLayer.cells[1] + 2) + ' ' + u.length + ' ' + v.length,
               {root: true}
             );
-            return;
+            return false;
           }
 
           let windFrame = [];
@@ -783,7 +783,7 @@ export default {
                 (weatherLayer.cells[0] + 2) + ' ' + uu.length + ' ' + vv.length,
                 {root: true}
               );
-              return;
+              return false;
             }
 
             /* Construct last-level [u, v] arrays */
@@ -811,9 +811,11 @@ export default {
           request: getDef,
           error: err,
         }, {root: true});
+        return false;
       } finally {
         commit('solapi/unlock', 'weather', {root: true});
       }
+      return true;
     },
     parseUpdateTimes({commit, dispatch}, description) {
       const regex = /WX  *[Uu]pdates: *(<br>)* *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9]) *\/ *([0-2][0-9][0-5][0-9])\.* *(<br>)*/;
