@@ -672,13 +672,23 @@ export default {
     },
 
     async fetchTile ({commit, dispatch}, tileDef) {
+      let tileUrl = tileDef.dataUrl;
+      let x = 0;
+      let y = 0;
+
+      if (tileDef.tiled) {
+        tileUrl = tileUrl.replace('{x}', tileDef.x).replace('{y}', tileDef.y);
+        x = tileDef.x;
+        y = tileDef.y;
+      }
+
       let getDef = {
         apiCall: 'weatherdata',
       };
       try {
         getDef = {
           apiCall: 'weatherdata',
-          url: tileDef.dataUrl,
+          url: tileUrl,
           params: {},
           useArrays: false,
           dataField: 'weathersystem',
@@ -745,6 +755,10 @@ export default {
           }
         }
 
+        let cells = weatherLayer.cells;
+        if (tileDef.tiled) {
+          cells = weatherLayer.tileCells;
+        }
         let windMap = [];
         /* FIXME: It takes quite long time to parse&mangle the arrays here,
          * perhaps use vue-worker for this but then also xml2js parsing will
@@ -755,12 +769,12 @@ export default {
         for (let frame of weatherData.frames.frame) {
           let u = frame.U.trim().split(/;\s*/);
           let v = frame.V.trim().split(/;\s*/);
-          if ((u.length !== weatherLayer.cells[1] + 2) ||
+          if ((u.length !== cells[1] + 2) ||
               (u.length !== v.length)) {
             dispatch(
               'diagnostics/add',
               'DATA ERROR: Inconsistent weather lengths: ' +
-              (weatherLayer.cells[1] + 2) + ' ' + u.length + ' ' + v.length,
+              (cells[1] + 2) + ' ' + u.length + ' ' + v.length,
               {root: true}
             );
             return false;
@@ -775,12 +789,12 @@ export default {
             let uu = u[i].trim().split(/\s+/);
             let vv = v[i].trim().split(/\s+/);
 
-            if ((uu.length !== weatherLayer.cells[0] + 2) &&
+            if ((uu.length !== cells[0] + 2) &&
                 (uu.length !== vv.length)) {
               dispatch(
                 'diagnostics/add',
                 'DATA ERROR: Inconsistent weather lengths: ' +
-                (weatherLayer.cells[0] + 2) + ' ' + uu.length + ' ' + vv.length,
+                (cells[0] + 2) + ' ' + uu.length + ' ' + vv.length,
                 {root: true}
               );
               return false;
@@ -801,8 +815,8 @@ export default {
 
         const weatherTile = {
           layer: weatherLayer,
-          x: 0,
-          y: 0,
+          x: x,
+          y: y,
           windMap: windMap,
         };
         commit('updateTile', weatherTile);
