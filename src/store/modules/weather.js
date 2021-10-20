@@ -575,9 +575,9 @@ export default {
         }
 
         if (Object.prototype.hasOwnProperty.call(weatherInfo, 'layers')) {
-          const layerOk = await dispatch('layerParser',
-                                         {dataUrl: dataUrl, info: weatherInfo.layers.layer[0]});
-          if (!layerOk) {
+          dataUrl = await dispatch('layerParser',
+                                   {dataUrl: dataUrl, info: weatherInfo.layers.layer[0]});
+          if (dataUrl === null) {
             commit('solapi/unlock', 'weather', {root: true});
             return;
           }
@@ -608,6 +608,7 @@ export default {
     },
 
     async layerParser ({dispatch, commit}, layer) {
+      let dataUrl = layer.dataUrl;
       const layerInfo = layer.info
 
       let origo = [parseFloat(layerInfo.lat_min),
@@ -642,7 +643,7 @@ export default {
           'DATA ERROR: Invalid date in weather data: ' + layerInfo.last_updated,
           {root: true}
         );
-        return false;
+        return null;
       }
 
       /* Improve performance by freezing all interpolation related
@@ -657,7 +658,7 @@ export default {
       let weatherLayerInfo = {
         name: 'dummy',
         updated: updated,
-        url: layer.dataUrl,
+        url: dataUrl,
         boundary: boundary,
         origo: origo,
         tiled: tiled,
@@ -668,7 +669,7 @@ export default {
       };
       commit('setupLayer', weatherLayerInfo);
 
-      return true;
+      return dataUrl;
     },
 
     async fetchTile ({commit, dispatch}, tileDef) {
@@ -698,10 +699,10 @@ export default {
 
         let weatherLayer = findWeatherLayer(tileDef.dataUrl);
         if (weatherLayer === null && !tileDef.tiled) {
-          const layerOk = await dispatch('layerParser',
+          const dataUrl = await dispatch('layerParser',
                                          {dataUrl: tileDef.dataUrl,
                                           info: weatherData.$});
-          if (!layerOk) {
+          if (dataUrl === null) {
             return false;
           }
         }
