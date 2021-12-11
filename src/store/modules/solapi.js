@@ -217,15 +217,21 @@ export default {
                            calcTimeout(apiStats.firstByteDelay, apiStats.backoff),
                            rootState, dispatch, abortFunc, reqDef);
         try {
+          let headers = {};
+          if (rootState.auth.token !== null) {
+            headers['Authorization'] = 'Token ' + rootState.auth.token;
+          }
           if (useFetch) {
             response = await fetch(state.serverPrefix + url +
                                    ((params.length > 0) ? '?' + params : ''), {
               signal: controller.signal,
+              headers: headers,
             });
           } else {
             response = await axios.get(state.serverPrefix + url, {
               responseType: 'arraybuffer',
               params: reqDef.params,
+              headers: headers,
               cancelToken: controller.token,
               onDownloadProgress: (progressEvent) => {
                 apiCallUpdate.received = progressEvent.loaded;
