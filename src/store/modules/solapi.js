@@ -262,7 +262,7 @@ export default {
           }
         }
 
-        if (response.status !== 200) {
+        if (response.status !== 200 && response.status !== 304) {
           throw new SolapiError('statuscode', "Invalid API call");
         }
 
