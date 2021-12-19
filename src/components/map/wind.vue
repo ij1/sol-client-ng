@@ -740,22 +740,27 @@ export default {
           }
         }
 
-        /* Flush the full column of contours */
-        for (let twsIdx = twsContours.length - 1; twsIdx >= 0; twsIdx--) {
-          for (let r = 0; r <= 1; r++) {
-            let twsData = twsDatas[twsIdx];
-            if (twsData.draw[r]) {
-              twsData.paths[r].moveTo(0, 0);
-              ctx.strokeStyle = this.twsContourColor[twsIdx];
-              ctx2.strokeStyle = this.twsContourColor[twsIdx];
-              for (let i = minWrap; i <= maxWrap; i++) {
-                const offset = (i - baseWrap) * wrapOffset;
-                this.drawContour(ctx, twsData.paths[r], offset, i,
+        this.flushContours(ctx, ctx2, twsDatas, twsContours, minWrap, maxWrap);
+      }
+    },
+    flushContours(ctx, ctx2, twsDatas, twsContours, minWrap, maxWrap) {
+      const baseWrap = minWrap === maxWrap ? minWrap : 0;
+      const wrapOffset = 256 * 2 ** this.zoom;
+
+      for (let twsIdx = twsContours.length - 1; twsIdx >= 0; twsIdx--) {
+        for (let r = 0; r <= 1; r++) {
+          let twsData = twsDatas[twsIdx];
+          if (twsData.draw[r]) {
+            twsData.paths[r].moveTo(0, 0);
+            ctx.strokeStyle = this.twsContourColor[twsIdx];
+            ctx2.strokeStyle = this.twsContourColor[twsIdx];
+            for (let i = minWrap; i <= maxWrap; i++) {
+              const offset = (i - baseWrap) * wrapOffset;
+              this.drawContour(ctx, twsData.paths[r], offset, i,
+                                minWrap, maxWrap, wrapOffset);
+              if (this.isDark) {
+                this.drawContour(ctx2, twsData.paths[r], offset, i,
                                   minWrap, maxWrap, wrapOffset);
-                if (this.isDark) {
-                  this.drawContour(ctx2, twsData.paths[r], offset, i,
-                                    minWrap, maxWrap, wrapOffset);
-                }
               }
             }
           }
