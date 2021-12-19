@@ -355,10 +355,8 @@ export default {
         firstMaxCell = wxCells[1] - 1;
       }
 
-      this.__drawContours(ctx, ctx2, wxOrigo, wxCellSize,
-                          minCell, firstMaxCell, latCells.x, latCells.y,
-                          yToLat, yStart, yEnd, cellStep,
-                          minWrap, maxWrap);
+      let drawList = [[minCell, firstMaxCell, latCells.x, latCells.y,
+                       minWrap, maxWrap]];
 
       /* Handle right-edge partial (/rest) drawing */
       if (minWrap !== maxWrap && minCell > 0) {
@@ -366,10 +364,14 @@ export default {
         if (maxWrap - minWrap > 1) {
           maxCell = minCell;
         }
+        drawList.push([0, maxCell, latCells.x, latCells.y,
+                       minWrap + 1, maxWrap]);
+      }
+      for (let i of drawList) {
         this.__drawContours(ctx, ctx2, wxOrigo, wxCellSize,
-                            0, maxCell, latCells.x, latCells.y,
+                            i[0], i[1], i[2], i[3],
                             yToLat, yStart, yEnd, cellStep,
-                            minWrap + 1, maxWrap);
+                            i[4], i[5]);
       }
     },
     __drawContours (ctx, ctx2, wxOrigo, wxCellSize,
