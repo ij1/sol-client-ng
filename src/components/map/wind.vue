@@ -400,19 +400,7 @@ export default {
         let lngStart = lngCell * wxCellSize[1] + wxOrigo[1];
         const xStart = map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
 
-        for (let twsIdx = 0; twsIdx < twsContours.length; twsIdx++) {
-          twsDatas[twsIdx] = {
-            paths: [new Path2D(), new Path2D()],
-            useMove: [true, true],
-            draw: [false, false],
-            edgeCrossing: null,
-            prevYInCell: -1,
-            prevDiscr: null,
-            prevDiscrY: null,
-            prevRoots: [0, 0],
-          };
-        }
-
+        this.initContours(twsDatas, twsContours);
 
         for (let latCell = minLatCell; latCell <= maxLatCell; latCell++) {
           let wind = idxToCell(latCell, lngCell);
@@ -741,6 +729,20 @@ export default {
         }
 
         this.flushContours(ctx, ctx2, twsDatas, twsContours, minWrap, maxWrap);
+      }
+    },
+    initContours(twsDatas, twsContours) {
+      for (let twsIdx = 0; twsIdx < twsContours.length; twsIdx++) {
+        twsDatas[twsIdx] = {
+          paths: [new Path2D(), new Path2D()],
+          useMove: [true, true],
+          draw: [false, false],
+          edgeCrossing: null,
+          prevYInCell: -1,
+          prevDiscr: null,
+          prevDiscrY: null,
+          prevRoots: [0, 0],
+        };
       }
     },
     flushContours(ctx, ctx2, twsDatas, twsContours, minWrap, maxWrap) {
