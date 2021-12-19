@@ -437,7 +437,8 @@ export default {
       if (boundedTime !== null) {
         store.dispatch(
           'diagnostics/add',
-          "WARNING: time outside boattime/wx, fixing: " + state.time + " vs " + state.firstTimestamp + "-" + state.lastTimestamp
+          "WARNING: time outside boattime/wx, fixing: " + state.time + " vs " + state.firstTimestamp + "-" + state.lastTimestamp,
+          {root: true}
         );
         if (state.time !== boundedTime) {
           state.time = boundedTime;
@@ -775,7 +776,7 @@ export default {
 
         dispatch('updateSafe', dataUrl);
       } catch(err) {
-        dispatch('diagnostics/add', 'wx: tiled fetch failed!');
+        dispatch('diagnostics/add', 'wx: tiled fetch failed!', {root: true});
         // ADDME: log errors to weatherdata, refactor solapi stat init first
       } finally {
         commit('unlockTiled', dataUrl);
