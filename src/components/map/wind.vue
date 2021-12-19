@@ -394,19 +394,24 @@ export default {
        */
       let forceNumStability = [ false, false ];
       let rootForced = [ false, false ];
+      let drawn = false;
+      this.initContours(twsDatas, twsContours);
 
       for (let lngCell = minLngCell; lngCell <= maxLngCell; lngCell++) {
         let y = yStart;
         let lngStart = lngCell * wxCellSize[1] + wxOrigo[1];
         const xStart = map.latLngToContainerPoint(L.latLng(0, lngStart)).x;
 
-        this.initContours(twsDatas, twsContours);
-
         for (let latCell = minLatCell; latCell <= maxLatCell; latCell++) {
           let wind = idxToCell(latCell, lngCell);
           if (wind === null) {
-            return;
+            if (drawn) {
+              this.flushContours(ctx, ctx2, twsDatas, twsContours, minWrap, maxWrap);
+            }
+            continue;
           }
+
+          drawn = true;
           let latStart = latCell * wxCellSize[0] + wxOrigo[0];
 
           let minTwsMs = 0;
@@ -768,6 +773,7 @@ export default {
           }
         }
       }
+      this.initContours(twsDatas, twsContours);
     },
     drawContour(ctx, path, offset, i, minWrap, maxWrap, wrapOffset) {
       if (i === minWrap) {
