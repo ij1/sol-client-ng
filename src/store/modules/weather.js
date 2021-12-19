@@ -733,10 +733,15 @@ export default {
             if (tileX >= maxLonTile) {
               tileX %= maxLonTile;
             }
-            if (tileX <= weatherLayer.tiles[1]) {
+            if (tileX <= weatherLayer.tiles[1] &&
+                weatherLayer.windMap[tileX][y] === null) {
               pending.push({x: tileX, y: y});
             }
           }
+        }
+
+        if (pending.length === 0) {
+          return;
         }
 
         while (pending.length > 0) {
