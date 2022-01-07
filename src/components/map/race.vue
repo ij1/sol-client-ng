@@ -38,12 +38,13 @@
         />
       </l-tooltip>
     </route-mark>
-    <route-mark
+    <finish-mark
       v-for = "mark in wrappedFinishLineMarks"
       :key = "mark.key"
       :lat-lng = "mark.latLng"
       :color = "finishLineColor"
       :mark-radius="finishPointRadius"
+      :angle = "finishEntryAngle"
     />
     <l-polyline
       v-for = "line in wrappedFinishLines"
@@ -78,6 +79,7 @@ import { mapState } from 'vuex';
 import L from 'leaflet';
 import { LCircleMarker, LLayerGroup, LPolyline, LTooltip } from 'vue2-leaflet';
 import RouteMark from './routemark.vue';
+import FinishMark from './finishmark.vue';
 import { latLngAddOffset, latLngArrayAddOffset } from '../../lib/utils.js';
 import { PROJECTION } from '../../lib/sol.js';
 import { degToRad } from '../../lib/utils.js';
@@ -90,6 +92,7 @@ export default {
     'l-polyline': LPolyline,
     'l-tooltip': LTooltip,
     'route-mark': RouteMark,
+    'finish-mark': FinishMark,
   },
 
   data () {
@@ -101,7 +104,7 @@ export default {
         className: 'wp-tooltip',
       },
       boundaryColor: "magenta",
-      finishPointRadius: 3,
+      finishPointRadius: 5,
       routeLineGap: 10,
       routeLineArcInterval: degToRad(5),
       finishWrapList: [-360, 0, 360],  /* No need to wrap more when zoomed away */
@@ -282,6 +285,9 @@ export default {
         return 'red';
       }
       return 'rgba(255,0,0,' + this.wpAlpha(this.race.route.length - 1) + ')';
+    },
+    finishEntryAngle () {
+      return this.race.route[this.race.route.length - 2].nextWpBearing;
     },
     wrappedLines () {
       let res = [];
