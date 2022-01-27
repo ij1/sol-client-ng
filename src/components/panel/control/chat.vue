@@ -293,6 +293,14 @@ export default {
 .chat-block:nth-last-child(odd) {
   background: #e0e0e0;
 }
+.control-panel-dark .chat-block:nth-last-child(even) {
+  background: #10104f;
+}
+.control-panel-dark .chat-block:nth-last-child(odd) {
+  background: #00001f;
+}
+
+
 .chat-flag {
 }
 .chat-bundee {

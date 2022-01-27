@@ -15,7 +15,7 @@
       </button>
       <button @click="doRefresh">Refresh</button>
     </div>
-    <scrollable-table id = "dc-table">
+    <scrollable-table class = "dc-table">
       <template v-slot:headers>
         <th>Time</th>
         <th>Type</th>
@@ -151,14 +151,16 @@ export default {
 #dc-header button {
   margin: 2px;
 }
-#dc-table {
+.dc-table {
   font-size: 12px;
   height: calc(100% - 32px);
 }
-#dc-table tr {
-  background: #ffffff;
-}
-#dc-table .active {
+.dc-table .active {
   background: #d0d0ff;
 }
+.control-panel-dark .dc-table .active {
+  background: #30304f;
+}
+
+
 </style>

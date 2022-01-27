@@ -41,8 +41,7 @@
           />
           <label for = "twa" @click = "type = 'twa'">TWA</label>
           <input
-            class = "steering-input-box"
-            :style = "{'background-color': twaColor}"
+            :class = "twaClasses"
             ref = "twa"
             id = "twa"
             @click = "type = 'twa'"
@@ -213,16 +212,16 @@ export default {
         (!this.delayOn || this.isDelayValid) && this.isSteeringValid &&
         !this.sending;
     },
-    twaColor () {
-      if (!this.isTwaValid) {
-        return 'unset';
-      } else if (this.twaRad === 0) {
-        return 'unset';
-      } else if (this.twaRad < 0) {
-        return 'red';
-      } else {
-        return '#7fff00';
+    twaClasses () {
+      let res = ['steering-input-box'];
+      if (this.isTwaValid) {
+        if (this.twaRad < 0) {
+          res.push('steering-input-box-red');
+        } else if (this.twaRad > 0) {
+          res.push('steering-input-box-green');
+        }
       }
+      return res;
     },
 
     ccTwaDelta () {
@@ -585,9 +584,20 @@ input[type=radio] {
 .steering-input-box {
   font-size: 12px;
   font-weight: bold;
-  background-color: white;
   margin: 2px;
   margin-left: 6px;
+}
+.steering-input-box-red {
+  background-color: red;
+}
+.steering-input-box-green {
+  background-color: #7fff00;
+}
+.control-panel-dark .steering-input-box-red {
+  background-color: #9f0000;
+}
+.control-panel-dark .steering-input-box-green {
+  background-color: #007f00;
 }
 .flex-space {
   flex: auto;

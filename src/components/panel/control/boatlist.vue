@@ -300,14 +300,17 @@ export default {
   height: 100%;
   font-size: 11px;
 }
-.boatlist-row {
-  background: #ffffff;
-}
 .boatlist-active {
   background: #d0d0ff;
 }
 .boatlist-hover {
   background: #e0e0ff;
+}
+.control-panel-dark .boatlist-active {
+  background: #30306f;
+}
+.control-panel-dark .boatlist-hover {
+  background: #20204f;
 }
 .boatlist-last {
   outline: 1px dotted #333;

@@ -18,4 +18,8 @@ export default {
   z-index: 0;
   mix-blend-mode: multiply;
 }
+
+.control-panel-dark .alert-container {
+  mix-blend-mode: screen;
+}
 </style>

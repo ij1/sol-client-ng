@@ -1,12 +1,21 @@
 <template>
-  <div id="control-panel">
+  <div id="control-panel" :class="classes">
     <div class="tabs">
       <a
         v-if = "uiComponentSteeringPanel"
         @click="activeTab=0"
         :class="activeTab === 0 ? 'active' : ''"
       >
-        <img src="../../../images/wheel.png" alt="Steering"/>
+        <img
+          v-if = "dayNight === 'white'"
+          src = "../../../images/wheel.png"
+          alt = "Steering"
+        />
+        <img
+          v-if = "dayNight === 'dark'"
+          src = "../../../images/wheel-dark.png"
+          alt = "Steering"
+        />
       </a>
       <a
         v-if = "uiComponentDcPanel"
@@ -121,6 +130,14 @@ export default {
         this.$store.commit('ui/setActiveTab', value);
       }
     },
+    dayNight () {
+      return this.configDayNight === 'dark' ? this.configDayNight : 'white';
+    },
+    classes () {
+      return [
+        'control-panel-' + this.dayNight,
+      ];
+    },
     ...mapState({
       configShowDiagnostics: state => state.diagnostics.cfg.showDiagnostics.value,
       racemessages: state => state.race.messages.racemsgs,
@@ -130,6 +147,7 @@ export default {
       uiComponentChatPanel: state => state.ui.uiComponent.chatPanel,
       uiComponentRacemessagePanel: state => state.ui.uiComponent.racemessagePanel,
       uiComponentMiscPanel: state => state.ui.uiComponent.miscPanel,
+      configDayNight: state => state.ui.cfg.dayNightMode.value,
     }),
     ...mapGetters({
       chatNewMessagesToShow: 'chatrooms/newMessagesToShow',
@@ -189,6 +207,10 @@ export default {
   background-color: #f0f0f0;
 }
 
+.control-panel-dark .tabs a {
+  background-color: #00003f;
+}
+
 .tabs a:last-child {
   border-right: 1px solid #c0c0c0;
 }
@@ -197,6 +219,10 @@ export default {
   background-color: #ffffff;
   border-bottom: 2px solid #ffffff;
   z-index: 1;
+}
+
+.control-panel-dark .tabs a.active {
+  background-color: #30306f;
 }
 
 .control-panel-content-wrapper {
@@ -217,5 +243,28 @@ export default {
   top: 0px;
   right: 1px;
   pointer-events: none;
+}
+</style>
+
+<style>
+.control-panel-white {
+  background-color: #fff;
+  color: #000;
+}
+
+.control-panel-dark {
+  background-color: #00004f;
+  color: #fff;
+  scrollbar-color: #30306f #10103f;
+}
+
+.control-panel-dark input {
+  background-color: #00004f;
+  color: #fff;
+}
+
+.control-panel-dark textarea {
+  background-color: #00004f;
+  color: #fff;
 }
 </style>

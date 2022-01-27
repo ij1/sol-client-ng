@@ -172,6 +172,9 @@ export default {
   white-space: nowrap;
   overflow: hidden;
 }
+.control-panel-dark .leaderboard-header {
+  background-image: linear-gradient(#101040, #303060, #505070, #303060, #101040);
+}
 .leaderboard-showonly {
   text-align: right;
   height: 23px;

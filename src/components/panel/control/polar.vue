@@ -2,7 +2,7 @@
   <div id="polar" ref="polar-container">
     <canvas id="labels" ref="labels"/>
     <canvas class = "polar-draw-area" ref="polargrid"/>
-    <canvas class = "polar-draw-area" id = "polarbg" ref = "polarbg"/>
+    <canvas class = "polar-draw-area polarbg" ref = "polarbg"/>
     <canvas class = "polar-draw-area" ref="polarfg"/>
     <canvas
       class = "polar-draw-area"
@@ -171,12 +171,16 @@ export default {
 
       return Date.now();
     },
+    dayNight () {
+      return this.configDayNight === 'dark' ? this.configDayNight : 'white';
+    },
     ...mapState({
       boatSpeed: state => state.boat.instruments.speed.value,
       boatTwa: state => state.boat.instruments.twa.value,
       boatTws: state => state.boat.instruments.tws.value,
       visualSteeringTwa: state => state.boat.steering.visualSteering.twa,
       polarCurveMode: state => state.boat.polar.polarMode,
+      configDayNight: state => state.ui.cfg.dayNightMode.value,
     }),
     ...mapGetters({
       boatTime: 'boat/time',
@@ -237,7 +241,7 @@ export default {
       ctx.save();
       canvasAlignToPixelCenter(ctx);
       ctx.translate(0, this.gridOrigoY);
-      ctx.strokeStyle = '#000000';
+      ctx.strokeStyle = this.dayNight === 'white' ? '#000' : '#fff';
       ctx.lineWidth = 2;
       if (this.fgCurve !== null) {
         this.drawPolarCurve(ctx, this.fgCurve, this.gridScale, this.gridMaxKnots);
@@ -271,7 +275,7 @@ export default {
       ctx.save();
       ctx.translate(0, this.gridOrigoY);
       const polarPos = this.polarCoords(twa, this.gridMaxKnots, this.gridScale);
-      ctx.strokeStyle = '#000';
+      ctx.strokeStyle = this.dayNight === 'white' ? '#000' : '#fff';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(0, 0);
@@ -296,8 +300,13 @@ export default {
        */
       let grad = ctx.createRadialGradient(0, 0, 0, 0, 0,
                            this.gridIntervalKnots * this.gridScale);
-      grad.addColorStop(0, '#eee');
-      grad.addColorStop(1, '#aaa');
+      if (this.dayNight === 'white') {
+        grad.addColorStop(0, '#eee');
+        grad.addColorStop(1, '#aaa');
+      } else {
+        grad.addColorStop(0, '#777');
+        grad.addColorStop(1, '#aaa');
+      }
       ctx.strokeStyle = grad;
       for (let twad = this.firstTwaDeg; twad <= 170; twad += 10) {
         const twa = degToRad(twad);
@@ -333,7 +342,9 @@ export default {
     },
 
     drawLabels (labelctx) {
-      labelctx.strokeStyle = '#000';
+      const col = this.dayNight === 'white' ? '#000' : '#fff';
+      labelctx.strokeStyle = col;
+      labelctx.fillStyle = col;
       labelctx.font = '10px sans-serif';
 
       for (let twad = this.firstTwaDeg; twad <= 170; twad += 10) {
@@ -464,8 +475,11 @@ export default {
   left: 20px;
   cursor: crosshair;
 }
-#polarbg {
+.polarbg {
   mix-blend-mode: multiply;
+}
+.control-panel-dark .polarbg {
+  mix-blend-mode: screen;
 }
 .polar-details {
   font-size: 12px;
