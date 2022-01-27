@@ -290,7 +290,9 @@ export default {
                     this.boatOrigo.y - this.viewOrigo.y);
       for (let pred of this.predictorList) {
         ctx.strokeStyle = this.predictorColor(pred);
-        ctx.stroke(predictorData[pred].cachedPath);
+        for (let p of predictorData[pred].cachedPath) {
+          ctx.stroke(p);
+        }
 
         for (let i = 0; i < this.markers[pred].hour.length; i++) {
           let pt = this.markers[pred].hour[i];
@@ -351,37 +353,41 @@ export default {
       let firstPt = pred.firstLatLng;
       let otherPts = pred.latLngs;
 
-      let p = new Path2D();
-
       if (firstPt === null) {
-        return p;
+        return [];
       }
 
+      let paths = [];
       const boatOrigo = this.boatOrigo;
       const z = this.zoom;
       const map = this.$parent.map;
+
+      let p = new Path2D();
       let tmp = map.project(firstPt, z)._round()._subtract(boatOrigo);
       p.moveTo(tmp.x, tmp.y);
       for (let pt of otherPts) {
         let tmp = map.project(pt, z)._round()._subtract(boatOrigo);
         p.lineTo(tmp.x, tmp.y);
       }
-      return p;
+      paths.push(p);
+
+      return paths;
     },
     cogPath (predictor) {
       let cog = predictorData[predictor];
 
-      let p = new Path2D();
       if (cog.firstLatLng === null) {
-        return p;
+        return [];
       }
+
+      let p = new Path2D();
       const z = this.zoom;
 
       p.moveTo(0, 0);
       let tmp = this.$parent.map.project(cog.latLngs[cog.latLngs.length - 1], z)._round()._subtract(this.boatOrigo);
       p.lineTo(tmp.x, tmp.y);
 
-      return p;
+      return [p];
     },
     __precalcPaths () {
       for (let pred of this.predictorList) {

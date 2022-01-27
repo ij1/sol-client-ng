@@ -9,14 +9,14 @@ export let predictorData = {
     cog: 0,
     firstLatLng: null,
     latLngs: [],
-    cachedPath: new Path2D(),
+    cachedPath: [],
   },
   twa: {
     time: 0,
     twa: 0,
     firstLatLng: null,
     latLngs: [],
-    cachedPath: new Path2D(),
+    cachedPath: [],
   },
   dcPred: {
     time: 0,
