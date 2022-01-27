@@ -357,6 +357,7 @@ export default {
         return [];
       }
 
+      const MAX_PATH_PTS = 200;  /* Safari 15 cannot handle large Path2Ds */
       let paths = [];
       const boatOrigo = this.boatOrigo;
       const z = this.zoom;
@@ -365,11 +366,21 @@ export default {
       let p = new Path2D();
       let tmp = map.project(firstPt, z)._round()._subtract(boatOrigo);
       p.moveTo(tmp.x, tmp.y);
+      let count = 0;
+
       for (let pt of otherPts) {
         let tmp = map.project(pt, z)._round()._subtract(boatOrigo);
         p.lineTo(tmp.x, tmp.y);
+        if (++count === MAX_PATH_PTS) {
+          paths.push(p);
+          p = new Path2D();
+          p.moveTo(tmp.x, tmp.y);
+          count = 0;
+        }
       }
-      paths.push(p);
+      if (count > 0) {
+        paths.push(p);
+      }
 
       return paths;
     },
