@@ -105,7 +105,5 @@ export default {
 }
 #leaderboard-createbuttons button {
   font-size: 11px;
-  margin-left: 4px;
-  padding: 0px;
 }
 </style>

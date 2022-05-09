@@ -606,10 +606,6 @@ input[type=radio] {
   flex: none;
   position: relative;
 }
-#steering-buttons button {
-  margin-left: 4px;
-  padding: 0px;
-}
 .input-error {
   text-align: left;
   font-size: 11px;

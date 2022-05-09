@@ -267,4 +267,32 @@ export default {
   background-color: #00004f;
   color: #fff;
 }
+
+button:hover {
+  background-color: #33f;
+}
+
+button {
+  border: none;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin: 1px 3px;
+  background-color: #55c;
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #337;
+  color: #aaa;
+}
+
+button:enabled:active {
+  background-color: #cc7000;
+  transform: translate(0, 1px);
+}
 </style>

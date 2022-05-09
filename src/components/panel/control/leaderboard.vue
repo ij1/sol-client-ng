@@ -218,8 +218,6 @@ export default {
 .leaderboard-buttons button {
   flex: auto;
   font-size: 11px;
-  margin-left: 4px;
-  padding: 0px;
   min-width: 40px;
   white-space: nowrap;
   overflow: hidden;
