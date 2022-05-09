@@ -537,6 +537,7 @@ export default {
 }
 #weather-panel-control button {
   background: #ffffff;
+  color: #000000;
   min-width: 10px;
   margin-left: 1px;
   margin-right: 1px;
