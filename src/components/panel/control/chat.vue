@@ -263,7 +263,7 @@ export default {
 
 .chat-channel-close {
   position: absolute;
-  right: 0px;
+  right: 2px;
 }
 
 .chat-block-wrapper {
