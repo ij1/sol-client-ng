@@ -218,4 +218,10 @@ export default {
 #banner-container {
   position: relative;
 }
+.control-panel-dark a {
+  color: orange;
+}
+.control-panel-dark a:visited {
+  color: saddlebrown;
+}
 </style>
