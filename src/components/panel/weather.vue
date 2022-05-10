@@ -531,6 +531,7 @@ export default {
 }
 #weather-panel-control button,select {
   border: none;
+  border-radius: 0px;
   padding: 1px;
   margin: 0px;
   font-size: 11px;
