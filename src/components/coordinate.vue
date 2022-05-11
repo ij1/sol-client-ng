@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { coordinateMixin } from './mixins/coordinate.js';
 
 export default {
@@ -14,6 +15,9 @@ export default {
     separator () {
       return this.signToHemisphere ? '' : ',';
     },
+    ...mapGetters({
+      signToHemisphere: 'ui/coordinateSignToHemisphere',
+    }),
   },
 }
 </script>

@@ -137,6 +137,9 @@ export default {
     inDefaultUiMode: (state) => {
       return state.uiModeCancel === null;
     },
+    coordinateSignToHemisphere: (state) => {
+      return !state.cfg.coordinateFormat.value.startsWith('sign');
+    },
     currentDayNight: (state, getters, rootState, rootGetters) => {
       if (state.cfg.dayNightMode.value === 'default') {
         const boatInDark = rootGetters['boat/inDark'];
