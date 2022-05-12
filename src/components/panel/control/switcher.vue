@@ -277,7 +277,7 @@ button {
   border-radius: 3px;
   padding: 1px 3px;
   margin: 1px 3px;
-  background-color: #55c;
+  background-color: #2089c5;
   color: #fff;
   font-weight: bold;
   text-decoration: none;
