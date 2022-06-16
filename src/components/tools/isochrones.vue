@@ -65,8 +65,8 @@ export default {
   name: 'IsochronesTool',
   data () {
     return {
-      isochroneLengths: [24, 48, 72, 96],
-      isochroneSteps: [1, 2, 3, 4, 5, 6, 12],
+      isochroneLengths: [24, 48, 72, 96, 120, 168],
+      isochroneSteps: [1, 2, 3, 4, 5, 6, 12, 24],
     }
   },
   computed: {
