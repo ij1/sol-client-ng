@@ -142,6 +142,8 @@ export default {
   data () {
     return {
       fromInstruments: true,
+      customFromPos: null,
+      pathBearing: false,	/* Bearing is set from path, not manually */
       tws: '',         /* In knots */
       twd: '',
       bearing: '',
@@ -192,16 +194,22 @@ export default {
                                                       degToRad(this.bearing),
                                                       this.twdRad);
     },
+    fromPos () {
+      if (this.customFromPos !== null) {
+        return this.customFromPos;
+      }
+      return this.visualPosition;
+    },
     nearestWrapOfTarget () {
       if (this.currentTarget === null) {
         return null;
       }
 
-      const diff = minTurnAngle(degToRad(this.visualPosition.lng),
+      const diff = minTurnAngle(degToRad(this.fromPos.lng),
                                 degToRad(this.currentTarget.latLng.lng));
 
       return L.latLng(this.currentTarget.latLng.lat,
-                      this.visualPosition.lng + radToDeg(diff));
+                      this.fromPos.lng + radToDeg(diff));
     },
     ...mapState({
       boatTws: state => state.boat.instruments.tws.value,
@@ -242,8 +250,9 @@ export default {
         return;
       }
       const path = this.gcMode ?
-                   gcCalc(this.visualPosition, this.currentTarget.latLng) :
-                   loxoCalc(this.visualPosition, this.nearestWrapOfTarget);
+                   gcCalc(this.fromPos, this.currentTarget.latLng) :
+                   loxoCalc(this.fromPos, this.nearestWrapOfTarget);
+      this.pathBearing = true;
       this.bearing = roundToFixed(radToDeg(path.startBearing), 3);
     },
     updateTack () {
@@ -257,6 +266,8 @@ export default {
           return;
         }
         this.updateWind(wind.knots, wind.twd);
+        this.customFromPos = pickLatLng;
+        this.updatePath();
       }
     },
   },
@@ -273,12 +284,19 @@ export default {
     },
     fromInstruments () {
       if (this.fromInstruments) {
+        this.customFromPos = null;
         this.updateFromInstruments();
         this.updateTack();
       }
     },
+    bearing () {
+      if (this.customFromPos !== null && !this.pathBearing) {
+        this.customFromPos = null;
+      }
+      this.pathBearing = false;
+    },
     gcMode () {
-      if (this.fromInstruments) {
+      if (this.fromInstruments || this.customFromPos) {
         this.updatePath();
       }
     },
