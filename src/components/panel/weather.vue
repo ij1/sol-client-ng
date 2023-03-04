@@ -73,7 +73,7 @@
         <span
           class = "text-real"
           :style = "{'font-weight': wxMode === 'time' ? 'bold' : 'normal'}"
-          @click.prevent = "setMode('time')"
+          @click.prevent = "setMode('time', $event)"
         >
           {{ formatTime(wxTime) }}
         </span>
@@ -85,7 +85,7 @@
         <span
           class = "text-real"
           :style = "{'font-weight': wxMode === 'offset' ? 'bold' : 'normal'}"
-          @click.prevent = "setMode('offset')"
+          @click.prevent = "setMode('offset', $event)"
         >
           (+{{ formatOffset(timeOffset) }})
         </span>
@@ -395,7 +395,15 @@ export default {
       this.$store.commit('weather/setTime', this.boatTime + value);
       this.focusPanel();
     },
-    setMode (value) {
+    setMode (value, ev) {
+      if (ev.altKey) {
+        let offset = roundToFixed(this.timeOffset / (3600 * 1000.0), 2);
+        this.$store.commit('boat/steering/setDelay', '' + offset);
+        this.$store.commit('boat/steering/setDelayTime', offset);
+        this.$store.commit('boat/steering/setDelayOn', true);
+        this.$store.commit('ui/setActiveTab', 0);
+        return;
+      }
       this.$store.commit('weather/setMode', value);
       this.focusPanel();
     },
