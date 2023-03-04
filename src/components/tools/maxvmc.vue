@@ -278,7 +278,7 @@ export default {
       }
     },
     currentTarget () {
-      if (this.fromInstruments) {
+      if (this.fromInstruments || this.customFromPos) {
         this.updateFromInstruments();
       }
     },
