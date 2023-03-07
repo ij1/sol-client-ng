@@ -99,7 +99,6 @@ export default {
   padding: 0px 2px;
   margin: 0px;
   margin-right: 5px;
-  background-color: rgba(12, 12, 12, 0.1);
   border-radius: 4px;
   font-size: 16px;
   vertical-align: middle;
@@ -107,14 +106,6 @@ export default {
 
 .to-steering-btn img {
   vertical-align: -2px;
-}
-
-.to-steering-btn:hover {
-  background-color: rgba(12, 12, 12, 0.05);
-}
-
-.to-steering-btn:active {
-  background-color: rgba(12, 12, 12, 0.3);
 }
 
 .text-placeholder-container {
