@@ -216,6 +216,7 @@ export default {
       boatTwd: state => state.boat.instruments.twd.value,
       boatTwa: state => state.boat.instruments.twa.value,
       boatLoaded: state => state.boat.id,
+      wxTime: state => state.weather.time,
     }),
     ...mapGetters({
       fgCurve: 'boat/polar/currentCurve',
