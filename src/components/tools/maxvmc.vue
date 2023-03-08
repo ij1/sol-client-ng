@@ -19,6 +19,9 @@
           size = 8
           :readonly="fromInstruments"
         />
+        <span v-if="fromOffset">
+          Delay for: {{fromOffset}} hours
+        </span>
       </div>
       <div>
         <label for = "twd">TWD:</label>
@@ -61,6 +64,7 @@
           :twa = "maxvmc.twa"
           :val = "maxvmc.vmc"
           :twd = "twdRad"
+          :offset = "fromOffset"
           label = "VMC"
         />
       </div>
@@ -81,6 +85,7 @@
           :twa = "tack * curveObj.maxvmg.up.twa"
           :val = "curveObj.maxvmg.up.vmg"
           :twd = "twdRad"
+          :offset = "fromOffset"
           label = "VMG"
         />
       </div>
@@ -91,6 +96,7 @@
           :twa = "tack * curveObj.maxvmg.down.twa"
           :val = "curveObj.maxvmg.down.vmg"
           :twd = "twdRad"
+          :offset = "fromOffset"
           label = "VMG"
         />
       </div>
@@ -100,6 +106,7 @@
           :twa = "tack * curveObj.maxspeed.twa"
           :val = "curveObj.maxspeed.speed"
           :twd = "twdRad"
+          :offset = "fromOffset"
           label = "BS"
         />
       </div>
@@ -112,7 +119,7 @@ import { mapState, mapGetters } from 'vuex';
 import L from 'leaflet';
 import { MS_TO_KNT } from '../../lib/sol.js';
 import { gcCalc, loxoCalc, isCcValid, minTurnAngle } from '../../lib/nav.js';
-import { radToDeg, degToRad } from '../../lib/utils.js';
+import { radToDeg, degToRad, msecToH } from '../../lib/utils.js';
 import { roundToFixed } from '../../lib/quirks.js';
 import { EventBus } from '../../lib/event-bus.js';
 import vmcvmgDetail from './vmcvmgdetail.vue';
@@ -143,6 +150,7 @@ export default {
     return {
       fromInstruments: true,
       customFromPos: null,
+      customFromTime: null,
       pathBearing: false,	/* Bearing is set from path, not manually */
       tws: '',         /* In knots */
       twd: '',
@@ -200,6 +208,23 @@ export default {
       }
       return this.visualPosition;
     },
+    fromOffset () {
+      if (!this.setDelay) {
+        return null;
+      }
+      if (this.customFromTime === null) {
+        return null;
+      }
+
+      let offset = this.customFromTime - this.boatTime;
+      if (offset < 0) {
+        return null;
+      }
+
+      offset = roundToFixed(msecToH(offset), 2);
+
+      return offset;
+    },
     nearestWrapOfTarget () {
       if (this.currentTarget === null) {
         return null;
@@ -217,11 +242,13 @@ export default {
       boatTwa: state => state.boat.instruments.twa.value,
       boatLoaded: state => state.boat.id,
       wxTime: state => state.weather.time,
+      setDelay: state => state.ui.tools.cfg.maxCalculatorSetsDelay.value,
     }),
     ...mapGetters({
       fgCurve: 'boat/polar/currentCurve',
       visualPosition: 'boat/visualPosition',
       currentTarget: 'ui/currentTarget',
+      boatTime: 'boat/time',
     }),
   },
   mounted () {
@@ -268,6 +295,7 @@ export default {
         }
         this.updateWind(wind.knots, wind.twd);
         this.customFromPos = pickLatLng;
+        this.customFromTime = this.wxTime;
         this.updatePath();
       }
     },
@@ -286,6 +314,7 @@ export default {
     fromInstruments () {
       if (this.fromInstruments) {
         this.customFromPos = null;
+        this.customFromTime = null;
         this.updateFromInstruments();
         this.updateTack();
       }
@@ -293,6 +322,7 @@ export default {
     bearing () {
       if (this.customFromPos !== null && !this.pathBearing) {
         this.customFromPos = null;
+        this.customFromTime = null;
       }
       this.pathBearing = false;
     },

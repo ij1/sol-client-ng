@@ -53,6 +53,9 @@ export default {
       type: String,
       required: true,
     },
+    offset: {
+      type: String,
+    },
   },
   computed: {
     valid () {
@@ -89,6 +92,12 @@ export default {
         value: degToRad(val),
         valueText: val,
       });
+
+      if (this.offset !== null) {
+        this.$store.commit('boat/steering/setDelay', '' + this.offset);
+        this.$store.commit('boat/steering/setDelayTime', this.offset);
+        this.$store.commit('boat/steering/setDelayOn', true);
+      }
     },
   },
 }

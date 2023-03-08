@@ -29,6 +29,11 @@ export default {
         type: 'boolean',
         cfgText: 'Show COG in max calculator',
       },
+      maxCalculatorSetsDelay: {
+        value: false,
+        type: 'boolean',
+        cfgText: 'Max calculator sets steering delay',
+      },
     },
   },
 
