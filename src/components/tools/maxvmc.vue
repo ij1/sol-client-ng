@@ -218,9 +218,6 @@ export default {
       return this.visualPosition;
     },
     fromOffsetView () {
-      if (!this.setDelay) {
-        return null;
-      }
       if (this.customFromTime === null) {
         return null;
       }
@@ -312,7 +309,7 @@ export default {
         this.customFromPos = pickLatLng;
         if (this.wxTime > this.boatTime) {
           this.customFromTime = this.wxTime;
-          this.offsetOn = true;
+          this.offsetOn = this.setDelay;
         } else {
           this.customFromTime = null;
         }

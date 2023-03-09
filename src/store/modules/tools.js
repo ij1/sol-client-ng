@@ -32,7 +32,7 @@ export default {
       maxCalculatorSetsDelay: {
         value: false,
         type: 'boolean',
-        cfgText: 'Max calculator sets steering delay',
+        cfgText: 'Max calculator sets steering delay by default',
       },
     },
   },
