@@ -19,9 +19,6 @@
           size = 8
           :readonly="fromInstruments"
         />
-        <span v-if="fromOffset">
-          Delay for: {{fromOffset}} hours
-        </span>
       </div>
       <div>
         <label for = "twd">TWD:</label>
@@ -58,13 +55,24 @@
         </span>
       </div>
       <div>
+        <input v-if="fromOffsetView"
+            type="checkbox"
+            :value="false"
+            v-model="offsetOn"
+          />
+        <span>&nbsp;</span>
+        <span v-if="fromOffsetView">
+          Delay for: {{fromOffsetView}} hours
+        </span>
+      </div>
+      <div>
         <label for = "vmc-detail">Max VMC:</label>
         <vmcvmg-detail
           id = "vmc-detail"
           :twa = "maxvmc.twa"
           :val = "maxvmc.vmc"
           :twd = "twdRad"
-          :offset = "fromOffset"
+          :offset = "fromOffsetOut"
           label = "VMC"
         />
       </div>
@@ -85,7 +93,7 @@
           :twa = "tack * curveObj.maxvmg.up.twa"
           :val = "curveObj.maxvmg.up.vmg"
           :twd = "twdRad"
-          :offset = "fromOffset"
+          :offset = "fromOffsetOut"
           label = "VMG"
         />
       </div>
@@ -96,7 +104,7 @@
           :twa = "tack * curveObj.maxvmg.down.twa"
           :val = "curveObj.maxvmg.down.vmg"
           :twd = "twdRad"
-          :offset = "fromOffset"
+          :offset = "fromOffsetOut"
           label = "VMG"
         />
       </div>
@@ -106,7 +114,7 @@
           :twa = "tack * curveObj.maxspeed.twa"
           :val = "curveObj.maxspeed.speed"
           :twd = "twdRad"
-          :offset = "fromOffset"
+          :offset = "fromOffsetOut"
           label = "BS"
         />
       </div>
@@ -151,6 +159,7 @@ export default {
       fromInstruments: true,
       customFromPos: null,
       customFromTime: null,
+      offsetOn: false,
       pathBearing: false,	/* Bearing is set from path, not manually */
       tws: '',         /* In knots */
       twd: '',
@@ -208,7 +217,7 @@ export default {
       }
       return this.visualPosition;
     },
-    fromOffset () {
+    fromOffsetView () {
       if (!this.setDelay) {
         return null;
       }
@@ -218,12 +227,18 @@ export default {
 
       let offset = this.customFromTime - this.boatTime;
       if (offset < 0) {
-        return null;
+        return "0.00";
       }
 
       offset = roundToFixed(msecToH(offset), 2);
 
       return offset;
+    },
+    fromOffsetOut () {
+      if (!this.offsetOn) {
+        return null;
+      }
+      return this.fromOffsetView;
     },
     nearestWrapOfTarget () {
       if (this.currentTarget === null) {
@@ -295,7 +310,12 @@ export default {
         }
         this.updateWind(wind.knots, wind.twd);
         this.customFromPos = pickLatLng;
-        this.customFromTime = this.wxTime;
+        if (this.wxTime > this.boatTime) {
+          this.customFromTime = this.wxTime;
+          this.offsetOn = true;
+        } else {
+          this.customFromTime = null;
+        }
         this.updatePath();
       }
     },
