@@ -62,7 +62,7 @@
           />
         <span>&nbsp;</span>
         <span v-if="fromOffsetView">
-          Delay for: {{fromOffsetView}} hours
+          Set steering delay to {{fromOffsetView}} hours
         </span>
       </div>
       <div>
