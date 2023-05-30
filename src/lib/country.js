@@ -236,7 +236,7 @@ export const validCountries = {
   tr: "TURKEY",
   tt: "TRINIDAD AND TOBAGO",
   tv: "TUVALU",
-  tw: "TAIWAN, PROVINCE OF CHINA",
+  tw: "TAIWAN",
   tz: "TANZANIA, UNITED REPUBLIC OF",
 
   ua: "UKRAINE",
