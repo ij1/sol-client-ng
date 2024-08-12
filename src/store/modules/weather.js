@@ -512,6 +512,10 @@ export default {
         val = Math.min(val, state.cfg.twsDensity.high - 1);
       }
 
+      if (state.cfg.arrowsBarbs.value === 'none') {
+        return [];
+      }
+
       return contourDefs[val];
     },
 
