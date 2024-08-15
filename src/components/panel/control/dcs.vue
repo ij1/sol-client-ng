@@ -158,20 +158,14 @@ export default {
 .dc-table .active {
   background: #d0d0ff;
 }
-.dc-table .active:hover {
-  background: #e0e0ff;
-}
 .dc-table tr:hover {
   background: #e0e0ff;
 }
 .control-panel-dark .dc-table .active {
-  background: #30304f;
-}
-.control-panel-dark .dc-table .active:hover {
-  background: #30304f;
+  background: #30306f;
 }
 .control-panel-dark .dc-table tr:hover {
-  background: #30304f;
+  background: #20204f;
 }
 
 
