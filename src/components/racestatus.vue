@@ -26,6 +26,9 @@ export default {
       if (this.boatFinishTime !== null) {
         return txt + ' has finished the race.';
       }
+      if (this.boatRanking === -1) {
+        return txt + ' (unranked) has ' + roundToFixed(this.boatDtg, 1) + 'nm to go.';
+      }
       return txt + ' ranked #' + this.boatRanking +
              ' with ' + roundToFixed(this.boatDtg, 1) + 'nm to go.'
     },
