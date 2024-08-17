@@ -82,7 +82,8 @@
     <div>
       <div class="misc-header">About</div>
       <div class="misc-small">
-        Version identifier {{version}} (GPL v2) ij 2018-2023.
+        Version {{version}} (GPL v2) <br/>
+        SOL Client Contributors 2018-2024.
       </div>
     </div>
   </div>
